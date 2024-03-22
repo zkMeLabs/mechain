@@ -39,7 +39,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 ### Features
 
-- (chain) [#6](https://github.com/zkMeLabs/evmos/pull/6) Set prefix to mc and denom to zkme chain name to mechain
+- (chain) [#9](https://github.com/zkMeLabs/evmos/pull/9) Set prefix to mc and denom to zkme chain name to mechain
 
 
 ### Improvement
