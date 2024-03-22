@@ -7,7 +7,7 @@ import (
 // CreateModuleQueryExec creates a Evmos module query
 func (m *Manager) CreateModuleQueryExec(moduleName, subCommand, chainID string) (string, error) {
 	cmd := []string{
-		"evmosd",
+		"mechaind",
 		"q",
 		moduleName,
 		subCommand,
