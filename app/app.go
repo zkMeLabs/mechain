@@ -157,9 +157,6 @@ import (
 	erc20client "github.com/evmos/evmos/v12/x/erc20/client"
 	erc20keeper "github.com/evmos/evmos/v12/x/erc20/keeper"
 	erc20types "github.com/evmos/evmos/v12/x/erc20/types"
-	"github.com/evmos/evmos/v12/x/inflation"
-	inflationkeeper "github.com/evmos/evmos/v12/x/inflation/keeper"
-	inflationtypes "github.com/evmos/evmos/v12/x/inflation/types"
 
 	// NOTE: override ICS20 keeper to support IBC transfers of ERC20 tokens
 	"github.com/evmos/evmos/v12/x/ibc/transfer"
@@ -224,7 +221,6 @@ var (
 		transfer.AppModuleBasic{AppModuleBasic: &ibctransfer.AppModuleBasic{}},
 		evm.AppModuleBasic{},
 		feemarket.AppModuleBasic{},
-		inflation.AppModuleBasic{},
 		erc20.AppModuleBasic{},
 		epochs.AppModuleBasic{},
 		claims.AppModuleBasic{},
@@ -240,7 +236,6 @@ var (
 		ibctransfertypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
 		icatypes.ModuleName:            nil,
 		evmtypes.ModuleName:            {authtypes.Minter, authtypes.Burner}, // used for secure addition and subtraction of balance using module account
-		inflationtypes.ModuleName:      {authtypes.Minter},
 		erc20types.ModuleName:          {authtypes.Minter, authtypes.Burner},
 		claimstypes.ModuleName:         nil,
 	}
@@ -296,10 +291,9 @@ type Evmos struct {
 	FeeMarketKeeper feemarketkeeper.Keeper
 
 	// Evmos keepers
-	InflationKeeper inflationkeeper.Keeper
-	ClaimsKeeper    *claimskeeper.Keeper
-	Erc20Keeper     erc20keeper.Keeper
-	EpochsKeeper    epochskeeper.Keeper
+	ClaimsKeeper *claimskeeper.Keeper
+	Erc20Keeper  erc20keeper.Keeper
+	EpochsKeeper epochskeeper.Keeper
 
 	// the module manager
 	mm *module.Manager
@@ -355,7 +349,7 @@ func NewEvmos(
 		// ethermint keys
 		evmtypes.StoreKey, feemarkettypes.StoreKey,
 		// evmos keys
-		inflationtypes.StoreKey, erc20types.StoreKey,
+		erc20types.StoreKey,
 		epochstypes.StoreKey, claimstypes.StoreKey,
 	)
 
@@ -462,11 +456,6 @@ func NewEvmos(
 	)
 
 	// Evmos Keeper
-	app.InflationKeeper = inflationkeeper.NewKeeper(
-		keys[inflationtypes.StoreKey], appCodec, authtypes.NewModuleAddress(govtypes.ModuleName),
-		app.AccountKeeper, app.BankKeeper, app.DistrKeeper, &stakingKeeper,
-		authtypes.FeeCollectorName,
-	)
 
 	app.ClaimsKeeper = claimskeeper.NewKeeper(
 		appCodec, keys[claimstypes.StoreKey], authtypes.NewModuleAddress(govtypes.ModuleName),
@@ -492,8 +481,7 @@ func NewEvmos(
 	epochsKeeper := epochskeeper.NewKeeper(appCodec, keys[epochstypes.StoreKey])
 	app.EpochsKeeper = *epochsKeeper.SetHooks(
 		epochskeeper.NewMultiEpochHooks(
-			// insert epoch hooks receivers here
-			app.InflationKeeper.Hooks(),
+		// insert epoch hooks receivers here
 		),
 	)
 
@@ -594,8 +582,6 @@ func NewEvmos(
 		evm.NewAppModule(app.EvmKeeper, app.AccountKeeper, app.GetSubspace(evmtypes.ModuleName)),
 		feemarket.NewAppModule(app.FeeMarketKeeper, app.GetSubspace(feemarkettypes.ModuleName)),
 		// Evmos app modules
-		inflation.NewAppModule(app.InflationKeeper, app.AccountKeeper, app.StakingKeeper,
-			app.GetSubspace(inflationtypes.ModuleName)),
 		erc20.NewAppModule(app.Erc20Keeper, app.AccountKeeper,
 			app.GetSubspace(erc20types.ModuleName)),
 		epochs.NewAppModule(appCodec, app.EpochsKeeper),
@@ -632,7 +618,6 @@ func NewEvmos(
 		authz.ModuleName,
 		feegrant.ModuleName,
 		paramstypes.ModuleName,
-		inflationtypes.ModuleName,
 		erc20types.ModuleName,
 		claimstypes.ModuleName,
 	)
@@ -663,7 +648,6 @@ func NewEvmos(
 		paramstypes.ModuleName,
 		upgradetypes.ModuleName,
 		// Evmos modules
-		inflationtypes.ModuleName,
 		erc20types.ModuleName,
 	)
 
@@ -699,7 +683,6 @@ func NewEvmos(
 		paramstypes.ModuleName,
 		upgradetypes.ModuleName,
 		// Evmos modules
-		inflationtypes.ModuleName,
 		erc20types.ModuleName,
 		epochstypes.ModuleName,
 		// NOTE: crisis module must go at the end to check for invariants on each module
@@ -1034,7 +1017,6 @@ func initParamsKeeper(
 	paramsKeeper.Subspace(evmtypes.ModuleName).WithKeyTable(evmtypes.ParamKeyTable()) //nolint: staticcheck
 	paramsKeeper.Subspace(feemarkettypes.ModuleName).WithKeyTable(feemarkettypes.ParamKeyTable())
 	// evmos subspaces
-	paramsKeeper.Subspace(inflationtypes.ModuleName)
 	paramsKeeper.Subspace(erc20types.ModuleName)
 	paramsKeeper.Subspace(claimstypes.ModuleName)
 	return paramsKeeper

@@ -56,6 +56,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 - (incentives) [#28](https://github.com/zkMeLabs/mechain/pull/28) Remove `x/incentives` module.
 - (revenue) [#29](https://github.com/zkMeLabs/mechain/pull/29) Remove `x/revenue` module.
 - (vesting) [#30](https://github.com/zkMeLabs/mechain/pull/30) Remove `x/vesting` module.
+- (inflation) [#31](https://github.com/zkMeLabs/mechain/pull/31) Remove `x/inflation` module.
 
 ### API Breaking
 
