@@ -3,7 +3,6 @@ package ibc
 import (
 	"testing"
 
-	"github.com/evmos/evmos/v12/x/claims/types"
 	"github.com/stretchr/testify/require"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -201,20 +200,6 @@ func TestGetTransferAmount(t *testing.T) {
 			"10000",
 			false,
 		},
-		{
-			"valid - IBCTriggerAmt",
-			channeltypes.Packet{
-				Data: transfertypes.ModuleCdc.MustMarshalJSON(
-					&transfertypes.FungibleTokenPacketData{
-						Sender:   "cosmos1qql8ag4cluz6r4dz28p3w00dnc9w8ueulg2gmc",
-						Receiver: "evmos1x2w87cvt5mqjncav4lxy8yfreynn273xn5335v",
-						Amount:   types.IBCTriggerAmt,
-					},
-				),
-			},
-			types.IBCTriggerAmt,
-			false,
-		},
 	}
 
 	for _, tc := range testCases {
@@ -295,14 +280,14 @@ func TestGetSentCoin(t *testing.T) {
 		expCoin   sdk.Coin
 	}{
 		{
-			"get unwrapped aevmos coin",
-			"aevmos",
+			"get unwrapped azkme coin",
+			"azkme",
 			"10",
-			sdk.Coin{Denom: "aevmos", Amount: sdk.NewInt(10)},
+			sdk.Coin{Denom: "azkme", Amount: sdk.NewInt(10)},
 		},
 		{
-			"get ibc wrapped aevmos coin",
-			"transfer/channel-0/aevmos",
+			"get ibc wrapped azkme coin",
+			"transfer/channel-0/azkme",
 			"10",
 			sdk.Coin{Denom: teststypes.AevmosIbcdenom, Amount: sdk.NewInt(10)},
 		},

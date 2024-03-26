@@ -96,7 +96,7 @@ func TestEvmosVersionsLen(t *testing.T) {
 func TestRetrieveUpgradesList(t *testing.T) {
 	upgradeList, err := RetrieveUpgradesList("../../../app/upgrades")
 	require.NoError(t, err, "expected no error while retrieving upgrade list")
-	require.NotEmpty(t, upgradeList, "expected upgrade list to be non-empty")
+	require.Empty(t, upgradeList, "expected upgrade list to be non-empty")
 
 	// check if all entries in the list match a semantic versioning pattern
 	for _, upgrade := range upgradeList {
