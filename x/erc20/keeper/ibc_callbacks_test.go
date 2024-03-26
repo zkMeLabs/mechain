@@ -3,7 +3,6 @@ package keeper_test
 import (
 	"errors"
 	"fmt"
-
 	"math/big"
 
 	"github.com/evmos/evmos/v12/utils"
