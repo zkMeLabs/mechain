@@ -31,11 +31,11 @@ import (
 
 const (
 	// MainnetChainID defines the Evmos EIP155 chain ID for mainnet
-	MainnetChainID = "evmos_9001"
+	MainnetChainID = "mechain_1000001"
 	// TestnetChainID defines the Evmos EIP155 chain ID for testnet
-	TestnetChainID = "evmos_9000"
+	TestnetChainID = "mechain_1000000"
 	// BaseDenom defines the Evmos mainnet denomination
-	BaseDenom = "aevmos"
+	BaseDenom = "azkme"
 )
 
 // IsMainnet returns true if the chain-id has the Evmos mainnet EIP155 chain prefix.

@@ -344,7 +344,7 @@ func (suite *KeeperTestSuite) TestOnRecvPacket() {
 }
 
 func (suite *KeeperTestSuite) TestConvertCoinToERC20FromPacket() {
-	senderAddr := "evmos1x2w87cvt5mqjncav4lxy8yfreynn273xn5335v"
+	senderAddr := "mc1x2w87cvt5mqjncav4lxy8yfreynn273x3sy9tq"
 
 	testCases := []struct {
 		name     string
@@ -355,14 +355,14 @@ func (suite *KeeperTestSuite) TestConvertCoinToERC20FromPacket() {
 		{
 			name: "error - invalid sender",
 			malleate: func() transfertypes.FungibleTokenPacketData {
-				return transfertypes.NewFungibleTokenPacketData("aevmos", "10", "", "", "")
+				return transfertypes.NewFungibleTokenPacketData(utils.BaseDenom, "10", "", "", "")
 			},
 			expPass: false,
 		},
 		{
 			name: "pass - is base denom",
 			malleate: func() transfertypes.FungibleTokenPacketData {
-				return transfertypes.NewFungibleTokenPacketData("aevmos", "10", senderAddr, "", "")
+				return transfertypes.NewFungibleTokenPacketData(utils.BaseDenom, "10", senderAddr, "", "")
 			},
 			expPass: true,
 		},
@@ -563,7 +563,7 @@ func (suite *KeeperTestSuite) TestOnAcknowledgementPacket() {
 }
 
 func (suite *KeeperTestSuite) TestOnTimeoutPacket() {
-	senderAddr := "evmos1x2w87cvt5mqjncav4lxy8yfreynn273xn5335v"
+	senderAddr := "mc1x2w87cvt5mqjncav4lxy8yfreynn273x3sy9tq"
 
 	testCases := []struct {
 		name     string
