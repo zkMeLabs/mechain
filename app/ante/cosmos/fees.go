@@ -50,7 +50,6 @@ func NewDeductFeeDecorator(
 	bk BankKeeper,
 	dk anteutils.DistributionKeeper,
 	fk authante.FeegrantKeeper,
-	sk anteutils.StakingKeeper,
 	tfc anteutils.TxFeeChecker,
 ) DeductFeeDecorator {
 	if tfc == nil {
@@ -62,7 +61,6 @@ func NewDeductFeeDecorator(
 		bankKeeper:         bk,
 		distributionKeeper: dk,
 		feegrantKeeper:     fk,
-		stakingKeeper:      sk,
 		txFeeChecker:       tfc,
 	}
 }
@@ -162,12 +160,6 @@ func (dfd DeductFeeDecorator) deductFee(ctx sdk.Context, sdkTx sdk.Tx, fees sdk.
 func deductFeesFromBalanceOrUnclaimedStakingRewards(
 	ctx sdk.Context, dfd DeductFeeDecorator, deductFeesFromAcc authtypes.AccountI, fees sdk.Coins,
 ) error {
-	if err := anteutils.ClaimStakingRewardsIfNecessary(
-		ctx, dfd.bankKeeper, dfd.distributionKeeper, dfd.stakingKeeper, deductFeesFromAcc.GetAddress(), fees,
-	); err != nil {
-		return err
-	}
-
 	return authante.DeductFees(dfd.bankKeeper, ctx, deductFeesFromAcc, fees)
 }
 
