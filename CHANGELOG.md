@@ -57,6 +57,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 - (revenue) [#29](https://github.com/zkMeLabs/mechain/pull/29) Remove `x/revenue` module.
 - (vesting) [#30](https://github.com/zkMeLabs/mechain/pull/30) Remove `x/vesting` module.
 - (inflation) [#31](https://github.com/zkMeLabs/mechain/pull/31) Remove `x/inflation` module.
+- (claims) [#32](https://github.com/zkMeLabs/mechain/pull/32) Remove `x/claims` module.
 
 ### API Breaking
 
