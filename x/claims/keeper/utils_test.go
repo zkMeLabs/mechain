@@ -21,9 +21,9 @@ import (
 	evmostypes "github.com/evmos/evmos/v12/types"
 	"github.com/evmos/evmos/v12/utils"
 	"github.com/evmos/evmos/v12/x/claims/types"
+	erc20types "github.com/evmos/evmos/v12/x/erc20/types"
 	evm "github.com/evmos/evmos/v12/x/evm/types"
 	feemarkettypes "github.com/evmos/evmos/v12/x/feemarket/types"
-	incentivestypes "github.com/evmos/evmos/v12/x/incentives/types"
 	"github.com/stretchr/testify/require"
 )
 
@@ -130,12 +130,10 @@ func govProposal(priv *ethsecp256k1.PrivKey) (uint64, error) {
 	s.Require().NoError(err)
 	s.ctx, err = testutil.Commit(s.ctx, s.app, time.Second*0, nil)
 	s.Require().NoError(err)
-	content := incentivestypes.NewRegisterIncentiveProposal(
+	content := erc20types.NewRegisterERC20Proposal(
 		"test",
 		"description",
 		contractAddress.String(),
-		sdk.DecCoins{sdk.NewDecCoinFromDec(utils.BaseDenom, sdk.NewDecWithPrec(5, 2))},
-		1000,
 	)
 	return testutil.SubmitProposal(s.ctx, s.app, priv, content, 8)
 }

@@ -53,6 +53,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 ### State Machine Breaking
 
 - (recovery) [#27](https://github.com/zkMeLabs/evmos/pull/27) Remove `x/recovery` module.
+- (incentives) [#28](https://github.com/zkMeLabs/evmos/pull/28) Remove `x/incentives` module.
 
 ### API Breaking
 
