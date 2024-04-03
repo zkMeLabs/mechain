@@ -42,6 +42,8 @@ var (
 	DefaultEnableCreate = true
 	// DefaultEnableCall enables contract calls (i.e true)
 	DefaultEnableCall = true
+	// DefaultExtraEIPs defines the default extra EIPs to be included EIP 3855 was enabled
+	DefaultExtraEIPs = []int64{3855}
 	// DefaultEVMChannels channels
 	DefaultEVMChannels = []string{
 		"channel-10", // Injective
@@ -78,7 +80,7 @@ func DefaultParams() Params {
 		EnableCreate:        DefaultEnableCreate,
 		EnableCall:          DefaultEnableCall,
 		ChainConfig:         DefaultChainConfig(),
-		ExtraEIPs:           nil,
+		ExtraEIPs:           DefaultExtraEIPs,
 		AllowUnprotectedTxs: DefaultAllowUnprotectedTxs,
 		EVMChannels:         DefaultEVMChannels,
 	}
