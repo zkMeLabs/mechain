@@ -44,7 +44,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 ### Improvement
 
-
+- (chore) [#33](https://github.com/zkMeLabs/mechain/pull/33) Fix test after remove recovery/incentives/revenue/vesting/inflation/claims module and remove upgrades.
 
 ### Bug Fixes
 

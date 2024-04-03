@@ -280,14 +280,14 @@ func TestGetSentCoin(t *testing.T) {
 		expCoin   sdk.Coin
 	}{
 		{
-			"get unwrapped aevmos coin",
-			"aevmos",
+			"get unwrapped azkme coin",
+			"azkme",
 			"10",
-			sdk.Coin{Denom: "aevmos", Amount: sdk.NewInt(10)},
+			sdk.Coin{Denom: "azkme", Amount: sdk.NewInt(10)},
 		},
 		{
-			"get ibc wrapped aevmos coin",
-			"transfer/channel-0/aevmos",
+			"get ibc wrapped azkme coin",
+			"transfer/channel-0/azkme",
 			"10",
 			sdk.Coin{Denom: teststypes.AevmosIbcdenom, Amount: sdk.NewInt(10)},
 		},

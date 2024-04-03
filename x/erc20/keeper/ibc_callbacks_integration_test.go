@@ -1,8 +1,12 @@
 package keeper_test
 
 import (
-	"cosmossdk.io/math"
 	"fmt"
+	"math/big"
+	"strconv"
+
+	"cosmossdk.io/math"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	transfertypes "github.com/cosmos/ibc-go/v6/modules/apps/transfer/types"
@@ -15,8 +19,6 @@ import (
 	"github.com/evmos/evmos/v12/utils"
 	"github.com/evmos/evmos/v12/x/erc20/types"
 	. "github.com/onsi/ginkgo/v2"
-	"math/big"
-	"strconv"
 )
 
 var _ = Describe("Convert receiving IBC to Erc20", Ordered, func() {
