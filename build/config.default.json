@@ -3,6 +3,9 @@
     "prefix": "mc",
     "chain_name": "mechain",
     "chain_id": "mechain_1000000-1",
+    "denoms": [
+      "azkme"
+    ],
     "port": {
       "api.address": 1317,
       "rosetta.address": 8080,

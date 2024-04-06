@@ -324,7 +324,7 @@ const main = async function () {
         }
 
         const account = { "@type": "/ethermint.types.v1.EthAccount", base_account: { address: "", pub_key: null, account_number: "0", sequence: "0" }, code_hash: "0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470" };
-        const balance = { address: "", coins: [{ denom: "azkme", amount: "0" }] };
+        const balance = { address: "", coins: [] };
         for (let i = 0; i < nodesCount; i++) {
           let accounts = [];
           let balances = [];
@@ -364,6 +364,7 @@ const main = async function () {
           }
 
           for (let balances of appState.bank.balances) {
+            balances.coins = app.denoms.sort().map((denom) => ({ denom, amount: "0" }));
             for (let coin of balances.coins) {
               coin.amount = preMinePerAccount;
             }
