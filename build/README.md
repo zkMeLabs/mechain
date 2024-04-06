@@ -1,4 +1,3 @@
-```markdown
 ## Background
 During development, modules such as p2p, consensus algorithms, etc., generally require setting up 4 nodes. The official documentation provides [Multi Node](https://docs.evmos.org/protocol/evmos-cli/multi-nodes), but Multi Node is actually set up using Docker, which is not very developer-friendly.
 
@@ -51,7 +50,6 @@ Note: `node dev` is shorthand for `node dev.js`.
   - p2pPort: increment
   - pprofPort: increment
 - If you modify the chain_id in config.json, fixed must be set to false because if the chain id changes, transaction-related signatures will not be validated.
-```
 
 ## 背景
 在开发的过程中，验证p2p，共识算法等模块一般需要搭建4节点。官方提供了[Multi Node](https://docs.evmos.org/protocol/evmos-cli/multi-nodes)，但是Multi Node 实际是使用docker搭建的，对开发不太友好。
