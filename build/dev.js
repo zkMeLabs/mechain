@@ -1,4 +1,4 @@
-import { HDNodeWallet } from "ethers";
+import { HDNodeWallet, Wallet } from "ethers";
 import crypto from "crypto";
 import { ethToBech32 } from "@quarix/address-converter";
 import { exec } from "child_process";
@@ -329,7 +329,14 @@ const main = async function () {
           let accounts = [];
           let balances = [];
           if (Array.isArray(preMineAccounts)) {
-            for (const address of preMineAccounts) {
+            for (const ac of preMineAccounts) {
+              let address = ac;
+              if (ac.length == 64) {
+                const wallet = new Wallet(ac);
+                address = ethToBech32(wallet.address, app.prefix);
+              } else if (address.startsWith("0x")) {
+                address = ethToBech32(ac, app.prefix);
+              }
               accounts.push(Object.assign(JSON.parse(JSON.stringify(account)), { base_account: { address } }));
               balances.push(Object.assign(JSON.parse(JSON.stringify(balance)), { address }));
             }
