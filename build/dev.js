@@ -329,6 +329,7 @@ const main = async function () {
           let accounts = [];
           let balances = [];
           if (Array.isArray(preMineAccounts)) {
+            let duplicate = {};
             for (const ac of preMineAccounts) {
               let address = ac;
               if (ac.length == 64) {
@@ -337,6 +338,11 @@ const main = async function () {
               } else if (address.startsWith("0x")) {
                 address = ethToBech32(ac, app.prefix);
               }
+              if (duplicate[address]) {
+                continue;
+              }
+              duplicate[address] = true;
+
               accounts.push(Object.assign(JSON.parse(JSON.stringify(account)), { base_account: { address } }));
               balances.push(Object.assign(JSON.parse(JSON.stringify(balance)), { address }));
             }
