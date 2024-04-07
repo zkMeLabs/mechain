@@ -1,0 +1,65 @@
+{
+  "app": {
+    "prefix": "mc",
+    "chain_name": "mechain",
+    "chain_id": "mechain_1000000-1",
+    "denoms": [
+      "azkme"
+    ],
+    "port": {
+      "api.address": 1317,
+      "rosetta.address": 8080,
+      "grpc.address": 9090,
+      "grpc-web.address": 7070,
+      "json-rpc.address": 8545,
+      "json-rpc.ws-address": 7545,
+      "json-rpc.metrics-address": 6065
+    },
+    "cfg": {
+      "minimum-gas-prices": "\"0azkme\"",
+      "pruning": "\"nothing\"",
+      "api.swagger": "true",
+      "api.enabled-unsafe-cors": "true",
+      "rosetta.enable": "false",
+      "rosetta.denom-to-suggest": "\"0azkme\"",
+      "grpc.enable": "true",
+      "grpc-web.enable": "true",
+      "grpc-web.enable-unsafe-cors": "true",
+      "json-rpc.enable": "true",
+      "json-rpc.api": "\"eth,txpool,personal,net,debug,web3\""
+    }
+  },
+  "tendermint": {
+    "port": {
+      "rpc.laddr": 26657,
+      "rpc.pprof_laddr": 5050,
+      "p2p.laddr": 10000,
+      "instrumentation.prometheus_listen_addr": 16660
+    },
+    "cfg": {
+      "consensus.timeout_commit": "\"1s\"",
+      "rpc.cors_allowed_origins": "[\"*\"]",
+      "instrumentation.prometheus": "true",
+      "p2p.allow_duplicate_ip": "true",
+      "p2p.seeds": "\"\""
+    }
+  },
+  "preMineAccounts": [
+    "mc1qqqqhe5pnaq5qq39wqkn957aydnrm45s0hjqca",
+    "mc1zyg3qtwny9stqe8j55fvmmm5hldk48ukk244ja"
+  ],
+  "privateKeys": [
+    {
+      "name": "alice",
+      "key": "f78a036930ce63791ea6ea20072986d8c3f16a6811f6a2583b0787c45086f769"
+    },
+    {
+      "name": "bob",
+      "key": "95e06fa1a8411d7f6693f486f0f450b122c58feadbcee43fbd02e13da59395d5"
+    }
+  ],
+  "preMinePerAccount": "10000000000000000000000000",
+  "genesisCfg": [
+    "app_state.gov.voting_params.voting_period='600s'"
+  ]
+}
