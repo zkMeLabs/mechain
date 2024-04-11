@@ -192,7 +192,7 @@ const main = async function () {
         console.log(`Stop all ${chainName} node under the folder nodes`);
         await execPromis(scriptStop, { cwd: nodesDir });
       } else {
-        const argv = process.argv[2].split(",");
+        const argv = stop.split(",");
         for (let i = 0; i < argv.length; i++) {
           const script = path.join(nodesDir, process.platform == "win32" ? `stop${argv[i]}.bat` : `stop${argv[i]}.sh`);
           const { stdout, stderr } = await execPromis(script, { cwd: nodesDir });

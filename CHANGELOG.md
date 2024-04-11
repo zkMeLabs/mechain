@@ -46,6 +46,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 - (chore) [#33](https://github.com/zkMeLabs/mechain/pull/33) Fix test after remove recovery/incentives/revenue/vesting/inflation/claims module and remove upgrades.
 - (dev) [#38](https://github.com/zkMeLabs/mechain/pull/38) Add dev.js script for development and testing.
+- (dev) [#40](https://github.com/zkMeLabs/mechain/pull/40) Add four quick command and fix stop node bug.
 
 ### Bug Fixes
 

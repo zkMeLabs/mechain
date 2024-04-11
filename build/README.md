@@ -37,6 +37,13 @@ Based on the above needs and current situation, a JavaScript script was implemen
 
 Note: `node dev` is shorthand for `node dev.js`.
 
+## Quick Command
+- `npm start`: alias `node dev --v=1 --c`, means stop the running nodes, compile the code, and start a validator node.
+- `npm run start4v`: alias `node dev --v=4 --c`, means stop the running nodes, compile the code, and start 4 validator nodes.
+- `npm stop`: alias `node dev --stop=all`, means stop the running nodes.
+- `npm restart`: alias `node dev --c --k`, means stop the running nodes, compile the code, and start validator nodes but keep the chain data.
+
+
 ## Additional Tips
 - All data is generated under the nodes directory; you can modify shell scripts according to your requirements.
 - Since the configuration files generated using the command `testnet init-files` have the same ports, it is impossible to start multiple nodes on the same machine. Therefore, the script automatically updates the port configurations. For instance, if the rpc Server Port is 26657, the ports for the first node would be 26657, for the second node 26658, and so on. However, since some ports are adjacent, conflicts may arise. In such cases, the script will increment some ports while decrementing others. The port increments and decrements are as follows:
