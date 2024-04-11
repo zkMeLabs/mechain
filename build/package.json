@@ -4,7 +4,10 @@
   "description": "a javascript for deploy node",
   "main": "index.js",
   "scripts": {
-    "start": "node dev.js"
+    "start": "node dev --v=1 --c",
+    "start4v": "node dev --v=4 --c",
+    "stop": "node dev --stop=all",
+    "restart": "node dev --c --k"
   },
   "repository": {
     "type": "https",
