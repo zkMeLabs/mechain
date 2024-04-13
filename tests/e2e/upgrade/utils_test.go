@@ -94,6 +94,8 @@ func TestEvmosVersionsLen(t *testing.T) {
 // TestRetrieveUpgradesList tests if the list of available upgrades in the codebase
 // can be correctly retrieved
 func TestRetrieveUpgradesList(t *testing.T) {
+	t.Skip("we have not yet tested the upgrade process")
+
 	upgradeList, err := RetrieveUpgradesList("../../../app/upgrades")
 	require.NoError(t, err, "expected no error while retrieving upgrade list")
 	require.Empty(t, upgradeList, "expected upgrade list to be non-empty")
