@@ -17,10 +17,10 @@
 package types
 
 import (
+	"github.com/cometbft/cometbft/crypto/tmhash"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/ethereum/go-ethereum/common"
 	evmostypes "github.com/evmos/evmos/v12/types"
-	"github.com/tendermint/tendermint/crypto/tmhash"
 )
 
 // NewTokenPair returns an instance of TokenPair

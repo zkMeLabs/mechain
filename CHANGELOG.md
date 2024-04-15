@@ -61,6 +61,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 - (inflation) [#31](https://github.com/zkMeLabs/mechain/pull/31) Remove `x/inflation` module.
 - (claims) [#32](https://github.com/zkMeLabs/mechain/pull/32) Remove `x/claims` module.
 - (evm) [#35](https://github.com/zkMeLabs/mechain/pull/35) Enable EIP 3855 for solidity push0 instruction.
+- (deps) [#43](https://github.com/zkMeLabs/mechain/pull/43) Bump Cosmos-SDK to v0.47.2 and ibc-go to v7.2.0.
 
 
 ### API Breaking
