@@ -32,7 +32,7 @@ import (
 	evmos "github.com/evmos/evmos/v12/types"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
-	"github.com/tendermint/tendermint/libs/bytes"
+	"github.com/cometbft/cometbft/libs/bytes"
 )
 
 // Cmd creates a main CLI command
