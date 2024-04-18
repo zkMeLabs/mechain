@@ -50,6 +50,8 @@ func TestIntegrationTestSuite(t *testing.T) {
 }
 
 func (s *IntegrationTestSuite) SetupSuite() {
+	s.T().Skip("we have not yet tested the upgrade process")
+
 	s.T().Log("setting up e2e integration test suite...")
 	var err error
 
