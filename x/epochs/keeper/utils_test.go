@@ -6,6 +6,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/evmos/evmos/v12/app"
 	"github.com/evmos/evmos/v12/testutil"
+	"github.com/evmos/evmos/v12/utils"
 	"github.com/evmos/evmos/v12/x/epochs/types"
 	evm "github.com/evmos/evmos/v12/x/evm/types"
 )
@@ -15,11 +16,12 @@ func (suite *KeeperTestSuite) DoSetupTest() {
 	checkTx := false
 
 	// init app
-	suite.app = app.Setup(checkTx, nil)
+	chainID := utils.TestnetChainID + "-1"
+	suite.app = app.Setup(checkTx, nil, chainID)
 
 	// setup context
 	header := testutil.NewHeader(
-		1, time.Now().UTC(), "mechain_1000001-1", suite.consAddress, nil, nil,
+		1, time.Now().UTC(), chainID, suite.consAddress, nil, nil,
 	)
 	suite.ctx = suite.app.BaseApp.NewContext(checkTx, header)
 
