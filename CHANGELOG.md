@@ -47,6 +47,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 - (chore) [#33](https://github.com/zkMeLabs/mechain/pull/33) Fix test after remove recovery/incentives/revenue/vesting/inflation/claims module and remove upgrades.
 - (dev) [#38](https://github.com/zkMeLabs/mechain/pull/38) Add dev.js script for development and testing.
 - (dev) [#40](https://github.com/zkMeLabs/mechain/pull/40) Add four quick command and fix stop node bug.
+- (deps) [#50](https://github.com/zkMeLabs/mechain/pull/50) Bump btcd version to [`v0.23.0`](https://github.com/btcsuite/btcd/releases/tag/v0.23.0)
 
 ### Bug Fixes
 
