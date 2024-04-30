@@ -105,7 +105,7 @@ func Setup(
 	db := dbm.NewMemDB()
 	app := NewEvmos(
 		log.NewNopLogger(),
-		db, nil, true, map[int64]bool{},
+		db, nil, true,
 		DefaultNodeHome, 5,
 		encoding.MakeConfig(ModuleBasics),
 		simtestutil.NewAppOptionsWithFlagHome(DefaultNodeHome),
@@ -217,7 +217,6 @@ func SetupTestingApp(chainID string) func() (ibctesting.TestingApp, map[string]j
 		app := NewEvmos(
 			log.NewNopLogger(),
 			db, nil, true,
-			map[int64]bool{},
 			DefaultNodeHome, 5, cfg,
 			simtestutil.NewAppOptionsWithFlagHome(DefaultNodeHome),
 			baseapp.SetChainID(chainID),

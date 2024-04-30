@@ -36,15 +36,17 @@ type ErrorGasOverflow struct {
 }
 
 type infiniteGasMeterWithLimit struct {
-	consumed sdk.Gas
-	limit    sdk.Gas
+	consumed   sdk.Gas
+	limit      sdk.Gas
+	rwConsumed sdk.Gas
 }
 
 // NewInfiniteGasMeterWithLimit returns a reference to a new infiniteGasMeter.
 func NewInfiniteGasMeterWithLimit(limit sdk.Gas) sdk.GasMeter {
 	return &infiniteGasMeterWithLimit{
-		consumed: 0,
-		limit:    limit,
+		consumed:   0,
+		limit:      limit,
+		rwConsumed: 0,
 	}
 }
 
@@ -113,6 +115,19 @@ func (g *infiniteGasMeterWithLimit) IsOutOfGas() bool {
 // String returns the BasicGasMeter's gas limit and gas consumed.
 func (g *infiniteGasMeterWithLimit) String() string {
 	return fmt.Sprintf("InfiniteGasMeter:\n  consumed: %d", g.consumed)
+}
+
+func (g *infiniteGasMeterWithLimit) RwConsumed() sdk.Gas {
+	return g.rwConsumed
+}
+
+func (g *infiniteGasMeterWithLimit) ConsumeRw(amount sdk.Gas, descriptor string) {
+	var overflow bool
+	g.rwConsumed, overflow = addUint64Overflow(g.rwConsumed, amount)
+	if overflow {
+		g.rwConsumed = math.MaxUint64
+		panic(ErrorGasOverflow{descriptor})
+	}
 }
 
 // GasRemaining returns MaxUint64 since limit is not confined in infiniteGasMeter.

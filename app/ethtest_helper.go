@@ -72,7 +72,6 @@ func EthSetupWithDB(isCheckTx bool, patchGenesis func(*Evmos, simapp.GenesisStat
 		db,
 		nil,
 		true,
-		map[int64]bool{},
 		DefaultNodeHome,
 		5,
 		encoding.MakeConfig(ModuleBasics),
