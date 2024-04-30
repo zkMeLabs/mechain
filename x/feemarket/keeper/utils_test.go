@@ -155,7 +155,6 @@ func setupChain(localMinGasPricesStr string, chainID string) {
 		db,
 		nil,
 		true,
-		map[int64]bool{},
 		app.DefaultNodeHome,
 		5,
 		encoding.MakeConfig(app.ModuleBasics),
