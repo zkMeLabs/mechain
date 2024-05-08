@@ -229,9 +229,9 @@ replace (
 	github.com/cometbft/cometbft => github.com/bnb-chain/greenfield-cometbft v0.0.0-20240402065323-40677309d454
 	github.com/cometbft/cometbft-db => github.com/bnb-chain/greenfield-cometbft-db v0.8.1-alpha.1
 	// use Cosmos-SDK fork to enable Ledger functionality
-	github.com/cosmos/cosmos-sdk => github.com/zkMeLabs/mechain-cosmos-sdk v0.0.0-20240429104957-9ecc7280b94b
+	github.com/cosmos/cosmos-sdk => github.com/zkMeLabs/mechain-cosmos-sdk v0.0.0-20240508034054-62cf83e35df8
 	github.com/cosmos/iavl => github.com/bnb-chain/greenfield-iavl v0.20.1
-	github.com/cosmos/ibc-go/v7 => github.com/zkMeLabs/mechain-ibc-go v0.0.0-20240507105710-a7dc29e0c390
+	github.com/cosmos/ibc-go/v7 => github.com/zkMeLabs/mechain-ibc-go v0.0.0-20240508025202-46f8930d56c1
 	// use Evmos geth fork
 	github.com/ethereum/go-ethereum => github.com/evmos/go-ethereum v1.10.26
 	// Security Advisory https://github.com/advisories/GHSA-h395-qcrw-5vmq

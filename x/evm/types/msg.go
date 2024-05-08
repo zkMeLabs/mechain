@@ -385,13 +385,13 @@ func (msg *MsgEthereumTx) BuildTx(b client.TxBuilder, evmDenom string) (signing.
 // GetSigners returns the expected signers for a MsgUpdateParams message.
 func (m MsgUpdateParams) GetSigners() []sdk.AccAddress {
 	//#nosec G703 -- gosec raises a warning about a non-handled error which we deliberately ignore here
-	addr, _ := sdk.AccAddressFromBech32(m.Authority)
+	addr, _ := sdk.AccAddressFromHexUnsafe(m.Authority)
 	return []sdk.AccAddress{addr}
 }
 
 // ValidateBasic does a sanity check of the provided data
 func (m *MsgUpdateParams) ValidateBasic() error {
-	if _, err := sdk.AccAddressFromBech32(m.Authority); err != nil {
+	if _, err := sdk.AccAddressFromHexUnsafe(m.Authority); err != nil {
 		return errorsmod.Wrap(err, "invalid authority address")
 	}
 

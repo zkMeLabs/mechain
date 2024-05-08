@@ -116,7 +116,7 @@ func (suite *KeeperTestSuite) DoSetupTest(t require.TestingT) {
 	suite.Require().NoError(err)
 
 	// Set Validator
-	valAddr := sdk.ValAddress(suite.address.Bytes())
+	valAddr := sdk.AccAddress(suite.address.Bytes())
 	validator, err := stakingtypes.NewValidator(valAddr, privCons.PubKey(), stakingtypes.Description{})
 	require.NoError(t, err)
 	validator = stakingkeeper.TestingUpdateValidator(&suite.app.StakingKeeper, suite.ctx, validator, true)

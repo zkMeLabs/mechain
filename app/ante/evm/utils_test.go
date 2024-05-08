@@ -203,7 +203,7 @@ func (suite *AnteTestSuite) CreateTestEIP712TxBuilderMsgSend(from sdk.AccAddress
 func (suite *AnteTestSuite) CreateTestEIP712TxBuilderMsgDelegate(from sdk.AccAddress, priv cryptotypes.PrivKey, chainID string, gas uint64, gasAmount sdk.Coins) (client.TxBuilder, error) {
 	// Build MsgSend
 	valEthAddr := utiltx.GenerateAddress()
-	valAddr := sdk.ValAddress(valEthAddr.Bytes())
+	valAddr := sdk.AccAddress(valEthAddr.Bytes())
 	msgSend := stakingtypes.NewMsgDelegate(from, valAddr, sdk.NewCoin(evmtypes.DefaultEVMDenom, sdkmath.NewInt(20)))
 	return suite.CreateTestEIP712SingleMessageTxBuilder(priv, chainID, gas, gasAmount, msgSend)
 }
@@ -284,7 +284,7 @@ func (suite *AnteTestSuite) CreateTestEIP712GrantAllowance(from sdk.AccAddress, 
 }
 
 func (suite *AnteTestSuite) CreateTestEIP712MsgEditValidator(from sdk.AccAddress, priv cryptotypes.PrivKey, chainID string, gas uint64, gasAmount sdk.Coins) (client.TxBuilder, error) {
-	valAddr := sdk.ValAddress(from.Bytes())
+	valAddr := sdk.AccAddress(from.Bytes())
 	msgEdit := stakingtypes.NewMsgEditValidator(
 		valAddr,
 		stakingtypes.NewDescription("moniker", "identity", "website", "security_contract", "details"),
@@ -371,7 +371,7 @@ func (suite *AnteTestSuite) CreateTestEIP712MultipleDifferentMsgs(from sdk.AccAd
 	msgVote := govtypesv1.NewMsgVote(from, 1, govtypesv1.VoteOption_VOTE_OPTION_YES, "")
 
 	valEthAddr := utiltx.GenerateAddress()
-	valAddr := sdk.ValAddress(valEthAddr.Bytes())
+	valAddr := sdk.AccAddress(valEthAddr.Bytes())
 	msgDelegate := stakingtypes.NewMsgDelegate(from, valAddr, sdk.NewCoin(evmtypes.DefaultEVMDenom, sdkmath.NewInt(20)))
 
 	return suite.CreateTestEIP712CosmosTxBuilder(priv, chainID, gas, gasAmount, []sdk.Msg{msgSend, msgVote, msgDelegate})

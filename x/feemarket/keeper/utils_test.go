@@ -67,7 +67,7 @@ func (suite *KeeperTestSuite) SetupApp(checkTx bool, chainID string) {
 
 	suite.app.AccountKeeper.SetAccount(suite.ctx, acc)
 
-	valAddr := sdk.ValAddress(suite.address.Bytes())
+	valAddr := sdk.AccAddress(suite.address.Bytes())
 	validator, err := stakingtypes.NewValidator(valAddr, priv.PubKey(), stakingtypes.Description{})
 	require.NoError(t, err)
 	validator = stakingkeeper.TestingUpdateValidator(&suite.app.StakingKeeper, suite.ctx, validator, true)

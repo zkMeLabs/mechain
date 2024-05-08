@@ -173,7 +173,7 @@ func (k Keeper) OnTimeoutPacket(ctx sdk.Context, _ channeltypes.Packet, data tra
 
 // ConvertCoinToERC20FromPacket converts the IBC coin to ERC20 after refunding the sender
 func (k Keeper) ConvertCoinToERC20FromPacket(ctx sdk.Context, data transfertypes.FungibleTokenPacketData) error {
-	sender, err := sdk.AccAddressFromBech32(data.Sender)
+	sender, err := sdk.AccAddressFromHexUnsafe(data.Sender)
 	if err != nil {
 		return err
 	}

@@ -29,11 +29,11 @@ func TestAuthzLimiterDecorator(t *testing.T) {
 
 	distantFuture := time.Date(9000, 1, 1, 0, 0, 0, 0, time.UTC)
 
-	validator := sdk.ValAddress(testAddresses[4])
-	stakingAuthDelegate, err := stakingtypes.NewStakeAuthorization([]sdk.ValAddress{validator}, nil, stakingtypes.AuthorizationType_AUTHORIZATION_TYPE_DELEGATE, nil)
+	validator := sdk.AccAddress(testAddresses[4])
+	stakingAuthDelegate, err := stakingtypes.NewStakeAuthorization([]sdk.AccAddress{validator}, nil, stakingtypes.AuthorizationType_AUTHORIZATION_TYPE_DELEGATE, nil)
 	require.NoError(t, err)
 
-	stakingAuthUndelegate, err := stakingtypes.NewStakeAuthorization([]sdk.ValAddress{validator}, nil, stakingtypes.AuthorizationType_AUTHORIZATION_TYPE_UNDELEGATE, nil)
+	stakingAuthUndelegate, err := stakingtypes.NewStakeAuthorization([]sdk.AccAddress{validator}, nil, stakingtypes.AuthorizationType_AUTHORIZATION_TYPE_UNDELEGATE, nil)
 	require.NoError(t, err)
 
 	decorator := cosmosante.NewAuthzLimiterDecorator(

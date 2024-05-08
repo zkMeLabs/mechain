@@ -156,7 +156,7 @@ func (b *Backend) GetCoinbase() (sdk.AccAddress, error) {
 		return nil, err
 	}
 
-	address, _ := sdk.AccAddressFromBech32(res.AccountAddress) // #nosec G703
+	address, _ := sdk.AccAddressFromHexUnsafe(res.AccountAddress) // #nosec G703
 	return address, nil
 }
 

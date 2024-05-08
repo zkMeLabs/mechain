@@ -230,7 +230,7 @@ func VerifySignature(
 		if len(extOpt.FeePayer) == 0 {
 			return errorsmod.Wrap(errortypes.ErrUnknownExtensionOptions, "no feePayer on ExtensionOptionsWeb3Tx")
 		}
-		feePayer, err := sdk.AccAddressFromBech32(extOpt.FeePayer)
+		feePayer, err := sdk.AccAddressFromHexUnsafe(extOpt.FeePayer)
 		if err != nil {
 			return errorsmod.Wrap(err, "failed to parse feePayer from ExtensionOptionsWeb3Tx")
 		}

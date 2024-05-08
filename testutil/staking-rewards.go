@@ -108,7 +108,7 @@ func PrepareAccountsForDelegationRewards(t *testing.T, ctx sdk.Context, app *app
 		stakingHelper.Commission = stakingtypes.NewCommissionRates(zeroDec, zeroDec, zeroDec)
 		stakingHelper.Denom = utils.BaseDenom
 
-		valAddr := sdk.ValAddress(addr2.Bytes())
+		valAddr := sdk.AccAddress(addr2.Bytes())
 		// self-delegate the same amount of tokens as the delegate address also stakes
 		// this ensures, that the delegation rewards are 50% of the total rewards
 		stakingHelper.CreateValidator(valAddr, privKey.PubKey(), reward, true)
