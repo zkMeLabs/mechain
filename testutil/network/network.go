@@ -191,7 +191,7 @@ type (
 		RPCAddress    string
 		P2PAddress    string
 		Address       sdk.AccAddress
-		ValAddress    sdk.ValAddress
+		ValAddress    sdk.AccAddress
 		RPCClient     tmclient.Client
 		JSONRPCClient *ethclient.Client
 
@@ -535,7 +535,7 @@ func New(l Logger, baseDir string, cfg Config) (*Network, error) {
 			P2PAddress: tmCfg.P2P.ListenAddress,
 			APIAddress: apiAddr,
 			Address:    addr,
-			ValAddress: sdk.ValAddress(addr),
+			ValAddress: sdk.AccAddress(addr),
 		}
 	}
 

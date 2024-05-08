@@ -150,7 +150,7 @@ func genesisStateWithValSet(codec codec.Codec, genesisState simapp.GenesisState,
 			panic(err)
 		}
 		validator := stakingtypes.Validator{
-			OperatorAddress:   sdk.ValAddress(val.Address).String(),
+			OperatorAddress:   sdk.AccAddress(val.Address).String(),
 			ConsensusPubkey:   pkAny,
 			Jailed:            false,
 			Status:            stakingtypes.Bonded,

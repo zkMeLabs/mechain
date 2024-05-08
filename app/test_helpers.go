@@ -161,7 +161,7 @@ func GenesisStateWithValSet(app *Evmos, genesisState simapp.GenesisState,
 		pk, _ := cryptocodec.FromTmPubKeyInterface(val.PubKey)
 		pkAny, _ := codectypes.NewAnyWithValue(pk)
 		validator := stakingtypes.Validator{
-			OperatorAddress:   sdk.ValAddress(val.Address).String(),
+			OperatorAddress:   sdk.AccAddress(val.Address).String(),
 			ConsensusPubkey:   pkAny,
 			Jailed:            false,
 			Status:            stakingtypes.Bonded,

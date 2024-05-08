@@ -91,7 +91,7 @@ func (app *Evmos) prepForZeroHeightGenesis(ctx sdk.Context, jailAllowedAddrs []s
 	allowedAddrsMap := make(map[string]bool)
 
 	for _, addr := range jailAllowedAddrs {
-		_, err := sdk.ValAddressFromBech32(addr)
+		_, err := sdk.ValAddressFromHex(addr)
 		if err != nil {
 			return err
 		}
@@ -112,12 +112,12 @@ func (app *Evmos) prepForZeroHeightGenesis(ctx sdk.Context, jailAllowedAddrs []s
 	// withdraw all delegator rewards
 	dels := app.StakingKeeper.GetAllDelegations(ctx)
 	for _, delegation := range dels {
-		valAddr, err := sdk.AccAddressFromBech32(delegation.ValidatorAddress)
+		valAddr, err := sdk.AccAddressFromHexUnsafe(delegation.ValidatorAddress)
 		if err != nil {
 			return err
 		}
 
-		delAddr, err := sdk.AccAddressFromBech32(delegation.DelegatorAddress)
+		delAddr, err := sdk.AccAddressFromHexUnsafe(delegation.DelegatorAddress)
 		if err != nil {
 			return err
 		}
@@ -149,11 +149,11 @@ func (app *Evmos) prepForZeroHeightGenesis(ctx sdk.Context, jailAllowedAddrs []s
 
 	// reinitialize all delegations
 	for _, del := range dels {
-		valAddr, err := sdk.AccAddressFromBech32(del.ValidatorAddress)
+		valAddr, err := sdk.AccAddressFromHexUnsafe(del.ValidatorAddress)
 		if err != nil {
 			return err
 		}
-		delAddr, err := sdk.AccAddressFromBech32(del.DelegatorAddress)
+		delAddr, err := sdk.AccAddressFromHexUnsafe(del.DelegatorAddress)
 		if err != nil {
 			return err
 		}

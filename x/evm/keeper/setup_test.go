@@ -180,7 +180,7 @@ func (suite *KeeperTestSuite) SetupAppWithT(checkTx bool, t require.TestingT, ch
 
 	suite.app.AccountKeeper.SetAccount(suite.ctx, acc)
 
-	valAddr := sdk.ValAddress(suite.address.Bytes())
+	valAddr := sdk.AccAddress(suite.address.Bytes())
 	validator, err := stakingtypes.NewValidator(valAddr, priv.PubKey(), stakingtypes.Description{})
 	require.NoError(t, err)
 	err = suite.app.StakingKeeper.SetValidatorByConsAddr(suite.ctx, validator)
