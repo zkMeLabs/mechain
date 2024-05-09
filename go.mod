@@ -222,8 +222,8 @@ require (
 )
 
 replace (
-	cosmossdk.io/api => github.com/zkMeLabs/mechain-cosmos-sdk/api v0.0.0-20240429104957-9ecc7280b94b
-	cosmossdk.io/simapp => github.com/zkMeLabs/mechain-cosmos-sdk/simapp v0.0.0-20240429104957-9ecc7280b94b
+	cosmossdk.io/api => github.com/zkMeLabs/mechain-cosmos-sdk/api v0.0.0-20240508034054-62cf83e35df8
+	cosmossdk.io/simapp => github.com/zkMeLabs/mechain-cosmos-sdk/simapp v0.0.0-20240508034054-62cf83e35df8
 	// use cosmos fork of keyring
 	github.com/99designs/keyring => github.com/cosmos/keyring v1.2.0
 	github.com/cometbft/cometbft => github.com/bnb-chain/greenfield-cometbft v0.0.0-20240402065323-40677309d454

@@ -33,9 +33,11 @@ const AppName = "Ethereum"
 var (
 	// SupportedAlgorithms defines the list of signing algorithms used on Evmos:
 	//  - eth_secp256k1 (Ethereum)
+	//  - eth_bls (Ethereum)
 	SupportedAlgorithms = keyring.SigningAlgoList{hd.EthSecp256k1, hds.EthBLS}
 	// SupportedAlgorithmsLedger defines the list of signing algorithms used on Evmos for the Ledger device:
-	//  - secp256k1 (in order to comply with Cosmos SDK)
+	//  - eth_secp256k1 (Ethereum)
+	//  - eth_bls (Ethereum)
 	// The Ledger derivation function is responsible for all signing and address generation.
 	SupportedAlgorithmsLedger = keyring.SigningAlgoList{hd.EthSecp256k1, hds.EthBLS}
 	// LedgerDerivation defines the Evmos Ledger Go derivation (Ethereum app with EIP-712 signing)
@@ -48,7 +50,7 @@ var (
 )
 
 // EthSecp256k1Option defines a function keys options for the ethereum Secp256k1 curve.
-// It supports eth_secp256k1 keys for accounts.
+// It supports eth_secp256k1, eth_bls keys for accounts.
 func Option() keyring.Option {
 	return func(options *keyring.Options) {
 		options.SupportedAlgos = SupportedAlgorithms
