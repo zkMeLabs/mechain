@@ -1530,10 +1530,10 @@ github.com/yuin/goldmark v1.4.1/go.mod h1:mwnBkeHKe2W/ZEtQ+71ViKU8L12m81fl3OWwC1
 github.com/yuin/goldmark v1.4.13/go.mod h1:6yULJ656Px+3vBD8DxQVa3kxgyrAnzto9xy5taEt/CY=
 github.com/zkMeLabs/mechain-cosmos-sdk v0.0.0-20240508034054-62cf83e35df8 h1:ptkulrXdpatMFfhAEgll+UrfmqaF8K6sTyzz/EmOKDU=
 github.com/zkMeLabs/mechain-cosmos-sdk v0.0.0-20240508034054-62cf83e35df8/go.mod h1:U6FXtIr+Twt11+qhI4HaoAlBI5DutP3h7NFtW3gCvmU=
-github.com/zkMeLabs/mechain-cosmos-sdk/api v0.0.0-20240429104957-9ecc7280b94b h1:fj8zpVKP1yIeVPGzIE6CETwL40CTkAOg2QEUNVBBNPI=
-github.com/zkMeLabs/mechain-cosmos-sdk/api v0.0.0-20240429104957-9ecc7280b94b/go.mod h1:vhsZxXE9tYJeYB5JR4hPhd6Pc/uPf7j1T8IJ7p9FdeM=
-github.com/zkMeLabs/mechain-cosmos-sdk/simapp v0.0.0-20240429104957-9ecc7280b94b h1:slZSsZCDVK9LI2mELyubgkue3wPezimX3UPifruDs4c=
-github.com/zkMeLabs/mechain-cosmos-sdk/simapp v0.0.0-20240429104957-9ecc7280b94b/go.mod h1:rSwnQK79luBFPSQoKrKckgMoHDuDu/YVCESwp54nixk=
+github.com/zkMeLabs/mechain-cosmos-sdk/api v0.0.0-20240508034054-62cf83e35df8 h1:fE7JqGjYsFd4aqONmjkM94s14eG1K94kJnYt8UWAzfQ=
+github.com/zkMeLabs/mechain-cosmos-sdk/api v0.0.0-20240508034054-62cf83e35df8/go.mod h1:vhsZxXE9tYJeYB5JR4hPhd6Pc/uPf7j1T8IJ7p9FdeM=
+github.com/zkMeLabs/mechain-cosmos-sdk/simapp v0.0.0-20240508034054-62cf83e35df8 h1:nrHZ9PIb74L5vEW+GuhjUUv0GpkZU0wrJnAi/9J9NvY=
+github.com/zkMeLabs/mechain-cosmos-sdk/simapp v0.0.0-20240508034054-62cf83e35df8/go.mod h1:rSwnQK79luBFPSQoKrKckgMoHDuDu/YVCESwp54nixk=
 github.com/zkMeLabs/mechain-ibc-go v0.0.0-20240508025202-46f8930d56c1 h1:yu4Z4uxyJBd2gzI1M3F2e6Iyvy732hTks6nGH/fJbkA=
 github.com/zkMeLabs/mechain-ibc-go v0.0.0-20240508025202-46f8930d56c1/go.mod h1:4HE37ugQ1yQs0hRQPb/ENXFOnIyxw9fFFk6bgOLsIkM=
 github.com/zondax/hid v0.9.1 h1:gQe66rtmyZ8VeGFcOpbuH3r7erYtNEAezCAYu8LdkJo=
