@@ -164,7 +164,7 @@ func (suite *EIP712TestSuite) TestEIP712() {
 			msgs: []sdk.Msg{
 				stakingtypes.NewMsgDelegate(
 					suite.createTestAddress(),
-					sdk.ValAddress(suite.createTestAddress()),
+					sdk.AccAddress(suite.createTestAddress()),
 					suite.makeCoins(suite.denom, math.NewInt(1))[0],
 				),
 			},
@@ -175,7 +175,7 @@ func (suite *EIP712TestSuite) TestEIP712() {
 			msgs: []sdk.Msg{
 				distributiontypes.NewMsgWithdrawDelegatorReward(
 					suite.createTestAddress(),
-					sdk.ValAddress(suite.createTestAddress()),
+					sdk.AccAddress(suite.createTestAddress()),
 				),
 			},
 			expectSuccess: true,
@@ -185,12 +185,12 @@ func (suite *EIP712TestSuite) TestEIP712() {
 			msgs: []sdk.Msg{
 				stakingtypes.NewMsgDelegate(
 					params.address,
-					sdk.ValAddress(suite.createTestAddress()),
+					sdk.AccAddress(suite.createTestAddress()),
 					suite.makeCoins(suite.denom, math.NewInt(1))[0],
 				),
 				stakingtypes.NewMsgDelegate(
 					params.address,
-					sdk.ValAddress(suite.createTestAddress()),
+					sdk.AccAddress(suite.createTestAddress()),
 					suite.makeCoins(suite.denom, math.NewInt(5))[0],
 				),
 			},

@@ -105,7 +105,7 @@ func Setup(
 	db := dbm.NewMemDB()
 	app := NewEvmos(
 		log.NewNopLogger(),
-		db, nil, true, map[int64]bool{},
+		db, nil, true,
 		DefaultNodeHome, 5,
 		encoding.MakeConfig(ModuleBasics),
 		simtestutil.NewAppOptionsWithFlagHome(DefaultNodeHome),
@@ -161,7 +161,7 @@ func GenesisStateWithValSet(app *Evmos, genesisState simapp.GenesisState,
 		pk, _ := cryptocodec.FromTmPubKeyInterface(val.PubKey)
 		pkAny, _ := codectypes.NewAnyWithValue(pk)
 		validator := stakingtypes.Validator{
-			OperatorAddress:   sdk.ValAddress(val.Address).String(),
+			OperatorAddress:   sdk.AccAddress(val.Address).String(),
 			ConsensusPubkey:   pkAny,
 			Jailed:            false,
 			Status:            stakingtypes.Bonded,
@@ -217,7 +217,6 @@ func SetupTestingApp(chainID string) func() (ibctesting.TestingApp, map[string]j
 		app := NewEvmos(
 			log.NewNopLogger(),
 			db, nil, true,
-			map[int64]bool{},
 			DefaultNodeHome, 5, cfg,
 			simtestutil.NewAppOptionsWithFlagHome(DefaultNodeHome),
 			baseapp.SetChainID(chainID),

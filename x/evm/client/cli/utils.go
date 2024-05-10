@@ -29,7 +29,7 @@ import (
 func accountToHex(addr string) (string, error) {
 	if strings.HasPrefix(addr, sdk.GetConfig().GetBech32AccountAddrPrefix()) {
 		// Check to see if address is Cosmos bech32 formatted
-		toAddr, err := sdk.AccAddressFromBech32(addr)
+		toAddr, err := sdk.AccAddressFromHexUnsafe(addr)
 		if err != nil {
 			return "", errors.Wrap(err, "must provide a valid Bech32 address")
 		}

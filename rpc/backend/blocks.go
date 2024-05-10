@@ -443,7 +443,7 @@ func (b *Backend) RPCBlockFromTendermintBlock(
 		// use zero address as the validator operator address
 		validatorAccAddr = sdk.AccAddress(common.Address{}.Bytes())
 	} else {
-		validatorAccAddr, err = sdk.AccAddressFromBech32(res.AccountAddress)
+		validatorAccAddr, err = sdk.AccAddressFromHexUnsafe(res.AccountAddress)
 		if err != nil {
 			return nil, err
 		}
