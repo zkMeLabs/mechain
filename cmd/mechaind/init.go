@@ -132,6 +132,12 @@ func InitCmd(mbm module.BasicManager, defaultNodeHome string) *cobra.Command {
 				}
 			}
 
+			// Get initial height
+			initHeight, _ := cmd.Flags().GetInt64(flags.FlagInitHeight)
+			if initHeight < 1 {
+				initHeight = 1
+			}
+
 			nodeID, _, err := genutil.InitializeNodeValidatorFilesFromMnemonic(config, mnemonic)
 			if err != nil {
 				return err
@@ -141,12 +147,19 @@ func InitCmd(mbm module.BasicManager, defaultNodeHome string) *cobra.Command {
 
 			genFile := config.GenesisFile()
 			overwrite, _ := cmd.Flags().GetBool(genutilcli.FlagOverwrite)
+			defaultDenom, _ := cmd.Flags().GetString(genutilcli.FlagDefaultBondDenom)
 
 			if !overwrite && tmos.FileExists(genFile) {
 				return fmt.Errorf("genesis.json file already exists: %v", genFile)
 			}
 
-			appState, err := json.MarshalIndent(mbm.DefaultGenesis(cdc), "", " ")
+			// Overwrites the SDK default denom for side-effects
+			if defaultDenom != "" {
+				sdk.DefaultBondDenom = defaultDenom
+			}
+			appGenState := mbm.DefaultGenesis(cdc)
+
+			appState, err := json.MarshalIndent(appGenState, "", " ")
 			if err != nil {
 				return errors.Wrap(err, "Failed to marshall default genesis state")
 			}
@@ -166,6 +179,7 @@ func InitCmd(mbm module.BasicManager, defaultNodeHome string) *cobra.Command {
 			genDoc.ChainID = chainID
 			genDoc.Validators = nil
 			genDoc.AppState = appState
+			genDoc.InitialHeight = initHeight
 
 			if err := genutil.ExportGenesisFile(genDoc, genFile); err != nil {
 				return errors.Wrap(err, "Failed to export gensis file")
@@ -182,6 +196,8 @@ func InitCmd(mbm module.BasicManager, defaultNodeHome string) *cobra.Command {
 	cmd.Flags().BoolP(genutilcli.FlagOverwrite, "o", false, "overwrite the genesis.json file")
 	cmd.Flags().Bool(genutilcli.FlagRecover, false, "provide seed phrase to recover existing key instead of creating")
 	cmd.Flags().String(flags.FlagChainID, "", "genesis file chain-id, if left blank will be randomly created")
+	cmd.Flags().String(genutilcli.FlagDefaultBondDenom, "", "genesis file default denomination, if left blank default value is 'stake'")
+	cmd.Flags().Int64(flags.FlagInitHeight, 1, "specify the initial block height at genesis")
 
 	return cmd
 }

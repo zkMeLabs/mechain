@@ -34,7 +34,6 @@ import (
 	"github.com/cometbft/cometbft/libs/log"
 
 	"cosmossdk.io/simapp/params"
-	rosettaCmd "cosmossdk.io/tools/rosetta/cmd"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/config"
@@ -42,6 +41,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/pruning"
 	"github.com/cosmos/cosmos-sdk/client/rpc"
 	sdkserver "github.com/cosmos/cosmos-sdk/server"
+	serverconfig "github.com/cosmos/cosmos-sdk/server/config"
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
 	"github.com/cosmos/cosmos-sdk/snapshots"
 	snapshottypes "github.com/cosmos/cosmos-sdk/snapshots/types"
@@ -159,9 +159,6 @@ func NewRootCmd() (*cobra.Command, params.EncodingConfig) {
 		panic(err)
 	}
 
-	// add rosetta
-	rootCmd.AddCommand(rosettaCmd.RosettaCommand(encodingConfig.InterfaceRegistry, encodingConfig.Codec))
-
 	return rootCmd, encodingConfig
 }
 
@@ -242,16 +239,11 @@ type appCreator struct {
 }
 
 // newApp is an appCreator
-func (a appCreator) newApp(logger log.Logger, db dbm.DB, traceStore io.Writer, appOpts servertypes.AppOptions) servertypes.Application {
+func (a appCreator) newApp(logger log.Logger, db dbm.DB, traceStore io.Writer, chainids string, serverCfg *serverconfig.Config, appOpts servertypes.AppOptions) servertypes.Application {
 	var cache sdk.MultiStorePersistentCache
 
 	if cast.ToBool(appOpts.Get(sdkserver.FlagInterBlockCache)) {
 		cache = store.NewCommitKVStoreCacheManager()
-	}
-
-	skipUpgradeHeights := make(map[int64]bool)
-	for _, h := range cast.ToIntSlice(appOpts.Get(sdkserver.FlagUnsafeSkipUpgrades)) {
-		skipUpgradeHeights[int64(h)] = true
 	}
 
 	pruningOpts, err := sdkserver.GetPruningOptionsFromFlags(appOpts)
@@ -294,7 +286,7 @@ func (a appCreator) newApp(logger log.Logger, db dbm.DB, traceStore io.Writer, a
 	}
 
 	evmosApp := app.NewEvmos(
-		logger, db, traceStore, true, skipUpgradeHeights,
+		logger, db, traceStore, true,
 		cast.ToString(appOpts.Get(flags.FlagHome)),
 		cast.ToUint(appOpts.Get(sdkserver.FlagInvCheckPeriod)),
 		a.encCfg,
@@ -335,13 +327,13 @@ func (a appCreator) appExport(
 	}
 
 	if height != -1 {
-		evmosApp = app.NewEvmos(logger, db, traceStore, false, map[int64]bool{}, "", uint(1), a.encCfg, appOpts)
+		evmosApp = app.NewEvmos(logger, db, traceStore, false, "", uint(1), a.encCfg, appOpts)
 
 		if err := evmosApp.LoadHeight(height); err != nil {
 			return servertypes.ExportedApp{}, err
 		}
 	} else {
-		evmosApp = app.NewEvmos(logger, db, traceStore, true, map[int64]bool{}, "", uint(1), a.encCfg, appOpts)
+		evmosApp = app.NewEvmos(logger, db, traceStore, true, "", uint(1), a.encCfg, appOpts)
 	}
 
 	return evmosApp.ExportAppStateAndValidators(forZeroHeight, jailAllowedAddrs, modulesToExport)

@@ -20,6 +20,7 @@ package main
 
 import (
 	"bufio"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"net"
@@ -27,8 +28,10 @@ import (
 	"path/filepath"
 
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/prysmaticlabs/prysm/crypto/bls"
 
 	tmconfig "github.com/cometbft/cometbft/config"
+	"github.com/cometbft/cometbft/crypto/tmhash"
 	tmrand "github.com/cometbft/cometbft/libs/rand"
 	"github.com/cometbft/cometbft/types"
 	tmtime "github.com/cometbft/cometbft/types/time"
@@ -321,13 +324,23 @@ func initTestnetFiles(
 		})
 
 		valTokens := sdk.TokensFromConsensusPower(100, evmostypes.PowerReduction)
+		blsSecretKey, _ := bls.RandKey()
+		blsPk := hex.EncodeToString(blsSecretKey.PublicKey().Marshal())
+		blsProofBuf := blsSecretKey.Sign(tmhash.Sum(blsSecretKey.PublicKey().Marshal()))
+		blsProof := hex.EncodeToString(blsProofBuf.Marshal())
 		createValMsg, err := stakingtypes.NewMsgCreateValidator(
-			sdk.ValAddress(addr),
+			sdk.AccAddress(addr),
 			valPubKeys[i],
 			sdk.NewCoin(cmdcfg.BaseDenom, valTokens),
 			stakingtypes.NewDescription(nodeDirName, "", "", "", ""),
 			stakingtypes.NewCommissionRates(sdk.OneDec().QuoInt64(10), sdk.OneDec(), sdk.OneDec()),
 			sdk.OneInt(),
+			sdk.AccAddress(addr),
+			sdk.AccAddress(addr),
+			sdk.AccAddress(addr),
+			sdk.AccAddress(addr),
+			blsPk,
+			blsProof,
 		)
 		if err != nil {
 			return err

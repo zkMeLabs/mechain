@@ -148,7 +148,7 @@ func createBasicTestCase(t *testing.T) TestCaseStruct {
 	t.Helper()
 	txBuilder := ctx.TxConfig.NewTxBuilder()
 
-	feePayer, err := sdk.AccAddressFromBech32(feePayerAddress)
+	feePayer, err := sdk.AccAddressFromHexUnsafe(feePayerAddress)
 	require.NoError(t, err)
 
 	txBuilder.SetFeePayer(feePayer)

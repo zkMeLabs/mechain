@@ -133,7 +133,7 @@ func (suite *KeeperTestSuite) TestGetCoinbaseAddress() {
 				suite.Require().NoError(err)
 
 				validator := stakingtypes.Validator{
-					OperatorAddress: sdk.ValAddress(valOpAddr.Bytes()).String(),
+					OperatorAddress: sdk.AccAddress(valOpAddr.Bytes()).String(),
 					ConsensusPubkey: pkAny,
 				}
 

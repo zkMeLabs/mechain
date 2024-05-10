@@ -63,7 +63,7 @@ func (msg MsgConvertCoin) ValidateBasic() error {
 	if !msg.Coin.Amount.IsPositive() {
 		return errorsmod.Wrapf(errortypes.ErrInvalidCoins, "cannot mint a non-positive amount")
 	}
-	_, err := sdk.AccAddressFromBech32(msg.Sender)
+	_, err := sdk.AccAddressFromHexUnsafe(msg.Sender)
 	if err != nil {
 		return errorsmod.Wrap(err, "invalid sender address")
 	}
@@ -108,7 +108,7 @@ func (msg MsgConvertERC20) ValidateBasic() error {
 	if !msg.Amount.IsPositive() {
 		return errorsmod.Wrapf(errortypes.ErrInvalidCoins, "cannot mint a non-positive amount")
 	}
-	_, err := sdk.AccAddressFromBech32(msg.Receiver)
+	_, err := sdk.AccAddressFromHexUnsafe(msg.Receiver)
 	if err != nil {
 		return errorsmod.Wrap(err, "invalid receiver address")
 	}
@@ -137,7 +137,7 @@ func (m *MsgUpdateParams) GetSigners() []sdk.AccAddress {
 
 // ValidateBasic does a sanity check of the provided data
 func (m *MsgUpdateParams) ValidateBasic() error {
-	if _, err := sdk.AccAddressFromBech32(m.Authority); err != nil {
+	if _, err := sdk.AccAddressFromHexUnsafe(m.Authority); err != nil {
 		return errorsmod.Wrap(err, "Invalid authority address")
 	}
 

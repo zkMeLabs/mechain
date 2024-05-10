@@ -78,6 +78,7 @@ The pass backend requires GnuPG: https://gnupg.org/
 		keys.ExportKeyCommand(),
 		keys.ImportKeyCommand(),
 		keys.ListKeysCmd(),
+		keys.ListKeyTypesCmd(),
 		keys.ShowKeysCmd(),
 		keys.DeleteKeyCommand(),
 		keys.RenameKeyCommand(),
@@ -86,6 +87,8 @@ The pass backend requires GnuPG: https://gnupg.org/
 		flags.LineBreak,
 		UnsafeExportEthKeyCommand(),
 		UnsafeImportKeyCommand(),
+		keys.SignMsgKeysCmd(),
+		keys.VerifySignatureCmd(),
 	)
 
 	cmd.PersistentFlags().String(flags.FlagHome, defaultNodeHome, "The application home directory")
