@@ -1,0 +1,113 @@
+syntax = "proto3";
+
+package greenfield.sp;
+
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "cosmos_proto/cosmos.proto";
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "greenfield/sp/params.proto";
+import "greenfield/sp/types.proto";
+
+option go_package = "github.com/evmos/evmos/v12/x/sp/types";
+
+// Query defines the gRPC querier service.
+service Query {
+  // Parameters queries the parameters of the module.
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/greenfield/sp/params";
+  }
+
+  // Queries a list of GetStorageProviders items.
+  rpc StorageProviders(QueryStorageProvidersRequest) returns (QueryStorageProvidersResponse) {
+    option (google.api.http).get = "/greenfield/storage_providers";
+  }
+
+  // get the latest storage price of specific sp
+  rpc QuerySpStoragePrice(QuerySpStoragePriceRequest) returns (QuerySpStoragePriceResponse) {
+    option (google.api.http).get = "/greenfield/sp/sp_storage_price/{sp_addr}";
+  }
+
+  // get global store price by time
+  rpc QueryGlobalSpStorePriceByTime(QueryGlobalSpStorePriceByTimeRequest) returns (QueryGlobalSpStorePriceByTimeResponse) {
+    option (google.api.http).get = "/greenfield/sp/global_sp_store_price_by_time/{timestamp}";
+  }
+
+  // Queries a storage provider with specify id
+  rpc StorageProvider(QueryStorageProviderRequest) returns (QueryStorageProviderResponse) {
+    option (google.api.http).get = "/greenfield/storage_provider/{id}";
+  }
+
+  // Queries a StorageProvider by specify operator address.
+  rpc StorageProviderByOperatorAddress(QueryStorageProviderByOperatorAddressRequest) returns (QueryStorageProviderByOperatorAddressResponse) {
+    option (google.api.http).get = "/greenfield/sp/storage_provider_by_operator_address";
+  }
+
+  // Queries a StorageProvider by specify operator address.
+  rpc StorageProviderMaintenanceRecordsByOperatorAddress(QueryStorageProviderMaintenanceRecordsRequest) returns (QueryStorageProviderMaintenanceRecordsResponse) {
+    option (google.api.http).get = "/greenfield/sp/storage_provider_maintenance_records_by_operator_address";
+  }
+}
+
+// QueryParamsRequest is request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  // params holds all the parameters of this module.
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryStorageProvidersRequest {
+  // pagination defines an optional pagination for the request.
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryStorageProvidersResponse {
+  repeated StorageProvider sps = 1;
+
+  // pagination defines the pagination in the response.
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QuerySpStoragePriceRequest {
+  // operator address of sp
+  string sp_addr = 1;
+}
+
+message QuerySpStoragePriceResponse {
+  SpStoragePrice sp_storage_price = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryGlobalSpStorePriceByTimeRequest {
+  // unix timestamp in seconds. If it's 0, it will return the latest price.
+  int64 timestamp = 1;
+}
+
+message QueryGlobalSpStorePriceByTimeResponse {
+  GlobalSpStorePrice global_sp_store_price = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryStorageProviderRequest {
+  uint32 id = 1;
+}
+
+message QueryStorageProviderResponse {
+  StorageProvider storageProvider = 1;
+}
+
+message QueryStorageProviderByOperatorAddressRequest {
+  string operator_address = 1;
+}
+
+message QueryStorageProviderByOperatorAddressResponse {
+  StorageProvider storageProvider = 1;
+}
+
+message QueryStorageProviderMaintenanceRecordsRequest {
+  string operator_address = 1;
+}
+
+message QueryStorageProviderMaintenanceRecordsResponse {
+  repeated MaintenanceRecord records = 1;
+}

@@ -1,0 +1,13 @@
+syntax = "proto3";
+package greenfield.challenge;
+
+import "gogoproto/gogo.proto";
+import "greenfield/challenge/params.proto";
+import "greenfield/challenge/types.proto";
+
+option go_package = "github.com/evmos/evmos/v12/x/challenge/types";
+
+// GenesisState defines the challenge module's genesis state.
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+}

@@ -1,0 +1,7 @@
+syntax = "proto3";
+package greenfield.gensp;
+
+option go_package = "github.com/evmos/evmos/v12/x/gensp/types";
+
+// Msg defines the Msg service.
+service Msg {}
