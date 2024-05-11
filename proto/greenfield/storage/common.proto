@@ -1,0 +1,128 @@
+syntax = "proto3";
+package greenfield.storage;
+
+import "cosmos_proto/cosmos.proto";
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/bnb-chain/greenfield/x/storage/types";
+
+// SourceType represents the source of resource creation, which can
+// from Greenfield native or from a cross-chain transfer from BSC
+enum SourceType {
+  option (gogoproto.goproto_enum_prefix) = false;
+
+  SOURCE_TYPE_ORIGIN = 0;
+  SOURCE_TYPE_MIRROR_PENDING = 1;
+  SOURCE_TYPE_BSC_CROSS_CHAIN = 2;
+  SOURCE_TYPE_OP_CROSS_CHAIN = 3;
+}
+
+// BucketStatus represents the status of a bucket. After a user successfully
+// sends a CreateBucket transaction onto the chain, the status is set to 'Created'.
+// When a Discontinue Object transaction is received on chain, the status is set to 'Discontinued'.
+enum BucketStatus {
+  option (gogoproto.goproto_enum_prefix) = false;
+
+  BUCKET_STATUS_CREATED = 0;
+  BUCKET_STATUS_DISCONTINUED = 1;
+  BUCKET_STATUS_MIGRATING = 2;
+}
+
+// RedundancyType represents the redundancy algorithm type for object data,
+// which can be either multi-replica or erasure coding.
+enum RedundancyType {
+  option (gogoproto.goproto_enum_prefix) = false;
+
+  REDUNDANCY_EC_TYPE = 0;
+  REDUNDANCY_REPLICA_TYPE = 1;
+}
+
+// ObjectStatus represents the creation status of an object. After a user successfully
+// sends a CreateObject transaction onto the chain, the status is set to 'Created'.
+// After the Primary Service Provider successfully sends a Seal Object transaction onto
+// the chain, the status is set to 'Sealed'. When a Discontinue Object transaction is
+// received on chain, the status is set to 'Discontinued'.
+enum ObjectStatus {
+  option (gogoproto.goproto_enum_prefix) = false;
+
+  OBJECT_STATUS_CREATED = 0;
+  OBJECT_STATUS_SEALED = 1;
+  OBJECT_STATUS_DISCONTINUED = 2;
+}
+
+// VisibilityType is the resources public status.
+enum VisibilityType {
+  option (gogoproto.goproto_enum_prefix) = false;
+  VISIBILITY_TYPE_UNSPECIFIED = 0;
+  VISIBILITY_TYPE_PUBLIC_READ = 1;
+  VISIBILITY_TYPE_PRIVATE = 2;
+  // If the bucket Visibility is inherit, it's finally set to private. If the object Visibility is inherit, it's the same as bucket.
+  VISIBILITY_TYPE_INHERIT = 3;
+}
+
+// SecondarySpSealObjectSignDoc used to generate seal signature of secondary SP
+// If the secondary SP only signs the checksum to declare the object pieces are saved,
+// it might be reused by the primary SP to fake it's declaration.
+// Then the primary SP can challenge and slash the secondary SP.
+// So the id of the object is needed to prevent this.
+message SecondarySpSealObjectSignDoc {
+  string chain_id = 1;
+  uint32 global_virtual_group_id = 2;
+  string object_id = 3 [
+    (cosmos_proto.scalar) = "cosmos.Uint",
+    (gogoproto.customtype) = "Uint",
+    (gogoproto.nullable) = false
+  ];
+  // checksum is the sha256 hash of slice of integrity hash from secondary sps
+  bytes checksum = 4;
+}
+
+message GVGMapping {
+  uint32 src_global_virtual_group_id = 1;
+  uint32 dst_global_virtual_group_id = 2;
+  bytes secondary_sp_bls_signature = 3;
+}
+
+message SecondarySpMigrationBucketSignDoc {
+  string chain_id = 1;
+  uint32 dst_primary_sp_id = 2;
+  uint32 src_global_virtual_group_id = 3;
+  uint32 dst_global_virtual_group_id = 4;
+  string bucket_id = 5 [
+    (cosmos_proto.scalar) = "cosmos.Uint",
+    (gogoproto.customtype) = "Uint",
+    (gogoproto.nullable) = false
+  ];
+}
+
+// Local virtual group(LVG) uniquely associated with a global virtual group.
+// Each bucket maintains a mapping from local virtual group to global virtual group
+// Each local virtual group is associated with a unique virtual payment account,
+// where all object fees are streamed to.
+message LocalVirtualGroup {
+  // id is the identifier of the local virtual group.
+  uint32 id = 1;
+  // global_virtual_group_id is the identifier of the global virtual group.
+  uint32 global_virtual_group_id = 2;
+  // stored_size is the size of the stored data in the local virtual group.
+  uint64 stored_size = 3;
+  // total_charge_size is the total charged size of the objects in the LVG.
+  // Notice that the minimum unit of charge is 128K
+  uint64 total_charge_size = 4;
+}
+
+message BucketFlowRateLimit {
+  // flow_rate_limit defines the flow rate limit of the bucket
+  string flow_rate_limit = 1 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message BucketFlowRateLimitStatus {
+  // is_bucket_limited defines the flow rate limit status of the bucket, true means limited and the bucket is uncharged
+  bool is_bucket_limited = 1;
+  // payment_address is the payment address of the bucket which limited the flow rate
+  string payment_address = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+}

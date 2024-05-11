@@ -1,0 +1,75 @@
+syntax = "proto3";
+
+package greenfield.challenge;
+
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "cosmos_proto/cosmos.proto";
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "greenfield/challenge/params.proto";
+import "greenfield/challenge/types.proto";
+
+option go_package = "github.com/bnb-chain/greenfield/x/challenge/types";
+
+// Query defines the gRPC querier service.
+service Query {
+  // Parameters queries the parameters of the module.
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/greenfield/challenge/params";
+  }
+  // Queries the attested challenge by challenge id.
+  rpc AttestedChallenge(QueryAttestedChallengeRequest) returns (QueryAttestedChallengeResponse) {
+    option (google.api.http).get = "/greenfield/challenge/attested_challenge";
+  }
+  // Queries the latest attested challenges.
+  rpc LatestAttestedChallenges(QueryLatestAttestedChallengesRequest) returns (QueryLatestAttestedChallengesResponse) {
+    option (google.api.http).get = "/greenfield/challenge/latest_attested_challenges";
+  }
+  // Queries the inturn challenger.
+  rpc InturnAttestationSubmitter(QueryInturnAttestationSubmitterRequest) returns (QueryInturnAttestationSubmitterResponse) {
+    option (google.api.http).get = "/greenfield/challenge/inturn_attestation_submitter";
+  }
+}
+
+// QueryParamsRequest is request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  // params holds all the parameters of this module.
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryAttestedChallengeRequest is request type for the Query/AttestedChallenge RPC method.
+message QueryAttestedChallengeRequest {
+  // The id of the challenge.
+  uint64 challenge_id = 1;
+}
+
+// QueryAttestedChallengeResponse is response type for the Query/AttestedChallenge RPC method.
+message QueryAttestedChallengeResponse {
+  AttestedChallenge challenge = 1;
+}
+
+// QueryLatestAttestedChallengesRequest is request type for the Query/LatestAttestedChallenges RPC method.
+message QueryLatestAttestedChallengesRequest {}
+
+// QueryLatestAttestedChallengesResponse is response type for the Query/LatestAttestedChallenges RPC method.
+message QueryLatestAttestedChallengesResponse {
+  repeated AttestedChallenge challenges = 1;
+}
+
+// QueryInturnAttestationSubmitterRequest is request type for the Query/InturnAttestationSubmitter RPC method.
+message QueryInturnAttestationSubmitterRequest {}
+
+// QueryInturnAttestationSubmitterResponse is response type for the Query/InturnAttestationSubmitter RPC method.
+message QueryInturnAttestationSubmitterResponse {
+  string bls_pub_key = 1;
+  SubmitInterval submit_interval = 2;
+}
+
+// SubmitInterval holds start and end (exclusive) (i.e., [start, end)) time of in turn attestation.
+message SubmitInterval {
+  uint64 start = 1;
+  uint64 end = 2;
+}
