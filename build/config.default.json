@@ -45,8 +45,8 @@
     }
   },
   "preMineAccounts": [
-    "mc1qqqqhe5pnaq5qq39wqkn957aydnrm45s0hjqca",
-    "mc1zyg3qtwny9stqe8j55fvmmm5hldk48ukk244ja"
+    "0x00000Be6819f41400225702D32d3dd23663Dd690",
+    "0x1111102Dd32160B064F2A512CDEf74bFdB6a9F96"
   ],
   "privateKeys": [
     {
@@ -60,6 +60,9 @@
   ],
   "preMinePerAccount": "10000000000000000000000000",
   "genesisCfg": [
-    "app_state.gov.voting_params.voting_period='600s'"
+    "app_state.gov.params.voting_period='600s'",
+    "app_state.feemarket.params.no_base_fee=false",
+    "app_state.feemarket.params.base_fee='10000000000'",
+    "app_state.feemarket.params.min_gas_price='10000000000.000000000000000000'"
   ]
 }
