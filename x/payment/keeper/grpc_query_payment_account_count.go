@@ -9,7 +9,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/bnb-chain/greenfield/x/payment/types"
+	"github.com/evmos/evmos/v12/x/payment/types"
 )
 
 func (k Keeper) PaymentAccountCounts(c context.Context, req *types.QueryPaymentAccountCountsRequest) (*types.QueryPaymentAccountCountsResponse, error) {

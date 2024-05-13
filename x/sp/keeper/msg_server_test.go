@@ -12,10 +12,10 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
 
-	"github.com/bnb-chain/greenfield/sdk/types"
-	"github.com/bnb-chain/greenfield/testutil/sample"
-	"github.com/bnb-chain/greenfield/x/sp/keeper"
-	sptypes "github.com/bnb-chain/greenfield/x/sp/types"
+	"github.com/evmos/evmos/v12/sdk/types"
+	"github.com/evmos/evmos/v12/testutil/sample"
+	"github.com/evmos/evmos/v12/x/sp/keeper"
+	sptypes "github.com/evmos/evmos/v12/x/sp/types"
 )
 
 func (s *KeeperTestSuite) TestMsgCreateStorageProvider() {

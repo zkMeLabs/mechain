@@ -19,8 +19,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/genutil"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 
-	gensptypes "github.com/bnb-chain/greenfield/x/gensp/types"
-	sptypes "github.com/bnb-chain/greenfield/x/sp/types"
+	gensptypes "github.com/evmos/evmos/v12/x/gensp/types"
+	sptypes "github.com/evmos/evmos/v12/x/sp/types"
 )
 
 // GenAppStateFromConfig gets the genesis app state from the config

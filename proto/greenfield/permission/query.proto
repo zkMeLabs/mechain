@@ -6,7 +6,7 @@ import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "greenfield/permission/params.proto";
 
-option go_package = "github.com/bnb-chain/greenfield/x/permission/types";
+option go_package = "github.com/evmos/evmos/v12/x/permission/types";
 
 // Query defines the gRPC querier service.
 service Query {

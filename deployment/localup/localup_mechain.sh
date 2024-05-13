@@ -118,17 +118,14 @@ function generate_genesis() {
             cp ${workspace}/.local/validator0/config/genesis.json ${workspace}/.local/validator${i}/config/
         fi
         sed -i -e "s/minimum-gas-prices = \"0stake\"/minimum-gas-prices = \"0${BASIC_DENOM}\"/g" ${workspace}/.local/validator${i}/config/app.toml
-        sed -i -e "s/denom-to-suggest = \"uatom\"/denom-to-suggest = \"${BASIC_DENOM}\"/g" ${workspace}/.local/validator${i}/config/app.toml
         sed -i -e "s/\"stake\"/\"${BASIC_DENOM}\"/g" ${workspace}/.local/validator${i}/config/genesis.json
         sed -i -e "s/\"denom_metadata\": \[\]/\"denom_metadata\": \[${NATIVE_COIN_DESC}\]/g" ${workspace}/.local/validator${i}/config/genesis.json
+	sed -i -e "s/seeds = \"[^\"]*\"/seeds = \"\"/g" ${workspace}/.local/validator${i}/config/config.toml
         sed -i -e "s/persistent_peers = \".*\"/persistent_peers = \"${persistent_peers}\"/g" ${workspace}/.local/validator${i}/config/config.toml
         sed -i -e "s/timeout_commit = \"5s\"/timeout_commit = \"500ms\"/g" ${workspace}/.local/validator${i}/config/config.toml
         sed -i -e "s/addr_book_strict = true/addr_book_strict = false/g" ${workspace}/.local/validator${i}/config/config.toml
         sed -i -e "s/allow_duplicate_ip = false/allow_duplicate_ip = true/g" ${workspace}/.local/validator${i}/config/config.toml
         sed -i -e "s/snapshot-interval = 0/snapshot-interval = ${SNAPSHOT_INTERVAL}/g" ${workspace}/.local/validator${i}/config/app.toml
-        sed -i -e "s/src-chain-id = 1/src-chain-id = ${SRC_CHAIN_ID}/g" ${workspace}/.local/validator${i}/config/app.toml
-        sed -i -e "s/dest-bsc-chain-id = 2/dest-bsc-chain-id = ${DEST_CHAIN_ID}/g" ${workspace}/.local/validator${i}/config/app.toml
-        sed -i -e "s/dest-op-chain-id = 3/dest-op-chain-id = ${DEST_OP_CHAIN_ID}/g" ${workspace}/.local/validator${i}/config/app.toml
         sed -i -e "s/snapshot-keep-recent = 2/snapshot-keep-recent = ${SNAPSHOT_KEEP_RECENT}/g" ${workspace}/.local/validator${i}/config/app.toml
         sed -i -e "s/\"reserve_time\": \"15552000\"/\"reserve_time\": \"60\"/g" ${workspace}/.local/validator${i}/config/genesis.json
         sed -i -e "s/\"forced_settle_time\": \"86400\"/\"forced_settle_time\": \"30\"/g" ${workspace}/.local/validator${i}/config/genesis.json
@@ -146,6 +143,11 @@ function generate_genesis() {
         sed -i -e "s/\"update_price_disallowed_days\": 2/\"update_price_disallowed_days\": 0/g" ${workspace}/.local/validator${i}/config/genesis.json
         #sed -i -e "s/\"community_tax\": \"0.020000000000000000\"/\"community_tax\": \"0\"/g" ${workspace}/.local/validator${i}/config/genesis.json
         sed -i -e "s/log_level = \"info\"/\log_level= \"debug\"/g" ${workspace}/.local/validator${i}/config/config.toml
+        sed -i -e "s#node = \"tcp://localhost:26657\"#node = \"tcp://localhost:$((${VALIDATOR_RPC_PORT_START}+${i}))\"#g" ${workspace}/.local/validator${i}/config/client.toml
+	sed -i -e "/Address defines the gRPC server address to bind to/{N;s/address = \"localhost:9090\"/address = \"localhost:$((${VALIDATOR_GRPC_PORT_START}+${i}))\"/;}" ${workspace}/.local/validator${i}/config/app.toml
+	sed -i -e "/Address defines the gRPC-web server address to bind to/{N;s/address = \"localhost:9091\"/address = \"localhost:$((${VALIDATOR_GRPC_PORT_START}-1-${i}))\"/;}" ${workspace}/.local/validator${i}/config/app.toml
+	sed -i -e "/Address defines the EVM RPC HTTP server address to bind to/{N;s/address = \"127.0.0.1:8545\"/address = \"127.0.0.1:$((${EVM_SERVER_PORT_START}+${i}*2))\"/;}" ${workspace}/.local/validator${i}/config/app.toml
+	sed -i -e "/Address defines the EVM WebSocket server address to bind to/{N;s/address = \"127.0.0.1:8546\"/address = \"127.0.0.1:$((${EVM_SERVER_PORT_START}+1+${i}*2))\"/;}" ${workspace}/.local/validator${i}/config/app.toml
     done
 
     # enable swagger API for validator0

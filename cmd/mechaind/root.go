@@ -65,6 +65,7 @@ import (
 	"github.com/evmos/evmos/v12/app"
 	cmdcfg "github.com/evmos/evmos/v12/cmd/config"
 	evmoskr "github.com/evmos/evmos/v12/crypto/keyring"
+	gensputilcli "github.com/evmos/evmos/v12/x/gensp/client/cli"
 )
 
 const (
@@ -92,7 +93,7 @@ func NewRootCmd() (*cobra.Command, params.EncodingConfig) {
 
 	rootCmd := &cobra.Command{
 		Use:   app.Name,
-		Short: "Evmos Daemon",
+		Short: "Mechain Daemon",
 		PersistentPreRunE: func(cmd *cobra.Command, _ []string) error {
 			// set the default command outputs
 			cmd.SetOut(cmd.OutOrStdout())
@@ -124,6 +125,7 @@ func NewRootCmd() (*cobra.Command, params.EncodingConfig) {
 	cfg.Seal()
 
 	a := appCreator{encodingConfig}
+
 	rootCmd.AddCommand(
 		evmosclient.ValidateChainID(
 			InitCmd(app.ModuleBasics, app.DefaultNodeHome),
@@ -133,6 +135,12 @@ func NewRootCmd() (*cobra.Command, params.EncodingConfig) {
 		genutilcli.GenTxCmd(app.ModuleBasics, encodingConfig.TxConfig, banktypes.GenesisBalancesIterator{}, app.DefaultNodeHome),
 		genutilcli.ValidateGenesisCmd(app.ModuleBasics),
 		AddGenesisAccountCmd(app.DefaultNodeHome),
+		gensputilcli.SPGenTxCmd(
+			app.ModuleBasics,
+			encodingConfig.TxConfig,
+			banktypes.GenesisBalancesIterator{},
+			app.DefaultNodeHome),
+		gensputilcli.CollectSPGenTxsCmd(banktypes.GenesisBalancesIterator{}, app.DefaultNodeHome),
 		tmcli.NewCompletionCmd(rootCmd, true),
 		NewTestnetCmd(app.ModuleBasics, banktypes.GenesisBalancesIterator{}),
 		debug.Cmd(),
@@ -292,7 +300,9 @@ func (a appCreator) newApp(logger log.Logger, db dbm.DB, traceStore io.Writer, c
 		a.encCfg,
 		appOpts,
 		baseapp.SetPruning(pruningOpts),
+		baseapp.SetEventing(cast.ToString(appOpts.Get(sdkserver.FlagEventing))),
 		baseapp.SetMinGasPrices(cast.ToString(appOpts.Get(sdkserver.FlagMinGasPrices))),
+		baseapp.SetMinRetainBlocks(cast.ToUint64(appOpts.Get(sdkserver.FlagMinRetainBlocks))),
 		baseapp.SetHaltHeight(cast.ToUint64(appOpts.Get(sdkserver.FlagHaltHeight))),
 		baseapp.SetHaltTime(cast.ToUint64(appOpts.Get(sdkserver.FlagHaltTime))),
 		baseapp.SetMinRetainBlocks(cast.ToUint64(appOpts.Get(sdkserver.FlagMinRetainBlocks))),
@@ -303,6 +313,8 @@ func (a appCreator) newApp(logger log.Logger, db dbm.DB, traceStore io.Writer, c
 		baseapp.SetIAVLCacheSize(cast.ToInt(appOpts.Get(sdkserver.FlagIAVLCacheSize))),
 		baseapp.SetIAVLDisableFastNode(cast.ToBool(appOpts.Get(sdkserver.FlagDisableIAVLFastNode))),
 		baseapp.SetChainID(chainID),
+		baseapp.SetEnableUnsafeQuery(cast.ToBool(appOpts.Get(sdkserver.FlagEnableUnsafeQuery))),
+		baseapp.SetEnablePlainStore(cast.ToBool(appOpts.Get(sdkserver.FlagEnablePlainStore))),
 	)
 
 	return evmosApp

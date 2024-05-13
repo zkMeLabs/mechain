@@ -10,8 +10,8 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
 
-	"github.com/bnb-chain/greenfield/testutil/sample"
-	"github.com/bnb-chain/greenfield/x/payment/types"
+	"github.com/evmos/evmos/v12/testutil/sample"
+	"github.com/evmos/evmos/v12/x/payment/types"
 )
 
 func TestTryResumeStreamRecord_InResumingOrSettling(t *testing.T) {

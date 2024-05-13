@@ -3,7 +3,7 @@ package greenfield.gensp;
 
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/bnb-chain/greenfield/x/gensp/types";
+option go_package = "github.com/evmos/evmos/v12/x/gensp/types";
 
 // GenesisState defines the gensp module's genesis state.
 // GenesisState defines the raw genesis transaction in JSON.

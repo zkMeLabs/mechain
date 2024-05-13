@@ -5,7 +5,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
-	sptypes "github.com/bnb-chain/greenfield/x/sp/types"
+	sptypes "github.com/evmos/evmos/v12/x/sp/types"
 )
 
 type SpKeeper interface {

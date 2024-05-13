@@ -6,7 +6,7 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/stretchr/testify/require"
 
-	"github.com/bnb-chain/greenfield/testutil/sample"
+	"github.com/evmos/evmos/v12/testutil/sample"
 )
 
 func TestMsgCancelMigrateBucket_ValidateBasic(t *testing.T) {

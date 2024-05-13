@@ -9,9 +9,9 @@ import (
 	"github.com/prysmaticlabs/prysm/crypto/bls"
 	"github.com/stretchr/testify/require"
 
-	"github.com/bnb-chain/greenfield/testutil/sample"
-	"github.com/bnb-chain/greenfield/types/common"
-	gnfderrors "github.com/bnb-chain/greenfield/types/errors"
+	"github.com/evmos/evmos/v12/testutil/sample"
+	"github.com/evmos/evmos/v12/types/common"
+	gnfderrors "github.com/evmos/evmos/v12/types/errors"
 )
 
 func TestMsgCreateObject_ValidateBasic(t *testing.T) {

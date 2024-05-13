@@ -6,7 +6,7 @@ import (
 	sdkmath "cosmossdk.io/math"
 	"github.com/stretchr/testify/require"
 
-	"github.com/bnb-chain/greenfield/testutil/sample"
+	"github.com/evmos/evmos/v12/testutil/sample"
 )
 
 func TestVerifyModuleAddress(t *testing.T) {

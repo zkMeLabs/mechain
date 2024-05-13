@@ -9,7 +9,7 @@ import "greenfield/virtualgroup/common.proto";
 import "greenfield/virtualgroup/params.proto";
 import "greenfield/virtualgroup/types.proto";
 
-option go_package = "github.com/bnb-chain/greenfield/x/virtualgroup/types";
+option go_package = "github.com/evmos/evmos/v12/x/virtualgroup/types";
 
 // Query defines the gRPC query service.
 service Query {

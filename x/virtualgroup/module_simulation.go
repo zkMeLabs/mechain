@@ -9,9 +9,9 @@ import (
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
 
-	"github.com/bnb-chain/greenfield/testutil/sample"
-	virtualgroupsimulation "github.com/bnb-chain/greenfield/x/virtualgroup/simulation"
-	"github.com/bnb-chain/greenfield/x/virtualgroup/types"
+	"github.com/evmos/evmos/v12/testutil/sample"
+	virtualgroupsimulation "github.com/evmos/evmos/v12/x/virtualgroup/simulation"
+	"github.com/evmos/evmos/v12/x/virtualgroup/types"
 )
 
 // avoid unused import issue

@@ -4,7 +4,7 @@ package greenfield.storage;
 import "gogoproto/gogo.proto";
 import "greenfield/storage/params.proto";
 
-option go_package = "github.com/bnb-chain/greenfield/x/storage/types";
+option go_package = "github.com/evmos/evmos/v12/x/storage/types";
 
 // GenesisState defines the bridge module's genesis state.
 message GenesisState {

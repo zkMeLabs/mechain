@@ -12,13 +12,13 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/bnb-chain/greenfield/internal/sequence"
-	gnfd "github.com/bnb-chain/greenfield/types"
-	"github.com/bnb-chain/greenfield/types/errors"
-	permtypes "github.com/bnb-chain/greenfield/x/permission/types"
-	sptypes "github.com/bnb-chain/greenfield/x/sp/types"
-	"github.com/bnb-chain/greenfield/x/storage/types"
-	vgtypes "github.com/bnb-chain/greenfield/x/virtualgroup/types"
+	"github.com/evmos/evmos/v12/internals/sequence"
+	gnfd "github.com/evmos/evmos/v12/types"
+	"github.com/evmos/evmos/v12/types/errors"
+	permtypes "github.com/evmos/evmos/v12/x/permission/types"
+	sptypes "github.com/evmos/evmos/v12/x/sp/types"
+	"github.com/evmos/evmos/v12/x/storage/types"
+	vgtypes "github.com/evmos/evmos/v12/x/virtualgroup/types"
 )
 
 var _ types.QueryServer = Keeper{}

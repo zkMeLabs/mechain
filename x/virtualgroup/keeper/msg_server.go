@@ -9,11 +9,12 @@ import (
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
-	gnfdtypes "github.com/bnb-chain/greenfield/types"
-	"github.com/bnb-chain/greenfield/types/errors"
-	paymenttypes "github.com/bnb-chain/greenfield/x/payment/types"
-	sptypes "github.com/bnb-chain/greenfield/x/sp/types"
-	"github.com/bnb-chain/greenfield/x/virtualgroup/types"
+	gnfdtypes "github.com/evmos/evmos/v12/types"
+	"github.com/evmos/evmos/v12/types/errors"
+	paymenttypes "github.com/evmos/evmos/v12/x/payment/types"
+	sptypes "github.com/evmos/evmos/v12/x/sp/types"
+	"github.com/evmos/evmos/v12/x/virtualgroup/types"
+	"github.com/ethereum/go-ethereum/crypto"
 )
 
 type msgServer struct {
@@ -322,7 +323,7 @@ func (k msgServer) SwapOut(goCtx context.Context, msg *types.MsgSwapOut) (*types
 		return nil, sptypes.ErrStorageProviderNotInService.Wrapf("successor sp is not in service, status: %s", sp.Status.String())
 	}
 	// verify the approval
-	err := gnfdtypes.VerifySignature(sdk.MustAccAddressFromHex(successorSP.ApprovalAddress), sdk.Keccak256(msg.GetApprovalBytes()), msg.SuccessorSpApproval.Sig)
+	err := gnfdtypes.VerifySignature(sdk.MustAccAddressFromHex(successorSP.ApprovalAddress), crypto.Keccak256(msg.GetApprovalBytes()), msg.SuccessorSpApproval.Sig)
 	if err != nil {
 		return nil, err
 	}

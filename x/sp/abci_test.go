@@ -16,10 +16,10 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/bnb-chain/greenfield/testutil/sample"
-	spmodule "github.com/bnb-chain/greenfield/x/sp"
-	"github.com/bnb-chain/greenfield/x/sp/keeper"
-	"github.com/bnb-chain/greenfield/x/sp/types"
+	"github.com/evmos/evmos/v12/testutil/sample"
+	spmodule "github.com/evmos/evmos/v12/x/sp"
+	"github.com/evmos/evmos/v12/x/sp/keeper"
+	"github.com/evmos/evmos/v12/x/sp/types"
 )
 
 type TestSuite struct {

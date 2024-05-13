@@ -1,7 +1,7 @@
 package types
 
 import (
-	"github.com/bnb-chain/greenfield/internal/sequence"
+	"github.com/evmos/evmos/v12/internals/sequence"
 )
 
 const (

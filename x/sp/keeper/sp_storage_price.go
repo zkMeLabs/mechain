@@ -8,7 +8,7 @@ import (
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/bnb-chain/greenfield/x/sp/types"
+	"github.com/evmos/evmos/v12/x/sp/types"
 )
 
 // SetSpStoragePrice set a specific SpStoragePrice in the store from its index

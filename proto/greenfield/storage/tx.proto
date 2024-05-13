@@ -13,7 +13,7 @@ import "greenfield/storage/common.proto";
 import "greenfield/storage/params.proto";
 import "greenfield/storage/types.proto";
 
-option go_package = "github.com/bnb-chain/greenfield/x/storage/types";
+option go_package = "github.com/evmos/evmos/v12/x/storage/types";
 
 // Msg defines the Msg service.
 service Msg {
@@ -21,7 +21,7 @@ service Msg {
   rpc CreateBucket(MsgCreateBucket) returns (MsgCreateBucketResponse);
   rpc DeleteBucket(MsgDeleteBucket) returns (MsgDeleteBucketResponse);
   rpc UpdateBucketInfo(MsgUpdateBucketInfo) returns (MsgUpdateBucketInfoResponse);
-  rpc MirrorBucket(MsgMirrorBucket) returns (MsgMirrorBucketResponse);
+  // rpc MirrorBucket(MsgMirrorBucket) returns (MsgMirrorBucketResponse);
   rpc DiscontinueBucket(MsgDiscontinueBucket) returns (MsgDiscontinueBucketResponse);
   rpc ToggleSPAsDelegatedAgent(MsgToggleSPAsDelegatedAgent) returns (MsgToggleSPAsDelegatedAgentResponse);
 
@@ -33,7 +33,7 @@ service Msg {
   rpc CopyObject(MsgCopyObject) returns (MsgCopyObjectResponse);
   rpc DeleteObject(MsgDeleteObject) returns (MsgDeleteObjectResponse);
   rpc CancelCreateObject(MsgCancelCreateObject) returns (MsgCancelCreateObjectResponse);
-  rpc MirrorObject(MsgMirrorObject) returns (MsgMirrorObjectResponse);
+  // rpc MirrorObject(MsgMirrorObject) returns (MsgMirrorObjectResponse);
   rpc DiscontinueObject(MsgDiscontinueObject) returns (MsgDiscontinueObjectResponse);
   rpc UpdateObjectInfo(MsgUpdateObjectInfo) returns (MsgUpdateObjectInfoResponse);
   rpc UpdateObjectContent(MsgUpdateObjectContent) returns (MsgUpdateObjectContentResponse);
@@ -47,7 +47,7 @@ service Msg {
   rpc UpdateGroupMember(MsgUpdateGroupMember) returns (MsgUpdateGroupMemberResponse);
   rpc UpdateGroupExtra(MsgUpdateGroupExtra) returns (MsgUpdateGroupExtraResponse);
   rpc LeaveGroup(MsgLeaveGroup) returns (MsgLeaveGroupResponse);
-  rpc MirrorGroup(MsgMirrorGroup) returns (MsgMirrorGroupResponse);
+  // rpc MirrorGroup(MsgMirrorGroup) returns (MsgMirrorGroupResponse);
   rpc RenewGroupMember(MsgRenewGroupMember) returns (MsgRenewGroupMemberResponse);
 
   // basic operation of policy

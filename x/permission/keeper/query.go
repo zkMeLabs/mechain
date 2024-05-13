@@ -7,7 +7,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/bnb-chain/greenfield/x/permission/types"
+	"github.com/evmos/evmos/v12/x/permission/types"
 )
 
 var _ types.QueryServer = Keeper{}

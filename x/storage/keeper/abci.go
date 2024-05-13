@@ -3,8 +3,8 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	paymenttypes "github.com/bnb-chain/greenfield/x/payment/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
+	paymenttypes "github.com/evmos/evmos/v12/x/payment/types"
 )
 
 func BeginBlocker(ctx sdk.Context, keeper Keeper) {

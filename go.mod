@@ -8,6 +8,7 @@ require (
 	cosmossdk.io/math v1.0.1
 	cosmossdk.io/simapp v0.0.0-20230608160436-666c345ad23d
 	github.com/armon/go-metrics v0.4.1
+	github.com/bits-and-blooms/bitset v1.13.0
 	github.com/btcsuite/btcd v0.23.0
 	github.com/btcsuite/btcd/btcutil v1.1.2
 	github.com/cometbft/cometbft v0.37.2
@@ -20,6 +21,7 @@ require (
 	github.com/davecgh/go-spew v1.1.1
 	github.com/ethereum/go-ethereum v1.11.5
 	github.com/evmos/evmos-ledger-go v0.3.0-rc0
+	github.com/golang/mock v1.6.0
 	github.com/golang/protobuf v1.5.3
 	github.com/gorilla/mux v1.8.0
 	github.com/gorilla/websocket v1.5.0
@@ -35,6 +37,7 @@ require (
 	github.com/rs/cors v1.9.0
 	github.com/spf13/cast v1.5.1
 	github.com/spf13/cobra v1.7.0
+	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.16.0
 	github.com/stretchr/testify v1.8.4
 	github.com/tidwall/gjson v1.14.4
@@ -47,6 +50,7 @@ require (
 	google.golang.org/genproto/googleapis/api v0.0.0-20231012201019-e917dd12ba7a
 	google.golang.org/grpc v1.59.0
 	google.golang.org/protobuf v1.31.0
+	gopkg.in/yaml.v2 v2.4.0
 	sigs.k8s.io/yaml v1.3.0
 )
 
@@ -114,7 +118,6 @@ require (
 	github.com/gogo/googleapis v1.4.1 // indirect
 	github.com/gogo/protobuf v1.3.3 // indirect
 	github.com/golang/glog v1.1.2 // indirect
-	github.com/golang/mock v1.6.0 // indirect
 	github.com/golang/snappy v0.0.5-0.20220116011046-fa5810519dcb // indirect
 	github.com/google/btree v1.1.2 // indirect
 	github.com/google/go-cmp v0.6.0 // indirect
@@ -181,7 +184,6 @@ require (
 	github.com/sirupsen/logrus v1.9.3 // indirect
 	github.com/spf13/afero v1.9.5 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
-	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/status-im/keycard-go v0.2.0 // indirect
 	github.com/stretchr/objx v0.5.0 // indirect
 	github.com/subosito/gotenv v1.4.2 // indirect
@@ -215,7 +217,6 @@ require (
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20231016165738-49dd2c1f3d0b // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/natefinch/npipe.v2 v2.0.0-20160621034901-c1b8fa8bdcce // indirect
-	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	nhooyr.io/websocket v1.8.7 // indirect
 	pgregory.net/rapid v0.5.5 // indirect
@@ -223,6 +224,7 @@ require (
 
 replace (
 	cosmossdk.io/api => github.com/zkMeLabs/mechain-cosmos-sdk/api v0.0.0-20240508034054-62cf83e35df8
+	cosmossdk.io/math => github.com/zkMeLabs/mechain-cosmos-sdk/math v0.0.0-20240508034054-62cf83e35df8
 	cosmossdk.io/simapp => github.com/zkMeLabs/mechain-cosmos-sdk/simapp v0.0.0-20240508034054-62cf83e35df8
 	// use cosmos fork of keyring
 	github.com/99designs/keyring => github.com/cosmos/keyring v1.2.0

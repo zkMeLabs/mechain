@@ -10,13 +10,13 @@ import (
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
-	types2 "github.com/bnb-chain/greenfield/types"
-	gnfderrors "github.com/bnb-chain/greenfield/types/errors"
-	permtypes "github.com/bnb-chain/greenfield/x/permission/types"
-	sptypes "github.com/bnb-chain/greenfield/x/sp/types"
-	"github.com/bnb-chain/greenfield/x/storage/types"
-	storagetypes "github.com/bnb-chain/greenfield/x/storage/types"
-	virtualgroupmoduletypes "github.com/bnb-chain/greenfield/x/virtualgroup/types"
+	types2 "github.com/evmos/evmos/v12/types"
+	gnfderrors "github.com/evmos/evmos/v12/types/errors"
+	permtypes "github.com/evmos/evmos/v12/x/permission/types"
+	sptypes "github.com/evmos/evmos/v12/x/sp/types"
+	"github.com/evmos/evmos/v12/x/storage/types"
+	storagetypes "github.com/evmos/evmos/v12/x/storage/types"
+	virtualgroupmoduletypes "github.com/evmos/evmos/v12/x/virtualgroup/types"
 )
 
 type msgServer struct {
@@ -423,226 +423,226 @@ func (k msgServer) DeletePolicy(goCtx context.Context, msg *types.MsgDeletePolic
 	return &types.MsgDeletePolicyResponse{PolicyId: policyID}, nil
 }
 
-func (k msgServer) MirrorObject(goCtx context.Context, msg *types.MsgMirrorObject) (*types.MsgMirrorObjectResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
+// func (k msgServer) MirrorObject(goCtx context.Context, msg *types.MsgMirrorObject) (*types.MsgMirrorObjectResponse, error) {
+// 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	operator := sdk.MustAccAddressFromHex(msg.Operator)
-	destChainId := sdk.ChainID(msg.DestChainId)
+// 	operator := sdk.MustAccAddressFromHex(msg.Operator)
+// 	destChainId := sdk.ChainID(msg.DestChainId)
 
-	if !k.crossChainKeeper.IsDestChainSupported(destChainId) {
-		return nil, errorsmod.Wrapf(types.ErrChainNotSupported, "dest chain id (%d) is not supported", msg.DestChainId)
-	}
+// 	if !k.crossChainKeeper.IsDestChainSupported(destChainId) {
+// 		return nil, errorsmod.Wrapf(types.ErrChainNotSupported, "dest chain id (%d) is not supported", msg.DestChainId)
+// 	}
 
-	var objectInfo *types.ObjectInfo
-	found := false
-	if msg.Id.GT(sdk.NewUint(0)) {
-		objectInfo, found = k.Keeper.GetObjectInfoById(ctx, msg.Id)
-	} else {
-		objectInfo, found = k.Keeper.GetObjectInfo(ctx, msg.BucketName, msg.ObjectName)
-	}
-	if !found {
-		return nil, types.ErrNoSuchObject
-	}
+// 	var objectInfo *types.ObjectInfo
+// 	found := false
+// 	if msg.Id.GT(sdk.NewUint(0)) {
+// 		objectInfo, found = k.Keeper.GetObjectInfoById(ctx, msg.Id)
+// 	} else {
+// 		objectInfo, found = k.Keeper.GetObjectInfo(ctx, msg.BucketName, msg.ObjectName)
+// 	}
+// 	if !found {
+// 		return nil, types.ErrNoSuchObject
+// 	}
 
-	if objectInfo.SourceType != types.SOURCE_TYPE_ORIGIN {
-		return nil, types.ErrAlreadyMirrored
-	}
+// 	if objectInfo.SourceType != types.SOURCE_TYPE_ORIGIN {
+// 		return nil, types.ErrAlreadyMirrored
+// 	}
 
-	if objectInfo.ObjectStatus != types.OBJECT_STATUS_SEALED {
-		return nil, types.ErrObjectNotSealed
-	}
+// 	if objectInfo.ObjectStatus != types.OBJECT_STATUS_SEALED {
+// 		return nil, types.ErrObjectNotSealed
+// 	}
 
-	if operator.String() != objectInfo.Owner {
-		return nil, types.ErrAccessDenied
-	}
+// 	if operator.String() != objectInfo.Owner {
+// 		return nil, types.ErrAccessDenied
+// 	}
 
-	owner := sdk.MustAccAddressFromHex(objectInfo.Owner)
+// 	owner := sdk.MustAccAddressFromHex(objectInfo.Owner)
 
-	mirrorPackage := types.MirrorObjectSynPackage{
-		Id:    objectInfo.Id.BigInt(),
-		Owner: owner,
-	}
+// 	mirrorPackage := types.MirrorObjectSynPackage{
+// 		Id:    objectInfo.Id.BigInt(),
+// 		Owner: owner,
+// 	}
 
-	encodedPackage, err := mirrorPackage.Serialize()
-	if err != nil {
-		return nil, types.ErrInvalidCrossChainPackage
-	}
+// 	encodedPackage, err := mirrorPackage.Serialize()
+// 	if err != nil {
+// 		return nil, types.ErrInvalidCrossChainPackage
+// 	}
 
-	wrapPackage := types.CrossChainPackage{
-		OperationType: types.OperationMirrorObject,
-		Package:       encodedPackage,
-	}
-	encodedWrapPackage := wrapPackage.MustSerialize()
+// 	wrapPackage := types.CrossChainPackage{
+// 		OperationType: types.OperationMirrorObject,
+// 		Package:       encodedPackage,
+// 	}
+// 	encodedWrapPackage := wrapPackage.MustSerialize()
 
-	relayerFee := k.Keeper.MirrorObjectRelayerFee(ctx, destChainId)
-	ackRelayerFee := k.Keeper.MirrorObjectAckRelayerFee(ctx, destChainId)
+// 	relayerFee := k.Keeper.MirrorObjectRelayerFee(ctx, destChainId)
+// 	ackRelayerFee := k.Keeper.MirrorObjectAckRelayerFee(ctx, destChainId)
 
-	_, err = k.crossChainKeeper.CreateRawIBCPackageWithFee(ctx, destChainId,
-		types.ObjectChannelId, sdk.SynCrossChainPackageType, encodedWrapPackage, relayerFee, ackRelayerFee)
-	if err != nil {
-		return nil, err
-	}
+// 	_, err = k.crossChainKeeper.CreateRawIBCPackageWithFee(ctx, destChainId,
+// 		types.ObjectChannelId, sdk.SynCrossChainPackageType, encodedWrapPackage, relayerFee, ackRelayerFee)
+// 	if err != nil {
+// 		return nil, err
+// 	}
 
-	// update source type to pending
-	objectInfo.SourceType = types.SOURCE_TYPE_MIRROR_PENDING
-	k.Keeper.SetObjectInfo(ctx, objectInfo)
+// 	// update source type to pending
+// 	objectInfo.SourceType = types.SOURCE_TYPE_MIRROR_PENDING
+// 	k.Keeper.SetObjectInfo(ctx, objectInfo)
 
-	if err := ctx.EventManager().EmitTypedEvents(&types.EventMirrorObject{
-		Operator:    objectInfo.Owner,
-		BucketName:  objectInfo.BucketName,
-		ObjectName:  objectInfo.ObjectName,
-		ObjectId:    objectInfo.Id,
-		DestChainId: uint32(destChainId),
-	}); err != nil {
-		return nil, err
-	}
-	return nil, nil
-}
+// 	if err := ctx.EventManager().EmitTypedEvents(&types.EventMirrorObject{
+// 		Operator:    objectInfo.Owner,
+// 		BucketName:  objectInfo.BucketName,
+// 		ObjectName:  objectInfo.ObjectName,
+// 		ObjectId:    objectInfo.Id,
+// 		DestChainId: uint32(destChainId),
+// 	}); err != nil {
+// 		return nil, err
+// 	}
+// 	return nil, nil
+// }
 
-func (k msgServer) MirrorBucket(goCtx context.Context, msg *types.MsgMirrorBucket) (*types.MsgMirrorBucketResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
+// func (k msgServer) MirrorBucket(goCtx context.Context, msg *types.MsgMirrorBucket) (*types.MsgMirrorBucketResponse, error) {
+// 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	operator := sdk.MustAccAddressFromHex(msg.Operator)
-	destChainId := sdk.ChainID(msg.DestChainId)
+// 	operator := sdk.MustAccAddressFromHex(msg.Operator)
+// 	destChainId := sdk.ChainID(msg.DestChainId)
 
-	if !k.crossChainKeeper.IsDestChainSupported(destChainId) {
-		return nil, errorsmod.Wrapf(types.ErrChainNotSupported, "dest chain id (%d) is not supported", msg.DestChainId)
-	}
+// 	if !k.crossChainKeeper.IsDestChainSupported(destChainId) {
+// 		return nil, errorsmod.Wrapf(types.ErrChainNotSupported, "dest chain id (%d) is not supported", msg.DestChainId)
+// 	}
 
-	var bucketInfo *types.BucketInfo
-	found := false
-	if msg.Id.GT(sdk.NewUint(0)) {
-		bucketInfo, found = k.Keeper.GetBucketInfoById(ctx, msg.Id)
-	} else {
-		bucketInfo, found = k.Keeper.GetBucketInfo(ctx, msg.BucketName)
-	}
-	if !found {
-		return nil, types.ErrNoSuchBucket
-	}
+// 	var bucketInfo *types.BucketInfo
+// 	found := false
+// 	if msg.Id.GT(sdk.NewUint(0)) {
+// 		bucketInfo, found = k.Keeper.GetBucketInfoById(ctx, msg.Id)
+// 	} else {
+// 		bucketInfo, found = k.Keeper.GetBucketInfo(ctx, msg.BucketName)
+// 	}
+// 	if !found {
+// 		return nil, types.ErrNoSuchBucket
+// 	}
 
-	if bucketInfo.SourceType != types.SOURCE_TYPE_ORIGIN {
-		return nil, types.ErrAlreadyMirrored
-	}
+// 	if bucketInfo.SourceType != types.SOURCE_TYPE_ORIGIN {
+// 		return nil, types.ErrAlreadyMirrored
+// 	}
 
-	if operator.String() != bucketInfo.Owner {
-		return nil, types.ErrAccessDenied
-	}
+// 	if operator.String() != bucketInfo.Owner {
+// 		return nil, types.ErrAccessDenied
+// 	}
 
-	owner, err := sdk.AccAddressFromHexUnsafe(bucketInfo.Owner)
-	if err != nil {
-		return nil, err
-	}
+// 	owner, err := sdk.AccAddressFromHexUnsafe(bucketInfo.Owner)
+// 	if err != nil {
+// 		return nil, err
+// 	}
 
-	mirrorPackage := types.MirrorBucketSynPackage{
-		Id:    bucketInfo.Id.BigInt(),
-		Owner: owner,
-	}
+// 	mirrorPackage := types.MirrorBucketSynPackage{
+// 		Id:    bucketInfo.Id.BigInt(),
+// 		Owner: owner,
+// 	}
 
-	encodedPackage, err := mirrorPackage.Serialize()
-	if err != nil {
-		return nil, types.ErrInvalidCrossChainPackage
-	}
+// 	encodedPackage, err := mirrorPackage.Serialize()
+// 	if err != nil {
+// 		return nil, types.ErrInvalidCrossChainPackage
+// 	}
 
-	wrapPackage := types.CrossChainPackage{
-		OperationType: types.OperationMirrorBucket,
-		Package:       encodedPackage,
-	}
-	encodedWrapPackage := wrapPackage.MustSerialize()
+// 	wrapPackage := types.CrossChainPackage{
+// 		OperationType: types.OperationMirrorBucket,
+// 		Package:       encodedPackage,
+// 	}
+// 	encodedWrapPackage := wrapPackage.MustSerialize()
 
-	relayerFee := k.Keeper.MirrorBucketRelayerFee(ctx, destChainId)
-	ackRelayerFee := k.Keeper.MirrorBucketAckRelayerFee(ctx, destChainId)
+// 	relayerFee := k.Keeper.MirrorBucketRelayerFee(ctx, destChainId)
+// 	ackRelayerFee := k.Keeper.MirrorBucketAckRelayerFee(ctx, destChainId)
 
-	_, err = k.crossChainKeeper.CreateRawIBCPackageWithFee(ctx, destChainId,
-		types.BucketChannelId, sdk.SynCrossChainPackageType, encodedWrapPackage, relayerFee, ackRelayerFee)
-	if err != nil {
-		return nil, err
-	}
+// 	_, err = k.crossChainKeeper.CreateRawIBCPackageWithFee(ctx, destChainId,
+// 		types.BucketChannelId, sdk.SynCrossChainPackageType, encodedWrapPackage, relayerFee, ackRelayerFee)
+// 	if err != nil {
+// 		return nil, err
+// 	}
 
-	// update status to pending
-	bucketInfo.SourceType = types.SOURCE_TYPE_MIRROR_PENDING
-	k.Keeper.SetBucketInfo(ctx, bucketInfo)
+// 	// update status to pending
+// 	bucketInfo.SourceType = types.SOURCE_TYPE_MIRROR_PENDING
+// 	k.Keeper.SetBucketInfo(ctx, bucketInfo)
 
-	if err := ctx.EventManager().EmitTypedEvents(&types.EventMirrorBucket{
-		Operator:    bucketInfo.Owner,
-		BucketName:  bucketInfo.BucketName,
-		BucketId:    bucketInfo.Id,
-		DestChainId: uint32(destChainId),
-	}); err != nil {
-		return nil, err
-	}
+// 	if err := ctx.EventManager().EmitTypedEvents(&types.EventMirrorBucket{
+// 		Operator:    bucketInfo.Owner,
+// 		BucketName:  bucketInfo.BucketName,
+// 		BucketId:    bucketInfo.Id,
+// 		DestChainId: uint32(destChainId),
+// 	}); err != nil {
+// 		return nil, err
+// 	}
 
-	return nil, nil
-}
+// 	return nil, nil
+// }
 
-func (k msgServer) MirrorGroup(goCtx context.Context, msg *types.MsgMirrorGroup) (*types.MsgMirrorGroupResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
+// func (k msgServer) MirrorGroup(goCtx context.Context, msg *types.MsgMirrorGroup) (*types.MsgMirrorGroupResponse, error) {
+// 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	operator := sdk.MustAccAddressFromHex(msg.Operator)
-	destChainId := sdk.ChainID(msg.DestChainId)
+// 	operator := sdk.MustAccAddressFromHex(msg.Operator)
+// 	destChainId := sdk.ChainID(msg.DestChainId)
 
-	if !k.crossChainKeeper.IsDestChainSupported(destChainId) {
-		return nil, errorsmod.Wrapf(types.ErrChainNotSupported, "dest chain id (%d) is not supported", msg.DestChainId)
-	}
+// 	if !k.crossChainKeeper.IsDestChainSupported(destChainId) {
+// 		return nil, errorsmod.Wrapf(types.ErrChainNotSupported, "dest chain id (%d) is not supported", msg.DestChainId)
+// 	}
 
-	var groupInfo *types.GroupInfo
-	found := false
-	if msg.Id.GT(sdk.NewUint(0)) {
-		groupInfo, found = k.Keeper.GetGroupInfoById(ctx, msg.Id)
-	} else {
-		groupInfo, found = k.Keeper.GetGroupInfo(ctx, operator, msg.GroupName)
-	}
-	if !found {
-		return nil, types.ErrNoSuchGroup
-	}
+// 	var groupInfo *types.GroupInfo
+// 	found := false
+// 	if msg.Id.GT(sdk.NewUint(0)) {
+// 		groupInfo, found = k.Keeper.GetGroupInfoById(ctx, msg.Id)
+// 	} else {
+// 		groupInfo, found = k.Keeper.GetGroupInfo(ctx, operator, msg.GroupName)
+// 	}
+// 	if !found {
+// 		return nil, types.ErrNoSuchGroup
+// 	}
 
-	if groupInfo.SourceType != types.SOURCE_TYPE_ORIGIN {
-		return nil, types.ErrAlreadyMirrored
-	}
+// 	if groupInfo.SourceType != types.SOURCE_TYPE_ORIGIN {
+// 		return nil, types.ErrAlreadyMirrored
+// 	}
 
-	if operator.String() != groupInfo.Owner {
-		return nil, types.ErrAccessDenied
-	}
+// 	if operator.String() != groupInfo.Owner {
+// 		return nil, types.ErrAccessDenied
+// 	}
 
-	mirrorPackage := types.MirrorGroupSynPackage{
-		Id:    groupInfo.Id.BigInt(),
-		Owner: operator,
-	}
+// 	mirrorPackage := types.MirrorGroupSynPackage{
+// 		Id:    groupInfo.Id.BigInt(),
+// 		Owner: operator,
+// 	}
 
-	encodedPackage, err := mirrorPackage.Serialize()
-	if err != nil {
-		return nil, types.ErrInvalidCrossChainPackage
-	}
+// 	encodedPackage, err := mirrorPackage.Serialize()
+// 	if err != nil {
+// 		return nil, types.ErrInvalidCrossChainPackage
+// 	}
 
-	wrapPackage := types.CrossChainPackage{
-		OperationType: types.OperationMirrorGroup,
-		Package:       encodedPackage,
-	}
-	encodedWrapPackage := wrapPackage.MustSerialize()
+// 	wrapPackage := types.CrossChainPackage{
+// 		OperationType: types.OperationMirrorGroup,
+// 		Package:       encodedPackage,
+// 	}
+// 	encodedWrapPackage := wrapPackage.MustSerialize()
 
-	relayerFee := k.Keeper.MirrorGroupRelayerFee(ctx, destChainId)
-	ackRelayerFee := k.Keeper.MirrorGroupAckRelayerFee(ctx, destChainId)
+// 	relayerFee := k.Keeper.MirrorGroupRelayerFee(ctx, destChainId)
+// 	ackRelayerFee := k.Keeper.MirrorGroupAckRelayerFee(ctx, destChainId)
 
-	_, err = k.crossChainKeeper.CreateRawIBCPackageWithFee(ctx, destChainId,
-		types.GroupChannelId, sdk.SynCrossChainPackageType, encodedWrapPackage, relayerFee, ackRelayerFee)
-	if err != nil {
-		return nil, err
-	}
+// 	_, err = k.crossChainKeeper.CreateRawIBCPackageWithFee(ctx, destChainId,
+// 		types.GroupChannelId, sdk.SynCrossChainPackageType, encodedWrapPackage, relayerFee, ackRelayerFee)
+// 	if err != nil {
+// 		return nil, err
+// 	}
 
-	// update source type to pending
-	groupInfo.SourceType = types.SOURCE_TYPE_MIRROR_PENDING
-	k.Keeper.SetGroupInfo(ctx, groupInfo)
+// 	// update source type to pending
+// 	groupInfo.SourceType = types.SOURCE_TYPE_MIRROR_PENDING
+// 	k.Keeper.SetGroupInfo(ctx, groupInfo)
 
-	if err := ctx.EventManager().EmitTypedEvents(&types.EventMirrorGroup{
-		Owner:       groupInfo.Owner,
-		GroupName:   groupInfo.GroupName,
-		GroupId:     groupInfo.Id,
-		DestChainId: uint32(destChainId),
-	}); err != nil {
-		return nil, err
-	}
+// 	if err := ctx.EventManager().EmitTypedEvents(&types.EventMirrorGroup{
+// 		Owner:       groupInfo.Owner,
+// 		GroupName:   groupInfo.GroupName,
+// 		GroupId:     groupInfo.Id,
+// 		DestChainId: uint32(destChainId),
+// 	}); err != nil {
+// 		return nil, err
+// 	}
 
-	return nil, nil
-}
+// 	return nil, nil
+// }
 
 func (k msgServer) UpdateParams(goCtx context.Context, req *types.MsgUpdateParams) (*types.MsgUpdateParamsResponse, error) {
 	if k.GetAuthority() != req.Authority {

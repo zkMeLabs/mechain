@@ -14,7 +14,7 @@ import "greenfield/payment/payment_account.proto";
 import "greenfield/payment/payment_account_count.proto";
 import "greenfield/payment/stream_record.proto";
 
-option go_package = "github.com/bnb-chain/greenfield/x/payment/types";
+option go_package = "github.com/evmos/evmos/v12/x/payment/types";
 
 // Query defines the gRPC querier service.
 service Query {

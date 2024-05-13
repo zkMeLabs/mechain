@@ -4,7 +4,7 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/bnb-chain/greenfield/x/virtualgroup/types"
+	"github.com/evmos/evmos/v12/x/virtualgroup/types"
 )
 
 func (k Keeper) DepositDenomForGVG(ctx sdk.Context) (res string) {
