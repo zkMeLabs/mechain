@@ -1,17 +1,11 @@
 name: "Pull Request Labeler"
 on:
   pull_request:
-  push:
-    branches:
-      - main
 
 jobs:
   triage:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
       - uses: actions/labeler@v5
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
