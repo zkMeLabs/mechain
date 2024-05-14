@@ -230,6 +230,30 @@ func (k Keeper) QuerySpOptimalGlobalVirtualGroupFamily(goCtx context.Context, re
 				}
 			}
 		}
+	case types.Strategy_Minimal_Free_Store_Size:
+		for _, gvgfID := range stats.GlobalVirtualGroupFamilyIds {
+			gvgFamily, found := k.GetGVGFamily(ctx, gvgfID)
+			if !found {
+				return nil, types.ErrGVGFamilyNotExist
+			}
+			totalStakingSize, stored, err := k.GetGlobalVirtualFamilyTotalStakingAndStoredSize(ctx, gvgFamily)
+			if err != nil {
+				return nil, err
+			}
+			currentFreeStoreSize = math.Min(float64(totalStakingSize), float64(k.MaxStoreSizePerFamily(ctx))) - float64(stored)
+			if currentFreeStoreSize < freeStoreSize {
+				familyID = gvgFamily.Id
+				freeStoreSize = currentFreeStoreSize
+			}
+		}
+	case types.Strategy_Oldest_Create_Time:
+		if len(stats.GlobalVirtualGroupFamilyIds) != 0 {
+			familyID = stats.GlobalVirtualGroupFamilyIds[0]
+		}
+	case types.Strategy_Recentest_Create_Time:
+		if len(stats.GlobalVirtualGroupFamilyIds) != 0 {
+			familyID = stats.GlobalVirtualGroupFamilyIds[len(stats.GlobalVirtualGroupFamilyIds)-1]
+		}
 	default:
 		return nil, status.Error(codes.InvalidArgument, "invalid pick vgf strategy")
 	}
