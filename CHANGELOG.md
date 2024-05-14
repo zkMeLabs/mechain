@@ -49,6 +49,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 - (dev) [#40](https://github.com/zkMeLabs/mechain/pull/40) Add four quick command and fix stop node bug.
 - (deps) [#50](https://github.com/zkMeLabs/mechain/pull/50) Bump btcd version to [`v0.23.0`](https://github.com/btcsuite/btcd/releases/tag/v0.23.0)
 - (dev) [#68](https://github.com/zkMeLabs/mechain/pull/68) Fix the issue of dev.js script not working after replacing greenfield-cosmos-sdk.
+- (deps) [#69](https://github.com/zkMeLabs/mechain/pull/69) Bump mechain-cosmos-sdk version to v0.1.0
 
 ### Bug Fixes
 
