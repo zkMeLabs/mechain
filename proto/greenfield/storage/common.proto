@@ -4,7 +4,7 @@ package greenfield.storage;
 import "cosmos_proto/cosmos.proto";
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/evmos/evmos/v12/x/storage/types";
+option go_package = "github.com/bnb-chain/greenfield/x/storage/types";
 
 // SourceType represents the source of resource creation, which can
 // from Greenfield native or from a cross-chain transfer from BSC

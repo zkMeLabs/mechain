@@ -4,7 +4,7 @@ package greenfield.payment;
 import "cosmos_proto/cosmos.proto";
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/evmos/evmos/v12/x/payment/types";
+option go_package = "github.com/bnb-chain/greenfield/x/payment/types";
 
 // StreamAccountStatus defines the status of a stream account
 enum StreamAccountStatus {

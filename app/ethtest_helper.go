@@ -61,20 +61,21 @@ var EthDefaultConsensusParams = &tmtypes.ConsensusParams{
 }
 
 // EthSetup initializes a new EvmosApp. A Nop logger is set in EvmosApp.
-func EthSetup(isCheckTx bool, patchGenesis func(*Evmos, simapp.GenesisState) simapp.GenesisState) *Evmos {
+func EthSetup(isCheckTx bool, patchGenesis func(*App, simapp.GenesisState) simapp.GenesisState) *App {
 	return EthSetupWithDB(isCheckTx, patchGenesis, dbm.NewMemDB())
 }
 
 // EthSetupWithDB initializes a new EvmosApp. A Nop logger is set in EvmosApp.
-func EthSetupWithDB(isCheckTx bool, patchGenesis func(*Evmos, simapp.GenesisState) simapp.GenesisState, db dbm.DB) *Evmos {
+func EthSetupWithDB(isCheckTx bool, patchGenesis func(*App, simapp.GenesisState) simapp.GenesisState, db dbm.DB) *App {
 	chainID := utils.TestnetChainID + "-1"
-	app := NewEvmos(log.NewNopLogger(),
+	app := New(log.NewNopLogger(),
 		db,
 		nil,
 		true,
 		DefaultNodeHome,
 		5,
 		encoding.MakeConfig(ModuleBasics),
+		&AppConfig{CrossChain: NewDefaultAppConfig().CrossChain},
 		simtestutil.NewAppOptionsWithFlagHome(DefaultNodeHome),
 		baseapp.SetChainID(chainID),
 	)

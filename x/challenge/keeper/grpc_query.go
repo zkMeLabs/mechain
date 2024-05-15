@@ -8,7 +8,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/evmos/evmos/v12/x/challenge/types"
+	"github.com/bnb-chain/greenfield/x/challenge/types"
 )
 
 var _ types.QueryServer = Keeper{}
@@ -77,5 +77,4 @@ func (k Keeper) InturnAttestationSubmitter(goCtx context.Context, req *types.Que
 		BlsPubKey:      hex.EncodeToString(blsKey),
 		SubmitInterval: interval,
 	}, nil
-
 }

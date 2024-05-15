@@ -8,7 +8,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
 
-	"github.com/evmos/evmos/v12/x/payment/types"
+	"github.com/bnb-chain/greenfield/x/payment/types"
 )
 
 // SetPaymentAccount set a specific paymentAccount in the store from its index

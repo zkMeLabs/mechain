@@ -5,7 +5,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	"github.com/evmos/evmos/v12/types/s3util"
+	"github.com/bnb-chain/greenfield/types/s3util"
 )
 
 const TypeMsgSubmit = "submit"

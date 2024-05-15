@@ -442,7 +442,7 @@ var _ = Describe("Convert outgoing ERC20 to IBC", Ordered, func() {
 			transferMsg := transfertypes.NewMsgTransfer(originEndpoint.ChannelConfig.PortID, originEndpoint.ChannelID, sdk.NewCoin(coin, sdk.NewInt(amount*2)), sender, receiver, timeoutHeight, 0, "")
 
 			originChain.Coordinator.UpdateTimeForChain(originChain)
-			denom := originChain.App.(*app.Evmos).StakingKeeper.BondDenom(originChain.GetContext())
+			denom := originChain.App.(*app.App).StakingKeeper.BondDenom(originChain.GetContext())
 			fee := sdk.Coins{sdk.NewInt64Coin(denom, ibctesting.DefaultFeeAmt)}
 
 			_, _, err = ibctesting.SignAndDeliver(
@@ -582,7 +582,7 @@ var _ = Describe("Convert outgoing ERC20 to IBC", Ordered, func() {
 
 			originChain.Coordinator.UpdateTimeForChain(originChain)
 
-			denom := originChain.App.(*app.Evmos).StakingKeeper.BondDenom(originChain.GetContext())
+			denom := originChain.App.(*app.App).StakingKeeper.BondDenom(originChain.GetContext())
 			fee := sdk.Coins{sdk.NewInt64Coin(denom, ibctesting.DefaultFeeAmt)}
 
 			_, _, err = ibctesting.SignAndDeliver(
@@ -707,7 +707,7 @@ var _ = Describe("Convert outgoing ERC20 to IBC", Ordered, func() {
 
 			originChain.Coordinator.UpdateTimeForChain(originChain)
 
-			denom := originChain.App.(*app.Evmos).StakingKeeper.BondDenom(originChain.GetContext())
+			denom := originChain.App.(*app.App).StakingKeeper.BondDenom(originChain.GetContext())
 			fee := sdk.Coins{sdk.NewInt64Coin(denom, ibctesting.DefaultFeeAmt)}
 
 			_, _, err = ibctesting.SignAndDeliver(

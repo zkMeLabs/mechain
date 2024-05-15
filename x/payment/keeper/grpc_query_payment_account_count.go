@@ -9,7 +9,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/evmos/evmos/v12/x/payment/types"
+	"github.com/bnb-chain/greenfield/x/payment/types"
 )
 
 func (k Keeper) PaymentAccountCounts(c context.Context, req *types.QueryPaymentAccountCountsRequest) (*types.QueryPaymentAccountCountsResponse, error) {
@@ -36,7 +36,6 @@ func (k Keeper) PaymentAccountCounts(c context.Context, req *types.QueryPaymentA
 		paymentAccountCounts = append(paymentAccountCounts, paymentAccountCount)
 		return nil
 	})
-
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}

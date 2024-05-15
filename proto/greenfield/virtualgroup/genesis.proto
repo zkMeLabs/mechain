@@ -4,7 +4,7 @@ package greenfield.virtualgroup;
 import "gogoproto/gogo.proto";
 import "greenfield/virtualgroup/params.proto";
 
-option go_package = "github.com/evmos/evmos/v12/x/virtualgroup/types";
+option go_package = "github.com/bnb-chain/greenfield/x/virtualgroup/types";
 
 // GenesisState defines the virtualgroup module's genesis state.
 // GenesisState defines the raw genesis transaction in JSON.

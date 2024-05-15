@@ -6,8 +6,8 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/stretchr/testify/require"
 
-	"github.com/evmos/evmos/v12/testutil/sample"
-	gnfderrors "github.com/evmos/evmos/v12/types/errors"
+	"github.com/bnb-chain/greenfield/testutil/sample"
+	gnfderrors "github.com/bnb-chain/greenfield/types/errors"
 )
 
 func TestMsgCancelSwapOut_ValidateBasic(t *testing.T) {

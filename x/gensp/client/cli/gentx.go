@@ -24,7 +24,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 
-	"github.com/evmos/evmos/v12/x/sp/client/cli"
+	"github.com/bnb-chain/greenfield/x/sp/client/cli"
 )
 
 // SPGenTxCmd builds the application's gentx command.

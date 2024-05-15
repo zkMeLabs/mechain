@@ -3,7 +3,7 @@ package greenfield.payment;
 
 import "cosmos_proto/cosmos.proto";
 
-option go_package = "github.com/evmos/evmos/v12/x/payment/types";
+option go_package = "github.com/bnb-chain/greenfield/x/payment/types";
 
 // PaymentAccountCount defines the state struct which stores the number of payment accounts for an account
 message PaymentAccountCount {

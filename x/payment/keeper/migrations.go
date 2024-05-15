@@ -3,7 +3,7 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	v2 "github.com/evmos/evmos/v12/x/payment/keeper/v2"
+	v2 "github.com/bnb-chain/greenfield/x/payment/keeper/v2"
 )
 
 type Migrator struct {

@@ -10,11 +10,11 @@ import (
 	"github.com/prysmaticlabs/prysm/crypto/bls"
 	"github.com/stretchr/testify/require"
 
-	"github.com/evmos/evmos/v12/testutil/sample"
-	"github.com/evmos/evmos/v12/x/challenge/types"
-	sptypes "github.com/evmos/evmos/v12/x/sp/types"
-	storagetypes "github.com/evmos/evmos/v12/x/storage/types"
-	virtualgrouptypes "github.com/evmos/evmos/v12/x/virtualgroup/types"
+	"github.com/bnb-chain/greenfield/testutil/sample"
+	"github.com/bnb-chain/greenfield/x/challenge/types"
+	sptypes "github.com/bnb-chain/greenfield/x/sp/types"
+	storagetypes "github.com/bnb-chain/greenfield/x/storage/types"
+	virtualgrouptypes "github.com/bnb-chain/greenfield/x/virtualgroup/types"
 )
 
 func (s *TestSuite) TestAttest_Invalid() {
@@ -41,7 +41,8 @@ func (s *TestSuite) TestAttest_Invalid() {
 		Id:           math.NewUint(10),
 		ObjectName:   existObjectName,
 		ObjectStatus: storagetypes.OBJECT_STATUS_SEALED,
-		PayloadSize:  500}
+		PayloadSize:  500,
+	}
 	s.storageKeeper.EXPECT().GetObjectInfoById(gomock.Any(), gomock.Eq(math.NewUint(10))).
 		Return(existObject, true).AnyTimes()
 
@@ -143,7 +144,8 @@ func (s *TestSuite) TestAttest_Heartbeat() {
 		ObjectName:   "existobject",
 		BucketName:   existBucket.BucketName,
 		ObjectStatus: storagetypes.OBJECT_STATUS_SEALED,
-		PayloadSize:  500}
+		PayloadSize:  500,
+	}
 	s.storageKeeper.EXPECT().GetObjectInfoById(gomock.Any(), gomock.Eq(math.NewUint(10))).
 		Return(existObject, true).AnyTimes()
 
@@ -229,7 +231,8 @@ func (s *TestSuite) TestAttest_Normal() {
 		ObjectName:   "existobject1",
 		BucketName:   existBucket.BucketName,
 		ObjectStatus: storagetypes.OBJECT_STATUS_SEALED,
-		PayloadSize:  500}
+		PayloadSize:  500,
+	}
 	s.storageKeeper.EXPECT().GetObjectInfoById(gomock.Any(), gomock.Eq(math.NewUint(10))).
 		Return(existObject1, true).AnyTimes()
 
@@ -238,7 +241,8 @@ func (s *TestSuite) TestAttest_Normal() {
 		ObjectName:   "existobject2",
 		BucketName:   existBucket.BucketName,
 		ObjectStatus: storagetypes.OBJECT_STATUS_SEALED,
-		PayloadSize:  500}
+		PayloadSize:  500,
+	}
 	s.storageKeeper.EXPECT().GetObjectInfoById(gomock.Any(), gomock.Eq(math.NewUint(100))).
 		Return(existObject2, true).AnyTimes()
 

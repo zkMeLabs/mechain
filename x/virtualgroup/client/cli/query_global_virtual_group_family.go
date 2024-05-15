@@ -8,7 +8,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/spf13/cobra"
 
-	"github.com/evmos/evmos/v12/x/virtualgroup/types"
+	"github.com/bnb-chain/greenfield/x/virtualgroup/types"
 )
 
 var _ = strconv.Itoa(0)

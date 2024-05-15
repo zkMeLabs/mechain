@@ -12,8 +12,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/mint"
 	"github.com/stretchr/testify/require"
 
-	"github.com/evmos/evmos/v12/x/permission/keeper"
-	"github.com/evmos/evmos/v12/x/permission/types"
+	"github.com/bnb-chain/greenfield/x/permission/keeper"
+	"github.com/bnb-chain/greenfield/x/permission/types"
 )
 
 func makeKeeper(t *testing.T) (*keeper.Keeper, sdk.Context) {

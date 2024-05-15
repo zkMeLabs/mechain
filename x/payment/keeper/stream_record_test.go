@@ -10,8 +10,8 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
 
-	"github.com/evmos/evmos/v12/testutil/sample"
-	"github.com/evmos/evmos/v12/x/payment/types"
+	"github.com/bnb-chain/greenfield/testutil/sample"
+	"github.com/bnb-chain/greenfield/x/payment/types"
 )
 
 func TestTryResumeStreamRecord_InResumingOrSettling(t *testing.T) {
@@ -132,7 +132,7 @@ func TestTryResumeStreamRecord_ResumeInMultipleBlocks(t *testing.T) {
 
 	// try to resume stream record
 	err := keeper.TryResumeStreamRecord(ctx, streamRecord, rate.SubRaw(10).MulRaw(int64(params.VersionedParams.ReserveTime)))
-	require.NoError(t, err) //only added static balance
+	require.NoError(t, err) // only added static balance
 	found := keeper.ExistsAutoResumeRecord(ctx, ctx.BlockTime().Unix(), user)
 	require.True(t, !found)
 	streamRecord, _ = keeper.GetStreamRecord(ctx, user)
@@ -692,7 +692,7 @@ func TestAutoSettle_SettleInMultipleBlocks_AutoResumeExists(t *testing.T) {
 
 	// resume the stream record
 	err := keeper.TryResumeStreamRecord(ctx, userStreamRecord, rate.MulRaw(int64(params.VersionedParams.ReserveTime)))
-	require.NoError(t, err) //only added static balance
+	require.NoError(t, err) // only added static balance
 	found := keeper.ExistsAutoResumeRecord(ctx, ctx.BlockTime().Unix(), user)
 	require.True(t, found)
 	userStreamRecord, _ = keeper.GetStreamRecord(ctx, user)
@@ -796,7 +796,8 @@ func TestSettleStreamRecord(t *testing.T) {
 	rate := sdkmath.NewInt(-100)
 	staticBalance := sdkmath.NewInt(1e10)
 	change := types.NewDefaultStreamRecordChangeWithAddr(user).WithRateChange(rate).WithStaticBalanceChange(staticBalance)
-	sr := &types.StreamRecord{Account: user.String(),
+	sr := &types.StreamRecord{
+		Account:           user.String(),
 		OutFlowCount:      1,
 		StaticBalance:     sdkmath.ZeroInt(),
 		BufferBalance:     sdkmath.ZeroInt(),

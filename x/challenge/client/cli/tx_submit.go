@@ -11,8 +11,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/spf13/cobra"
 
-	"github.com/evmos/evmos/v12/types/s3util"
-	"github.com/evmos/evmos/v12/x/challenge/types"
+	"github.com/bnb-chain/greenfield/types/s3util"
+	"github.com/bnb-chain/greenfield/x/challenge/types"
 )
 
 var _ = strconv.Itoa(0)

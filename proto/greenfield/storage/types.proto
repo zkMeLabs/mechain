@@ -8,7 +8,7 @@ import "greenfield/payment/out_flow.proto";
 import "greenfield/payment/stream_record.proto";
 import "greenfield/storage/common.proto";
 
-option go_package = "github.com/evmos/evmos/v12/x/storage/types";
+option go_package = "github.com/bnb-chain/greenfield/x/storage/types";
 
 message BucketInfo {
   // owner is the account address of bucket creator, it is also the bucket owner.

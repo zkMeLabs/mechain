@@ -8,7 +8,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/spf13/cobra"
 
-	"github.com/evmos/evmos/v12/x/challenge/types"
+	"github.com/bnb-chain/greenfield/x/challenge/types"
 )
 
 // GetQueryCmd returns the cli query commands for this module
@@ -96,7 +96,6 @@ func CmdLatestAttestedChallenges() *cobra.Command {
 		Short: "Query latest attested challenges",
 		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
 				return err

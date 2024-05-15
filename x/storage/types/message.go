@@ -11,12 +11,12 @@ import (
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 	"github.com/cosmos/gogoproto/proto"
 
-	grn2 "github.com/evmos/evmos/v12/types"
-	"github.com/evmos/evmos/v12/types/common"
-	gnfderrors "github.com/evmos/evmos/v12/types/errors"
-	"github.com/evmos/evmos/v12/types/resource"
-	"github.com/evmos/evmos/v12/types/s3util"
-	permtypes "github.com/evmos/evmos/v12/x/permission/types"
+	grn2 "github.com/bnb-chain/greenfield/types"
+	"github.com/bnb-chain/greenfield/types/common"
+	gnfderrors "github.com/bnb-chain/greenfield/types/errors"
+	"github.com/bnb-chain/greenfield/types/resource"
+	"github.com/bnb-chain/greenfield/types/s3util"
+	permtypes "github.com/bnb-chain/greenfield/x/permission/types"
 )
 
 const (
@@ -1395,15 +1395,15 @@ func (msg *MsgDeletePolicy) ValidateRuntime(ctx sdk.Context) error {
 	return nil
 }
 
-// // NewMsgMirrorBucket creates a new MsgMirrorBucket instance
-// func NewMsgMirrorBucket(operator sdk.AccAddress, destChainId sdk.ChainID, id Uint, bucketName string) *MsgMirrorBucket {
-// 	return &MsgMirrorBucket{
-// 		Operator:    operator.String(),
-// 		Id:          id,
-// 		BucketName:  bucketName,
-// 		DestChainId: uint32(destChainId),
-// 	}
-// }
+// NewMsgMirrorBucket creates a new MsgMirrorBucket instance
+func NewMsgMirrorBucket(operator sdk.AccAddress, destChainId sdk.ChainID, id Uint, bucketName string) *MsgMirrorBucket {
+	return &MsgMirrorBucket{
+		Operator:    operator.String(),
+		Id:          id,
+		BucketName:  bucketName,
+		DestChainId: uint32(destChainId),
+	}
+}
 
 // Route implements the sdk.Msg interface.
 func (msg *MsgMirrorBucket) Route() string {
@@ -1452,16 +1452,16 @@ func (msg *MsgMirrorBucket) ValidateBasic() error {
 	return nil
 }
 
-// // NewMsgMirrorObject creates a new MsgMirrorObject instance
-// func NewMsgMirrorObject(operator sdk.AccAddress, destChainId sdk.ChainID, id Uint, bucketName, objectName string) *MsgMirrorObject {
-// 	return &MsgMirrorObject{
-// 		Operator:    operator.String(),
-// 		DestChainId: uint32(destChainId),
-// 		Id:          id,
-// 		BucketName:  bucketName,
-// 		ObjectName:  objectName,
-// 	}
-// }
+// NewMsgMirrorObject creates a new MsgMirrorObject instance
+func NewMsgMirrorObject(operator sdk.AccAddress, destChainId sdk.ChainID, id Uint, bucketName, objectName string) *MsgMirrorObject {
+	return &MsgMirrorObject{
+		Operator:    operator.String(),
+		DestChainId: uint32(destChainId),
+		Id:          id,
+		BucketName:  bucketName,
+		ObjectName:  objectName,
+	}
+}
 
 // Route implements the sdk.Msg interface.
 func (msg *MsgMirrorObject) Route() string {
@@ -1518,15 +1518,15 @@ func (msg *MsgMirrorObject) ValidateBasic() error {
 	return nil
 }
 
-// // NewMsgMirrorGroup creates a new MsgMirrorGroup instance
-// func NewMsgMirrorGroup(operator sdk.AccAddress, destChainId sdk.ChainID, id Uint, groupName string) *MsgMirrorGroup {
-// 	return &MsgMirrorGroup{
-// 		Operator:    operator.String(),
-// 		DestChainId: uint32(destChainId),
-// 		Id:          id,
-// 		GroupName:   groupName,
-// 	}
-// }
+// NewMsgMirrorGroup creates a new MsgMirrorGroup instance
+func NewMsgMirrorGroup(operator sdk.AccAddress, destChainId sdk.ChainID, id Uint, groupName string) *MsgMirrorGroup {
+	return &MsgMirrorGroup{
+		Operator:    operator.String(),
+		DestChainId: uint32(destChainId),
+		Id:          id,
+		GroupName:   groupName,
+	}
+}
 
 // Route implements the sdk.Msg interface.
 func (msg *MsgMirrorGroup) Route() string {

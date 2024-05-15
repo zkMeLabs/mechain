@@ -34,11 +34,11 @@ import (
 	"github.com/evmos/evmos/v12/sdk/types"
 
 	// bridgetypes "github.com/evmos/evmos/v12/x/bridge/types"
-	challengetypes "github.com/evmos/evmos/v12/x/challenge/types"
-	paymenttypes "github.com/evmos/evmos/v12/x/payment/types"
-	sptypes "github.com/evmos/evmos/v12/x/sp/types"
-	storagetypes "github.com/evmos/evmos/v12/x/storage/types"
-	virtualgroupmoduletypes "github.com/evmos/evmos/v12/x/virtualgroup/types"
+	challengetypes "github.com/bnb-chain/greenfield/x/challenge/types"
+	paymenttypes "github.com/bnb-chain/greenfield/x/payment/types"
+	sptypes "github.com/bnb-chain/greenfield/x/sp/types"
+	storagetypes "github.com/bnb-chain/greenfield/x/storage/types"
+	virtualgroupmoduletypes "github.com/bnb-chain/greenfield/x/virtualgroup/types"
 )
 
 // AuthQueryClient is a type to define the auth types Query Client

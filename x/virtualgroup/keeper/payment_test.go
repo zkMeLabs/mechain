@@ -16,11 +16,11 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/evmos/evmos/v12/testutil/sample"
-	"github.com/evmos/evmos/v12/x/challenge"
-	sptypes "github.com/evmos/evmos/v12/x/sp/types"
-	"github.com/evmos/evmos/v12/x/virtualgroup/keeper"
-	"github.com/evmos/evmos/v12/x/virtualgroup/types"
+	"github.com/bnb-chain/greenfield/testutil/sample"
+	"github.com/bnb-chain/greenfield/x/challenge"
+	sptypes "github.com/bnb-chain/greenfield/x/sp/types"
+	"github.com/bnb-chain/greenfield/x/virtualgroup/keeper"
+	"github.com/bnb-chain/greenfield/x/virtualgroup/types"
 )
 
 type TestSuite struct {
@@ -98,9 +98,11 @@ func (s *TestSuite) TestSettleAndDistributeGVGFamily() {
 }
 
 func (s *TestSuite) TestSettleAndDistributeGVG() {
-	gvg := &types.GlobalVirtualGroup{Id: 1,
+	gvg := &types.GlobalVirtualGroup{
+		Id:                    1,
 		VirtualPaymentAddress: sample.RandAccAddress().String(),
-		SecondarySpIds:        []uint32{3, 6, 9}}
+		SecondarySpIds:        []uint32{3, 6, 9},
+	}
 
 	s.paymentKeeper.EXPECT().QueryDynamicBalance(gomock.Any(), gomock.Any()).
 		Return(math.ZeroInt(), nil)

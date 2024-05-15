@@ -8,9 +8,9 @@ import (
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
 
-	"github.com/evmos/evmos/v12/testutil/sample"
-	paymentsimulation "github.com/evmos/evmos/v12/x/payment/simulation"
-	"github.com/evmos/evmos/v12/x/payment/types"
+	"github.com/bnb-chain/greenfield/testutil/sample"
+	paymentsimulation "github.com/bnb-chain/greenfield/x/payment/simulation"
+	"github.com/bnb-chain/greenfield/x/payment/types"
 )
 
 // avoid unused import issue

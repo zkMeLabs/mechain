@@ -7,9 +7,9 @@ import (
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
 
-	"github.com/evmos/evmos/v12/testutil/sample"
-	permissionsimulation "github.com/evmos/evmos/v12/x/permission/simulation"
-	"github.com/evmos/evmos/v12/x/permission/types"
+	"github.com/bnb-chain/greenfield/testutil/sample"
+	permissionsimulation "github.com/bnb-chain/greenfield/x/permission/simulation"
+	"github.com/bnb-chain/greenfield/x/permission/types"
 )
 
 // avoid unused import issue

@@ -17,8 +17,8 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	gnfderrors "github.com/evmos/evmos/v12/types/errors"
-	"github.com/evmos/evmos/v12/x/sp/types"
+	gnfderrors "github.com/bnb-chain/greenfield/types/errors"
+	"github.com/bnb-chain/greenfield/x/sp/types"
 )
 
 type msgServer struct {

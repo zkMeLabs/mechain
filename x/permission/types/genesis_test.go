@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/evmos/evmos/v12/x/permission/types"
+	"github.com/bnb-chain/greenfield/x/permission/types"
 )
 
 func TestGenesisState_Validate(t *testing.T) {

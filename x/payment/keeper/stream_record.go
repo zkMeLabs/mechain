@@ -9,8 +9,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/telemetry"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
+	"github.com/bnb-chain/greenfield/x/payment/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
-	"github.com/evmos/evmos/v12/x/payment/types"
 )
 
 func (k Keeper) CheckStreamRecord(streamRecord *types.StreamRecord) {
@@ -300,7 +300,7 @@ func (k Keeper) AutoSettle(ctx sdk.Context) {
 		}
 
 		if k.ExistsAutoResumeRecord(ctx, record.Timestamp, addr) { // this check should be cheap usually
-			continue //skip the one if the stream account is in resuming
+			continue // skip the one if the stream account is in resuming
 		}
 
 		activeFlowKey := types.OutFlowKey(addr, types.OUT_FLOW_STATUS_ACTIVE, nil)
@@ -397,7 +397,7 @@ func (k Keeper) TryResumeStreamRecord(ctx sdk.Context, streamRecord *types.Strea
 	streamRecord.CrudTimestamp = now
 
 	ctx.Logger().Debug("try to resume stream account", "streamRecord.OutFlowCount", streamRecord.OutFlowCount, "params.MaxAutoResumeFlowCount", params.MaxAutoResumeFlowCount)
-	if streamRecord.OutFlowCount <= params.MaxAutoResumeFlowCount { //only rough judgement, resume directly
+	if streamRecord.OutFlowCount <= params.MaxAutoResumeFlowCount { // only rough judgement, resume directly
 		streamRecord.Status = types.STREAM_ACCOUNT_STATUS_ACTIVE
 		streamRecord.NetflowRate = totalRate
 		streamRecord.FrozenNetflowRate = sdkmath.ZeroInt()
@@ -436,7 +436,7 @@ func (k Keeper) TryResumeStreamRecord(ctx sdk.Context, streamRecord *types.Strea
 		k.SetStreamRecord(ctx, streamRecord)
 		k.UpdateAutoSettleRecord(ctx, sdk.MustAccAddressFromHex(streamRecord.Account), prevSettleTime, streamRecord.SettleTimestamp)
 		return nil
-	} else { //enqueue for resume in end block
+	} else { // enqueue for resume in end block
 		k.SetStreamRecord(ctx, streamRecord)
 		k.SetAutoResumeRecord(ctx, &types.AutoResumeRecord{
 			Timestamp: now,

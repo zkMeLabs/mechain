@@ -9,11 +9,11 @@ import (
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
-	gnfdtypes "github.com/evmos/evmos/v12/types"
-	"github.com/evmos/evmos/v12/types/errors"
-	paymenttypes "github.com/evmos/evmos/v12/x/payment/types"
-	sptypes "github.com/evmos/evmos/v12/x/sp/types"
-	"github.com/evmos/evmos/v12/x/virtualgroup/types"
+	gnfdtypes "github.com/bnb-chain/greenfield/types"
+	"github.com/bnb-chain/greenfield/types/errors"
+	paymenttypes "github.com/bnb-chain/greenfield/x/payment/types"
+	sptypes "github.com/bnb-chain/greenfield/x/sp/types"
+	"github.com/bnb-chain/greenfield/x/virtualgroup/types"
 	"github.com/ethereum/go-ethereum/crypto"
 )
 
@@ -620,6 +620,7 @@ func (k msgServer) CompleteSwapIn(goCtx context.Context, msg *types.MsgCompleteS
 	}
 	return &types.MsgCompleteSwapInResponse{}, nil
 }
+
 func (k msgServer) StorageProviderForcedExit(goCtx context.Context, msg *types.MsgStorageProviderForcedExit) (*types.MsgStorageProviderForcedExitResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	if k.GetAuthority() != msg.Authority {

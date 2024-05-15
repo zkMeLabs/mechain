@@ -6,9 +6,9 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	gnfderrors "github.com/evmos/evmos/v12/types/errors"
-	"github.com/evmos/evmos/v12/types/resource"
-	"github.com/evmos/evmos/v12/types/s3util"
+	gnfderrors "github.com/bnb-chain/greenfield/types/errors"
+	"github.com/bnb-chain/greenfield/types/resource"
+	"github.com/bnb-chain/greenfield/types/s3util"
 )
 
 const (
@@ -102,6 +102,7 @@ func (r *GRN) GetBucketAndObjectName() (string, string, error) {
 			"Can not GetBucketAndObjectName from a non-object resource type")
 	}
 }
+
 func (r *GRN) MustGetBucketAndObjectName() (string, string) {
 	bucketName, objectName, err := r.GetBucketAndObjectName()
 	if err != nil {

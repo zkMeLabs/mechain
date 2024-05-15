@@ -6,7 +6,6 @@ import (
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/ethereum/go-ethereum/crypto"
 )
 
 // NewSecondarySpSealObjectSignDoc creates the doc for all secondary sps bls signings,
@@ -25,7 +24,7 @@ func (c *SecondarySpSealObjectSignDoc) GetSignBytes() []byte {
 }
 
 func (c *SecondarySpSealObjectSignDoc) GetBlsSignHash() [32]byte {
-	return crypto.Keccak256Hash(c.GetSignBytes())
+	return sdk.Keccak256Hash(c.GetSignBytes())
 }
 
 // GenerateHash generates sha256 hash of checksums from objectInfo
@@ -51,5 +50,5 @@ func (c *SecondarySpMigrationBucketSignDoc) GetSignBytes() []byte {
 }
 
 func (c *SecondarySpMigrationBucketSignDoc) GetBlsSignHash() [32]byte {
-	return crypto.Keccak256Hash(c.GetSignBytes())
+	return sdk.Keccak256Hash(c.GetSignBytes())
 }

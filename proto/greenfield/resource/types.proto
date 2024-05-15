@@ -4,7 +4,7 @@ package greenfield.resource;
 import "cosmos_proto/cosmos.proto";
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/evmos/evmos/v12/types/resource";
+option go_package = "github.com/bnb-chain/greenfield/types/resource";
 
 enum ResourceType {
   option (gogoproto.goproto_enum_prefix) = false;

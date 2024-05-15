@@ -5,7 +5,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/evmos/evmos/v12/x/virtualgroup/types"
+	"github.com/bnb-chain/greenfield/x/virtualgroup/types"
 )
 
 func (k Keeper) InitGenesis(ctx sdk.Context, genState types.GenesisState) {

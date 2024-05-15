@@ -8,8 +8,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 
-	"github.com/evmos/evmos/v12/x/storage/keeper"
-	"github.com/evmos/evmos/v12/x/storage/types"
+	"github.com/bnb-chain/greenfield/x/storage/keeper"
+	"github.com/bnb-chain/greenfield/x/storage/types"
 )
 
 func TestGetParams(t *testing.T) {
@@ -56,5 +56,4 @@ func TestMultiVersionParams(t *testing.T) {
 	require.EqualValues(t, GetVersionedParamsWithTimestamp(k, ctx, blockTimeT1+1).MaxSegmentSize, 1)
 	require.EqualValues(t, GetVersionedParamsWithTimestamp(k, ctx, blockTimeT2+1).MaxSegmentSize, 2)
 	require.EqualValues(t, GetVersionedParamsWithTimestamp(k, ctx, blockTimeT3+1).MaxSegmentSize, 3)
-
 }

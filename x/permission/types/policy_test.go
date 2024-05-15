@@ -7,12 +7,12 @@ import (
 	"cosmossdk.io/math"
 	"github.com/stretchr/testify/require"
 
-	"github.com/evmos/evmos/v12/testutil/sample"
-	"github.com/evmos/evmos/v12/testutil/storage"
-	types2 "github.com/evmos/evmos/v12/types"
-	"github.com/evmos/evmos/v12/types/common"
-	"github.com/evmos/evmos/v12/types/resource"
-	"github.com/evmos/evmos/v12/x/permission/types"
+	"github.com/bnb-chain/greenfield/testutil/sample"
+	"github.com/bnb-chain/greenfield/testutil/storage"
+	types2 "github.com/bnb-chain/greenfield/types"
+	"github.com/bnb-chain/greenfield/types/common"
+	"github.com/bnb-chain/greenfield/types/resource"
+	"github.com/bnb-chain/greenfield/x/permission/types"
 )
 
 func TestPolicy_BucketBasic(t *testing.T) {

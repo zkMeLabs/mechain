@@ -19,8 +19,8 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
 	"github.com/evmos/evmos/v12/app"
-	"github.com/evmos/evmos/v12/sdk/client/test"
 	"github.com/evmos/evmos/v12/encoding"
+	"github.com/evmos/evmos/v12/sdk/client/test"
 )
 
 func NewTestApp(
@@ -30,7 +30,7 @@ func NewTestApp(
 	loadLatest bool,
 	chainID string,
 	options ...func(baseApp *baseapp.BaseApp),
-) (*app.Evmos, params.EncodingConfig, error) {
+) (*app.App, params.EncodingConfig, error) {
 	// create public key
 	privVal := mock.NewPV()
 	pubKey, _ := privVal.GetPubKey()
@@ -51,7 +51,7 @@ func NewTestApp(
 
 	encCfg := encoding.MakeConfig(app.ModuleBasics)
 	options = append(options, baseapp.SetChainID(chainID))
-	nApp := app.NewEvmos(
+	nApp := app.New(
 		logger,
 		db,
 		traceStore,

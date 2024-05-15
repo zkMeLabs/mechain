@@ -7,11 +7,11 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
 
-	"github.com/evmos/evmos/v12/testutil/sample"
-	"github.com/evmos/evmos/v12/x/challenge/types"
-	sptypes "github.com/evmos/evmos/v12/x/sp/types"
-	storagetypes "github.com/evmos/evmos/v12/x/storage/types"
-	virtualgrouptypes "github.com/evmos/evmos/v12/x/virtualgroup/types"
+	"github.com/bnb-chain/greenfield/testutil/sample"
+	"github.com/bnb-chain/greenfield/x/challenge/types"
+	sptypes "github.com/bnb-chain/greenfield/x/sp/types"
+	storagetypes "github.com/bnb-chain/greenfield/x/storage/types"
+	virtualgrouptypes "github.com/bnb-chain/greenfield/x/virtualgroup/types"
 )
 
 func (s *TestSuite) TestSubmit() {
@@ -31,7 +31,8 @@ func (s *TestSuite) TestSubmit() {
 		BucketName:   existBucketName,
 		ObjectName:   existObjectName,
 		ObjectStatus: storagetypes.OBJECT_STATUS_SEALED,
-		PayloadSize:  500}
+		PayloadSize:  500,
+	}
 	s.storageKeeper.EXPECT().GetObjectInfo(gomock.Any(), gomock.Eq(existBucketName), gomock.Eq(existObjectName)).
 		Return(existObject, true).AnyTimes()
 
@@ -48,7 +49,8 @@ func (s *TestSuite) TestSubmit() {
 		BucketName:   jailedBucketName,
 		ObjectName:   jailedObjectName,
 		ObjectStatus: storagetypes.OBJECT_STATUS_SEALED,
-		PayloadSize:  500}
+		PayloadSize:  500,
+	}
 	s.storageKeeper.EXPECT().GetObjectInfo(gomock.Any(), gomock.Eq(jailedBucketName), gomock.Eq(jailedObjectName)).
 		Return(jailedObject, true).AnyTimes()
 
@@ -142,7 +144,8 @@ func (s *TestSuite) TestSubmit() {
 				ObjectName:        existObjectName,
 				SegmentIndex:      0,
 			},
-		}, {
+		},
+		{
 			name: "success with random index",
 			msg: types.MsgSubmit{
 				Challenger:        sample.RandAccAddressHex(),
@@ -151,7 +154,8 @@ func (s *TestSuite) TestSubmit() {
 				ObjectName:        existObjectName,
 				RandomIndex:       true,
 			},
-		}, {
+		},
+		{
 			name: "success with secondary sp",
 			msg: types.MsgSubmit{
 				Challenger:        sample.RandAccAddressHex(),

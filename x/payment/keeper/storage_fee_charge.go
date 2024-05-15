@@ -7,7 +7,7 @@ import (
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/evmos/evmos/v12/x/payment/types"
+	"github.com/bnb-chain/greenfield/x/payment/types"
 )
 
 // MergeStreamRecordChanges merge changes with same address
@@ -123,7 +123,7 @@ func (k Keeper) applyFrozenUserFlows(ctx sdk.Context, userFlows types.UserFlows,
 	// the stream record could be totally frozen, or in the process of resuming
 	var activeOutFlows, frozenOutFlows []types.OutFlow
 	var activeRateChanges []types.StreamRecordChange
-	//var frozenRateChanges []types.StreamRecordChange
+	// var frozenRateChanges []types.StreamRecordChange
 	totalActiveRate, totalFrozenRate := sdk.ZeroInt(), sdk.ZeroInt()
 	for _, flowChange := range userFlows.Flows {
 		outFlow := k.GetOutFlow(ctx, sdk.MustAccAddressFromHex(streamRecord.Account), types.OUT_FLOW_STATUS_ACTIVE, sdk.MustAccAddressFromHex(flowChange.ToAddress))
@@ -133,7 +133,7 @@ func (k Keeper) applyFrozenUserFlows(ctx sdk.Context, userFlows types.UserFlows,
 			totalActiveRate = totalActiveRate.Add(flowChange.Rate)
 		} else {
 			frozenOutFlows = append(frozenOutFlows, flowChange)
-			//frozenRateChanges = append(frozenRateChanges, *types.NewDefaultStreamRecordChangeWithAddr(sdk.MustAccAddressFromHex(flowChange.ToAddress)).WithFrozenRateChange(flowChange.Rate))
+			// frozenRateChanges = append(frozenRateChanges, *types.NewDefaultStreamRecordChangeWithAddr(sdk.MustAccAddressFromHex(flowChange.ToAddress)).WithFrozenRateChange(flowChange.Rate))
 			totalFrozenRate = totalFrozenRate.Add(flowChange.Rate)
 		}
 	}
@@ -150,7 +150,7 @@ func (k Keeper) applyFrozenUserFlows(ctx sdk.Context, userFlows types.UserFlows,
 	streamRecord.OutFlowCount = uint64(int64(streamRecord.OutFlowCount) + int64(deltaActiveFlowCount) + int64(deltaFrozenFlowCount))
 
 	k.SetStreamRecord(ctx, streamRecord)
-	//only apply activeRateChanges, for frozen rate changes, the out flow to gvg & gvg family had been deducted when settling
+	// only apply activeRateChanges, for frozen rate changes, the out flow to gvg & gvg family had been deducted when settling
 	err = k.ApplyStreamRecordChanges(ctx, activeRateChanges)
 	if err != nil {
 		return fmt.Errorf("apply stream record changes failed: %w", err)

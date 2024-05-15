@@ -8,9 +8,9 @@ import (
 	reflect "reflect"
 
 	math "cosmossdk.io/math"
-	types "github.com/evmos/evmos/v12/x/sp/types"
-	types0 "github.com/evmos/evmos/v12/x/storage/types"
-	types1 "github.com/evmos/evmos/v12/x/virtualgroup/types"
+	types "github.com/bnb-chain/greenfield/x/sp/types"
+	types0 "github.com/bnb-chain/greenfield/x/storage/types"
+	types1 "github.com/bnb-chain/greenfield/x/virtualgroup/types"
 	types2 "github.com/cosmos/cosmos-sdk/types"
 	types3 "github.com/cosmos/cosmos-sdk/x/auth/types"
 	types4 "github.com/cosmos/cosmos-sdk/x/staking/types"

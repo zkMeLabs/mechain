@@ -62,15 +62,17 @@ import (
 	servercfg "github.com/evmos/evmos/v12/server/config"
 	srvflags "github.com/evmos/evmos/v12/server/flags"
 
+	gensputilcli "github.com/bnb-chain/greenfield/x/gensp/client/cli"
 	"github.com/evmos/evmos/v12/app"
 	cmdcfg "github.com/evmos/evmos/v12/cmd/config"
 	evmoskr "github.com/evmos/evmos/v12/crypto/keyring"
-	gensputilcli "github.com/evmos/evmos/v12/x/gensp/client/cli"
 )
 
 const (
 	EnvPrefix = "EVMOS"
 )
+
+var appConfig = app.NewDefaultAppConfig()
 
 // NewRootCmd creates a new root command for mechaind. It is called once in the
 // main function.
@@ -293,11 +295,12 @@ func (a appCreator) newApp(logger log.Logger, db dbm.DB, traceStore io.Writer, c
 		chainID = conf.ChainID
 	}
 
-	evmosApp := app.NewEvmos(
+	evmosApp := app.New(
 		logger, db, traceStore, true,
 		cast.ToString(appOpts.Get(flags.FlagHome)),
 		cast.ToUint(appOpts.Get(sdkserver.FlagInvCheckPeriod)),
 		a.encCfg,
+		&app.AppConfig{CrossChain: app.NewDefaultAppConfig().CrossChain},
 		appOpts,
 		baseapp.SetPruning(pruningOpts),
 		baseapp.SetEventing(cast.ToString(appOpts.Get(sdkserver.FlagEventing))),
@@ -332,20 +335,20 @@ func (a appCreator) appExport(
 	appOpts servertypes.AppOptions,
 	modulesToExport []string,
 ) (servertypes.ExportedApp, error) {
-	var evmosApp *app.Evmos
+	var evmosApp *app.App
 	homePath, ok := appOpts.Get(flags.FlagHome).(string)
 	if !ok || homePath == "" {
 		return servertypes.ExportedApp{}, errors.New("application home not set")
 	}
 
 	if height != -1 {
-		evmosApp = app.NewEvmos(logger, db, traceStore, false, "", uint(1), a.encCfg, appOpts)
+		evmosApp = app.New(logger, db, traceStore, false, "", uint(1), a.encCfg, &app.AppConfig{CrossChain: app.NewDefaultAppConfig().CrossChain}, appOpts)
 
 		if err := evmosApp.LoadHeight(height); err != nil {
 			return servertypes.ExportedApp{}, err
 		}
 	} else {
-		evmosApp = app.NewEvmos(logger, db, traceStore, true, "", uint(1), a.encCfg, appOpts)
+		evmosApp = app.New(logger, db, traceStore, true, "", uint(1), a.encCfg, &app.AppConfig{CrossChain: app.NewDefaultAppConfig().CrossChain}, appOpts)
 	}
 
 	return evmosApp.ExportAppStateAndValidators(forZeroHeight, jailAllowedAddrs, modulesToExport)

@@ -6,9 +6,9 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	staking "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	sp "github.com/evmos/evmos/v12/x/sp/types"
-	storage "github.com/evmos/evmos/v12/x/storage/types"
-	"github.com/evmos/evmos/v12/x/virtualgroup/types"
+	sp "github.com/bnb-chain/greenfield/x/sp/types"
+	storage "github.com/bnb-chain/greenfield/x/storage/types"
+	"github.com/bnb-chain/greenfield/x/virtualgroup/types"
 )
 
 type SpKeeper interface {
