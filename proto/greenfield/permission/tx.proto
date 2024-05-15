@@ -8,7 +8,7 @@ import "gogoproto/gogo.proto";
 import "greenfield/permission/params.proto";
 import "greenfield/permission/types.proto";
 
-option go_package = "github.com/evmos/evmos/v12/x/permission/types";
+option go_package = "github.com/bnb-chain/greenfield/x/permission/types";
 
 // Msg defines the Msg service.
 service Msg {

@@ -19,7 +19,7 @@ import (
 	"github.com/spf13/cobra"
 	flag "github.com/spf13/pflag"
 
-	"github.com/evmos/evmos/v12/x/sp/types"
+	"github.com/bnb-chain/greenfield/x/sp/types"
 )
 
 // GetTxCmd returns the transaction commands for this module
@@ -281,7 +281,6 @@ func CmdDeposit() *cobra.Command {
 		Short: "SP stake tokens from funding account",
 		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err

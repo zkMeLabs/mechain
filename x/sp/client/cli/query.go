@@ -9,7 +9,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/spf13/cobra"
 
-	"github.com/evmos/evmos/v12/x/sp/types"
+	"github.com/bnb-chain/greenfield/x/sp/types"
 )
 
 // GetQueryCmd returns the cli query commands for this module
@@ -42,7 +42,6 @@ func CmdStorageProviders() *cobra.Command {
 		Short: "Query sp info of all storage providers",
 		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
 				return err

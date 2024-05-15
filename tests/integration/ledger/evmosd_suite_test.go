@@ -45,7 +45,7 @@ var s *LedgerTestSuite
 type LedgerTestSuite struct {
 	suite.Suite
 
-	app *app.Evmos
+	app *app.App
 	ctx sdk.Context
 
 	ledger       *mocks.SECP256K1

@@ -15,8 +15,8 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/evmos/evmos/v12/x/sp/keeper"
-	"github.com/evmos/evmos/v12/x/sp/types"
+	"github.com/bnb-chain/greenfield/x/sp/keeper"
+	"github.com/bnb-chain/greenfield/x/sp/types"
 )
 
 type KeeperTestSuite struct {

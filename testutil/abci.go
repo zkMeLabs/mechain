@@ -37,7 +37,7 @@ import (
 //  2. DeliverTx
 //  3. EndBlock
 //  4. Commit
-func Commit(ctx sdk.Context, app *app.Evmos, t time.Duration, vs *tmtypes.ValidatorSet) (sdk.Context, error) {
+func Commit(ctx sdk.Context, app *app.App, t time.Duration, vs *tmtypes.ValidatorSet) (sdk.Context, error) {
 	header := ctx.BlockHeader()
 
 	if vs != nil {
@@ -69,7 +69,7 @@ func Commit(ctx sdk.Context, app *app.Evmos, t time.Duration, vs *tmtypes.Valida
 // DeliverTx delivers a cosmos tx for a given set of msgs
 func DeliverTx(
 	ctx sdk.Context,
-	appEvmos *app.Evmos,
+	appEvmos *app.App,
 	priv cryptotypes.PrivKey,
 	gasPrice *sdkmath.Int,
 	msgs ...sdk.Msg,
@@ -97,7 +97,7 @@ func DeliverTx(
 // If a private key is provided, it will attempt to sign all messages with the given private key,
 // otherwise, it will assume the messages have already been signed.
 func DeliverEthTx(
-	appEvmos *app.Evmos,
+	appEvmos *app.App,
 	priv cryptotypes.PrivKey,
 	msgs ...sdk.Msg,
 ) (abci.ResponseDeliverTx, error) {
@@ -113,7 +113,7 @@ func DeliverEthTx(
 // CheckTx checks a cosmos tx for a given set of msgs
 func CheckTx(
 	ctx sdk.Context,
-	appEvmos *app.Evmos,
+	appEvmos *app.App,
 	priv cryptotypes.PrivKey,
 	gasPrice *sdkmath.Int,
 	msgs ...sdk.Msg,
@@ -140,7 +140,7 @@ func CheckTx(
 
 // CheckEthTx checks a Ethereum tx for a given set of msgs
 func CheckEthTx(
-	appEvmos *app.Evmos,
+	appEvmos *app.App,
 	priv cryptotypes.PrivKey,
 	msgs ...sdk.Msg,
 ) (abci.ResponseCheckTx, error) {
@@ -154,7 +154,7 @@ func CheckEthTx(
 }
 
 // BroadcastTxBytes encodes a transaction and calls DeliverTx on the app.
-func BroadcastTxBytes(app *app.Evmos, txEncoder sdk.TxEncoder, tx sdk.Tx) (abci.ResponseDeliverTx, error) {
+func BroadcastTxBytes(app *app.App, txEncoder sdk.TxEncoder, tx sdk.Tx) (abci.ResponseDeliverTx, error) {
 	// bz are bytes to be broadcasted over the network
 	bz, err := txEncoder(tx)
 	if err != nil {
@@ -171,7 +171,7 @@ func BroadcastTxBytes(app *app.Evmos, txEncoder sdk.TxEncoder, tx sdk.Tx) (abci.
 }
 
 // checkTxBytes encodes a transaction and calls checkTx on the app.
-func checkTxBytes(app *app.Evmos, txEncoder sdk.TxEncoder, tx sdk.Tx) (abci.ResponseCheckTx, error) {
+func checkTxBytes(app *app.App, txEncoder sdk.TxEncoder, tx sdk.Tx) (abci.ResponseCheckTx, error) {
 	bz, err := txEncoder(tx)
 	if err != nil {
 		return abci.ResponseCheckTx{}, err

@@ -8,8 +8,8 @@ import (
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
+	"github.com/bnb-chain/greenfield/x/sp/types"
 	"github.com/evmos/evmos/v12/internals/sequence"
-	"github.com/evmos/evmos/v12/x/sp/types"
 )
 
 type (
@@ -32,9 +32,7 @@ func NewKeeper(
 	bk types.BankKeeper,
 	azk types.AuthzKeeper,
 	authority string,
-
 ) *Keeper {
-
 	k := &Keeper{
 		cdc:           cdc,
 		storeKey:      key,

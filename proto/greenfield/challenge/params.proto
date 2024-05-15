@@ -4,7 +4,7 @@ package greenfield.challenge;
 import "cosmos_proto/cosmos.proto";
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/evmos/evmos/v12/x/challenge/types";
+option go_package = "github.com/bnb-chain/greenfield/x/challenge/types";
 
 // Params defines the parameters for the module.
 message Params {

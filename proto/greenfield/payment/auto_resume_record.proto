@@ -3,7 +3,7 @@ package greenfield.payment;
 
 import "cosmos_proto/cosmos.proto";
 
-option go_package = "github.com/evmos/evmos/v12/x/payment/types";
+option go_package = "github.com/bnb-chain/greenfield/x/payment/types";
 
 // AutoResumeRecord is the record keeps the auto resume information.
 // The EndBlocker of payment module will scan the list of AutoResumeRecord

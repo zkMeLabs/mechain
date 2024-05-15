@@ -12,7 +12,7 @@ import "greenfield/storage/params.proto";
 import "greenfield/storage/types.proto";
 import "greenfield/virtualgroup/types.proto";
 
-option go_package = "github.com/evmos/evmos/v12/x/storage/types";
+option go_package = "github.com/bnb-chain/greenfield/x/storage/types";
 
 // Query defines the gRPC querier service.
 service Query {

@@ -16,10 +16,10 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/evmos/evmos/v12/testutil/sample"
-	spmodule "github.com/evmos/evmos/v12/x/sp"
-	"github.com/evmos/evmos/v12/x/sp/keeper"
-	"github.com/evmos/evmos/v12/x/sp/types"
+	"github.com/bnb-chain/greenfield/testutil/sample"
+	spmodule "github.com/bnb-chain/greenfield/x/sp"
+	"github.com/bnb-chain/greenfield/x/sp/keeper"
+	"github.com/bnb-chain/greenfield/x/sp/types"
 )
 
 type TestSuite struct {
@@ -154,7 +154,7 @@ func (s *TestSuite) TestEndBlocker_WithUpdateInterval() {
 }
 
 func (s *TestSuite) TestEndBlocker_WithoutUpdateInterval() {
-	preTime := int64(1691648908) //UTC Aug 10 2023
+	preTime := int64(1691648908) // UTC Aug 10 2023
 	s.ctx = s.ctx.WithBlockTime(time.Unix(preTime, 0))
 	globalPrice := types.GlobalSpStorePrice{
 		UpdateTimeSec:       0,

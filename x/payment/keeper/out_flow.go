@@ -4,7 +4,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/evmos/evmos/v12/x/payment/types"
+	"github.com/bnb-chain/greenfield/x/payment/types"
 )
 
 // SetOutFlow set a specific OutFlow in the store from its index
@@ -42,7 +42,7 @@ func (k Keeper) GetOutFlow(ctx sdk.Context, addr sdk.AccAddress, status types.Ou
 func (k Keeper) GetOutFlows(ctx sdk.Context, addr sdk.AccAddress) []types.OutFlow {
 	key := types.OutFlowKey(addr, types.OUT_FLOW_STATUS_ACTIVE, nil)
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.OutFlowKeyPrefix)
-	iterator := store.Iterator(key, nil) //the iterator will also include frozen out flows
+	iterator := store.Iterator(key, nil) // the iterator will also include frozen out flows
 	defer iterator.Close()
 
 	outFlows := make([]types.OutFlow, 0)

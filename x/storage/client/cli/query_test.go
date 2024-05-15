@@ -7,9 +7,9 @@ import (
 	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
 	"github.com/cosmos/gogoproto/proto"
 
-	"github.com/evmos/evmos/v12/testutil/sample"
-	"github.com/evmos/evmos/v12/x/storage/client/cli"
-	"github.com/evmos/evmos/v12/x/storage/types"
+	"github.com/bnb-chain/greenfield/testutil/sample"
+	"github.com/bnb-chain/greenfield/x/storage/client/cli"
+	"github.com/bnb-chain/greenfield/x/storage/types"
 )
 
 func (s *CLITestSuite) TestQueryCmd() {

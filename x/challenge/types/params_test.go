@@ -6,7 +6,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 
-	"github.com/evmos/evmos/v12/x/challenge/types"
+	"github.com/bnb-chain/greenfield/x/challenge/types"
 )
 
 func Test_validateParams(t *testing.T) {

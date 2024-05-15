@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"github.com/evmos/evmos/v12/x/payment/types"
+	"github.com/bnb-chain/greenfield/x/payment/types"
 )
 
 var _ types.QueryServer = Keeper{}

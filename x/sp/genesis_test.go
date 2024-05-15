@@ -14,10 +14,10 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
 
-	"github.com/evmos/evmos/v12/testutil/nullify"
-	"github.com/evmos/evmos/v12/x/sp"
-	"github.com/evmos/evmos/v12/x/sp/keeper"
-	"github.com/evmos/evmos/v12/x/sp/types"
+	"github.com/bnb-chain/greenfield/testutil/nullify"
+	"github.com/bnb-chain/greenfield/x/sp"
+	"github.com/bnb-chain/greenfield/x/sp/keeper"
+	"github.com/bnb-chain/greenfield/x/sp/types"
 )
 
 func TestGenesis(t *testing.T) {

@@ -146,9 +146,10 @@ func DefaultConfig() Config {
 // NewAppConstructor returns a new Evmos AppConstructor
 func NewAppConstructor(encodingCfg params.EncodingConfig, chainID string) AppConstructor {
 	return func(val Validator) servertypes.Application {
-		return app.NewEvmos(
+		return app.New(
 			val.Ctx.Logger, dbm.NewMemDB(), nil, true, val.Ctx.Config.RootDir, 0,
 			encodingCfg,
+			&app.AppConfig{CrossChain: app.NewDefaultAppConfig().CrossChain},
 			simutils.NewAppOptionsWithFlagHome(val.Ctx.Config.RootDir),
 			baseapp.SetPruning(pruningtypes.NewPruningOptionsFromString(val.AppConfig.Pruning)),
 			baseapp.SetMinGasPrices(val.AppConfig.MinGasPrices),

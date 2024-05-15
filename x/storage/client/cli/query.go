@@ -11,8 +11,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/spf13/cobra"
 
-	gnfd "github.com/evmos/evmos/v12/types"
-	"github.com/evmos/evmos/v12/x/storage/types"
+	gnfd "github.com/bnb-chain/greenfield/types"
+	"github.com/bnb-chain/greenfield/x/storage/types"
 )
 
 // GetQueryCmd returns the cli query commands for this module

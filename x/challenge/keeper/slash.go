@@ -8,8 +8,7 @@ import (
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/evmos/evmos/v12/x/challenge/types"
+	"github.com/bnb-chain/greenfield/x/challenge/types"
 )
 
 // SaveSlash set a specific slash in the store
@@ -48,7 +47,7 @@ func getSlashKeyBytes(spId uint32, objectId sdkmath.Uint) []byte {
 	idBytes := make([]byte, 4)
 	binary.BigEndian.PutUint32(idBytes, spId)
 	allBytes := append(idBytes, objectId.Bytes()...)
-	return crypto.Keccak256(allBytes)
+	return sdk.Keccak256(allBytes)
 }
 
 func (k Keeper) SetSpSlashAmount(ctx sdk.Context, spId uint32, amount sdkmath.Int) {

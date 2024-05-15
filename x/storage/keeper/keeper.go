@@ -14,31 +14,30 @@ import (
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 	"github.com/cosmos/gogoproto/proto"
 
-	"github.com/evmos/evmos/v12/internals/sequence"
-	gnfdtypes "github.com/evmos/evmos/v12/types"
-	types2 "github.com/evmos/evmos/v12/types"
-	"github.com/evmos/evmos/v12/types/common"
-	gnfderrors "github.com/evmos/evmos/v12/types/errors"
-	"github.com/evmos/evmos/v12/types/resource"
-	gnfdresource "github.com/evmos/evmos/v12/types/resource"
-	paymenttypes "github.com/evmos/evmos/v12/x/payment/types"
-	permtypes "github.com/evmos/evmos/v12/x/permission/types"
-	sptypes "github.com/evmos/evmos/v12/x/sp/types"
-	"github.com/evmos/evmos/v12/x/storage/types"
-	virtualgroupmoduletypes "github.com/evmos/evmos/v12/x/virtualgroup/types"
-	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/bnb-chain/greenfield/internals/sequence"
+	gnfdtypes "github.com/bnb-chain/greenfield/types"
+	types2 "github.com/bnb-chain/greenfield/types"
+	"github.com/bnb-chain/greenfield/types/common"
+	gnfderrors "github.com/bnb-chain/greenfield/types/errors"
+	"github.com/bnb-chain/greenfield/types/resource"
+	gnfdresource "github.com/bnb-chain/greenfield/types/resource"
+	paymenttypes "github.com/bnb-chain/greenfield/x/payment/types"
+	permtypes "github.com/bnb-chain/greenfield/x/permission/types"
+	sptypes "github.com/bnb-chain/greenfield/x/sp/types"
+	"github.com/bnb-chain/greenfield/x/storage/types"
+	virtualgroupmoduletypes "github.com/bnb-chain/greenfield/x/virtualgroup/types"
 )
 
 type (
 	Keeper struct {
-		cdc           codec.BinaryCodec
-		storeKey      storetypes.StoreKey
-		tStoreKey     storetypes.StoreKey
-		spKeeper      types.SpKeeper
-		paymentKeeper types.PaymentKeeper
-		accountKeeper types.AccountKeeper
-		permKeeper    types.PermissionKeeper
-		// crossChainKeeper   types.CrossChainKeeper
+		cdc                codec.BinaryCodec
+		storeKey           storetypes.StoreKey
+		tStoreKey          storetypes.StoreKey
+		spKeeper           types.SpKeeper
+		paymentKeeper      types.PaymentKeeper
+		accountKeeper      types.AccountKeeper
+		permKeeper         types.PermissionKeeper
+		crossChainKeeper   types.CrossChainKeeper
 		virtualGroupKeeper types.VirtualGroupKeeper
 
 		// sequence
@@ -58,19 +57,19 @@ func NewKeeper(
 	spKeeper types.SpKeeper,
 	paymentKeeper types.PaymentKeeper,
 	permKeeper types.PermissionKeeper,
-	// crossChainKeeper types.CrossChainKeeper,
+	crossChainKeeper types.CrossChainKeeper,
 	virtualGroupKeeper types.VirtualGroupKeeper,
 	authority string,
 ) *Keeper {
 	k := Keeper{
-		cdc:           cdc,
-		storeKey:      storeKey,
-		tStoreKey:     tStoreKey,
-		accountKeeper: accountKeeper,
-		spKeeper:      spKeeper,
-		paymentKeeper: paymentKeeper,
-		permKeeper:    permKeeper,
-		// crossChainKeeper:   crossChainKeeper,
+		cdc:                cdc,
+		storeKey:           storeKey,
+		tStoreKey:          tStoreKey,
+		accountKeeper:      accountKeeper,
+		spKeeper:           spKeeper,
+		paymentKeeper:      paymentKeeper,
+		permKeeper:         permKeeper,
+		crossChainKeeper:   crossChainKeeper,
 		virtualGroupKeeper: virtualGroupKeeper,
 		authority:          authority,
 	}
@@ -1731,7 +1730,7 @@ func (k Keeper) VerifySPAndSignature(_ sdk.Context, sp *sptypes.StorageProvider,
 	}
 	approvalAccAddress := sdk.MustAccAddressFromHex(sp.ApprovalAddress)
 
-	err := gnfdtypes.VerifySignature(approvalAccAddress, crypto.Keccak256(sigData), signature)
+	err := gnfdtypes.VerifySignature(approvalAccAddress, sdk.Keccak256(sigData), signature)
 	if err != nil {
 		return errors.Wrapf(types.ErrInvalidApproval, "verify signature error: %s", err)
 	}
@@ -2410,21 +2409,21 @@ func (k Keeper) hasGroup(ctx sdk.Context, groupID sdkmath.Uint) bool {
 	return store.Has(types.GetGroupByIDKey(groupID))
 }
 
-// func (k Keeper) GetSourceTypeByChainId(ctx sdk.Context, chainId sdk.ChainID) (types.SourceType, error) {
-// 	if chainId == 0 {
-// 		return 0, types.ErrChainNotSupported
-// 	}
+func (k Keeper) GetSourceTypeByChainId(ctx sdk.Context, chainId sdk.ChainID) (types.SourceType, error) {
+	if chainId == 0 {
+		return 0, types.ErrChainNotSupported
+	}
 
-// 	// if chainId == k.crossChainKeeper.GetDestBscChainID() {
-// 	// 	return types.SOURCE_TYPE_BSC_CROSS_CHAIN, nil
-// 	// }
+	if chainId == k.crossChainKeeper.GetDestBscChainID() {
+		return types.SOURCE_TYPE_BSC_CROSS_CHAIN, nil
+	}
 
-// 	// if chainId == k.crossChainKeeper.GetDestOpChainID() {
-// 	// 	return types.SOURCE_TYPE_OP_CROSS_CHAIN, nil
-// 	// }
+	if chainId == k.crossChainKeeper.GetDestOpChainID() {
+		return types.SOURCE_TYPE_OP_CROSS_CHAIN, nil
+	}
 
-// 	return 0, types.ErrChainNotSupported
-// }
+	return 0, types.ErrChainNotSupported
+}
 
 func (k Keeper) SetTag(ctx sdk.Context, operator sdk.AccAddress, grn types2.GRN, tags *types.ResourceTags) error {
 	store := ctx.KVStore(k.storeKey)

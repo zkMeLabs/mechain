@@ -11,10 +11,10 @@ import (
 	distributiontypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
-	"github.com/evmos/evmos/v12/x/challenge/types"
-	paymentmoduletypes "github.com/evmos/evmos/v12/x/payment/types"
-	sptypes "github.com/evmos/evmos/v12/x/sp/types"
-	storagetypes "github.com/evmos/evmos/v12/x/storage/types"
+	"github.com/bnb-chain/greenfield/x/challenge/types"
+	paymentmoduletypes "github.com/bnb-chain/greenfield/x/payment/types"
+	sptypes "github.com/bnb-chain/greenfield/x/sp/types"
+	storagetypes "github.com/bnb-chain/greenfield/x/storage/types"
 )
 
 // one_gb_bytes stands for the total bytes in 1gb
@@ -63,13 +63,13 @@ func (k msgServer) Attest(goCtx context.Context, msg *types.MsgAttest) (*types.M
 		return nil, err
 	}
 
-	//check object, and get object info
+	// check object, and get object info
 	objectInfo, found := k.StorageKeeper.GetObjectInfoById(ctx, msg.ObjectId)
 	if !found { // be noted: even the object info is not in service now, we will continue slash the storage provider
 		return nil, types.ErrUnknownBucketObject
 	}
 
-	//for migrating buckets, or swapping out, the process could be done when offline service does the verification
+	// for migrating buckets, or swapping out, the process could be done when offline service does the verification
 	bucketInfo, found := k.StorageKeeper.GetBucketInfo(ctx, objectInfo.BucketName)
 	if !found {
 		return nil, storagetypes.ErrNoSuchBucket.Wrapf("bucket not found when attest")
@@ -197,8 +197,8 @@ func (k msgServer) calculateSlashRewards(ctx sdk.Context, total sdkmath.Int, cha
 
 // doSlashAndRewards will execute the slash, transfer the rewards and emit events.
 func (k msgServer) doSlashAndRewards(ctx sdk.Context, challengeId uint64, voteResult types.VoteResult, slashAmount sdkmath.Int,
-	spID uint32, submitter, challenger sdk.AccAddress, validators []string) error {
-
+	spID uint32, submitter, challenger sdk.AccAddress, validators []string,
+) error {
 	challengerReward, eachValidatorReward, submitterReward := sdkmath.ZeroInt(), sdkmath.ZeroInt(), sdkmath.ZeroInt()
 
 	noNeedCalculation := ctx.IsUpgraded(upgradetypes.Nagqu) && slashAmount.IsZero()
@@ -232,7 +232,8 @@ func (k msgServer) doSlashAndRewards(ctx sdk.Context, challengeId uint64, voteRe
 			Amount: sdk.Coin{
 				Denom:  denom,
 				Amount: submitterReward,
-			}})
+			},
+		})
 
 		if challengerReward.IsPositive() || eachValidatorReward.IsPositive() || submitterReward.IsPositive() {
 			err := k.SpKeeper.Slash(ctx, spID, rewards)
@@ -270,7 +271,8 @@ func (k msgServer) calculateHeartbeatRewards(ctx sdk.Context, total sdkmath.Int)
 
 // doHeartbeatAndRewards will transfer the tax to distribution account and rewards to submitter.
 func (k msgServer) doHeartbeatAndRewards(ctx sdk.Context, challengeId uint64, voteResult types.VoteResult,
-	spID uint32, submitter, challenger sdk.AccAddress) error {
+	spID uint32, submitter, challenger sdk.AccAddress,
+) error {
 	totalAmount, err := k.paymentKeeper.QueryDynamicBalance(ctx, paymentmoduletypes.ValidatorTaxPoolAddress)
 	if err != nil {
 		return err

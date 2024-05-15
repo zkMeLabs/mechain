@@ -5,8 +5,8 @@ import (
 	types2 "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/golang/mock/gomock"
 
-	"github.com/evmos/evmos/v12/x/virtualgroup"
-	"github.com/evmos/evmos/v12/x/virtualgroup/types"
+	"github.com/bnb-chain/greenfield/x/virtualgroup"
+	"github.com/bnb-chain/greenfield/x/virtualgroup/types"
 )
 
 func (s *TestSuite) TestGenesis() {

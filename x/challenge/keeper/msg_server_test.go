@@ -11,13 +11,12 @@ import (
 	moduletestutil "github.com/cosmos/cosmos-sdk/types/module/testutil"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/evmos/evmos/v12/x/challenge"
-	"github.com/evmos/evmos/v12/x/challenge/keeper"
-	"github.com/evmos/evmos/v12/x/challenge/types"
+	"github.com/bnb-chain/greenfield/x/challenge"
+	"github.com/bnb-chain/greenfield/x/challenge/keeper"
+	"github.com/bnb-chain/greenfield/x/challenge/types"
 )
 
 type TestSuite struct {
@@ -43,8 +42,8 @@ func (s *TestSuite) SetupTest() {
 	testCtx := testutil.DefaultContextWithDB(s.T(), key, storetypes.NewTransientStoreKey("transient_test"))
 
 	// set mock randao mix
-	randaoMix := crypto.Keccak256([]byte{1})
-	randaoMix = append(randaoMix, crypto.Keccak256([]byte{2})...)
+	randaoMix := sdk.Keccak256([]byte{1})
+	randaoMix = append(randaoMix, sdk.Keccak256([]byte{2})...)
 	header := testCtx.Ctx.BlockHeader()
 	header.RandaoMix = randaoMix
 	testCtx = testutil.TestContext{

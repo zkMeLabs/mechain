@@ -1,8 +1,8 @@
 package keeper_test
 
 import (
-	"github.com/evmos/evmos/v12/testutil/sample"
-	"github.com/evmos/evmos/v12/x/payment/types"
+	"github.com/bnb-chain/greenfield/testutil/sample"
+	"github.com/bnb-chain/greenfield/x/payment/types"
 )
 
 func (s *TestSuite) TestDisableRefund() {

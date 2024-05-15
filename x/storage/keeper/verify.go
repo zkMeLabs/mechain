@@ -4,7 +4,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
-	paymenttypes "github.com/evmos/evmos/v12/x/payment/types"
+	paymenttypes "github.com/bnb-chain/greenfield/x/payment/types"
 )
 
 func (k Keeper) VerifyPaymentAccount(ctx sdk.Context, paymentAddress string, ownerAcc sdk.AccAddress) (sdk.AccAddress, error) {

@@ -11,7 +11,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
-	paymenttypes "github.com/evmos/evmos/v12/x/payment/types"
+	paymenttypes "github.com/bnb-chain/greenfield/x/payment/types"
 )
 
 const reconStoreKey = "reconciliation"
@@ -28,7 +28,7 @@ var (
 )
 
 // reconcile will do reconciliation for accounts balances.
-func (app *Evmos) reconcile(ctx sdk.Context, bankIavl *iavl.Store, paymentIavl *iavl.Store) {
+func (app *App) reconcile(ctx sdk.Context, bankIavl *iavl.Store, paymentIavl *iavl.Store) {
 	if ctx.BlockHeight() <= 2 {
 		return
 	}
@@ -52,7 +52,7 @@ func (app *Evmos) reconcile(ctx sdk.Context, bankIavl *iavl.Store, paymentIavl *
 }
 
 // reconBankChanges will reconcile bank balance changes
-func (app *Evmos) reconBankChanges(ctx sdk.Context, bankIavl *iavl.Store) bool {
+func (app *App) reconBankChanges(ctx sdk.Context, bankIavl *iavl.Store) bool {
 	supplyPre := sdk.Coins{}
 	balancePre := sdk.Coins{}
 	supplyCurrent := sdk.Coins{}
@@ -109,7 +109,7 @@ func (app *Evmos) reconBankChanges(ctx sdk.Context, bankIavl *iavl.Store) bool {
 }
 
 // reconPaymentChanges will reconcile payment flow rate changes
-func (app *Evmos) reconPaymentChanges(ctx sdk.Context, paymentIavl *iavl.Store) bool {
+func (app *App) reconPaymentChanges(ctx sdk.Context, paymentIavl *iavl.Store) bool {
 	flowCurrent := sdk.ZeroInt()
 	flowPre := sdk.ZeroInt()
 
@@ -126,7 +126,7 @@ func (app *Evmos) reconPaymentChanges(ctx sdk.Context, paymentIavl *iavl.Store) 
 					ctx.Logger().Error("fail to unmarshal stream record", "err", err.Error())
 				} else {
 					flowCurrent = flowCurrent.Add(sr.NetflowRate)
-					//TODO: impact performance, remove it later
+					// TODO: impact performance, remove it later
 					j, _ := json.Marshal(sr)
 					ctx.Logger().Debug("stream_record_current", "stream record", j, "addr", parseAddressFromStreamRecordKey(kBz))
 				}
@@ -144,7 +144,7 @@ func (app *Evmos) reconPaymentChanges(ctx sdk.Context, paymentIavl *iavl.Store) 
 					ctx.Logger().Error("fail to unmarshal stream record", "err", err.Error())
 				} else {
 					flowPre = flowPre.Add(sr.NetflowRate)
-					//TODO: impact performance, remove it later
+					// TODO: impact performance, remove it later
 					j, _ := json.Marshal(sr)
 					ctx.Logger().Debug("stream_record_previous", "stream record", j, "addr", parseAddressFromStreamRecordKey(kBz))
 				}
@@ -157,14 +157,14 @@ func (app *Evmos) reconPaymentChanges(ctx sdk.Context, paymentIavl *iavl.Store) 
 	return flowCurrent.Equal(flowPre)
 }
 
-func (app *Evmos) saveUnbalancedBlockHeight(ctx sdk.Context) {
+func (app *App) saveUnbalancedBlockHeight(ctx sdk.Context) {
 	reconStore := app.CommitMultiStore().GetCommitStore(sdk.NewKVStoreKey(reconStoreKey)).(*iavl.Store)
 	bz := make([]byte, 8)
 	binary.BigEndian.PutUint64(bz[:], uint64(ctx.BlockHeight()))
 	reconStore.Set(unbalancedBlockHeightKey, bz)
 }
 
-func (app *Evmos) getUnbalancedBlockHeight(ctx sdk.Context) (uint64, bool) {
+func (app *App) getUnbalancedBlockHeight(ctx sdk.Context) (uint64, bool) {
 	reconStore := app.CommitMultiStore().GetCommitStore(sdk.NewKVStoreKey(reconStoreKey)).(*iavl.Store)
 	bz := reconStore.Get(unbalancedBlockHeightKey)
 	if bz == nil {

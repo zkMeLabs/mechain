@@ -11,7 +11,7 @@ import (
 	bankexported "github.com/cosmos/cosmos-sdk/x/bank/exported"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	gensptypes "github.com/evmos/evmos/v12/x/gensp/types"
+	gensptypes "github.com/bnb-chain/greenfield/x/gensp/types"
 )
 
 // SetGenTxsInAppGenesisState - sets the genesis transactions in the app genesis state

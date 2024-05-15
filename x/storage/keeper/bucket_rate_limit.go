@@ -6,8 +6,8 @@ import (
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	paymenttypes "github.com/evmos/evmos/v12/x/payment/types"
-	"github.com/evmos/evmos/v12/x/storage/types"
+	paymenttypes "github.com/bnb-chain/greenfield/x/payment/types"
+	"github.com/bnb-chain/greenfield/x/storage/types"
 )
 
 func (k Keeper) SetBucketFlowRateLimit(ctx sdk.Context, operator sdk.AccAddress, bucketOwner sdk.AccAddress, paymentAccount sdk.AccAddress, bucketName string, rateLimit sdkmath.Int) error {
@@ -43,7 +43,8 @@ func (k Keeper) SetBucketFlowRateLimit(ctx sdk.Context, operator sdk.AccAddress,
 }
 
 func (k Keeper) unChargeBucketReadStoreFee(ctx sdk.Context, bucketInfo *types.BucketInfo,
-	internalBucketInfo *types.InternalBucketInfo) error {
+	internalBucketInfo *types.InternalBucketInfo,
+) error {
 	bill, err := k.GetBucketReadStoreBill(ctx, bucketInfo, internalBucketInfo)
 	if err != nil {
 		return fmt.Errorf("get bucket bill failed: %s %s", bucketInfo.BucketName, err.Error())
@@ -57,7 +58,8 @@ func (k Keeper) unChargeBucketReadStoreFee(ctx sdk.Context, bucketInfo *types.Bu
 }
 
 func (k Keeper) chargeBucketReadStoreFee(ctx sdk.Context, bucketInfo *types.BucketInfo,
-	internalBucketInfo *types.InternalBucketInfo) error {
+	internalBucketInfo *types.InternalBucketInfo,
+) error {
 	internalBucketInfo.PriceTime = ctx.BlockTime().Unix()
 	bill, err := k.GetBucketReadStoreBill(ctx, bucketInfo, internalBucketInfo)
 	if err != nil {

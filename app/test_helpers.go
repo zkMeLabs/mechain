@@ -86,7 +86,7 @@ func Setup(
 	isCheckTx bool,
 	feemarketGenesis *feemarkettypes.GenesisState,
 	chainID string,
-) *Evmos {
+) *App {
 	privVal := mock.NewPV()
 	pubKey, _ := privVal.GetPubKey()
 
@@ -103,11 +103,12 @@ func Setup(
 	}
 
 	db := dbm.NewMemDB()
-	app := NewEvmos(
+	app := New(
 		log.NewNopLogger(),
 		db, nil, true,
 		DefaultNodeHome, 5,
 		encoding.MakeConfig(ModuleBasics),
+		&AppConfig{CrossChain: NewDefaultAppConfig().CrossChain},
 		simtestutil.NewAppOptionsWithFlagHome(DefaultNodeHome),
 		baseapp.SetChainID(chainID),
 	)
@@ -144,7 +145,7 @@ func Setup(
 	return app
 }
 
-func GenesisStateWithValSet(app *Evmos, genesisState simapp.GenesisState,
+func GenesisStateWithValSet(app *App, genesisState simapp.GenesisState,
 	valSet *tmtypes.ValidatorSet, genAccs []authtypes.GenesisAccount,
 	balances ...banktypes.Balance,
 ) simapp.GenesisState {
@@ -214,10 +215,11 @@ func SetupTestingApp(chainID string) func() (ibctesting.TestingApp, map[string]j
 	return func() (ibctesting.TestingApp, map[string]json.RawMessage) {
 		db := dbm.NewMemDB()
 		cfg := encoding.MakeConfig(ModuleBasics)
-		app := NewEvmos(
+		app := New(
 			log.NewNopLogger(),
 			db, nil, true,
 			DefaultNodeHome, 5, cfg,
+			&AppConfig{CrossChain: NewDefaultAppConfig().CrossChain},
 			simtestutil.NewAppOptionsWithFlagHome(DefaultNodeHome),
 			baseapp.SetChainID(chainID),
 		)

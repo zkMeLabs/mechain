@@ -6,9 +6,8 @@ import (
 	math2 "math"
 
 	"cosmossdk.io/math"
-	"github.com/evmos/evmos/v12/internals/sequence"
-	sptypes "github.com/evmos/evmos/v12/x/sp/types"
-	"github.com/evmos/evmos/v12/x/virtualgroup/types"
+	sptypes "github.com/bnb-chain/greenfield/x/sp/types"
+	"github.com/bnb-chain/greenfield/x/virtualgroup/types"
 	"github.com/cometbft/cometbft/libs/log"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
@@ -16,6 +15,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
+	"github.com/evmos/evmos/v12/internals/sequence"
 )
 
 type (
@@ -47,7 +47,6 @@ func NewKeeper(
 	bankKeeper types.BankKeeper,
 	paymentKeeper types.PaymentKeeper,
 ) *Keeper {
-
 	k := Keeper{
 		cdc:           cdc,
 		storeKey:      storeKey,
@@ -631,7 +630,6 @@ func (k Keeper) SetSwapOutInfo(ctx sdk.Context, gvgFamilyID uint32, gvgIDs []uin
 		found := store.Has(key)
 		if found {
 			return types.ErrSwapOutFailed.Wrapf("SwapOutInfo of this gvg family(ID: %d) already exist", gvgFamilyID)
-
 		}
 		swapOutInfo := &types.SwapOutInfo{
 			SpId:          spID,

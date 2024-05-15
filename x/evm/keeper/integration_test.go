@@ -175,7 +175,7 @@ func setupChain(localMinGasPricesStr string) {
 	// validator-specific min-gas-prices setting
 	db := dbm.NewMemDB()
 	chainID := utils.TestnetChainID + "-1"
-	newapp := app.NewEvmos(
+	newapp := app.New(
 		log.NewNopLogger(),
 		db,
 		nil,

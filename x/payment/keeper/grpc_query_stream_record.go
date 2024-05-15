@@ -9,7 +9,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/evmos/evmos/v12/x/payment/types"
+	"github.com/bnb-chain/greenfield/x/payment/types"
 )
 
 func (k Keeper) StreamRecords(c context.Context, req *types.QueryStreamRecordsRequest) (*types.QueryStreamRecordsResponse, error) {
@@ -36,7 +36,6 @@ func (k Keeper) StreamRecords(c context.Context, req *types.QueryStreamRecordsRe
 		streamRecords = append(streamRecords, streamRecord)
 		return nil
 	})
-
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}

@@ -8,14 +8,15 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
-	"github.com/evmos/evmos/v12/x/payment/types"
-	sptypes "github.com/evmos/evmos/v12/x/sp/types"
-	storagetypes "github.com/evmos/evmos/v12/x/storage/types"
-	vgtypes "github.com/evmos/evmos/v12/x/virtualgroup/types"
+	"github.com/bnb-chain/greenfield/x/payment/types"
+	sptypes "github.com/bnb-chain/greenfield/x/sp/types"
+	storagetypes "github.com/bnb-chain/greenfield/x/storage/types"
+	vgtypes "github.com/bnb-chain/greenfield/x/virtualgroup/types"
 )
 
 func (k Keeper) ChargeBucketReadFee(ctx sdk.Context, bucketInfo *storagetypes.BucketInfo,
-	internalBucketInfo *storagetypes.InternalBucketInfo) error {
+	internalBucketInfo *storagetypes.InternalBucketInfo,
+) error {
 	if bucketInfo.ChargedReadQuota == 0 {
 		return nil
 	}
@@ -41,7 +42,8 @@ func (k Keeper) ChargeBucketReadFee(ctx sdk.Context, bucketInfo *storagetypes.Bu
 }
 
 func (k Keeper) UnChargeBucketReadFee(ctx sdk.Context, bucketInfo *storagetypes.BucketInfo,
-	internalBucketInfo *storagetypes.InternalBucketInfo) error {
+	internalBucketInfo *storagetypes.InternalBucketInfo,
+) error {
 	if internalBucketInfo.TotalChargeSize > 0 {
 		return fmt.Errorf("unexpected total store charge size: %s, %d", bucketInfo.BucketName, internalBucketInfo.TotalChargeSize)
 	}
@@ -70,7 +72,8 @@ func (k Keeper) UnChargeBucketReadFee(ctx sdk.Context, bucketInfo *storagetypes.
 }
 
 func (k Keeper) GetBucketReadBill(ctx sdk.Context, bucketInfo *storagetypes.BucketInfo,
-	internalBucketInfo *storagetypes.InternalBucketInfo) (userFlows types.UserFlows, err error) {
+	internalBucketInfo *storagetypes.InternalBucketInfo,
+) (userFlows types.UserFlows, err error) {
 	userFlows.From = sdk.MustAccAddressFromHex(bucketInfo.PaymentAddress)
 	if bucketInfo.ChargedReadQuota == 0 {
 		return userFlows, nil
@@ -111,7 +114,8 @@ func (k Keeper) GetBucketReadBill(ctx sdk.Context, bucketInfo *storagetypes.Buck
 }
 
 func (k Keeper) UpdateBucketInfoAndCharge(ctx sdk.Context, bucketInfo *storagetypes.BucketInfo,
-	internalBucketInfo *storagetypes.InternalBucketInfo, newPaymentAddr string, newReadQuota uint64) error {
+	internalBucketInfo *storagetypes.InternalBucketInfo, newPaymentAddr string, newReadQuota uint64,
+) error {
 	if bucketInfo.PaymentAddress != newPaymentAddr && bucketInfo.ChargedReadQuota != newReadQuota {
 		return fmt.Errorf("payment address and read quota can not be changed at the same time")
 	}
@@ -206,7 +210,8 @@ func (k Keeper) UnlockShadowObjectStoreFee(ctx sdk.Context, bucketInfo *storaget
 }
 
 func (k Keeper) UnlockAndChargeObjectStoreFee(ctx sdk.Context, primarySpId uint32, bucketInfo *storagetypes.BucketInfo,
-	internalBucketInfo *storagetypes.InternalBucketInfo, objectInfo *storagetypes.ObjectInfo) error {
+	internalBucketInfo *storagetypes.InternalBucketInfo, objectInfo *storagetypes.ObjectInfo,
+) error {
 	// unlock store fee
 	err := k.UnlockObjectStoreFee(ctx, bucketInfo, objectInfo)
 	if err != nil {
@@ -245,7 +250,8 @@ func (k Keeper) IsPriceChanged(ctx sdk.Context, primarySpId uint32, priceTime in
 }
 
 func (k Keeper) ChargeObjectStoreFee(ctx sdk.Context, primarySpId uint32, bucketInfo *storagetypes.BucketInfo,
-	internalBucketInfo *storagetypes.InternalBucketInfo, objectInfo *storagetypes.ObjectInfo) error {
+	internalBucketInfo *storagetypes.InternalBucketInfo, objectInfo *storagetypes.ObjectInfo,
+) error {
 	chargeSize, err := k.GetObjectChargeSize(ctx, objectInfo.PayloadSize, objectInfo.GetLatestUpdatedTime())
 	if err != nil {
 		return fmt.Errorf("get charge size failed: %s %s %w", bucketInfo.BucketName, objectInfo.ObjectName, err)
@@ -277,7 +283,8 @@ func (k Keeper) ChargeObjectStoreFee(ctx sdk.Context, primarySpId uint32, bucket
 }
 
 func (k Keeper) UnChargeObjectStoreFee(ctx sdk.Context, bucketInfo *storagetypes.BucketInfo,
-	internalBucketInfo *storagetypes.InternalBucketInfo, objectInfo *storagetypes.ObjectInfo) error {
+	internalBucketInfo *storagetypes.InternalBucketInfo, objectInfo *storagetypes.ObjectInfo,
+) error {
 	chargeSize, err := k.GetObjectChargeSize(ctx, objectInfo.PayloadSize, objectInfo.GetLatestUpdatedTime())
 	if err != nil {
 		return fmt.Errorf("get charge size failed: %s %s %w", bucketInfo.BucketName, objectInfo.ObjectName, err)
@@ -326,8 +333,8 @@ func (k Keeper) ChargeObjectStoreFeeForEarlyDeletion(ctx sdk.Context, userFlows 
 
 func (k Keeper) ChargeViaBucketChange(ctx sdk.Context, bucketInfo *storagetypes.BucketInfo,
 	internalBucketInfo *storagetypes.InternalBucketInfo,
-	changeFunc func(bi *storagetypes.BucketInfo, ibi *storagetypes.InternalBucketInfo) error) error {
-
+	changeFunc func(bi *storagetypes.BucketInfo, ibi *storagetypes.InternalBucketInfo) error,
+) error {
 	// get previous bill
 	prevBill, err := k.GetBucketReadStoreBill(ctx, bucketInfo, internalBucketInfo)
 	if err != nil {
@@ -386,7 +393,8 @@ func (k Keeper) ChargeViaBucketChange(ctx sdk.Context, bucketInfo *storagetypes.
 }
 
 func (k Keeper) ChargeViaObjectChange(ctx sdk.Context, bucketInfo *storagetypes.BucketInfo,
-	internalBucketInfo *storagetypes.InternalBucketInfo, objectInfo *storagetypes.ObjectInfo, chargeSize uint64, delete bool) ([]types.OutFlow, error) {
+	internalBucketInfo *storagetypes.InternalBucketInfo, objectInfo *storagetypes.ObjectInfo, chargeSize uint64, delete bool,
+) ([]types.OutFlow, error) {
 	userFlows := types.UserFlows{
 		From:  sdk.MustAccAddressFromHex(bucketInfo.PaymentAddress),
 		Flows: make([]types.OutFlow, 0),
@@ -435,7 +443,7 @@ func (k Keeper) ChargeViaObjectChange(ctx sdk.Context, bucketInfo *storagetypes.
 	userFlows.Flows = append(userFlows.Flows, newOutFlows...)
 
 	if ctx.IsUpgraded(upgradetypes.Erdos) {
-		var shouldApplyFlowRate = true
+		shouldApplyFlowRate := true
 		forced, _ := ctx.Value(types.ForceUpdateStreamRecordKey).(bool)
 		if forced {
 			isRateLimited := k.IsBucketRateLimited(ctx, bucketInfo.BucketName)
@@ -479,7 +487,8 @@ func (k Keeper) ChargeViaObjectChange(ctx sdk.Context, bucketInfo *storagetypes.
 }
 
 func (k Keeper) calculateLVGStoreBill(ctx sdk.Context, price sptypes.GlobalSpStorePrice, params types.VersionedParams,
-	gvgFamily *vgtypes.GlobalVirtualGroupFamily, gvg *vgtypes.GlobalVirtualGroup, lvg *storagetypes.LocalVirtualGroup) []types.OutFlow {
+	gvgFamily *vgtypes.GlobalVirtualGroupFamily, gvg *vgtypes.GlobalVirtualGroup, lvg *storagetypes.LocalVirtualGroup,
+) []types.OutFlow {
 	outFlows := make([]types.OutFlow, 0)
 
 	// primary sp
@@ -491,7 +500,7 @@ func (k Keeper) calculateLVGStoreBill(ctx sdk.Context, price sptypes.GlobalSpSto
 		})
 	}
 
-	//secondary sp
+	// secondary sp
 	secondaryStoreFlowRate := price.SecondaryStorePrice.MulInt(sdkmath.NewIntFromUint64(lvg.TotalChargeSize)).TruncateInt()
 	secondaryStoreFlowRate = secondaryStoreFlowRate.MulRaw(int64(len(gvg.SecondarySpIds)))
 	if secondaryStoreFlowRate.IsPositive() {
@@ -513,7 +522,8 @@ func (k Keeper) calculateLVGStoreBill(ctx sdk.Context, price sptypes.GlobalSpSto
 }
 
 func (k Keeper) GetBucketReadStoreBill(ctx sdk.Context, bucketInfo *storagetypes.BucketInfo,
-	internalBucketInfo *storagetypes.InternalBucketInfo) (userFlows types.UserFlows, err error) {
+	internalBucketInfo *storagetypes.InternalBucketInfo,
+) (userFlows types.UserFlows, err error) {
 	userFlows.From = sdk.MustAccAddressFromHex(bucketInfo.PaymentAddress)
 
 	if internalBucketInfo.TotalChargeSize == 0 && bucketInfo.ChargedReadQuota == 0 {
@@ -555,7 +565,7 @@ func (k Keeper) GetBucketReadStoreBill(ctx sdk.Context, bucketInfo *storagetypes
 	// calculate store fee
 	// be noted, here we split the fee calculation for each lvg, to make sure each lvg's calculation is precise
 	for _, lvg := range internalBucketInfo.LocalVirtualGroups {
-		//secondary sp
+		// secondary sp
 		gvg, found := k.virtualGroupKeeper.GetGVG(ctx, lvg.GlobalVirtualGroupId)
 		if !found {
 			return userFlows, fmt.Errorf("get GVG failed: %d, %s", lvg.GlobalVirtualGroupId, lvg.String())
@@ -568,8 +578,8 @@ func (k Keeper) GetBucketReadStoreBill(ctx sdk.Context, bucketInfo *storagetypes
 }
 
 func (k Keeper) UnChargeBucketReadStoreFee(ctx sdk.Context, bucketInfo *storagetypes.BucketInfo,
-	internalBucketInfo *storagetypes.InternalBucketInfo) error {
-
+	internalBucketInfo *storagetypes.InternalBucketInfo,
+) error {
 	if ctx.IsUpgraded(upgradetypes.Erdos) {
 		// if the bucket's flow rate limit is set to zero, no need to uncharge, since the bucket is already uncharged
 		if k.IsBucketRateLimited(ctx, bucketInfo.BucketName) {
@@ -590,7 +600,8 @@ func (k Keeper) UnChargeBucketReadStoreFee(ctx sdk.Context, bucketInfo *storaget
 }
 
 func (k Keeper) ChargeBucketReadStoreFee(ctx sdk.Context, bucketInfo *storagetypes.BucketInfo,
-	internalBucketInfo *storagetypes.InternalBucketInfo) error {
+	internalBucketInfo *storagetypes.InternalBucketInfo,
+) error {
 	internalBucketInfo.PriceTime = ctx.BlockTime().Unix()
 	bill, err := k.GetBucketReadStoreBill(ctx, bucketInfo, internalBucketInfo)
 	if err != nil {

@@ -9,7 +9,7 @@ import "gogoproto/gogo.proto";
 import "greenfield/common/approval.proto";
 import "greenfield/virtualgroup/params.proto";
 
-option go_package = "github.com/evmos/evmos/v12/x/virtualgroup/types";
+option go_package = "github.com/bnb-chain/greenfield/x/virtualgroup/types";
 
 // Msg defines the Msg service.
 service Msg {
