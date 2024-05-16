@@ -168,7 +168,9 @@ clean:
 	rm -rf \
     $(BUILDDIR)/ \
     artifacts/ \
-    tmp-swagger-gen/
+    tmp-swagger-gen/ \
+	deployment/luke/nodes/ \
+	deployment/luke/mechaind
 
 all: build
 
