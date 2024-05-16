@@ -56,7 +56,8 @@ func ParamKeyTable() paramtypes.KeyTable {
 // NewParams creates a new Params instance
 func NewParams(depositDenom string, minDeposit math.Int, secondarySpStorePriceRatio sdk.Dec,
 	historicalBlocksForMaintenanceRecords, maintenanceDurationQuota, lockUpBlocksForMaintenance int64,
-	updateGlobalPriceInterval uint64, updatePriceDisallowedDays uint32) Params {
+	updateGlobalPriceInterval uint64, updatePriceDisallowedDays uint32,
+) Params {
 	return Params{
 		DepositDenom:               depositDenom,
 		MinDeposit:                 minDeposit,

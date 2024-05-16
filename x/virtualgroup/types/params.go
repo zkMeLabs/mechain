@@ -20,7 +20,7 @@ var (
 	// DefaultGVGStakingPerBytes defines the default gvg staking price
 	DefaultGVGStakingPerBytes                = sdk.NewInt(16000) // 20%~30% of store price
 	DefaultMaxGlobalVirtualGroupNumPerFamily = uint32(10)
-	DefaultMaxStoreSizePerFamily             = uint64(64) * 1024 * 1024 * 1024 * 1024 //64T
+	DefaultMaxStoreSizePerFamily             = uint64(64) * 1024 * 1024 * 1024 * 1024 // 64T
 	DefaultSwapInValidityPeriod              = math.NewInt(60 * 60 * 24 * 7)          // 7 days
 	DefaultSPConcurrentExitNum               = math.NewInt(1)
 
@@ -41,7 +41,8 @@ func ParamKeyTable() paramtypes.KeyTable {
 
 // NewParams creates a new Params instance
 func NewParams(depositDenom string, gvgStakingPerBytes math.Int, maxGlobalVirtualGroupPerFamily uint32,
-	maxStoreSizePerFamily uint64, swapInValidityPeriod, spConcurrentExitNum math.Int) Params {
+	maxStoreSizePerFamily uint64, swapInValidityPeriod, spConcurrentExitNum math.Int,
+) Params {
 	return Params{
 		DepositDenom:                      depositDenom,
 		GvgStakingPerBytes:                gvgStakingPerBytes,

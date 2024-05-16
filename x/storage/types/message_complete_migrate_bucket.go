@@ -64,7 +64,6 @@ func (msg *MsgCompleteMigrateBucket) ValidateBasic() error {
 		}
 		if gvgMapping.SecondarySpBlsSignature == nil {
 			return gnfderrors.ErrInvalidBlsSignature.Wrapf("empty signature in gvgMapping")
-
 		}
 		_, exist := mappingMap[gvgMapping.SrcGlobalVirtualGroupId]
 		if exist {

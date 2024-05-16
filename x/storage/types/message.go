@@ -1733,7 +1733,8 @@ func (msg *MsgSetTag) ValidateBasic() error {
 
 func NewMsgUpdateObjectContent(
 	operator sdk.AccAddress, bucketName, objectName string, payloadSize uint64,
-	expectChecksums [][]byte) *MsgUpdateObjectContent {
+	expectChecksums [][]byte,
+) *MsgUpdateObjectContent {
 	return &MsgUpdateObjectContent{
 		Operator:        operator.String(),
 		BucketName:      bucketName,
@@ -1798,7 +1799,8 @@ func (msg *MsgUpdateObjectContent) ValidateBasic() error {
 }
 
 func NewMsgCancelUpdateObjectContent(
-	operator sdk.AccAddress, bucketName, objectName string) *MsgCancelUpdateObjectContent {
+	operator sdk.AccAddress, bucketName, objectName string,
+) *MsgCancelUpdateObjectContent {
 	return &MsgCancelUpdateObjectContent{
 		Operator:   operator.String(),
 		BucketName: bucketName,
@@ -1857,8 +1859,8 @@ func NewMsgDelegateCreateObject(
 	Visibility VisibilityType,
 	expectChecksums [][]byte,
 	contentType string,
-	redundancyType RedundancyType) *MsgDelegateCreateObject {
-
+	redundancyType RedundancyType,
+) *MsgDelegateCreateObject {
 	return &MsgDelegateCreateObject{
 		Operator:        operator.String(),
 		Creator:         creator.String(),
@@ -1932,7 +1934,8 @@ func (msg *MsgDelegateCreateObject) ValidateBasic() error {
 
 func NewMsgDelegateUpdateObjectContent(
 	operator, updater sdk.AccAddress, bucketName, objectName string, payloadSize uint64,
-	expectChecksums [][]byte) *MsgDelegateUpdateObjectContent {
+	expectChecksums [][]byte,
+) *MsgDelegateUpdateObjectContent {
 	return &MsgDelegateUpdateObjectContent{
 		Operator:        operator.String(),
 		Updater:         updater.String(),

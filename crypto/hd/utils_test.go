@@ -180,4 +180,3 @@ func (w *Wallet) deriveAddress(path accounts.DerivationPath) (common.Address, er
 	address := crypto.PubkeyToAddress(*publicKeyECDSA)
 	return address, nil
 }
-

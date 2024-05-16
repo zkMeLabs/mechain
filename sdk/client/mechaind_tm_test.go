@@ -50,5 +50,4 @@ func TestTmClient(t *testing.T) {
 	validators, err := gnfdCli.GetValidators(context.Background(), &h)
 	assert.NoError(t, err)
 	t.Log(validators.Validators)
-
 }

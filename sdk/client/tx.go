@@ -125,7 +125,6 @@ func (c *GreenfieldClient) SignTx(ctx context.Context, msgs []sdk.Msg, txOpt *ty
 }
 
 func (c *GreenfieldClient) signTx(ctx context.Context, txConfig client.TxConfig, txBuilder client.TxBuilder, txOpt *types.TxOption) ([]byte, error) {
-
 	var km keys.KeyManager
 	var err error
 
@@ -176,7 +175,6 @@ func (c *GreenfieldClient) signTx(ctx context.Context, txConfig client.TxConfig,
 
 // setSingerInfo gathers the signer info by doing "empty signature" hack, and inject it into txBuilder
 func (c *GreenfieldClient) setSingerInfo(ctx context.Context, txBuilder client.TxBuilder, txOpt *types.TxOption) error {
-
 	var km keys.KeyManager
 	var err error
 	if txOpt != nil && txOpt.OverrideKeyManager != nil {

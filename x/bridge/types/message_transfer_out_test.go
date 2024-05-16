@@ -22,7 +22,8 @@ func TestMsgTransferOut_ValidateBasic(t *testing.T) {
 				From: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
-		}, {
+		},
+		{
 			name: "invalid to address",
 			msg: MsgTransferOut{
 				From: sample.RandAccAddressHex(),

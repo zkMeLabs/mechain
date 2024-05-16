@@ -23,8 +23,8 @@ func NewStorageProvider(
 	sealAddress sdk.AccAddress, approvalAddress sdk.AccAddress, gcAddress sdk.AccAddress, maintenanceAddress sdk.AccAddress,
 	totalDeposit math.Int, endpoint string,
 	description Description,
-	blsKey string) (StorageProvider, error) {
-
+	blsKey string,
+) (StorageProvider, error) {
 	blsKeyBytes, err := hex.DecodeString(blsKey)
 	if err != nil {
 		return StorageProvider{}, err

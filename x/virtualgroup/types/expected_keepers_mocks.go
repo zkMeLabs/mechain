@@ -8,9 +8,9 @@ import (
 	reflect "reflect"
 
 	math "cosmossdk.io/math"
-	types "github.com/evmos/evmos/v12/x/sp/types"
 	types0 "github.com/cosmos/cosmos-sdk/types"
 	types1 "github.com/cosmos/cosmos-sdk/x/auth/types"
+	types "github.com/evmos/evmos/v12/x/sp/types"
 	gomock "github.com/golang/mock/gomock"
 )
 

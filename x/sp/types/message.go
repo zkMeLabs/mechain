@@ -40,7 +40,8 @@ var (
 func NewMsgCreateStorageProvider(
 	creator sdk.AccAddress, spAddress sdk.AccAddress, fundingAddress sdk.AccAddress,
 	sealAddress sdk.AccAddress, approvalAddress sdk.AccAddress, gcAddress sdk.AccAddress, maintenanceAddress sdk.AccAddress,
-	description Description, endpoint string, deposit sdk.Coin, readPrice sdk.Dec, freeReadQuota uint64, storePrice sdk.Dec, blsKey, blsProof string) (*MsgCreateStorageProvider, error) {
+	description Description, endpoint string, deposit sdk.Coin, readPrice sdk.Dec, freeReadQuota uint64, storePrice sdk.Dec, blsKey, blsProof string,
+) (*MsgCreateStorageProvider, error) {
 	return &MsgCreateStorageProvider{
 		Creator:            creator.String(),
 		SpAddress:          spAddress.String(),
@@ -105,7 +106,7 @@ func (msg *MsgCreateStorageProvider) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromHexUnsafe(msg.GcAddress); err != nil {
 		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid gc address (%s)", err)
 	}
-	//MaintenanceAddress is validated in msg server
+	// MaintenanceAddress is validated in msg server
 	if !msg.Deposit.IsValid() || !msg.Deposit.Amount.IsPositive() {
 		return errors.Wrap(sdkerrors.ErrInvalidCoins, "invalid deposit amount")
 	}
@@ -126,7 +127,8 @@ func (msg *MsgCreateStorageProvider) ValidateBasic() error {
 
 // NewMsgEditStorageProvider creates a new MsgEditStorageProvider instance
 func NewMsgEditStorageProvider(spAddress sdk.AccAddress, endpoint string, description *Description,
-	sealAddress sdk.AccAddress, approvalAddress sdk.AccAddress, gcAddress sdk.AccAddress, maintenanceAddress sdk.AccAddress, blsKey, blsProof string) *MsgEditStorageProvider {
+	sealAddress sdk.AccAddress, approvalAddress sdk.AccAddress, gcAddress sdk.AccAddress, maintenanceAddress sdk.AccAddress, blsKey, blsProof string,
+) *MsgEditStorageProvider {
 	return &MsgEditStorageProvider{
 		SpAddress:          spAddress.String(),
 		Endpoint:           endpoint,

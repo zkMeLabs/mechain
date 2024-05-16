@@ -13,7 +13,8 @@ const TypeMsgAttest = "attest"
 var _ sdk.Msg = &MsgAttest{}
 
 func NewMsgAttest(submitter sdk.AccAddress, challengeId uint64, objectId Uint, spOperatorAddress string,
-	voteResult VoteResult, challenger string, voteValidatorSet []uint64, voteAggSignature []byte) *MsgAttest {
+	voteResult VoteResult, challenger string, voteValidatorSet []uint64, voteAggSignature []byte,
+) *MsgAttest {
 	return &MsgAttest{
 		Submitter:         submitter.String(),
 		ChallengeId:       challengeId,

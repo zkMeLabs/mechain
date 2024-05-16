@@ -14,7 +14,6 @@ func TestDepositDenom(t *testing.T) {
 		denom interface{}
 		err   string
 	}{
-
 		{
 			name:  "valid",
 			denom: "denom",
@@ -54,7 +53,6 @@ func TestGVGStakingPerBytes(t *testing.T) {
 		ratio interface{}
 		err   string
 	}{
-
 		{
 			name:  "valid",
 			ratio: sdk.NewInt(1),
@@ -88,7 +86,6 @@ func TestMaxGlobalVirtualGroupNumPerFamily(t *testing.T) {
 		number interface{}
 		err    string
 	}{
-
 		{
 			name:   "valid",
 			number: uint32(1),
@@ -122,7 +119,6 @@ func TestMaxStoreSizePerFamily(t *testing.T) {
 		size interface{}
 		err  string
 	}{
-
 		{
 			name: "valid",
 			size: uint64(1),
