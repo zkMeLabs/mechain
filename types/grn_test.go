@@ -6,11 +6,11 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/bnb-chain/greenfield/testutil/sample"
-	storageutils "github.com/bnb-chain/greenfield/testutil/storage"
-	gnfderrors "github.com/bnb-chain/greenfield/types/errors"
-	"github.com/bnb-chain/greenfield/types/resource"
+	"github.com/evmos/evmos/v12/testutil/sample"
+	storageutils "github.com/evmos/evmos/v12/testutil/storage"
 	types3 "github.com/evmos/evmos/v12/types"
+	gnfderrors "github.com/evmos/evmos/v12/types/errors"
+	"github.com/evmos/evmos/v12/types/resource"
 )
 
 func TestGRNBasic(t *testing.T) {

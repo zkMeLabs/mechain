@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"github.com/bnb-chain/greenfield/x/storage/types"
+	"github.com/evmos/evmos/v12/x/storage/types"
 )
 
 func RegisterCrossApps(keeper Keeper) {

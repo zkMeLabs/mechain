@@ -14,9 +14,9 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"
 
-	"github.com/bnb-chain/greenfield/x/bridge/client/cli"
-	"github.com/bnb-chain/greenfield/x/bridge/keeper"
-	"github.com/bnb-chain/greenfield/x/bridge/types"
+	"github.com/evmos/evmos/v12/x/bridge/client/cli"
+	"github.com/evmos/evmos/v12/x/bridge/keeper"
+	"github.com/evmos/evmos/v12/x/bridge/types"
 )
 
 var (

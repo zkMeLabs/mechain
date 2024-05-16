@@ -10,8 +10,8 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
 
-	paymentmoduletypes "github.com/bnb-chain/greenfield/x/payment/types"
-	"github.com/bnb-chain/greenfield/x/storage/types"
+	paymentmoduletypes "github.com/evmos/evmos/v12/x/payment/types"
+	"github.com/evmos/evmos/v12/x/storage/types"
 )
 
 var _ sdk.CrossChainApplication = &ExecutorApp{}

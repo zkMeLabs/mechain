@@ -6,7 +6,7 @@ import "gogoproto/gogo.proto";
 import "greenfield/payment/out_flow.proto";
 import "greenfield/payment/stream_record.proto";
 
-option go_package = "github.com/bnb-chain/greenfield/x/payment/types";
+option go_package = "github.com/evmos/evmos/v12/x/payment/types";
 
 message EventPaymentAccountUpdate {
   // address of the payment account

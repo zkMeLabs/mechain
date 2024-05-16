@@ -10,7 +10,7 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
 
-	gnfdcommon "github.com/bnb-chain/greenfield/types/common"
+	gnfdcommon "github.com/evmos/evmos/v12/types/common"
 )
 
 const (

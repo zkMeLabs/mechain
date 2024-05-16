@@ -6,8 +6,6 @@ import (
 	math2 "math"
 
 	"cosmossdk.io/math"
-	sptypes "github.com/bnb-chain/greenfield/x/sp/types"
-	"github.com/bnb-chain/greenfield/x/virtualgroup/types"
 	"github.com/cometbft/cometbft/libs/log"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
@@ -16,6 +14,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/address"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 	"github.com/evmos/evmos/v12/internals/sequence"
+	sptypes "github.com/evmos/evmos/v12/x/sp/types"
+	"github.com/evmos/evmos/v12/x/virtualgroup/types"
 )
 
 type (

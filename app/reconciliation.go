@@ -11,7 +11,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
-	paymenttypes "github.com/bnb-chain/greenfield/x/payment/types"
+	paymenttypes "github.com/evmos/evmos/v12/x/payment/types"
 )
 
 const reconStoreKey = "reconciliation"

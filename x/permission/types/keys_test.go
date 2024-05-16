@@ -10,7 +10,7 @@ import (
 	"cosmossdk.io/math"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/bnb-chain/greenfield/types/resource"
+	"github.com/evmos/evmos/v12/types/resource"
 )
 
 func TestParsePolicyIdFromQueueKey(t *testing.T) {

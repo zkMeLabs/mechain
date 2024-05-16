@@ -62,10 +62,10 @@ import (
 	servercfg "github.com/evmos/evmos/v12/server/config"
 	srvflags "github.com/evmos/evmos/v12/server/flags"
 
-	gensputilcli "github.com/bnb-chain/greenfield/x/gensp/client/cli"
 	"github.com/evmos/evmos/v12/app"
 	cmdcfg "github.com/evmos/evmos/v12/cmd/config"
 	evmoskr "github.com/evmos/evmos/v12/crypto/keyring"
+	gensputilcli "github.com/evmos/evmos/v12/x/gensp/client/cli"
 )
 
 const (

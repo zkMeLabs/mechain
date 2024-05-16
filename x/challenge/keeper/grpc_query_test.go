@@ -14,8 +14,8 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
 
-	"github.com/bnb-chain/greenfield/x/challenge/keeper"
-	"github.com/bnb-chain/greenfield/x/challenge/types"
+	"github.com/evmos/evmos/v12/x/challenge/keeper"
+	"github.com/evmos/evmos/v12/x/challenge/types"
 )
 
 func TestParamsQuery(t *testing.T) {

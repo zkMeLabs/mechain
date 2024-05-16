@@ -12,10 +12,10 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/mint"
 	"github.com/stretchr/testify/require"
 
-	"github.com/bnb-chain/greenfield/testutil/nullify"
-	"github.com/bnb-chain/greenfield/x/storage"
-	"github.com/bnb-chain/greenfield/x/storage/keeper"
-	"github.com/bnb-chain/greenfield/x/storage/types"
+	"github.com/evmos/evmos/v12/testutil/nullify"
+	"github.com/evmos/evmos/v12/x/storage"
+	"github.com/evmos/evmos/v12/x/storage/keeper"
+	"github.com/evmos/evmos/v12/x/storage/types"
 )
 
 func makeKeeper(t *testing.T) (*keeper.Keeper, sdk.Context) {

@@ -6,7 +6,7 @@ import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "greenfield/bridge/params.proto";
 
-option go_package = "github.com/bnb-chain/greenfield/x/bridge/types";
+option go_package = "github.com/evmos/evmos/v12/x/bridge/types";
 
 // Query defines the gRPC querier service.
 service Query {

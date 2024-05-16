@@ -7,7 +7,7 @@ import "google/protobuf/timestamp.proto";
 import "greenfield/permission/common.proto";
 import "greenfield/resource/types.proto";
 
-option go_package = "github.com/bnb-chain/greenfield/x/permission/types";
+option go_package = "github.com/evmos/evmos/v12/x/permission/types";
 
 message Policy {
   // id is an unique u256 sequence for each policy. It also be used as NFT tokenID

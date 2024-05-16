@@ -7,8 +7,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
-	"github.com/bnb-chain/greenfield/types/common"
-	"github.com/bnb-chain/greenfield/x/storage/types"
+	"github.com/evmos/evmos/v12/types/common"
+	"github.com/evmos/evmos/v12/x/storage/types"
 )
 
 var _ sdk.CrossChainApplication = &BucketApp{}

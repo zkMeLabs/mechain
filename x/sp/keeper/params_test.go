@@ -3,7 +3,7 @@ package keeper_test
 import (
 	"github.com/stretchr/testify/require"
 
-	"github.com/bnb-chain/greenfield/x/sp/types"
+	"github.com/evmos/evmos/v12/x/sp/types"
 )
 
 func (s *KeeperTestSuite) TestGetParams() {

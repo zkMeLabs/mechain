@@ -6,7 +6,7 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/bnb-chain/greenfield/x/payment/types"
+	"github.com/evmos/evmos/v12/x/payment/types"
 )
 
 func (k msgServer) CreatePaymentAccount(goCtx context.Context, msg *types.MsgCreatePaymentAccount) (*types.MsgCreatePaymentAccountResponse, error) {

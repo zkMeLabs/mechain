@@ -13,7 +13,7 @@ import (
 	"io"
 	"net/http"
 
-	types_2 "github.com/bnb-chain/greenfield/x/permission/types"
+	types_2 "github.com/evmos/evmos/v12/x/permission/types"
 	"github.com/golang/protobuf/descriptor"
 	"github.com/golang/protobuf/proto"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"

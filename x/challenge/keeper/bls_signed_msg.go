@@ -9,7 +9,7 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/prysmaticlabs/prysm/crypto/bls"
 
-	"github.com/bnb-chain/greenfield/x/challenge/types"
+	"github.com/evmos/evmos/v12/x/challenge/types"
 )
 
 // BlsSignedMsg defined the interface of a bls signed message.

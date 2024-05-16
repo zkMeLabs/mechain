@@ -6,7 +6,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/spf13/cobra"
 
-	"github.com/bnb-chain/greenfield/x/permission/types"
+	"github.com/evmos/evmos/v12/x/permission/types"
 )
 
 // GetQueryCmd returns the cli query commands for this module

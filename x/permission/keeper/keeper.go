@@ -12,10 +12,10 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
-	"github.com/bnb-chain/greenfield/types/resource"
-	"github.com/bnb-chain/greenfield/x/permission/types"
-	storagetypes "github.com/bnb-chain/greenfield/x/storage/types"
 	"github.com/evmos/evmos/v12/internals/sequence"
+	"github.com/evmos/evmos/v12/types/resource"
+	"github.com/evmos/evmos/v12/x/permission/types"
+	storagetypes "github.com/evmos/evmos/v12/x/storage/types"
 )
 
 type (

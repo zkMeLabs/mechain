@@ -7,8 +7,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 
-	"github.com/bnb-chain/greenfield/x/virtualgroup/keeper"
-	"github.com/bnb-chain/greenfield/x/virtualgroup/types"
+	"github.com/evmos/evmos/v12/x/virtualgroup/keeper"
+	"github.com/evmos/evmos/v12/x/virtualgroup/types"
 )
 
 func SimulateMsgCompleteSwapOut(

@@ -1,7 +1,7 @@
 package keeper_test
 
 import (
-	"github.com/bnb-chain/greenfield/testutil/sample"
+	"github.com/evmos/evmos/v12/testutil/sample"
 )
 
 func (s *TestSuite) TestClearDiscontinueBucketCount() {

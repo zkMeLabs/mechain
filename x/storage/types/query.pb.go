@@ -6,8 +6,8 @@ package types
 import (
 	context "context"
 	fmt "fmt"
-	types1 "github.com/bnb-chain/greenfield/x/permission/types"
-	types "github.com/bnb-chain/greenfield/x/virtualgroup/types"
+	types1 "github.com/evmos/evmos/v12/x/permission/types"
+	types "github.com/evmos/evmos/v12/x/virtualgroup/types"
 	_ "github.com/cosmos/cosmos-proto"
 	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
 	query "github.com/cosmos/cosmos-sdk/types/query"

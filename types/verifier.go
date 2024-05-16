@@ -10,7 +10,7 @@ import (
 	"github.com/ethereum/go-ethereum/crypto/secp256k1"
 	"github.com/prysmaticlabs/prysm/crypto/bls"
 
-	gnfderrors "github.com/bnb-chain/greenfield/types/errors"
+	gnfderrors "github.com/evmos/evmos/v12/types/errors"
 )
 
 func VerifySignature(sigAccAddress sdk.AccAddress, sigHash []byte, sig []byte) error {
