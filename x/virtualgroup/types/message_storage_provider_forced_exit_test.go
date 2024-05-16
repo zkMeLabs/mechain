@@ -31,7 +31,8 @@ func TestMsgStorageProviderForcedExit_ValidateBasic(t *testing.T) {
 			},
 			expErr:    true,
 			expErrMsg: "invalid address",
-		}, {
+		},
+		{
 			name: "valid address",
 			msg:  *NewMsgStorageProviderForcedExit(sample.RandAccAddress().String(), sample.RandAccAddress()),
 		},

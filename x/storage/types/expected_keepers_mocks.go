@@ -10,14 +10,14 @@ import (
 	time "time"
 
 	math "cosmossdk.io/math"
+	log "github.com/cometbft/cometbft/libs/log"
+	types3 "github.com/cosmos/cosmos-sdk/types"
+	types4 "github.com/cosmos/cosmos-sdk/x/auth/types"
 	resource "github.com/evmos/evmos/v12/types/resource"
 	types "github.com/evmos/evmos/v12/x/payment/types"
 	types0 "github.com/evmos/evmos/v12/x/permission/types"
 	types1 "github.com/evmos/evmos/v12/x/sp/types"
 	types2 "github.com/evmos/evmos/v12/x/virtualgroup/types"
-	log "github.com/cometbft/cometbft/libs/log"
-	types3 "github.com/cosmos/cosmos-sdk/types"
-	types4 "github.com/cosmos/cosmos-sdk/x/auth/types"
 	gomock "github.com/golang/mock/gomock"
 )
 

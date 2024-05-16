@@ -144,7 +144,6 @@ func TestSendTxWithGrpcConn(t *testing.T) {
 }
 
 func TestSendTokenWithOverrideAccount(t *testing.T) {
-
 	// which is not being used to send tx
 	km, err := keys.NewPrivateKeyManager("2a3f0f19fbcb057e053696879207324c24f601ab47db92676cc4958ea9089761")
 	assert.NoError(t, err)

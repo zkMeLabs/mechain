@@ -42,12 +42,10 @@ var (
 // VALUE: staking/Validator
 func GetStorageProviderKey(id []byte) []byte {
 	return append(StorageProviderKey, id...)
-
 }
 
 func GetStorageProviderByOperatorAddrKey(operatorAddr sdk.AccAddress) []byte {
 	return append(StorageProviderByOperatorAddrKey, operatorAddr.Bytes()...)
-
 }
 
 // GetStorageProviderByFundingAddrKey creates the key for the storage provider with funding address

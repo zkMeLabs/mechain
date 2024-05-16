@@ -10,7 +10,6 @@ import (
 )
 
 func TestMsgUpdateParams_ValidateBasic(t *testing.T) {
-
 	wrongParams := DefaultParams()
 	wrongParams.HeartbeatInterval = 0
 

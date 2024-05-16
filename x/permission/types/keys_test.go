@@ -24,6 +24,7 @@ func TestParsePolicyIdFromQueueKey(t *testing.T) {
 		}
 	}
 }
+
 func TestPrefixKeyCollision(t *testing.T) {
 	resourceID1 := math.NewUint(17)
 	resourceID2 := math.NewUint(4522)

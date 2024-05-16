@@ -126,8 +126,8 @@ func NewMemberStatement() *Statement {
 		Resources: nil,
 		Actions:   nil,
 	}
-
 }
+
 func (s *Statement) Eval(action ActionType, opts *VerifyOptions) (Effect, *Statement) {
 	// If 'resource' is not nil, it implies that the user intends to access a sub-resource, which would
 	// be specified in 's.Resources'. Therefore, if the sub-resource in the statement is nil, we will ignore this statement.

@@ -196,7 +196,8 @@ func (s *TestSuite) TestEndBlocker_SuccessRandomChallenge() {
 		BucketName:   "bucketname",
 		ObjectName:   "objectname",
 		ObjectStatus: storagetypes.OBJECT_STATUS_SEALED,
-		PayloadSize:  500}
+		PayloadSize:  500,
+	}
 	s.storageKeeper.EXPECT().GetObjectInfoById(gomock.Any(), gomock.Eq(existObject.Id)).
 		Return(existObject, true).AnyTimes()
 

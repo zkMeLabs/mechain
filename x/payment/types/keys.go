@@ -103,7 +103,8 @@ func StreamRecordKey(
 func OutFlowKey(
 	addr sdk.AccAddress,
 	status OutFlowStatus,
-	toAddr sdk.AccAddress) []byte {
+	toAddr sdk.AccAddress,
+) []byte {
 	key := addr.Bytes()
 	if status == OUT_FLOW_STATUS_ACTIVE {
 		key = append(key, []byte{0x0}...)
