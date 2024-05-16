@@ -87,3 +87,5 @@ dependency-graph.png
 
 # OpenZeppelin contracts
 contracts/@openzeppelin/*
+deployment/luke/package-lock.json
+deployment/luke/config.json
