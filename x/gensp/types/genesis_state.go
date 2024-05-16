@@ -9,7 +9,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	sptypes "github.com/bnb-chain/greenfield/x/sp/types"
+	sptypes "github.com/evmos/evmos/v12/x/sp/types"
 )
 
 // NewGenesisState creates a new GenesisState object

@@ -3,7 +3,7 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/bnb-chain/greenfield/x/challenge/types"
+	"github.com/evmos/evmos/v12/x/challenge/types"
 )
 
 // GetParams get all parameters as types.Params

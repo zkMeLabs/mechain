@@ -6,8 +6,8 @@ import (
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	paymenttypes "github.com/bnb-chain/greenfield/x/payment/types"
-	"github.com/bnb-chain/greenfield/x/storage/types"
+	paymenttypes "github.com/evmos/evmos/v12/x/payment/types"
+	"github.com/evmos/evmos/v12/x/storage/types"
 )
 
 func (k Keeper) SetBucketFlowRateLimit(ctx sdk.Context, operator sdk.AccAddress, bucketOwner sdk.AccAddress, paymentAccount sdk.AccAddress, bucketName string, rateLimit sdkmath.Int) error {

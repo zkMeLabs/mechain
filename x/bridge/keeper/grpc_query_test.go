@@ -3,7 +3,7 @@ package keeper_test
 import (
 	gocontext "context"
 
-	"github.com/bnb-chain/greenfield/x/bridge/types"
+	"github.com/evmos/evmos/v12/x/bridge/types"
 )
 
 func (s *TestSuite) TestQueryParams() {

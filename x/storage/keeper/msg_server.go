@@ -10,13 +10,13 @@ import (
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
-	types2 "github.com/bnb-chain/greenfield/types"
-	gnfderrors "github.com/bnb-chain/greenfield/types/errors"
-	permtypes "github.com/bnb-chain/greenfield/x/permission/types"
-	sptypes "github.com/bnb-chain/greenfield/x/sp/types"
-	"github.com/bnb-chain/greenfield/x/storage/types"
-	storagetypes "github.com/bnb-chain/greenfield/x/storage/types"
-	virtualgroupmoduletypes "github.com/bnb-chain/greenfield/x/virtualgroup/types"
+	types2 "github.com/evmos/evmos/v12/types"
+	gnfderrors "github.com/evmos/evmos/v12/types/errors"
+	permtypes "github.com/evmos/evmos/v12/x/permission/types"
+	sptypes "github.com/evmos/evmos/v12/x/sp/types"
+	"github.com/evmos/evmos/v12/x/storage/types"
+	storagetypes "github.com/evmos/evmos/v12/x/storage/types"
+	virtualgroupmoduletypes "github.com/evmos/evmos/v12/x/virtualgroup/types"
 )
 
 type msgServer struct {

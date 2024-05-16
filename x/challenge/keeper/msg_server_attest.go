@@ -11,10 +11,10 @@ import (
 	distributiontypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
-	"github.com/bnb-chain/greenfield/x/challenge/types"
-	paymentmoduletypes "github.com/bnb-chain/greenfield/x/payment/types"
-	sptypes "github.com/bnb-chain/greenfield/x/sp/types"
-	storagetypes "github.com/bnb-chain/greenfield/x/storage/types"
+	"github.com/evmos/evmos/v12/x/challenge/types"
+	paymentmoduletypes "github.com/evmos/evmos/v12/x/payment/types"
+	sptypes "github.com/evmos/evmos/v12/x/sp/types"
+	storagetypes "github.com/evmos/evmos/v12/x/storage/types"
 )
 
 // one_gb_bytes stands for the total bytes in 1gb

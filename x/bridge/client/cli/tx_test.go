@@ -17,10 +17,10 @@ import (
 	"github.com/stretchr/testify/suite"
 
 	"cosmossdk.io/simapp/params"
-	"github.com/bnb-chain/greenfield/app"
-	"github.com/bnb-chain/greenfield/sdk/client/test"
-	"github.com/bnb-chain/greenfield/testutil/sample"
-	"github.com/bnb-chain/greenfield/x/bridge/client/cli"
+	"github.com/evmos/evmos/v12/app"
+	"github.com/evmos/evmos/v12/sdk/client/test"
+	"github.com/evmos/evmos/v12/testutil/sample"
+	"github.com/evmos/evmos/v12/x/bridge/client/cli"
 )
 
 type CLITestSuite struct {

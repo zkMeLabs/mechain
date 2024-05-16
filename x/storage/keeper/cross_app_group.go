@@ -6,7 +6,7 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/bnb-chain/greenfield/x/storage/types"
+	"github.com/evmos/evmos/v12/x/storage/types"
 )
 
 var _ sdk.CrossChainApplication = &GroupApp{}

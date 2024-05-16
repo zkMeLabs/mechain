@@ -17,10 +17,10 @@ import (
 	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/spf13/cobra"
 
-	types2 "github.com/bnb-chain/greenfield/types"
-	"github.com/bnb-chain/greenfield/types/common"
-	gnfderrors "github.com/bnb-chain/greenfield/types/errors"
-	"github.com/bnb-chain/greenfield/x/storage/types"
+	types2 "github.com/evmos/evmos/v12/types"
+	"github.com/evmos/evmos/v12/types/common"
+	gnfderrors "github.com/evmos/evmos/v12/types/errors"
+	"github.com/evmos/evmos/v12/x/storage/types"
 )
 
 // GetTxCmd returns the transaction commands for this module

@@ -6,7 +6,7 @@ import (
 	sdkmath "cosmossdk.io/math"
 	"github.com/stretchr/testify/require"
 
-	"github.com/bnb-chain/greenfield/x/bridge/types"
+	"github.com/evmos/evmos/v12/x/bridge/types"
 )
 
 func TestGenesisState_Validate(t *testing.T) {

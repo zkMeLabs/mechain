@@ -4,10 +4,10 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	gnfderrors "github.com/bnb-chain/greenfield/types/errors"
-	gnfdresource "github.com/bnb-chain/greenfield/types/resource"
-	permtypes "github.com/bnb-chain/greenfield/x/permission/types"
-	"github.com/bnb-chain/greenfield/x/storage/types"
+	gnfderrors "github.com/evmos/evmos/v12/types/errors"
+	gnfdresource "github.com/evmos/evmos/v12/types/resource"
+	permtypes "github.com/evmos/evmos/v12/x/permission/types"
+	"github.com/evmos/evmos/v12/x/storage/types"
 )
 
 var _ sdk.CrossChainApplication = &PermissionApp{}

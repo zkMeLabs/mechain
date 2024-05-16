@@ -3,8 +3,8 @@ package keeper_test
 import (
 	sdkmath "cosmossdk.io/math"
 
-	"github.com/bnb-chain/greenfield/x/bridge/keeper"
-	"github.com/bnb-chain/greenfield/x/bridge/types"
+	"github.com/evmos/evmos/v12/x/bridge/keeper"
+	"github.com/evmos/evmos/v12/x/bridge/types"
 )
 
 func (s *TestSuite) TestExportGenesis() {

@@ -50,7 +50,6 @@ import (
 
 	"cosmossdk.io/simapp"
 	appparams "cosmossdk.io/simapp/params"
-	bridgemodule "github.com/bnb-chain/greenfield/x/bridge"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
 	"github.com/cosmos/cosmos-sdk/store/iavl"
@@ -118,6 +117,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/upgrade"
 	upgradekeeper "github.com/cosmos/cosmos-sdk/x/upgrade/keeper"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
+	bridgemodule "github.com/evmos/evmos/v12/x/bridge"
 
 	ibctestingtypes "github.com/cosmos/ibc-go/v7/testing/types"
 
@@ -174,30 +174,30 @@ import (
 	_ "github.com/ethereum/go-ethereum/eth/tracers/js"
 	_ "github.com/ethereum/go-ethereum/eth/tracers/native"
 
-	bridgemodulekeeper "github.com/bnb-chain/greenfield/x/bridge/keeper"
-	bridgemoduletypes "github.com/bnb-chain/greenfield/x/bridge/types"
-	challengemodule "github.com/bnb-chain/greenfield/x/challenge"
-	challengemodulekeeper "github.com/bnb-chain/greenfield/x/challenge/keeper"
-	challengemoduletypes "github.com/bnb-chain/greenfield/x/challenge/types"
-	"github.com/bnb-chain/greenfield/x/gensp"
-	gensptypes "github.com/bnb-chain/greenfield/x/gensp/types"
-	paymentmodule "github.com/bnb-chain/greenfield/x/payment"
-	paymentmodulekeeper "github.com/bnb-chain/greenfield/x/payment/keeper"
-	paymentmoduletypes "github.com/bnb-chain/greenfield/x/payment/types"
-	permissionmodule "github.com/bnb-chain/greenfield/x/permission"
-	permissionmodulekeeper "github.com/bnb-chain/greenfield/x/permission/keeper"
-	permissionmoduletypes "github.com/bnb-chain/greenfield/x/permission/types"
-	spmodule "github.com/bnb-chain/greenfield/x/sp"
-	spmodulekeeper "github.com/bnb-chain/greenfield/x/sp/keeper"
-	spmoduletypes "github.com/bnb-chain/greenfield/x/sp/types"
-	storagemodule "github.com/bnb-chain/greenfield/x/storage"
-	storagemodulekeeper "github.com/bnb-chain/greenfield/x/storage/keeper"
-	storagemoduletypes "github.com/bnb-chain/greenfield/x/storage/types"
-	virtualgroupmodule "github.com/bnb-chain/greenfield/x/virtualgroup"
-	virtualgroupmodulekeeper "github.com/bnb-chain/greenfield/x/virtualgroup/keeper"
-	virtualgroupmoduletypes "github.com/bnb-chain/greenfield/x/virtualgroup/types"
 	crosschainkeeper "github.com/cosmos/cosmos-sdk/x/crosschain/keeper"
 	oraclekeeper "github.com/cosmos/cosmos-sdk/x/oracle/keeper"
+	bridgemodulekeeper "github.com/evmos/evmos/v12/x/bridge/keeper"
+	bridgemoduletypes "github.com/evmos/evmos/v12/x/bridge/types"
+	challengemodule "github.com/evmos/evmos/v12/x/challenge"
+	challengemodulekeeper "github.com/evmos/evmos/v12/x/challenge/keeper"
+	challengemoduletypes "github.com/evmos/evmos/v12/x/challenge/types"
+	"github.com/evmos/evmos/v12/x/gensp"
+	gensptypes "github.com/evmos/evmos/v12/x/gensp/types"
+	paymentmodule "github.com/evmos/evmos/v12/x/payment"
+	paymentmodulekeeper "github.com/evmos/evmos/v12/x/payment/keeper"
+	paymentmoduletypes "github.com/evmos/evmos/v12/x/payment/types"
+	permissionmodule "github.com/evmos/evmos/v12/x/permission"
+	permissionmodulekeeper "github.com/evmos/evmos/v12/x/permission/keeper"
+	permissionmoduletypes "github.com/evmos/evmos/v12/x/permission/types"
+	spmodule "github.com/evmos/evmos/v12/x/sp"
+	spmodulekeeper "github.com/evmos/evmos/v12/x/sp/keeper"
+	spmoduletypes "github.com/evmos/evmos/v12/x/sp/types"
+	storagemodule "github.com/evmos/evmos/v12/x/storage"
+	storagemodulekeeper "github.com/evmos/evmos/v12/x/storage/keeper"
+	storagemoduletypes "github.com/evmos/evmos/v12/x/storage/types"
+	virtualgroupmodule "github.com/evmos/evmos/v12/x/virtualgroup"
+	virtualgroupmodulekeeper "github.com/evmos/evmos/v12/x/virtualgroup/keeper"
+	virtualgroupmoduletypes "github.com/evmos/evmos/v12/x/virtualgroup/types"
 )
 
 // Name defines the application binary name
@@ -842,7 +842,7 @@ func New(
 		paramstypes.ModuleName,
 		erc20types.ModuleName,
 		consensusparamtypes.ModuleName,
-		// bridgemoduletypes.ModuleName,
+		bridgemoduletypes.ModuleName,
 		gashubtypes.ModuleName,
 		spmoduletypes.ModuleName,
 		virtualgroupmoduletypes.ModuleName,
@@ -882,7 +882,7 @@ func New(
 		// Evmos modules
 		erc20types.ModuleName,
 		consensusparamtypes.ModuleName,
-		// bridgemoduletypes.ModuleName,
+		bridgemoduletypes.ModuleName,
 		gashubtypes.ModuleName,
 		spmoduletypes.ModuleName,
 		virtualgroupmoduletypes.ModuleName,
@@ -932,7 +932,7 @@ func New(
 		// NOTE: crisis module must go at the end to check for invariants on each module
 		crisistypes.ModuleName,
 		consensusparamtypes.ModuleName,
-		// bridgemoduletypes.ModuleName,
+		bridgemoduletypes.ModuleName,
 		spmoduletypes.ModuleName,
 		virtualgroupmoduletypes.ModuleName,
 		paymentmoduletypes.ModuleName,
@@ -1059,10 +1059,10 @@ func (app *App) initStorage() {
 }
 
 func (app *App) initGov() {
-	err := app.GovKeeper.RegisterCrossChainSyncParamsApp()
-	if err != nil {
-		panic(err)
-	}
+	//err := app.GovKeeper.RegisterCrossChainSyncParamsApp()
+	//if err != nil {
+	//	panic(err)
+	//}
 }
 
 // Name returns the name of the App

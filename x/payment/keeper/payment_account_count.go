@@ -5,7 +5,7 @@ import (
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/bnb-chain/greenfield/x/payment/types"
+	"github.com/evmos/evmos/v12/x/payment/types"
 )
 
 // SetPaymentAccountCount set a specific paymentAccountCount in the store from its index

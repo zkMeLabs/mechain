@@ -5,7 +5,7 @@ package types
 
 import (
 	fmt "fmt"
-	resource "github.com/bnb-chain/greenfield/types/resource"
+	resource "github.com/evmos/evmos/v12/types/resource"
 	_ "github.com/cosmos/cosmos-proto"
 	_ "github.com/cosmos/gogoproto/gogoproto"
 	proto "github.com/cosmos/gogoproto/proto"

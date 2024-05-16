@@ -3,7 +3,7 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/bnb-chain/greenfield/x/permission/types"
+	"github.com/evmos/evmos/v12/x/permission/types"
 )
 
 func (k Keeper) MaximumStatementsNum(ctx sdk.Context) (res uint64) {

@@ -9,9 +9,9 @@ import (
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
 
-	"github.com/bnb-chain/greenfield/testutil/sample"
-	bridgesimulation "github.com/bnb-chain/greenfield/x/bridge/simulation"
-	"github.com/bnb-chain/greenfield/x/bridge/types"
+	"github.com/evmos/evmos/v12/testutil/sample"
+	bridgesimulation "github.com/evmos/evmos/v12/x/bridge/simulation"
+	"github.com/evmos/evmos/v12/x/bridge/types"
 )
 
 // avoid unused import issue

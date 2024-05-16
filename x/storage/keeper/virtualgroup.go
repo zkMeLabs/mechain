@@ -5,9 +5,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/prysmaticlabs/prysm/crypto/bls"
 
-	gnfdtypes "github.com/bnb-chain/greenfield/types"
-	"github.com/bnb-chain/greenfield/x/storage/types"
-	vgtypes "github.com/bnb-chain/greenfield/x/virtualgroup/types"
+	gnfdtypes "github.com/evmos/evmos/v12/types"
+	"github.com/evmos/evmos/v12/x/storage/types"
+	vgtypes "github.com/evmos/evmos/v12/x/virtualgroup/types"
 )
 
 func (k Keeper) DeleteObjectFromVirtualGroup(ctx sdk.Context, bucketInfo *types.BucketInfo, objectInfo *types.ObjectInfo) error {

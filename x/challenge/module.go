@@ -14,9 +14,9 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"
 
-	"github.com/bnb-chain/greenfield/x/challenge/client/cli"
-	"github.com/bnb-chain/greenfield/x/challenge/keeper"
-	"github.com/bnb-chain/greenfield/x/challenge/types"
+	"github.com/evmos/evmos/v12/x/challenge/client/cli"
+	"github.com/evmos/evmos/v12/x/challenge/keeper"
+	"github.com/evmos/evmos/v12/x/challenge/types"
 )
 
 var (

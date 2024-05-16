@@ -15,12 +15,12 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/bnb-chain/greenfield/x/challenge"
-	"github.com/bnb-chain/greenfield/x/challenge/keeper"
-	"github.com/bnb-chain/greenfield/x/challenge/types"
-	sptypes "github.com/bnb-chain/greenfield/x/sp/types"
-	storagetypes "github.com/bnb-chain/greenfield/x/storage/types"
-	virtualgrouptypes "github.com/bnb-chain/greenfield/x/virtualgroup/types"
+	"github.com/evmos/evmos/v12/x/challenge"
+	"github.com/evmos/evmos/v12/x/challenge/keeper"
+	"github.com/evmos/evmos/v12/x/challenge/types"
+	sptypes "github.com/evmos/evmos/v12/x/sp/types"
+	storagetypes "github.com/evmos/evmos/v12/x/storage/types"
+	virtualgrouptypes "github.com/evmos/evmos/v12/x/virtualgroup/types"
 )
 
 type TestSuite struct {

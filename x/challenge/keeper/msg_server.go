@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"github.com/bnb-chain/greenfield/x/challenge/types"
+	"github.com/evmos/evmos/v12/x/challenge/types"
 )
 
 type msgServer struct {

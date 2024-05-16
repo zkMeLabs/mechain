@@ -6,7 +6,7 @@ package types
 import (
 	context "context"
 	fmt "fmt"
-	common "github.com/bnb-chain/greenfield/types/common"
+	common "github.com/evmos/evmos/v12/types/common"
 	_ "github.com/cosmos/cosmos-proto"
 	types "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/cosmos/cosmos-sdk/types/msgservice"

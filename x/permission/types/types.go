@@ -8,9 +8,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
-	gnfd "github.com/bnb-chain/greenfield/types"
-	"github.com/bnb-chain/greenfield/types/common"
-	"github.com/bnb-chain/greenfield/types/resource"
+	gnfd "github.com/evmos/evmos/v12/types"
+	"github.com/evmos/evmos/v12/types/common"
+	"github.com/evmos/evmos/v12/types/resource"
 )
 
 type (

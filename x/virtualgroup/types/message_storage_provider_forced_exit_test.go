@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/bnb-chain/greenfield/testutil/sample"
+	"github.com/evmos/evmos/v12/testutil/sample"
 )
 
 func TestMsgStorageProviderForcedExit_ValidateBasic(t *testing.T) {

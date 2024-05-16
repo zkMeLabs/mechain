@@ -11,11 +11,11 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
-	"github.com/bnb-chain/greenfield/types/resource"
-	paymenttypes "github.com/bnb-chain/greenfield/x/payment/types"
-	permtypes "github.com/bnb-chain/greenfield/x/permission/types"
-	sptypes "github.com/bnb-chain/greenfield/x/sp/types"
-	"github.com/bnb-chain/greenfield/x/virtualgroup/types"
+	"github.com/evmos/evmos/v12/types/resource"
+	paymenttypes "github.com/evmos/evmos/v12/x/payment/types"
+	permtypes "github.com/evmos/evmos/v12/x/permission/types"
+	sptypes "github.com/evmos/evmos/v12/x/sp/types"
+	"github.com/evmos/evmos/v12/x/virtualgroup/types"
 )
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)

@@ -8,7 +8,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/spf13/cobra"
 
-	"github.com/bnb-chain/greenfield/x/challenge/types"
+	"github.com/evmos/evmos/v12/x/challenge/types"
 )
 
 // GetQueryCmd returns the cli query commands for this module

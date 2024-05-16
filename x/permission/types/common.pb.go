@@ -5,7 +5,7 @@ package types
 
 import (
 	fmt "fmt"
-	common "github.com/bnb-chain/greenfield/types/common"
+	common "github.com/evmos/evmos/v12/types/common"
 	_ "github.com/cosmos/cosmos-proto"
 	_ "github.com/cosmos/gogoproto/gogoproto"
 	proto "github.com/cosmos/gogoproto/proto"

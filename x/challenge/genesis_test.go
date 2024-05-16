@@ -11,10 +11,10 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/mint"
 	"github.com/stretchr/testify/require"
 
-	"github.com/bnb-chain/greenfield/testutil/nullify"
-	"github.com/bnb-chain/greenfield/x/challenge"
-	"github.com/bnb-chain/greenfield/x/challenge/keeper"
-	"github.com/bnb-chain/greenfield/x/challenge/types"
+	"github.com/evmos/evmos/v12/testutil/nullify"
+	"github.com/evmos/evmos/v12/x/challenge"
+	"github.com/evmos/evmos/v12/x/challenge/keeper"
+	"github.com/evmos/evmos/v12/x/challenge/types"
 )
 
 func TestGenesis(t *testing.T) {

@@ -4,7 +4,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	gnfderrors "github.com/bnb-chain/greenfield/types/errors"
+	gnfderrors "github.com/evmos/evmos/v12/types/errors"
 )
 
 const TypeMsgCancelSwapOut = "cancel_swap_out"

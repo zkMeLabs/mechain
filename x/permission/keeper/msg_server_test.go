@@ -14,9 +14,9 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/bnb-chain/greenfield/x/challenge"
-	"github.com/bnb-chain/greenfield/x/permission/keeper"
-	"github.com/bnb-chain/greenfield/x/permission/types"
+	"github.com/evmos/evmos/v12/x/challenge"
+	"github.com/evmos/evmos/v12/x/permission/keeper"
+	"github.com/evmos/evmos/v12/x/permission/types"
 )
 
 type TestSuite struct {

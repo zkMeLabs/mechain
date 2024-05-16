@@ -8,7 +8,7 @@ import (
 
 	"cosmossdk.io/errors"
 
-	gnfderrors "github.com/bnb-chain/greenfield/types/errors"
+	gnfderrors "github.com/evmos/evmos/v12/types/errors"
 )
 
 var (

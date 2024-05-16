@@ -7,8 +7,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 
-	"github.com/bnb-chain/greenfield/x/bridge/keeper"
-	"github.com/bnb-chain/greenfield/x/bridge/types"
+	"github.com/evmos/evmos/v12/x/bridge/keeper"
+	"github.com/evmos/evmos/v12/x/bridge/types"
 )
 
 func SimulateMsgTransferOut(

@@ -13,7 +13,7 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"
 
-	"github.com/bnb-chain/greenfield/x/gensp/types"
+	"github.com/evmos/evmos/v12/x/gensp/types"
 )
 
 var (

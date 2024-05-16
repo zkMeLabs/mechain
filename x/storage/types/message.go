@@ -11,12 +11,12 @@ import (
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 	"github.com/cosmos/gogoproto/proto"
 
-	grn2 "github.com/bnb-chain/greenfield/types"
-	"github.com/bnb-chain/greenfield/types/common"
-	gnfderrors "github.com/bnb-chain/greenfield/types/errors"
-	"github.com/bnb-chain/greenfield/types/resource"
-	"github.com/bnb-chain/greenfield/types/s3util"
-	permtypes "github.com/bnb-chain/greenfield/x/permission/types"
+	grn2 "github.com/evmos/evmos/v12/types"
+	"github.com/evmos/evmos/v12/types/common"
+	gnfderrors "github.com/evmos/evmos/v12/types/errors"
+	"github.com/evmos/evmos/v12/types/resource"
+	"github.com/evmos/evmos/v12/types/s3util"
+	permtypes "github.com/evmos/evmos/v12/x/permission/types"
 )
 
 const (
