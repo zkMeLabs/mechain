@@ -88,3 +88,4 @@ dependency-graph.png
 contracts/@openzeppelin/*
 deployment/luke/package-lock.json
 deployment/luke/config.json
+deployment/localup/config.json

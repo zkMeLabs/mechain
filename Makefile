@@ -169,8 +169,8 @@ clean:
     $(BUILDDIR)/ \
     artifacts/ \
     tmp-swagger-gen/ \
-	deployment/luke/nodes/ \
-	deployment/luke/mechaind
+	deployment/localup/nodes/ \
+	deployment/localup/mechaind
 
 all: build
 
