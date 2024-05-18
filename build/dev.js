@@ -364,7 +364,7 @@ const main = async function () {
             for (let i = nodesCount - commonNode; i < nodesCount; i++) {
               const keySeedPath = path.join(nodesDir, `node${i}/${daemon}/key_seed.json`);
               const curKeySeed = await fs.readJSON(keySeedPath);
-              const address = curKeySeed.bip39Address;
+              const address = curKeySeed.address;
               appState.auth.accounts.push(Object.assign(JSON.parse(JSON.stringify(account)), { base_account: { address } }));
               appState.bank.balances.push(Object.assign(JSON.parse(JSON.stringify(balance)), { address }));
             }

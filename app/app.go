@@ -413,7 +413,7 @@ func NewEvmos(
 	// use custom Ethermint account for contracts
 	app.AccountKeeper = authkeeper.NewAccountKeeper(
 		appCodec, keys[authtypes.StoreKey],
-		authtypes.ProtoBaseAccount, maccPerms,
+		evmostypes.ProtoAccount, maccPerms,
 		authAddr,
 	)
 	app.BankKeeper = bankkeeper.NewBaseKeeper(
