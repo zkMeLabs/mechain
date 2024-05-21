@@ -41,7 +41,6 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 - (chain) [#9](https://github.com/zkMeLabs/mechain/pull/9) Set prefix to mc and denom to zkme chain name to mechain
 
-
 ### Improvement
 
 - (chore) [#33](https://github.com/zkMeLabs/mechain/pull/33) Fix test after remove recovery/incentives/revenue/vesting/inflation/claims module and remove upgrades.
@@ -67,6 +66,4 @@ Ref: https://keepachangelog.com/en/1.0.0/
 - (evm) [#35](https://github.com/zkMeLabs/mechain/pull/35) Enable EIP 3855 for solidity push0 instruction.
 - (deps) [#43](https://github.com/zkMeLabs/mechain/pull/43) Bump Cosmos-SDK to v0.47.2 and ibc-go to v7.2.0.
 
-
 ### API Breaking
-
