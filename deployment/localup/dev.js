@@ -326,7 +326,7 @@ const main = async function () {
       if (!fs.existsSync(daemonApp) || isCompile) {
         console.log(`Start recompiling ${daemonApp}...`);
         let make = await execPromis(
-          `go build -o ${daemonApp} ../../cmd/${daemon}`,
+          `go build -o ${daemonApp} ../cmd/${daemon}`,
           { cwd: curDir }
         );
         console.log(`${daemonApp} compile finished`, make);
@@ -433,7 +433,7 @@ const main = async function () {
           const wallet = HDNodeWallet.fromPhrase(curKeySeed.secret);
           curKeySeed.privateKey = wallet.privateKey.replace("0x", "");
           curKeySeed.publicKey = wallet.publicKey.replace("0x", "");
-          curKeySeed.address = wallet.address;
+          curKeySeed.address = wallet.bip39Address;
           curKeySeed.bip39Address = ethToBech32(wallet.address, app.prefix);
           await fs.outputJson(keySeedPath, curKeySeed, { spaces: 2 });
         }

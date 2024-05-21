@@ -54,6 +54,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 ### Bug Fixes
 
 - (cli) [#46](https://github.com/zkMeLabs/mechain/pull/47) Use empty string as default value in `chain-id` flag to use the chain id from the genesis file when not specified.
+- (evm) [#81](https://github.com/zkMeLabs/mechain/pull/81) Fix deploy the contract but cannot call the contract.
 
 ### State Machine Breaking
 
