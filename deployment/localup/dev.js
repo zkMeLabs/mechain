@@ -326,7 +326,7 @@ const main = async function () {
       if (!fs.existsSync(daemonApp) || isCompile) {
         console.log(`Start recompiling ${daemonApp}...`);
         let make = await execPromis(
-          `go build -o ${daemonApp} ../cmd/${daemon}`,
+          `go build -o ${daemonApp} ../../cmd/${daemon}`,
           { cwd: curDir }
         );
         console.log(`${daemonApp} compile finished`, make);
@@ -496,7 +496,7 @@ const main = async function () {
                 `node${i}/${daemon}/key_seed.json`
               );
               const curKeySeed = await fs.readJSON(keySeedPath);
-              const address = curKeySeed.bip39Address;
+              const address = curKeySeed.address;
               appState.auth.accounts.push(
                 Object.assign(JSON.parse(JSON.stringify(account)), {
                   base_account: { address },
