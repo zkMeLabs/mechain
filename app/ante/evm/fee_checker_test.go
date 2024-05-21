@@ -53,9 +53,9 @@ func TestSDKTxFeeChecker(t *testing.T) {
 	encodingConfig := encoding.MakeConfig(module.NewBasicManager())
 	minGasPrices := sdk.NewDecCoins(sdk.NewDecCoin(evmtypes.DefaultEVMDenom, sdk.NewInt(10)))
 
-	genesisCtx := sdk.NewContext(nil, tmproto.Header{}, false, log.NewNopLogger())
-	checkTxCtx := sdk.NewContext(nil, tmproto.Header{Height: 1}, true, log.NewNopLogger()).WithMinGasPrices(minGasPrices)
-	deliverTxCtx := sdk.NewContext(nil, tmproto.Header{Height: 1}, false, log.NewNopLogger())
+	genesisCtx := sdk.NewContext(nil, tmproto.Header{}, false, nil, log.NewNopLogger())
+	checkTxCtx := sdk.NewContext(nil, tmproto.Header{Height: 1}, true, nil, log.NewNopLogger()).WithMinGasPrices(minGasPrices)
+	deliverTxCtx := sdk.NewContext(nil, tmproto.Header{Height: 1}, false, nil, log.NewNopLogger())
 
 	testCases := []struct {
 		name        string
