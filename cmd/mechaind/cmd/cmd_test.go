@@ -1,4 +1,4 @@
-package main_test
+package cmd
 
 import (
 	"fmt"
@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/evmos/evmos/v12/app"
-	mechaind "github.com/evmos/evmos/v12/cmd/mechaind"
+	mechaind "github.com/evmos/evmos/v12/cmd/mechaind/cmd"
 	"github.com/evmos/evmos/v12/utils"
 )
 
