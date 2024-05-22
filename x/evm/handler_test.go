@@ -156,7 +156,7 @@ func (suite *EvmTestSuite) DoSetupTest(t require.TestingT) {
 	suite.app.AccountKeeper.SetAccount(suite.ctx, acc)
 
 	valAddr := sdk.AccAddress(address.Bytes())
-	validator, err := stakingtypes.NewValidator(valAddr, priv.PubKey(), stakingtypes.Description{})
+	validator, err := stakingtypes.NewValidator(valAddr, priv.PubKey(), stakingtypes.Description{}, valAddr, valAddr, valAddr, nil)
 	require.NoError(t, err)
 
 	err = suite.app.StakingKeeper.SetValidatorByConsAddr(suite.ctx, validator)

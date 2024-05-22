@@ -17,13 +17,11 @@ import (
 	authztypes "github.com/cosmos/cosmos-sdk/x/authz"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
-	// crosschaintypes "github.com/cosmos/cosmos-sdk/x/crosschain/types"
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	feegranttypes "github.com/cosmos/cosmos-sdk/x/feegrant"
 	gashubtypes "github.com/cosmos/cosmos-sdk/x/gashub/types"
 	govv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 
-	// oracletypes "github.com/cosmos/cosmos-sdk/x/oracle/types"
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
@@ -33,7 +31,7 @@ import (
 	"github.com/evmos/evmos/v12/sdk/keys"
 	"github.com/evmos/evmos/v12/sdk/types"
 
-	// bridgetypes "github.com/evmos/evmos/v12/x/bridge/types"
+	bridgetypes "github.com/evmos/evmos/v12/x/bridge/types"
 	challengetypes "github.com/evmos/evmos/v12/x/challenge/types"
 	paymenttypes "github.com/evmos/evmos/v12/x/payment/types"
 	sptypes "github.com/evmos/evmos/v12/x/sp/types"
@@ -72,7 +70,7 @@ type PaymentQueryClient = paymenttypes.QueryClient
 type SpQueryClient = sptypes.QueryClient
 
 // BridgeQueryClient is a type to define the bridge types Query Client
-// type BridgeQueryClient = bridgetypes.QueryClient
+type BridgeQueryClient = bridgetypes.QueryClient
 
 // StorageQueryClient is a type to define the storage types Query Client
 type StorageQueryClient = storagetypes.QueryClient
@@ -124,7 +122,7 @@ type GreenfieldClient struct {
 	// SpQueryClient holds the sp query client.
 	SpQueryClient
 	// BridgeQueryClient holds the bridge query client.
-	// BridgeQueryClient
+	BridgeQueryClient
 	// StorageQueryClient holds the storage query client.
 	StorageQueryClient
 	// GovQueryClientV1 holds the gov query client V1.
