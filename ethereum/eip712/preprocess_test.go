@@ -67,9 +67,11 @@ func TestLedgerPreprocessing(t *testing.T) {
 		require.True(t, ok)
 		require.True(t, len(hasExtOptsTx.GetExtensionOptions()) == 1)
 
+		feePayer, err := utils.GetEvmosAddressFromBech32(feePayerAddress)
+
 		expectedExt := types.ExtensionOptionsWeb3Tx{
 			TypedDataChainID: 1000000,
-			FeePayer:         feePayerAddress,
+			FeePayer:         feePayer.String(),
 			FeePayerSig:      tc.expectedSignatureBytes,
 		}
 
