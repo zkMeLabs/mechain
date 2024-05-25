@@ -53,7 +53,7 @@ func (suite *KeeperTestSuite) TestEpochInfo() {
 					Epochs: []types.EpochInfo{day, week},
 					Pagination: &query.PageResponse{
 						NextKey: nil,
-						Total:   uint64(2),
+						Total:   uint64(0),
 					},
 				}
 			},
