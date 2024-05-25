@@ -89,3 +89,4 @@ contracts/@openzeppelin/*
 deployment/localup/nodes
 deployment/localup/mechaind
 deployment/localup/config.json
+deployment/localup/.local
