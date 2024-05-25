@@ -1,6 +1,7 @@
 package ibc
 
 import (
+	"github.com/evmos/evmos/v12/utils"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -131,8 +132,12 @@ func TestGetTransferSenderRecipient(t *testing.T) {
 			require.Error(t, err, tc.name)
 		} else {
 			require.NoError(t, err, tc.name)
-			require.Equal(t, tc.expSender, sender.String())
-			require.Equal(t, tc.expRecipient, recipient.String())
+			expSender, err := utils.GetEvmosAddressFromBech32(tc.expSender)
+			expRecipient, err := utils.GetEvmosAddressFromBech32(tc.expRecipient)
+			require.NoError(t, err, tc.name)
+
+			require.Equal(t, expSender.String(), sender.String())
+			require.Equal(t, expRecipient.String(), recipient.String())
 		}
 	}
 }
