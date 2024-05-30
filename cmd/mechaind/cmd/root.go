@@ -295,7 +295,7 @@ func (a appCreator) newApp(logger log.Logger, db dbm.DB, traceStore io.Writer, c
 		chainID = conf.ChainID
 	}
 
-	evmosApp := app.New(
+	app := app.New(
 		logger, db, traceStore, true,
 		cast.ToString(appOpts.Get(flags.FlagHome)),
 		cast.ToUint(appOpts.Get(sdkserver.FlagInvCheckPeriod)),
@@ -320,7 +320,7 @@ func (a appCreator) newApp(logger log.Logger, db dbm.DB, traceStore io.Writer, c
 		baseapp.SetEnablePlainStore(cast.ToBool(appOpts.Get(sdkserver.FlagEnablePlainStore))),
 	)
 
-	return evmosApp
+	return app
 }
 
 // appExport creates a new simapp (optionally at a given height)
