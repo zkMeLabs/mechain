@@ -15,7 +15,7 @@ import (
 	govv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	"github.com/evmos/evmos/v12/crypto/ethsecp256k1"
+	"github.com/cosmos/cosmos-sdk/crypto/keys/eth/ethsecp256k1"
 	"github.com/evmos/evmos/v12/utils"
 
 	"github.com/evmos/evmos/v12/app"
@@ -84,7 +84,7 @@ var _ = Describe("ERC20:", Ordered, func() {
 	amt := sdk.NewInt(100)
 	fundsAmt, _ := sdk.NewIntFromString("100000000000000000000000")
 
-	privKey, _ := ethsecp256k1.GenerateKey()
+	privKey, _ := ethsecp256k1.GenPrivKey()
 	addrBz := privKey.PubKey().Address().Bytes()
 	accAddr := sdk.AccAddress(addrBz)
 	addr := common.BytesToAddress(addrBz)

@@ -249,7 +249,7 @@ func (s *TestSuite) TestAttest_Normal() {
 	spOperatorAcc := sample.RandAccAddress()
 	sp := &sptypes.StorageProvider{Id: 1, OperatorAddress: spOperatorAcc.String()}
 	s.spKeeper.EXPECT().DepositDenomForSP(gomock.Any()).
-		Return("BNB").AnyTimes()
+		Return("azkme").AnyTimes()
 	s.spKeeper.EXPECT().Slash(gomock.Any(), gomock.Any(), gomock.Any()).
 		Return(nil).AnyTimes()
 	s.spKeeper.EXPECT().GetStorageProviderByOperatorAddr(gomock.Any(), gomock.Any()).

@@ -9,8 +9,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 
+	"github.com/cosmos/cosmos-sdk/crypto/hd"
 	"github.com/evmos/evmos/v12/app"
-	"github.com/evmos/evmos/v12/crypto/hd"
 	"github.com/evmos/evmos/v12/encoding"
 	"github.com/evmos/evmos/v12/tests/integration/ledger/mocks"
 	"github.com/evmos/evmos/v12/testutil"

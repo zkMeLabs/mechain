@@ -10,10 +10,10 @@ import (
 	tmlog "github.com/cometbft/cometbft/libs/log"
 	tmtypes "github.com/cometbft/cometbft/types"
 	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/crypto/keys/eth/ethsecp256k1"
 	"github.com/ethereum/go-ethereum/common"
 	ethtypes "github.com/ethereum/go-ethereum/core/types"
 	"github.com/evmos/evmos/v12/app"
-	"github.com/evmos/evmos/v12/crypto/ethsecp256k1"
 	evmenc "github.com/evmos/evmos/v12/encoding"
 	"github.com/evmos/evmos/v12/indexer"
 	utiltx "github.com/evmos/evmos/v12/testutil/tx"
@@ -23,7 +23,7 @@ import (
 )
 
 func TestKVIndexer(t *testing.T) {
-	priv, err := ethsecp256k1.GenerateKey()
+	priv, err := ethsecp256k1.GenPrivKey()
 	require.NoError(t, err)
 	from := common.BytesToAddress(priv.PubKey().Address().Bytes())
 	signer := utiltx.NewSigner(priv)

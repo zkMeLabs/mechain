@@ -73,7 +73,7 @@ Where create_storagep_provider.json contains:
       "maintenance_address": "0xbE03316B1D7c3FCB69136e47e02442d6Fb3396dB",
       "endpoint": "https://sp0.greenfield.io",
       "deposit": {
-        "denom": "BNB",
+        "denom": "azkme",
         "amount": "1000000000000000000000"
       },
       "read_price": "0.108", 
@@ -281,6 +281,7 @@ func CmdDeposit() *cobra.Command {
 		Short: "SP stake tokens from funding account",
 		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
+
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
@@ -440,7 +441,7 @@ func CreateStorageProviderMsgFlagSet(ipDefault string) (fs *flag.FlagSet, defaul
 
 	// payment
 	fsCreateStorageProvider.String(FlagReadPrice, "100", "The storage provider's read price, in bnb wei per charge byte")
-	fsCreateStorageProvider.Uint64(FlagFreeReadQuota, 10000, "The storage provider's free read quota, in byte")
+	fsCreateStorageProvider.Uint64(FlagFreeReadQuota, 100000000, "The storage provider's free read quota, in byte")
 	fsCreateStorageProvider.String(FlagStorePrice, "10000", "The storage provider's store price, in bnb wei per charge byte")
 
 	return fsCreateStorageProvider, defaultsDesc
@@ -718,13 +719,13 @@ Examples:
 func CmdUpdateStorageProviderStoragePrice() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "update-price [sp-address] [read-price] [store-price] [free-read-quota]",
-		Short: "Update prices and free read quota of a storage provider, all prices in BNB wei",
+		Short: "Update prices and free read quota of a storage provider, all prices in azkme wei",
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`update the storage provider read, store price and free read quota, if there is no change to a specific value, the current value should also be provided.
 
-The unit of price is a decimal, which indicates wei BNB per byte per second. 
+The unit of price is a decimal, which indicates wei azkme per byte per second. 
 E.g. the price is 0.02183945725, means approximately $0.018 / GB / Month. 
-(0.02183945725 * (30 * 86400) * (1024 * 1024 * 1024) * 300 / 10 ** 18 ≈ 0.018, assume the BNB price is 300 USD)
+(0.02183945725 * (30 * 86400) * (1024 * 1024 * 1024) * 300 / 10 ** 18 ≈ 0.018, assume the azkme price is 300 USD)
 
 The free-read-quota unit is bytes, for 1GB free quota, it is 1073741824.
 

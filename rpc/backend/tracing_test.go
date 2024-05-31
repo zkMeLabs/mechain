@@ -9,9 +9,9 @@ import (
 	tmrpctypes "github.com/cometbft/cometbft/rpc/core/types"
 	"github.com/cometbft/cometbft/types"
 	"github.com/cosmos/cosmos-sdk/crypto"
+	"github.com/cosmos/cosmos-sdk/crypto/keys/eth/ethsecp256k1"
 	"github.com/ethereum/go-ethereum/common"
 	ethtypes "github.com/ethereum/go-ethereum/core/types"
-	"github.com/evmos/evmos/v12/crypto/ethsecp256k1"
 	"github.com/evmos/evmos/v12/indexer"
 	"github.com/evmos/evmos/v12/rpc/backend/mocks"
 	evmtypes "github.com/evmos/evmos/v12/x/evm/types"
@@ -24,7 +24,7 @@ func (suite *BackendTestSuite) TestTraceTransaction() {
 	txHash := msgEthereumTx.AsTransaction().Hash()
 	txHash2 := msgEthereumTx2.AsTransaction().Hash()
 
-	priv, _ := ethsecp256k1.GenerateKey()
+	priv, _ := ethsecp256k1.GenPrivKey()
 	from := common.BytesToAddress(priv.PubKey().Address().Bytes())
 
 	queryClient := suite.backend.queryClient.QueryClient.(*mocks.EVMQueryClient)

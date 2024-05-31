@@ -10,6 +10,6 @@ const (
 	TEST_VAL_ADDR2   = "0x8b7Df76E1b5161B773BD7D16BC15cb238921383E"
 	TEST_GRPC_ADDR   = "localhost:9090"
 	TEST_RPC_ADDR    = "http://0.0.0.0:26750"
-	TEST_CHAIN_ID    = "greenfield_9000-121"
-	TEST_TOKEN_NAME  = "BNB"
+	TEST_CHAIN_ID    = "mechain_1000000-121"
+	TEST_TOKEN_NAME  = "azkme"
 )

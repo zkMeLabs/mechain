@@ -11,6 +11,7 @@ import (
 
 	amino "github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/codec/types"
+	"github.com/cosmos/cosmos-sdk/crypto/hd"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 
 	cryptocodec "github.com/evmos/evmos/v12/crypto/codec"
@@ -41,7 +42,7 @@ const (
 func TestKeyring(t *testing.T) {
 	dir := t.TempDir()
 	mockIn := strings.NewReader("")
-	kr, err := keyring.New("evmos", keyring.BackendTest, dir, mockIn, TestCodec, EthSecp256k1Option())
+	kr, err := keyring.New("evmos", keyring.BackendTest, dir, mockIn, TestCodec, keyring.ETHAlgoOption())
 	require.NoError(t, err)
 
 	// fail in retrieving key
@@ -50,26 +51,26 @@ func TestKeyring(t *testing.T) {
 	require.Nil(t, info)
 
 	mockIn.Reset("password\npassword\n")
-	info, mnemonic, err := kr.NewMnemonic("foo", keyring.English, evmostypes.BIP44HDPath, keyring.DefaultBIP39Passphrase, EthSecp256k1)
+	info, mnemonic, err := kr.NewMnemonic("foo", keyring.English, evmostypes.BIP44HDPath, keyring.DefaultBIP39Passphrase, hd.EthSecp256k1)
 	require.NoError(t, err)
 	require.NotEmpty(t, mnemonic)
 	require.Equal(t, "foo", info.Name)
 	require.Equal(t, "local", info.GetType().String())
 	pubKey, err := info.GetPubKey()
 	require.NoError(t, err)
-	require.Equal(t, string(EthSecp256k1Type), pubKey.Type())
+	require.Equal(t, string(hd.EthSecp256k1Type), pubKey.Type())
 
 	hdPath := evmostypes.BIP44HDPath
 
-	bz, err := EthSecp256k1.Derive()(mnemonic, keyring.DefaultBIP39Passphrase, hdPath)
+	bz, err := hd.EthSecp256k1.Derive()(mnemonic, keyring.DefaultBIP39Passphrase, hdPath)
 	require.NoError(t, err)
 	require.NotEmpty(t, bz)
 
-	wrongBz, err := EthSecp256k1.Derive()(mnemonic, keyring.DefaultBIP39Passphrase, "/wrong/hdPath")
+	wrongBz, err := hd.EthSecp256k1.Derive()(mnemonic, keyring.DefaultBIP39Passphrase, "/wrong/hdPath")
 	require.Error(t, err)
 	require.Empty(t, wrongBz)
 
-	privkey := EthSecp256k1.Generate()(bz)
+	privkey := hd.EthSecp256k1.Generate()(bz)
 	addr := common.BytesToAddress(privkey.PubKey().Address().Bytes())
 
 	os.Setenv(hdWalletFixEnv, "true")
@@ -85,18 +86,18 @@ func TestKeyring(t *testing.T) {
 }
 
 func TestDerivation(t *testing.T) {
-	bz, err := EthSecp256k1.Derive()(mnemonic, keyring.DefaultBIP39Passphrase, evmostypes.BIP44HDPath)
+	bz, err := hd.EthSecp256k1.Derive()(mnemonic, keyring.DefaultBIP39Passphrase, evmostypes.BIP44HDPath)
 	require.NoError(t, err)
 	require.NotEmpty(t, bz)
 
-	badBz, err := EthSecp256k1.Derive()(mnemonic, keyring.DefaultBIP39Passphrase, "44'/60'/0'/0/0")
+	badBz, err := hd.EthSecp256k1.Derive()(mnemonic, keyring.DefaultBIP39Passphrase, "44'/60'/0'/0/0")
 	require.NoError(t, err)
 	require.NotEmpty(t, badBz)
 
 	require.NotEqual(t, bz, badBz)
 
-	privkey := EthSecp256k1.Generate()(bz)
-	badPrivKey := EthSecp256k1.Generate()(badBz)
+	privkey := hd.EthSecp256k1.Generate()(bz)
+	badPrivKey := hd.EthSecp256k1.Generate()(badBz)
 
 	require.False(t, privkey.Equals(badPrivKey))
 

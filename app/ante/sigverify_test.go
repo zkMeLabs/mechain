@@ -16,9 +16,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/migrations/legacytx"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
+	"github.com/cosmos/cosmos-sdk/crypto/keys/eth/ethsecp256k1"
 	"github.com/evmos/evmos/v12/app"
 	"github.com/evmos/evmos/v12/app/ante"
-	"github.com/evmos/evmos/v12/crypto/ethsecp256k1"
 	"github.com/evmos/evmos/v12/encoding"
 )
 
@@ -43,7 +43,7 @@ func TestConsumeSignatureVerificationGas(t *testing.T) {
 		require.NoError(t, err)
 	}
 
-	ethsecKey, _ := ethsecp256k1.GenerateKey()
+	ethsecKey, _ := ethsecp256k1.GenPrivKey()
 	skR1, _ := secp256r1.GenPrivKey()
 
 	type args struct {

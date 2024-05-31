@@ -14,7 +14,7 @@ import (
 	"github.com/ethereum/go-ethereum/signer/core/apitypes"
 	"google.golang.org/grpc/metadata"
 
-	"github.com/evmos/evmos/v12/crypto/ethsecp256k1"
+	"github.com/cosmos/cosmos-sdk/crypto/keys/eth/ethsecp256k1"
 	"github.com/evmos/evmos/v12/rpc/backend/mocks"
 	utiltx "github.com/evmos/evmos/v12/testutil/tx"
 	evmtypes "github.com/evmos/evmos/v12/x/evm/types"
@@ -25,7 +25,7 @@ func (suite *BackendTestSuite) TestSendTransaction() {
 	gas := hexutil.Uint64(1)
 	zeroGas := hexutil.Uint64(0)
 	toAddr := utiltx.GenerateAddress()
-	priv, _ := ethsecp256k1.GenerateKey()
+	priv, _ := ethsecp256k1.GenPrivKey()
 	from := common.BytesToAddress(priv.PubKey().Address().Bytes())
 	nonce := hexutil.Uint64(1)
 	baseFee := sdk.NewInt(1)

@@ -37,6 +37,7 @@ import (
 
 // FlagGenesisTime defines the genesis time in string format
 const FlagGenesisTime = "genesis-time"
+const chainUpgradeGuide = "https://github.com/cosmos/cosmos-sdk/blob/main/UPGRADING.md"
 
 var migrationMap = genutiltypes.MigrationMap{}
 
@@ -69,6 +70,13 @@ func MigrateGenesisCmd() *cobra.Command {
 			genDoc, err := tmtypes.GenesisDocFromFile(importGenesis)
 			if err != nil {
 				return fmt.Errorf("failed to retrieve genesis.json: %w", err)
+			}
+			// Since some default values are valid values, we just print to
+			// make sure the user didn't forget to update these values.
+			if genDoc.ConsensusParams.Evidence.MaxBytes == 0 {
+				fmt.Printf("Warning: consensus_params.evidence.max_bytes is set to 0. If this is"+
+					" deliberate, feel free to ignore this warning. If not, please have a look at the chain"+
+					" upgrade guide at %s.\n", chainUpgradeGuide)
 			}
 
 			var initialState genutiltypes.AppMap

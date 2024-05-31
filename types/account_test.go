@@ -12,8 +12,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
+	"github.com/cosmos/cosmos-sdk/crypto/keys/eth/ethsecp256k1"
 	cryptocodec "github.com/evmos/evmos/v12/crypto/codec"
-	"github.com/evmos/evmos/v12/crypto/ethsecp256k1"
 	encodingcodec "github.com/evmos/evmos/v12/encoding/codec"
 	"github.com/evmos/evmos/v12/types"
 )
@@ -31,7 +31,7 @@ type AccountTestSuite struct {
 }
 
 func (suite *AccountTestSuite) SetupTest() {
-	privKey, err := ethsecp256k1.GenerateKey()
+	privKey, err := ethsecp256k1.GenPrivKey()
 	suite.Require().NoError(err)
 	pubKey := privKey.PubKey()
 	addr := sdk.AccAddress(pubKey.Address())
