@@ -8,7 +8,9 @@ import (
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 )
 
-var ErrSequenceUniqueConstraint = errors.Register("sequence_u256", 1, "sequence already initialized")
+var (
+	ErrSequenceUniqueConstraint = errors.Register("sequence_u256", 1, "sequence already initialized")
+)
 
 type Number interface {
 	uint32 | math.Uint

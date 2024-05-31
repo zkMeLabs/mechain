@@ -14,7 +14,7 @@ import (
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 	"github.com/cosmos/gogoproto/proto"
 
-	"github.com/evmos/evmos/v12/internals/sequence"
+	"github.com/evmos/evmos/v12/internal/sequence"
 	gnfdtypes "github.com/evmos/evmos/v12/types"
 	types2 "github.com/evmos/evmos/v12/types"
 	"github.com/evmos/evmos/v12/types/common"

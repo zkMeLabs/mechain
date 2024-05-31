@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/evmos/evmos/v12/internals/sequence"
+	"github.com/evmos/evmos/v12/internal/sequence"
 )
 
 type MockContext struct {
