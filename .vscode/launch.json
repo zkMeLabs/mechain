@@ -19,7 +19,7 @@
       "request": "launch",
       "mode": "test",
       "program": "${fileDirname}",
-      "args": ["-testify.m", "^(TestTraceBlock)$"]
+      "args": ["-testify.m", "^(TestTransfer)$"]
     }
   ]
 }

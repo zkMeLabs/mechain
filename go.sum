@@ -1535,8 +1535,8 @@ github.com/yuin/goldmark v1.2.1/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9dec
 github.com/yuin/goldmark v1.3.5/go.mod h1:mwnBkeHKe2W/ZEtQ+71ViKU8L12m81fl3OWwC1Zlc8k=
 github.com/yuin/goldmark v1.4.1/go.mod h1:mwnBkeHKe2W/ZEtQ+71ViKU8L12m81fl3OWwC1Zlc8k=
 github.com/yuin/goldmark v1.4.13/go.mod h1:6yULJ656Px+3vBD8DxQVa3kxgyrAnzto9xy5taEt/CY=
-github.com/zkMeLabs/mechain-cosmos-sdk v0.47.3-mechain.0.20240520133117-3be751b847b1 h1:oPakck7RhRBSVZqoFBFZC8utgkpnGy3gLqCuditDCbs=
-github.com/zkMeLabs/mechain-cosmos-sdk v0.47.3-mechain.0.20240520133117-3be751b847b1/go.mod h1:jLox6rgD6VM3m3WKgj7A6/Kn9voO/3z8p9yGOWe5MFM=
+github.com/zkMeLabs/mechain-cosmos-sdk v0.47.3-mechain.0.20240605082538-2191d2ce7a55 h1:vtFiG2Zb0cqNrHbTxigM3X0mBqvMEefV0ahZQRUyQ1M=
+github.com/zkMeLabs/mechain-cosmos-sdk v0.47.3-mechain.0.20240605082538-2191d2ce7a55/go.mod h1:jLox6rgD6VM3m3WKgj7A6/Kn9voO/3z8p9yGOWe5MFM=
 github.com/zkMeLabs/mechain-cosmos-sdk/api v0.0.0-20240514081740-2a52df8405f3 h1:jDcyB8utNc2dLdmmnT9v+C9BQoOXrMpapsZ7gtGlZrs=
 github.com/zkMeLabs/mechain-cosmos-sdk/api v0.0.0-20240514081740-2a52df8405f3/go.mod h1:vhsZxXE9tYJeYB5JR4hPhd6Pc/uPf7j1T8IJ7p9FdeM=
 github.com/zkMeLabs/mechain-cosmos-sdk/math v0.0.0-20240508034054-62cf83e35df8 h1:NK3VW6icc/7iE+JtjqjdpyDnwOz+rtdUlpfLie5qjvo=

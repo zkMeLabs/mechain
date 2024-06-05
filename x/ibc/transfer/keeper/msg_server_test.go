@@ -56,6 +56,7 @@ func (suite *KeeperTestSuite) TestTransfer() {
 			},
 			false,
 		},
+
 		{
 			"no-op - disabled erc20 by params - sufficient sdk.Coins balance)",
 			func() *types.MsgTransfer {
