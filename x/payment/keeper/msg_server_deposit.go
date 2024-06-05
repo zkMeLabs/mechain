@@ -4,7 +4,6 @@ import (
 	"context"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
 	"github.com/evmos/evmos/v12/x/payment/types"
 )
@@ -21,7 +20,7 @@ func (k msgServer) Deposit(goCtx context.Context, msg *types.MsgDeposit) (*types
 	if err != nil {
 		return nil, err
 	}
-	if ctx.IsUpgraded(upgradetypes.Nagqu) && k.IsPaymentAccount(ctx, to) {
+	if k.IsPaymentAccount(ctx, to) {
 		balanceOfToAccount := k.bankKeeper.GetBalance(ctx, to, k.GetParams(ctx).FeeDenom)
 		if balanceOfToAccount.IsPositive() {
 			err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, to, types.ModuleName, sdk.NewCoins(balanceOfToAccount))

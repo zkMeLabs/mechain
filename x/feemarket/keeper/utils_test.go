@@ -21,8 +21,8 @@ import (
 	ethtypes "github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/crypto"
 
+	"github.com/cosmos/cosmos-sdk/crypto/keys/eth/ethsecp256k1"
 	"github.com/evmos/evmos/v12/app"
-	"github.com/evmos/evmos/v12/crypto/ethsecp256k1"
 	"github.com/evmos/evmos/v12/encoding"
 	"github.com/evmos/evmos/v12/testutil"
 	utiltx "github.com/evmos/evmos/v12/testutil/tx"
@@ -35,18 +35,19 @@ import (
 	dbm "github.com/cometbft/cometbft-db"
 	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cometbft/cometbft/libs/log"
+	"github.com/prysmaticlabs/prysm/crypto/bls"
 )
 
 func (suite *KeeperTestSuite) SetupApp(checkTx bool, chainID string) {
 	t := suite.T()
 	// account key
-	priv, err := ethsecp256k1.GenerateKey()
+	priv, err := ethsecp256k1.GenPrivKey()
 	require.NoError(t, err)
 	suite.address = common.BytesToAddress(priv.PubKey().Address().Bytes())
 	suite.signer = utiltx.NewSigner(priv)
 
 	// consensus key
-	priv, err = ethsecp256k1.GenerateKey()
+	priv, err = ethsecp256k1.GenPrivKey()
 	require.NoError(t, err)
 	suite.consAddress = sdk.ConsAddress(priv.PubKey().Address())
 
@@ -68,9 +69,11 @@ func (suite *KeeperTestSuite) SetupApp(checkTx bool, chainID string) {
 	suite.app.AccountKeeper.SetAccount(suite.ctx, acc)
 
 	valAddr := sdk.AccAddress(suite.address.Bytes())
-	validator, err := stakingtypes.NewValidator(valAddr, priv.PubKey(), stakingtypes.Description{})
+	blsSecretKey, _ := bls.RandKey()
+	blsPk := blsSecretKey.PublicKey().Marshal()
+	validator, err := stakingtypes.NewValidator(valAddr, priv.PubKey(), stakingtypes.Description{}, valAddr, valAddr, valAddr, blsPk)
 	require.NoError(t, err)
-	validator = stakingkeeper.TestingUpdateValidator(&suite.app.StakingKeeper, suite.ctx, validator, true)
+	validator = stakingkeeper.TestingUpdateValidator(suite.app.StakingKeeper, suite.ctx, validator, true)
 	err = suite.app.StakingKeeper.Hooks().AfterValidatorCreated(suite.ctx, validator.GetOperator())
 	require.NoError(t, err)
 
@@ -150,7 +153,7 @@ func setupChain(localMinGasPricesStr string, chainID string) {
 	// Initialize the app, so we can use SetMinGasPrices to set the
 	// validator-specific min-gas-prices setting
 	db := dbm.NewMemDB()
-	newapp := app.New(
+	newapp := app.NewEvmos(
 		log.NewNopLogger(),
 		db,
 		nil,
@@ -158,6 +161,7 @@ func setupChain(localMinGasPricesStr string, chainID string) {
 		app.DefaultNodeHome,
 		5,
 		encoding.MakeConfig(app.ModuleBasics),
+		app.NewDefaultAppConfig(),
 		simutils.NewAppOptionsWithFlagHome(app.DefaultNodeHome),
 		baseapp.SetChainID(chainID),
 		baseapp.SetMinGasPrices(localMinGasPricesStr),

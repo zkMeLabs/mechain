@@ -11,6 +11,7 @@ import (
 	moduletestutil "github.com/cosmos/cosmos-sdk/types/module/testutil"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/suite"
 
@@ -42,12 +43,15 @@ func (s *TestSuite) SetupTest() {
 	testCtx := testutil.DefaultContextWithDB(s.T(), key, storetypes.NewTransientStoreKey("transient_test"))
 
 	// set mock randao mix
-	randaoMix := sdk.Keccak256([]byte{1})
-	randaoMix = append(randaoMix, sdk.Keccak256([]byte{2})...)
+	randaoMix := crypto.Keccak256([]byte{1})
+	randaoMix = append(randaoMix, crypto.Keccak256([]byte{2})...)
 	header := testCtx.Ctx.BlockHeader()
 	header.RandaoMix = randaoMix
+	upgradeChecker := func(ctx sdk.Context, name string) bool {
+		return true
+	}
 	testCtx = testutil.TestContext{
-		Ctx: sdk.NewContext(testCtx.CMS, header, false, nil, testCtx.Ctx.Logger()),
+		Ctx: sdk.NewContext(testCtx.CMS, header, false, upgradeChecker, testCtx.Ctx.Logger()),
 		DB:  testCtx.DB,
 		CMS: testCtx.CMS,
 	}

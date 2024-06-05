@@ -15,6 +15,7 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/suite"
 
+	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/evmos/evmos/v12/x/challenge"
 	"github.com/evmos/evmos/v12/x/challenge/keeper"
 	"github.com/evmos/evmos/v12/x/challenge/types"
@@ -46,12 +47,15 @@ func (s *TestSuite) SetupTest() {
 	testCtx := testutil.DefaultContextWithDB(s.T(), key, storetypes.NewTransientStoreKey("transient_test"))
 
 	// set mock randao mix
-	randaoMix := sdk.Keccak256([]byte{1})
-	randaoMix = append(randaoMix, sdk.Keccak256([]byte{2})...)
+	randaoMix := crypto.Keccak256([]byte{1})
+	randaoMix = append(randaoMix, crypto.Keccak256([]byte{2})...)
 	header := testCtx.Ctx.BlockHeader()
 	header.RandaoMix = randaoMix
+	upgradeChecker := func(ctx sdk.Context, name string) bool {
+		return true
+	}
 	testCtx = testutil.TestContext{
-		Ctx: sdk.NewContext(testCtx.CMS, header, false, nil, testCtx.Ctx.Logger()),
+		Ctx: sdk.NewContext(testCtx.CMS, header, false, upgradeChecker, testCtx.Ctx.Logger()),
 		DB:  testCtx.DB,
 		CMS: testCtx.CMS,
 	}

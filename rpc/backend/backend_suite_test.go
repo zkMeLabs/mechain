@@ -19,7 +19,6 @@ import (
 	"github.com/stretchr/testify/suite"
 
 	"github.com/evmos/evmos/v12/app"
-	"github.com/evmos/evmos/v12/crypto/hd"
 	"github.com/evmos/evmos/v12/encoding"
 	"github.com/evmos/evmos/v12/indexer"
 	"github.com/evmos/evmos/v12/rpc/backend/mocks"
@@ -167,7 +166,7 @@ func (suite *BackendTestSuite) buildFormattedBlock(
 func (suite *BackendTestSuite) generateTestKeyring(clientDir string) (keyring.Keyring, error) {
 	buf := bufio.NewReader(os.Stdin)
 	encCfg := encoding.MakeConfig(app.ModuleBasics)
-	return keyring.New(sdk.KeyringServiceName(), keyring.BackendTest, clientDir, buf, encCfg.Codec, []keyring.Option{hd.EthSecp256k1Option()}...)
+	return keyring.New(sdk.KeyringServiceName(), keyring.BackendTest, clientDir, buf, encCfg.Codec, []keyring.Option{keyring.ETHAlgoOption()}...)
 }
 
 func (suite *BackendTestSuite) signAndEncodeEthTx(msgEthereumTx *evmtypes.MsgEthereumTx) []byte {

@@ -314,7 +314,7 @@ func (suite *AnteTestSuite) TestAnteHandler() {
 			}, false, false, true,
 		},
 		{
-			"success- DeliverTx EIP712 create validator",
+			"success- DeliverTx EIP712 create validator", // fails?
 			func() sdk.Tx {
 				from := acc.GetAddress()
 				coinAmount := sdk.NewCoin(evmtypes.DefaultEVMDenom, sdk.NewInt(20))
@@ -338,7 +338,7 @@ func (suite *AnteTestSuite) TestAnteHandler() {
 			}, false, false, true,
 		},
 		{
-			"success- DeliverTx EIP712 MsgSubmitProposal",
+			"success- DeliverTx EIP712 MsgSubmitProposal", // fails?
 			func() sdk.Tx {
 				from := acc.GetAddress()
 				coinAmount := sdk.NewCoin(evmtypes.DefaultEVMDenom, sdk.NewInt(20))

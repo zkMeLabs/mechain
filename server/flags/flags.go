@@ -100,6 +100,7 @@ func AddTxFlags(cmd *cobra.Command) (*cobra.Command, error) {
 	//	"gas limit to set per-transaction; set to %q to calculate required gas automatically (default %d)",
 	//	flags.GasFlagAuto, flags.DefaultGasLimit,
 	// ))
+	cmd.PersistentFlags().String(flags.FlagGas, "", "gas limit to set per-transaction")
 
 	// viper.BindPFlag(flags.FlagTrustNode, cmd.Flags().Lookup(flags.FlagTrustNode))
 	if err := viper.BindPFlag(flags.FlagNode, cmd.PersistentFlags().Lookup(flags.FlagNode)); err != nil {

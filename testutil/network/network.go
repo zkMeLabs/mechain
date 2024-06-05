@@ -54,6 +54,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
+	"github.com/cosmos/cosmos-sdk/crypto/hd"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	"github.com/cosmos/cosmos-sdk/server"
@@ -69,7 +70,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/genutil"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/evmos/evmos/v12/app"
-	"github.com/evmos/evmos/v12/crypto/hd"
+	evmoskr "github.com/evmos/evmos/v12/crypto/keyring"
 
 	"github.com/evmos/evmos/v12/encoding"
 	"github.com/evmos/evmos/v12/server/config"
@@ -130,7 +131,7 @@ func DefaultConfig() Config {
 		TimeoutCommit:     3 * time.Second,
 		ChainID:           chainID,
 		NumValidators:     4,
-		BondDenom:         "aevmos",
+		BondDenom:         "azkme",
 		MinGasPrices:      fmt.Sprintf("0.000006%s", evmostypes.AttoEvmos),
 		AccountTokens:     sdk.TokensFromConsensusPower(1000000000000000000, evmostypes.PowerReduction),
 		StakingTokens:     sdk.TokensFromConsensusPower(500000000000000000, evmostypes.PowerReduction),
@@ -138,7 +139,7 @@ func DefaultConfig() Config {
 		PruningStrategy:   pruningtypes.PruningOptionNothing,
 		CleanupDir:        true,
 		SigningAlgo:       string(hd.EthSecp256k1Type),
-		KeyringOptions:    []keyring.Option{hd.EthSecp256k1Option()},
+		KeyringOptions:    []keyring.Option{evmoskr.Option()},
 		PrintMnemonic:     false,
 	}
 }
@@ -146,10 +147,10 @@ func DefaultConfig() Config {
 // NewAppConstructor returns a new Evmos AppConstructor
 func NewAppConstructor(encodingCfg params.EncodingConfig, chainID string) AppConstructor {
 	return func(val Validator) servertypes.Application {
-		return app.New(
+		return app.NewEvmos(
 			val.Ctx.Logger, dbm.NewMemDB(), nil, true, val.Ctx.Config.RootDir, 0,
 			encodingCfg,
-			&app.AppConfig{CrossChain: app.NewDefaultAppConfig().CrossChain},
+			app.NewDefaultAppConfig(),
 			simutils.NewAppOptionsWithFlagHome(val.Ctx.Config.RootDir),
 			baseapp.SetPruning(pruningtypes.NewPruningOptionsFromString(val.AppConfig.Pruning)),
 			baseapp.SetMinGasPrices(val.AppConfig.MinGasPrices),

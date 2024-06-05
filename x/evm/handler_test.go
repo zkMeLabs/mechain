@@ -33,8 +33,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
+	"github.com/cosmos/cosmos-sdk/crypto/keys/eth/ethsecp256k1"
 	"github.com/evmos/evmos/v12/app"
-	"github.com/evmos/evmos/v12/crypto/ethsecp256k1"
 	utiltx "github.com/evmos/evmos/v12/testutil/tx"
 	evmostypes "github.com/evmos/evmos/v12/types"
 	"github.com/evmos/evmos/v12/x/evm"
@@ -46,6 +46,7 @@ import (
 	tmversion "github.com/cometbft/cometbft/proto/tendermint/version"
 
 	"github.com/cometbft/cometbft/version"
+	"github.com/prysmaticlabs/prysm/crypto/bls"
 )
 
 type EvmTestSuite struct {
@@ -53,7 +54,7 @@ type EvmTestSuite struct {
 
 	ctx     sdk.Context
 	handler sdk.Handler
-	app     *app.App
+	app     *app.Evmos
 	chainID *big.Int
 
 	signer    keyring.Signer
@@ -69,17 +70,17 @@ func (suite *EvmTestSuite) DoSetupTest(t require.TestingT) {
 	checkTx := false
 
 	// account key
-	priv, err := ethsecp256k1.GenerateKey()
+	priv, err := ethsecp256k1.GenPrivKey()
 	require.NoError(t, err)
 	address := common.BytesToAddress(priv.PubKey().Address().Bytes())
 	suite.signer = utiltx.NewSigner(priv)
 	suite.from = address
 	// consensus key
-	priv, err = ethsecp256k1.GenerateKey()
+	priv, err = ethsecp256k1.GenPrivKey()
 	require.NoError(t, err)
 	consAddress := sdk.ConsAddress(priv.PubKey().Address())
 
-	suite.app = app.EthSetup(checkTx, func(app *app.App, genesis simapp.GenesisState) simapp.GenesisState {
+	suite.app = app.EthSetup(checkTx, func(app *app.Evmos, genesis simapp.GenesisState) simapp.GenesisState {
 		if suite.dynamicTxFee {
 			feemarketGenesis := feemarkettypes.DefaultGenesisState()
 			feemarketGenesis.Params.EnableHeight = 1
@@ -91,10 +92,10 @@ func (suite *EvmTestSuite) DoSetupTest(t require.TestingT) {
 
 	coins := sdk.NewCoins(sdk.NewCoin(types.DefaultEVMDenom, sdkmath.NewInt(100000000000000)))
 	genesisState := app.NewTestGenesisState(suite.app.AppCodec())
-	b32address := sdk.MustBech32ifyAddressBytes(sdk.GetConfig().GetBech32AccountAddrPrefix(), priv.PubKey().Address().Bytes())
+	// b32address := sdk.MustBech32ifyAddressBytes(sdk.GetConfig().GetBech32AccountAddrPrefix(), priv.PubKey().Address().Bytes())
 	balances := []banktypes.Balance{
 		{
-			Address: b32address,
+			Address: priv.PubKey().Address().String(),
 			Coins:   coins,
 		},
 		{
@@ -156,7 +157,9 @@ func (suite *EvmTestSuite) DoSetupTest(t require.TestingT) {
 	suite.app.AccountKeeper.SetAccount(suite.ctx, acc)
 
 	valAddr := sdk.AccAddress(address.Bytes())
-	validator, err := stakingtypes.NewValidator(valAddr, priv.PubKey(), stakingtypes.Description{})
+	blsSecretKey, _ := bls.RandKey()
+	blsPk := blsSecretKey.PublicKey().Marshal()
+	validator, err := stakingtypes.NewValidator(valAddr, priv.PubKey(), stakingtypes.Description{}, valAddr, valAddr, valAddr, blsPk)
 	require.NoError(t, err)
 
 	err = suite.app.StakingKeeper.SetValidatorByConsAddr(suite.ctx, validator)

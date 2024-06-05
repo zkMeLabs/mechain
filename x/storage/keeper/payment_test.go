@@ -12,7 +12,6 @@ import (
 	moduletestutil "github.com/cosmos/cosmos-sdk/types/module/testutil"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/suite"
 
@@ -31,10 +30,10 @@ type TestSuite struct {
 	cdc           codec.Codec
 	storageKeeper *keeper.Keeper
 
-	accountKeeper      *types.MockAccountKeeper
-	spKeeper           *types.MockSpKeeper
-	permissionKeeper   *types.MockPermissionKeeper
-	crossChainKeeper   *types.MockCrossChainKeeper
+	accountKeeper    *types.MockAccountKeeper
+	spKeeper         *types.MockSpKeeper
+	permissionKeeper *types.MockPermissionKeeper
+	// crossChainKeeper   *types.MockCrossChainKeeper
 	paymentKeeper      *types.MockPaymentKeeper
 	virtualGroupKeeper *types.MockVirtualGroupKeeper
 
@@ -50,7 +49,7 @@ func (s *TestSuite) SetupTest() {
 	header := testCtx.Ctx.BlockHeader()
 	header.Time = time.Now()
 	upgradeChecker := func(ctx sdk.Context, name string) bool {
-		return name == upgradetypes.Serengeti
+		return true
 	}
 	testCtx = testutil.TestContext{
 		Ctx: sdk.NewContext(testCtx.CMS, header, false, upgradeChecker, testCtx.Ctx.Logger()),
@@ -64,7 +63,7 @@ func (s *TestSuite) SetupTest() {
 	accountKeeper := types.NewMockAccountKeeper(ctrl)
 	spKeeper := types.NewMockSpKeeper(ctrl)
 	permissionKeeper := types.NewMockPermissionKeeper(ctrl)
-	crossChainKeeper := types.NewMockCrossChainKeeper(ctrl)
+	// crossChainKeeper := types.NewMockCrossChainKeeper(ctrl)
 	paymentKeeper := types.NewMockPaymentKeeper(ctrl)
 	virtualGroupKeeper := types.NewMockVirtualGroupKeeper(ctrl)
 
@@ -76,7 +75,7 @@ func (s *TestSuite) SetupTest() {
 		spKeeper,
 		paymentKeeper,
 		permissionKeeper,
-		crossChainKeeper,
+		// crossChainKeeper,
 		virtualGroupKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
@@ -85,7 +84,7 @@ func (s *TestSuite) SetupTest() {
 	s.accountKeeper = accountKeeper
 	s.spKeeper = spKeeper
 	s.permissionKeeper = permissionKeeper
-	s.crossChainKeeper = crossChainKeeper
+	// s.crossChainKeeper = crossChainKeeper
 	s.paymentKeeper = paymentKeeper
 	s.virtualGroupKeeper = virtualGroupKeeper
 

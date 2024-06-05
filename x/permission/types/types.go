@@ -6,7 +6,6 @@ import (
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
 	gnfd "github.com/evmos/evmos/v12/types"
 	"github.com/evmos/evmos/v12/types/common"
@@ -218,34 +217,30 @@ func (s *Statement) ValidateBasic(resType resource.ResourceType) error {
 }
 
 func (s *Statement) ValidateRuntime(ctx sdk.Context, resType resource.ResourceType) error {
-	if ctx.IsUpgraded(upgradetypes.Nagqu) {
-		switch resType {
-		case resource.RESOURCE_TYPE_BUCKET:
-			for _, r := range s.Resources {
-				_, err := regexp.Compile(r)
-				if err != nil {
-					return ErrInvalidStatement.Wrapf("The Resources regexp compile failed, err: %s", err)
-				}
+	switch resType {
+	case resource.RESOURCE_TYPE_BUCKET:
+		for _, r := range s.Resources {
+			_, err := regexp.Compile(r)
+			if err != nil {
+				return ErrInvalidStatement.Wrapf("The Resources regexp compile failed, err: %s", err)
 			}
-		case resource.RESOURCE_TYPE_OBJECT:
-			if s.Resources != nil {
-				return ErrInvalidStatement.Wrap("The Resources option can only be used at the bucket level. ")
-			}
-		case resource.RESOURCE_TYPE_GROUP:
-			if s.Resources != nil {
-				return ErrInvalidStatement.Wrap("The Resources option can only be used at the bucket level. ")
-			}
-		default:
-			return ErrInvalidStatement.Wrap("unknown resource type.")
 		}
+	case resource.RESOURCE_TYPE_OBJECT:
+		if s.Resources != nil {
+			return ErrInvalidStatement.Wrap("The Resources option can only be used at the bucket level. ")
+		}
+	case resource.RESOURCE_TYPE_GROUP:
+		if s.Resources != nil {
+			return ErrInvalidStatement.Wrap("The Resources option can only be used at the bucket level. ")
+		}
+	default:
+		return ErrInvalidStatement.Wrap("unknown resource type.")
 	}
 
 	var bucketAllowedActions map[ActionType]bool
-	if ctx.IsUpgraded(upgradetypes.Pampas) {
-		bucketAllowedActions = BucketAllowedActionsAfterPampas
-	} else {
-		bucketAllowedActions = BucketAllowedActions
-	}
+
+	bucketAllowedActions = BucketAllowedActionsAfterPampas
+
 	if resType == resource.RESOURCE_TYPE_BUCKET {
 		containsCreateObject := false
 		for _, a := range s.Actions {

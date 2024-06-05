@@ -11,6 +11,8 @@ import (
 	sdkmath "cosmossdk.io/math"
 	"cosmossdk.io/simapp"
 	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/cosmos/cosmos-sdk/crypto/keys/eth/eip712"
 	"github.com/cosmos/cosmos-sdk/testutil/testdata"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -18,7 +20,6 @@ import (
 	"github.com/evmos/evmos/v12/app"
 	ante "github.com/evmos/evmos/v12/app/ante"
 	"github.com/evmos/evmos/v12/encoding"
-	"github.com/evmos/evmos/v12/ethereum/eip712"
 	"github.com/evmos/evmos/v12/utils"
 	evmtypes "github.com/evmos/evmos/v12/x/evm/types"
 	feemarkettypes "github.com/evmos/evmos/v12/x/feemarket/types"
@@ -28,7 +29,7 @@ type AnteTestSuite struct {
 	suite.Suite
 
 	ctx                      sdk.Context
-	app                      *app.App
+	app                      *app.Evmos
 	clientCtx                client.Context
 	anteHandler              sdk.AnteHandler
 	ethSigner                types.Signer
@@ -44,7 +45,7 @@ const TestGasLimit uint64 = 100000
 func (suite *AnteTestSuite) SetupTest() {
 	checkTx := false
 
-	suite.app = app.EthSetup(checkTx, func(app *app.App, genesis simapp.GenesisState) simapp.GenesisState {
+	suite.app = app.EthSetup(checkTx, func(app *app.Evmos, genesis simapp.GenesisState) simapp.GenesisState {
 		if suite.enableFeemarket {
 			// setup feemarketGenesis params
 			feemarketGenesis := feemarkettypes.DefaultGenesisState()
@@ -90,7 +91,8 @@ func (suite *AnteTestSuite) SetupTest() {
 	encodingConfig := encoding.MakeConfig(app.ModuleBasics)
 	// We're using TestMsg amino encoding in some tests, so register it here.
 	encodingConfig.Amino.RegisterConcrete(&testdata.TestMsg{}, "testdata.TestMsg", nil)
-	eip712.SetEncodingConfig(encodingConfig)
+	eip712.AminoCodec = encodingConfig.Amino
+	eip712.ProtoCodec = codec.NewProtoCodec(encodingConfig.InterfaceRegistry)
 
 	suite.clientCtx = client.Context{}.WithTxConfig(encodingConfig.TxConfig)
 
@@ -107,6 +109,7 @@ func (suite *AnteTestSuite) SetupTest() {
 		FeeMarketKeeper:    suite.app.FeeMarketKeeper,
 		SignModeHandler:    encodingConfig.TxConfig.SignModeHandler(),
 		SigGasConsumer:     ante.SigVerificationGasConsumer,
+		GashubKeeper:       suite.app.GashubKeeper,
 	})
 
 	suite.anteHandler = anteHandler

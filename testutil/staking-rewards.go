@@ -49,7 +49,7 @@ import (
 //   - Allocate rewards to the validator.
 //
 // The function returns the updated context along with a potential error.
-func PrepareAccountsForDelegationRewards(t *testing.T, ctx sdk.Context, app *app.App, addr sdk.AccAddress, balance sdkmath.Int, rewards ...sdkmath.Int) (sdk.Context, error) {
+func PrepareAccountsForDelegationRewards(t *testing.T, ctx sdk.Context, app *app.Evmos, addr sdk.AccAddress, balance sdkmath.Int, rewards ...sdkmath.Int) (sdk.Context, error) {
 	// Calculate the necessary amount of tokens to fund the account in order for the desired residual balance to
 	// be left after creating validators and delegating to them.
 	totalRewards := sdk.ZeroInt()
@@ -104,7 +104,7 @@ func PrepareAccountsForDelegationRewards(t *testing.T, ctx sdk.Context, app *app
 		err = app.StakingKeeper.SetParams(ctx, stakingParams)
 		require.NoError(t, err)
 
-		stakingHelper := teststaking.NewHelper(t, ctx, &app.StakingKeeper)
+		stakingHelper := teststaking.NewHelper(t, ctx, app.StakingKeeper)
 		stakingHelper.Commission = stakingtypes.NewCommissionRates(zeroDec, zeroDec, zeroDec)
 		stakingHelper.Denom = utils.BaseDenom
 
@@ -116,7 +116,7 @@ func PrepareAccountsForDelegationRewards(t *testing.T, ctx sdk.Context, app *app
 
 		// end block to bond validator and increase block height
 		// Not using Commit() here because code panics due to invalid block height
-		staking.EndBlocker(ctx, &app.StakingKeeper)
+		staking.EndBlocker(ctx, app.StakingKeeper)
 
 		// allocate rewards to validator (of these 50% will be paid out to the delegator)
 		validator := app.StakingKeeper.Validator(ctx, valAddr)

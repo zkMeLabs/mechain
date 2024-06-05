@@ -24,7 +24,7 @@ import (
 // compiled contract data and constructor arguments
 func DeployContract(
 	ctx sdk.Context,
-	evmosApp *app.App,
+	evmosApp *app.Evmos,
 	priv cryptotypes.PrivKey,
 	queryClientEvm evm.QueryClient,
 	contract evm.CompiledContract,
@@ -72,7 +72,7 @@ func DeployContract(
 // with the provided factoryAddress
 func DeployContractWithFactory(
 	ctx sdk.Context,
-	evmosApp *app.App,
+	evmosApp *app.Evmos,
 	priv cryptotypes.PrivKey,
 	factoryAddress common.Address,
 ) (common.Address, abci.ResponseDeliverTx, error) {

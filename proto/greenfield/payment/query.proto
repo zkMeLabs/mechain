@@ -179,7 +179,7 @@ message QueryDynamicBalanceResponse {
   StreamRecord stream_record = 2 [(gogoproto.nullable) = false];
   // the timestamp of the current block
   int64 current_timestamp = 3;
-  // bank_balance is the BNB balance of the bank module
+  // bank_balance is the azkme balance of the bank module
   string bank_balance = 4 [
     (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",

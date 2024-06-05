@@ -4,7 +4,7 @@ import (
 	serverconfig "github.com/cosmos/cosmos-sdk/server/config"
 )
 
-func (app *App) RegisterUpgradeHandlers(chainID string, serverCfg *serverconfig.Config) error {
+func (app *Evmos) RegisterUpgradeHandlers(chainID string, serverCfg *serverconfig.Config) error {
 	// Register the plans from server config
 	err := app.UpgradeKeeper.RegisterUpgradePlan(chainID, serverCfg.Upgrade)
 	if err != nil {

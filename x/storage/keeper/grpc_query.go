@@ -12,7 +12,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/evmos/evmos/v12/internals/sequence"
+	"github.com/evmos/evmos/v12/internal/sequence"
 	gnfd "github.com/evmos/evmos/v12/types"
 	"github.com/evmos/evmos/v12/types/errors"
 	permtypes "github.com/evmos/evmos/v12/x/permission/types"

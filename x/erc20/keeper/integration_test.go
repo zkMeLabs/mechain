@@ -15,7 +15,7 @@ import (
 	govv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	"github.com/evmos/evmos/v12/crypto/ethsecp256k1"
+	"github.com/cosmos/cosmos-sdk/crypto/keys/eth/ethsecp256k1"
 	"github.com/evmos/evmos/v12/utils"
 
 	"github.com/evmos/evmos/v12/app"
@@ -84,7 +84,7 @@ var _ = Describe("ERC20:", Ordered, func() {
 	amt := sdk.NewInt(100)
 	fundsAmt, _ := sdk.NewIntFromString("100000000000000000000000")
 
-	privKey, _ := ethsecp256k1.GenerateKey()
+	privKey, _ := ethsecp256k1.GenPrivKey()
 	addrBz := privKey.PubKey().Address().Bytes()
 	accAddr := sdk.AccAddress(addrBz)
 	addr := common.BytesToAddress(addrBz)
@@ -366,17 +366,17 @@ var _ = Describe("ERC20:", Ordered, func() {
 	})
 })
 
-func submitRegisterCoinProposal(ctx sdk.Context, appEvmos *app.App, pk *ethsecp256k1.PrivKey, metadata []banktypes.Metadata) (id uint64, err error) {
+func submitRegisterCoinProposal(ctx sdk.Context, appEvmos *app.Evmos, pk *ethsecp256k1.PrivKey, metadata []banktypes.Metadata) (id uint64, err error) {
 	content := types.NewRegisterCoinProposal("test Coin", "foo", metadata...)
 	return testutil.SubmitProposal(ctx, appEvmos, pk, content, 8)
 }
 
-func submitRegisterERC20Proposal(ctx sdk.Context, appEvmos *app.App, pk *ethsecp256k1.PrivKey, addrs []string) (id uint64, err error) {
+func submitRegisterERC20Proposal(ctx sdk.Context, appEvmos *app.Evmos, pk *ethsecp256k1.PrivKey, addrs []string) (id uint64, err error) {
 	content := types.NewRegisterERC20Proposal("test token", "foo", addrs...)
 	return testutil.SubmitProposal(ctx, appEvmos, pk, content, 8)
 }
 
-func convertCoin(ctx sdk.Context, appEvmos *app.App, pk *ethsecp256k1.PrivKey, coin sdk.Coin) {
+func convertCoin(ctx sdk.Context, appEvmos *app.Evmos, pk *ethsecp256k1.PrivKey, coin sdk.Coin) {
 	addrBz := pk.PubKey().Address().Bytes()
 
 	convertCoinMsg := types.NewMsgConvertCoin(coin, common.BytesToAddress(addrBz), sdk.AccAddress(addrBz))
@@ -386,7 +386,7 @@ func convertCoin(ctx sdk.Context, appEvmos *app.App, pk *ethsecp256k1.PrivKey, c
 	Expect(res.IsOK()).To(BeTrue(), "failed to convert coin: %s", res.Log)
 }
 
-func convertERC20(ctx sdk.Context, appEvmos *app.App, pk *ethsecp256k1.PrivKey, amt math.Int, contract common.Address) {
+func convertERC20(ctx sdk.Context, appEvmos *app.Evmos, pk *ethsecp256k1.PrivKey, amt math.Int, contract common.Address) {
 	addrBz := pk.PubKey().Address().Bytes()
 
 	convertERC20Msg := types.NewMsgConvertERC20(amt, sdk.AccAddress(addrBz), contract, common.BytesToAddress(addrBz))

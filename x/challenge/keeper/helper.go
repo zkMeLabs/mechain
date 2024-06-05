@@ -5,7 +5,7 @@ import (
 	"math/big"
 
 	sdkmath "cosmossdk.io/math"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/ethereum/go-ethereum/crypto"
 )
 
 // RandaoMixLength is the length of randao mix in Tendermint header
@@ -21,8 +21,8 @@ func SeedFromRandaoMix(randaoMix []byte, number uint64) []byte {
 	binary.BigEndian.PutUint64(lowBytes, number)
 
 	seedBytes := make([]byte, 0)
-	seedBytes = append(seedBytes, sdk.Keccak256(highBytes)...)
-	seedBytes = append(seedBytes, sdk.Keccak256(lowBytes)...)
+	seedBytes = append(seedBytes, crypto.Keccak256(highBytes)...)
+	seedBytes = append(seedBytes, crypto.Keccak256(lowBytes)...)
 
 	for i := range randaoMix {
 		seedBytes[i] = randaoMix[i] ^ seedBytes[i]
@@ -34,7 +34,7 @@ func SeedFromRandaoMix(randaoMix []byte, number uint64) []byte {
 // RandomObjectId generates a random object id for challenge.
 // Be noted: id starts from 1.
 func RandomObjectId(seed []byte, objectCount sdkmath.Uint) sdkmath.Uint {
-	number := new(big.Int).SetBytes(sdk.Keccak256(seed))
+	number := new(big.Int).SetBytes(crypto.Keccak256(seed))
 	number = new(big.Int).Abs(number)
 
 	id := sdkmath.NewUintFromBigInt(number).Mod(objectCount).AddUint64(1)
@@ -53,7 +53,7 @@ func CalculateSegments(payloadSize, segmentSize uint64) uint64 {
 
 // RandomSegmentIndex generates a random segment index for challenge.
 func RandomSegmentIndex(seed []byte, segments uint64) uint32 {
-	number := new(big.Int).SetBytes(sdk.Keccak256(seed[:32]))
+	number := new(big.Int).SetBytes(crypto.Keccak256(seed[:32]))
 	number = new(big.Int).Abs(number)
 	index := new(big.Int).Mod(number, big.NewInt(int64(segments)))
 	return uint32(index.Uint64())
@@ -62,7 +62,7 @@ func RandomSegmentIndex(seed []byte, segments uint64) uint32 {
 // RandomRedundancyIndex generates a random redundancy index (storage provider) for challenge.
 // Be noted: RedundancyIndex starts from -1 (the primary sp).
 func RandomRedundancyIndex(seed []byte, sps uint64) int32 {
-	number := new(big.Int).SetBytes(sdk.Keccak256(seed[32:]))
+	number := new(big.Int).SetBytes(crypto.Keccak256(seed[32:]))
 	number = new(big.Int).Abs(number)
 	index := new(big.Int).Mod(number, big.NewInt(int64(sps)))
 	return int32(index.Uint64()) - 1

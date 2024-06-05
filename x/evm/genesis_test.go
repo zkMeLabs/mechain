@@ -5,8 +5,8 @@ import (
 
 	"github.com/ethereum/go-ethereum/common"
 
+	"github.com/cosmos/cosmos-sdk/crypto/keys/eth/ethsecp256k1"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	"github.com/evmos/evmos/v12/crypto/ethsecp256k1"
 	evmostypes "github.com/evmos/evmos/v12/types"
 	"github.com/evmos/evmos/v12/x/evm"
 	"github.com/evmos/evmos/v12/x/evm/statedb"
@@ -14,7 +14,7 @@ import (
 )
 
 func (suite *EvmTestSuite) TestInitGenesis() {
-	privkey, err := ethsecp256k1.GenerateKey()
+	privkey, err := ethsecp256k1.GenPrivKey()
 	suite.Require().NoError(err)
 
 	address := common.HexToAddress(privkey.PubKey().Address().String())

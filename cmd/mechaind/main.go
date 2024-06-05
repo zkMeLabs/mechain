@@ -25,13 +25,14 @@ import (
 
 	"github.com/evmos/evmos/v12/app"
 	cmdcfg "github.com/evmos/evmos/v12/cmd/config"
+	mechaind "github.com/evmos/evmos/v12/cmd/mechaind/cmd"
 )
 
 func main() {
 	setupConfig()
 	cmdcfg.RegisterDenoms()
 
-	rootCmd, _ := NewRootCmd()
+	rootCmd, _ := mechaind.NewRootCmd()
 
 	if err := svrcmd.Execute(rootCmd, "mechaind", app.DefaultNodeHome); err != nil {
 		switch e := err.(type) {

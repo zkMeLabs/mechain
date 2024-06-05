@@ -17,14 +17,13 @@
 package keyring
 
 import (
-	hds "github.com/cosmos/cosmos-sdk/crypto/hd"
+	"github.com/cosmos/cosmos-sdk/crypto/hd"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	cosmosLedger "github.com/cosmos/cosmos-sdk/crypto/ledger"
 	"github.com/cosmos/cosmos-sdk/crypto/types"
 
+	"github.com/cosmos/cosmos-sdk/crypto/keys/eth/ethsecp256k1"
 	"github.com/evmos/evmos-ledger-go/ledger"
-	"github.com/evmos/evmos/v12/crypto/ethsecp256k1"
-	"github.com/evmos/evmos/v12/crypto/hd"
 )
 
 // AppName defines the Ledger app used for signing. Evmos uses the Ethereum app
@@ -34,12 +33,12 @@ var (
 	// SupportedAlgorithms defines the list of signing algorithms used on Evmos:
 	//  - eth_secp256k1 (Ethereum)
 	//  - eth_bls (Ethereum)
-	SupportedAlgorithms = keyring.SigningAlgoList{hd.EthSecp256k1, hds.EthBLS}
+	SupportedAlgorithms = keyring.SigningAlgoList{hd.EthSecp256k1, hd.EthBLS}
 	// SupportedAlgorithmsLedger defines the list of signing algorithms used on Evmos for the Ledger device:
 	//  - eth_secp256k1 (Ethereum)
 	//  - eth_bls (Ethereum)
 	// The Ledger derivation function is responsible for all signing and address generation.
-	SupportedAlgorithmsLedger = keyring.SigningAlgoList{hd.EthSecp256k1, hds.EthBLS}
+	SupportedAlgorithmsLedger = keyring.SigningAlgoList{hd.EthSecp256k1, hd.EthBLS}
 	// LedgerDerivation defines the Evmos Ledger Go derivation (Ethereum app with EIP-712 signing)
 	LedgerDerivation = ledger.EvmosLedgerDerivation()
 	// CreatePubkey uses the ethsecp256k1 pubkey with Ethereum address generation and keccak hashing

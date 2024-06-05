@@ -28,10 +28,10 @@ import (
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/signer/core/apitypes"
 
+	"github.com/cosmos/cosmos-sdk/crypto/keys/eth/eip712"
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	"github.com/evmos/evmos/v12/app"
 	cryptocodec "github.com/evmos/evmos/v12/crypto/codec"
-	"github.com/evmos/evmos/v12/ethereum/eip712"
 	"github.com/evmos/evmos/v12/types"
 )
 
@@ -65,7 +65,7 @@ type legacyWeb3ExtensionArgs struct {
 // It returns the signed transaction and an error
 func CreateEIP712CosmosTx(
 	ctx sdk.Context,
-	appEvmos *app.App,
+	appEvmos *app.Evmos,
 	args EIP712TxArgs,
 ) (sdk.Tx, error) {
 	builder, err := PrepareEIP712CosmosTx(
@@ -81,7 +81,7 @@ func CreateEIP712CosmosTx(
 // It returns the tx builder with the signed transaction and an error
 func PrepareEIP712CosmosTx(
 	ctx sdk.Context,
-	appEvmos *app.App,
+	appEvmos *app.Evmos,
 	args EIP712TxArgs,
 ) (client.TxBuilder, error) {
 	txArgs := args.CosmosTxArgs
@@ -144,7 +144,7 @@ func PrepareEIP712CosmosTx(
 // the provided private key and the typed data
 func signCosmosEIP712Tx(
 	ctx sdk.Context,
-	appEvmos *app.App,
+	appEvmos *app.Evmos,
 	args EIP712TxArgs,
 	builder authtx.ExtensionOptionsTxBuilder,
 	chainID uint64,

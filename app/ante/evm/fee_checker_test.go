@@ -52,10 +52,12 @@ func TestSDKTxFeeChecker(t *testing.T) {
 	//      london hardfork enableness
 	encodingConfig := encoding.MakeConfig(module.NewBasicManager())
 	minGasPrices := sdk.NewDecCoins(sdk.NewDecCoin(evmtypes.DefaultEVMDenom, sdk.NewInt(10)))
-
-	genesisCtx := sdk.NewContext(nil, tmproto.Header{}, false, log.NewNopLogger())
-	checkTxCtx := sdk.NewContext(nil, tmproto.Header{Height: 1}, true, log.NewNopLogger()).WithMinGasPrices(minGasPrices)
-	deliverTxCtx := sdk.NewContext(nil, tmproto.Header{Height: 1}, false, log.NewNopLogger())
+	upgradeChecker := func(ctx sdk.Context, name string) bool {
+		return true
+	}
+	genesisCtx := sdk.NewContext(nil, tmproto.Header{}, false, upgradeChecker, log.NewNopLogger())
+	checkTxCtx := sdk.NewContext(nil, tmproto.Header{Height: 1}, true, upgradeChecker, log.NewNopLogger()).WithMinGasPrices(minGasPrices)
+	deliverTxCtx := sdk.NewContext(nil, tmproto.Header{Height: 1}, false, upgradeChecker, log.NewNopLogger())
 
 	testCases := []struct {
 		name        string

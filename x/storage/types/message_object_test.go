@@ -261,7 +261,7 @@ func TestMsgCopyObject_ValidateBasic(t *testing.T) {
 
 func TestMsgSealObject_ValidateBasic(t *testing.T) {
 	checksums := [][]byte{sample.Checksum(), sample.Checksum(), sample.Checksum(), sample.Checksum(), sample.Checksum(), sample.Checksum()}
-	blsSignDoc := NewSecondarySpSealObjectSignDoc("greenfield_9000-1", 1, math.NewUint(1), GenerateHash(checksums[:])).GetSignBytes()
+	blsSignDoc := NewSecondarySpSealObjectSignDoc("mechain_1000000-1", 1, math.NewUint(1), GenerateHash(checksums[:])).GetSignBytes()
 	blsPrivKey, _ := bls.RandKey()
 	aggSig := blsPrivKey.Sign(blsSignDoc[:]).Marshal()
 	tests := []struct {
@@ -453,39 +453,39 @@ func TestMsgUpdateObjectInfo_ValidateBasic(t *testing.T) {
 	}
 }
 
-func TestMsgMirrorObject_ValidateBasic(t *testing.T) {
-	tests := []struct {
-		name string
-		msg  MsgMirrorObject
-		err  error
-	}{
-		{
-			name: "normal",
-			msg: MsgMirrorObject{
-				Operator: sample.RandAccAddressHex(),
-				Id:       math.NewUint(1),
-			},
-		},
-		{
-			name: "invalid address",
-			msg: MsgMirrorObject{
-				Operator: "wrong address",
-				Id:       math.NewUint(1),
-			},
-			err: sdkerrors.ErrInvalidAddress,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			err := tt.msg.ValidateBasic()
-			if tt.err != nil {
-				require.ErrorIs(t, err, tt.err)
-				return
-			}
-			require.NoError(t, err)
-		})
-	}
-}
+// func TestMsgMirrorObject_ValidateBasic(t *testing.T) {
+// 	tests := []struct {
+// 		name string
+// 		msg  MsgMirrorObject
+// 		err  error
+// 	}{
+// 		{
+// 			name: "normal",
+// 			msg: MsgMirrorObject{
+// 				Operator: sample.RandAccAddressHex(),
+// 				Id:       math.NewUint(1),
+// 			},
+// 		},
+// 		{
+// 			name: "invalid address",
+// 			msg: MsgMirrorObject{
+// 				Operator: "wrong address",
+// 				Id:       math.NewUint(1),
+// 			},
+// 			err: sdkerrors.ErrInvalidAddress,
+// 		},
+// 	}
+// 	for _, tt := range tests {
+// 		t.Run(tt.name, func(t *testing.T) {
+// 			err := tt.msg.ValidateBasic()
+// 			if tt.err != nil {
+// 				require.ErrorIs(t, err, tt.err)
+// 				return
+// 			}
+// 			require.NoError(t, err)
+// 		})
+// 	}
+// }
 
 func TestMsgDiscontinueObject_ValidateBasic(t *testing.T) {
 	invalidObjectIds := [MaxDiscontinueObjects + 1]Uint{}

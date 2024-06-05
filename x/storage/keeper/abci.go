@@ -44,9 +44,8 @@ func EndBlocker(ctx sdk.Context, keeper Keeper) {
 	if ctx.BlockHeight() > 5946511 && ctx.ChainID() == upgradetypes.TestnetChainID {
 		doDeleteBucket = false
 	}
-	if ctx.IsUpgraded(upgradetypes.Pawnee) {
-		doDeleteBucket = true
-	}
+
+	doDeleteBucket = true
 
 	if doDeleteBucket {
 		_, err = keeper.DeleteDiscontinueBucketsUntil(ctx, blockTime, deletionMax-deleted)

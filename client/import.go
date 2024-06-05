@@ -23,10 +23,10 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/input"
 	"github.com/cosmos/cosmos-sdk/crypto"
+	"github.com/cosmos/cosmos-sdk/crypto/keys/eth/ethsecp256k1"
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/evmos/evmos/v12/crypto/ethsecp256k1"
 
-	"github.com/evmos/evmos/v12/crypto/hd"
+	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 )
 
 // UnsafeImportKeyCommand imports private keys from a keyfile.
@@ -41,7 +41,7 @@ func UnsafeImportKeyCommand() *cobra.Command {
 }
 
 func runImportCmd(cmd *cobra.Command, args []string) error {
-	clientCtx := client.GetClientContextFromCmd(cmd).WithKeyringOptions(hd.EthSecp256k1Option())
+	clientCtx := client.GetClientContextFromCmd(cmd).WithKeyringOptions(keyring.ETHAlgoOption())
 	clientCtx, err := client.ReadPersistentCommandFlags(clientCtx, cmd.Flags())
 	if err != nil {
 		return err

@@ -23,7 +23,7 @@ import (
 
 	"github.com/evmos/evmos/v12/rpc/backend"
 
-	"github.com/evmos/evmos/v12/crypto/hd"
+	"github.com/cosmos/cosmos-sdk/crypto/hd"
 	"github.com/evmos/evmos/v12/types"
 
 	"github.com/cometbft/cometbft/libs/log"

@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
+	"github.com/cosmos/cosmos-sdk/crypto/keys/eth/ethsecp256k1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
@@ -22,7 +23,6 @@ import (
 	ethtypes "github.com/ethereum/go-ethereum/core/types"
 	"github.com/evmos/evmos/v12/app"
 	"github.com/evmos/evmos/v12/contracts"
-	"github.com/evmos/evmos/v12/crypto/ethsecp256k1"
 	ibctesting "github.com/evmos/evmos/v12/ibc/testing"
 	"github.com/evmos/evmos/v12/server/config"
 	"github.com/evmos/evmos/v12/testutil"
@@ -34,6 +34,7 @@ import (
 	evm "github.com/evmos/evmos/v12/x/evm/types"
 	evmtypes "github.com/evmos/evmos/v12/x/evm/types"
 	feemarkettypes "github.com/evmos/evmos/v12/x/feemarket/types"
+	"github.com/prysmaticlabs/prysm/crypto/bls"
 	"github.com/stretchr/testify/require"
 )
 
@@ -58,14 +59,14 @@ func CreatePacket(amount, denom, sender, receiver, srcPort, srcChannel, dstPort,
 
 func (suite *KeeperTestSuite) DoSetupTest(t require.TestingT) {
 	// account key
-	priv, err := ethsecp256k1.GenerateKey()
+	priv, err := ethsecp256k1.GenPrivKey()
 	require.NoError(t, err)
 	suite.priv = priv
 	suite.address = common.BytesToAddress(priv.PubKey().Address().Bytes())
 	suite.signer = utiltx.NewSigner(priv)
 
 	// consensus key
-	privCons, err := ethsecp256k1.GenerateKey()
+	privCons, err := ethsecp256k1.GenPrivKey()
 	require.NoError(t, err)
 	consAddress := sdk.ConsAddress(privCons.PubKey().Address())
 	suite.consAddress = consAddress
@@ -100,9 +101,11 @@ func (suite *KeeperTestSuite) DoSetupTest(t require.TestingT) {
 
 	// Set Validator
 	valAddr := sdk.AccAddress(suite.address.Bytes())
-	validator, err := stakingtypes.NewValidator(valAddr, privCons.PubKey(), stakingtypes.Description{})
+	blsSecretKey, _ := bls.RandKey()
+	blsPk := blsSecretKey.PublicKey().Marshal()
+	validator, err := stakingtypes.NewValidator(valAddr, privCons.PubKey(), stakingtypes.Description{}, valAddr, valAddr, valAddr, blsPk)
 	require.NoError(t, err)
-	validator = stakingkeeper.TestingUpdateValidator(&suite.app.StakingKeeper, suite.ctx, validator, true)
+	validator = stakingkeeper.TestingUpdateValidator(suite.app.StakingKeeper, suite.ctx, validator, true)
 	err = suite.app.StakingKeeper.Hooks().AfterValidatorCreated(suite.ctx, validator.GetOperator())
 	require.NoError(t, err)
 	err = suite.app.StakingKeeper.SetValidatorByConsAddr(suite.ctx, validator)
@@ -144,7 +147,7 @@ func (suite *KeeperTestSuite) SetupIBCTest() {
 	suite.coordinator.CommitNBlocks(suite.IBCOsmosisChain, 2)
 	suite.coordinator.CommitNBlocks(suite.IBCCosmosChain, 2)
 
-	s.app = suite.EvmosChain.App.(*app.App)
+	s.app = suite.EvmosChain.App.(*app.Evmos)
 	evmParams := s.app.EvmKeeper.GetParams(s.EvmosChain.GetContext())
 	evmParams.EvmDenom = utils.BaseDenom
 	err := s.app.EvmKeeper.SetParams(s.EvmosChain.GetContext(), evmParams)
@@ -353,7 +356,7 @@ func (suite *KeeperTestSuite) DeployContractDirectBalanceManipulation() (common.
 func (suite *KeeperTestSuite) DeployContractToChain(name, symbol string, decimals uint8) (common.Address, error) {
 	return testutil.DeployContract(
 		s.EvmosChain.GetContext(),
-		s.EvmosChain.App.(*app.App),
+		s.EvmosChain.App.(*app.Evmos),
 		suite.EvmosChain.SenderPrivKey,
 		suite.queryClientEvm,
 		contracts.ERC20MinterBurnerDecimalsContract,

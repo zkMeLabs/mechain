@@ -10,9 +10,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
-	"github.com/evmos/evmos/v12/internals/sequence"
+	"github.com/evmos/evmos/v12/internal/sequence"
 	"github.com/evmos/evmos/v12/types/resource"
 	"github.com/evmos/evmos/v12/x/permission/types"
 	storagetypes "github.com/evmos/evmos/v12/x/storage/types"
@@ -146,7 +145,7 @@ func (k Keeper) PutPolicy(ctx sdk.Context, policy *types.Policy) (math.Uint, err
 	var newPolicy *types.Policy
 	if policy.Principal.Type == types.PRINCIPAL_TYPE_GNFD_ACCOUNT {
 		policyKey := types.GetPolicyForAccountKey(policy.ResourceId, policy.ResourceType,
-			policy.Principal.MustGetAccountAddress(), ctx.IsUpgraded(upgradetypes.HulunbeierPatch))
+			policy.Principal.MustGetAccountAddress(), true)
 		bz := store.Get(policyKey)
 		if bz != nil {
 			id := k.policySeq.DecodeSequence(bz)
@@ -256,7 +255,7 @@ func (k Keeper) GetPolicyForAccount(ctx sdk.Context, resourceID math.Uint,
 	isFound bool,
 ) {
 	store := ctx.KVStore(k.storeKey)
-	policyKey := types.GetPolicyForAccountKey(resourceID, resourceType, addr, ctx.IsUpgraded(upgradetypes.HulunbeierPatch))
+	policyKey := types.GetPolicyForAccountKey(resourceID, resourceType, addr, true)
 	bz := store.Get(policyKey)
 	if bz == nil {
 		return policy, false
@@ -312,7 +311,7 @@ func (k Keeper) DeletePolicy(ctx sdk.Context, principal *types.Principal, resour
 		accAddr := sdk.MustAccAddressFromHex(principal.Value)
 		policy, found := k.GetPolicyForAccount(ctx, resourceID, resourceType, accAddr)
 		if found {
-			store.Delete(types.GetPolicyForAccountKey(resourceID, resourceType, accAddr, ctx.IsUpgraded(upgradetypes.HulunbeierPatch)))
+			store.Delete(types.GetPolicyForAccountKey(resourceID, resourceType, accAddr, true))
 			store.Delete(types.GetPolicyByIDKey(policy.Id))
 			if policy.ExpirationTime != nil {
 				store.Delete(types.PolicyPrefixQueue(policy.ExpirationTime, policy.Id.Bytes()))
@@ -352,10 +351,8 @@ func (k Keeper) DeletePolicy(ctx sdk.Context, principal *types.Principal, resour
 					// delete the key if value is empty
 					store.Delete(policyGroupKey)
 				} else {
-					if ctx.IsUpgraded(upgradetypes.Nagqu) {
-						// persist policy group after updated.
-						store.Set(policyGroupKey, k.cdc.MustMarshal(&policyGroup))
-					}
+					// persist policy group after updated.
+					store.Set(policyGroupKey, k.cdc.MustMarshal(&policyGroup))
 				}
 			}
 		}
@@ -377,16 +374,13 @@ func (k Keeper) ForceDeleteAccountPolicyForResource(ctx sdk.Context, maxDelete, 
 		return deletedTotal, true
 	}
 	store := ctx.KVStore(k.storeKey)
-	resourceAccountsPolicyStore := prefix.NewStore(store, types.PolicyForAccountPrefix(resourceID, resourceType, ctx.IsUpgraded(upgradetypes.HulunbeierPatch)))
+	resourceAccountsPolicyStore := prefix.NewStore(store, types.PolicyForAccountPrefix(resourceID, resourceType, true))
 	iterator := resourceAccountsPolicyStore.Iterator(nil, nil)
 	defer iterator.Close()
-	isNagquUpgraded := ctx.IsUpgraded(upgradetypes.Nagqu)
 	for ; iterator.Valid(); iterator.Next() {
 		// if exceeding the limit, pause the GC and mark the current resource's deletion is not complete yet
-		if isNagquUpgraded {
-			if deletedTotal >= maxDelete {
-				return deletedTotal, false
-			}
+		if deletedTotal >= maxDelete {
+			return deletedTotal, false
 		}
 		policyId := k.policySeq.DecodeSequence(iterator.Value())
 		policy, _ := k.GetPolicyByID(ctx, policyId)
@@ -404,11 +398,6 @@ func (k Keeper) ForceDeleteAccountPolicyForResource(ctx sdk.Context, maxDelete, 
 			PolicyId: policyId,
 		})
 		deletedTotal++
-		if !isNagquUpgraded {
-			if deletedTotal > maxDelete {
-				return deletedTotal, false
-			}
-		}
 	}
 	return deletedTotal, true
 }
@@ -425,14 +414,11 @@ func (k Keeper) ForceDeleteGroupPolicyForResource(ctx sdk.Context, maxDelete, de
 		policyGroup := types.PolicyGroup{}
 		k.cdc.MustUnmarshal(bz, &policyGroup)
 
-		isNagquUpgraded := ctx.IsUpgraded(upgradetypes.Nagqu)
 		for i := 0; i < len(policyGroup.Items); i++ {
-			if isNagquUpgraded {
-				if deletedTotal >= maxDelete {
-					remainingPolicies := policyGroup.Items[i:]
-					store.Set(policyForGroupKey, k.cdc.MustMarshal(&types.PolicyGroup{Items: remainingPolicies}))
-					return deletedTotal, false
-				}
+			if deletedTotal >= maxDelete {
+				remainingPolicies := policyGroup.Items[i:]
+				store.Set(policyForGroupKey, k.cdc.MustMarshal(&types.PolicyGroup{Items: remainingPolicies}))
+				return deletedTotal, false
 			}
 			policyId := policyGroup.Items[i].PolicyId
 			policy, _ := k.GetPolicyByID(ctx, policyId)
@@ -447,11 +433,6 @@ func (k Keeper) ForceDeleteGroupPolicyForResource(ctx sdk.Context, maxDelete, de
 				PolicyId: policyId,
 			})
 			deletedTotal++
-			if !isNagquUpgraded {
-				if deletedTotal > maxDelete {
-					return deletedTotal, false
-				}
-			}
 		}
 		store.Delete(policyForGroupKey)
 	}
@@ -464,12 +445,9 @@ func (k Keeper) ForceDeleteGroupMembers(ctx sdk.Context, maxDelete, deletedTotal
 	groupMembersPrefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.GroupMembersPrefix(groupId))
 	iter := groupMembersPrefixStore.Iterator(nil, nil)
 	defer iter.Close()
-	isNagquUpgraded := ctx.IsUpgraded(upgradetypes.Nagqu)
 	for ; iter.Valid(); iter.Next() {
-		if isNagquUpgraded {
-			if deletedTotal >= maxDelete {
-				return deletedTotal, false
-			}
+		if deletedTotal >= maxDelete {
+			return deletedTotal, false
 		}
 		memberID := k.groupMemberSeq.DecodeSequence(iter.Value())
 		// delete GroupMemberByIDPrefix_id -> groupMember
@@ -477,11 +455,6 @@ func (k Keeper) ForceDeleteGroupMembers(ctx sdk.Context, maxDelete, deletedTotal
 		// delete GroupMemberPrefix_groupId_memberAddr -> memberSequence(id)
 		groupMembersPrefixStore.Delete(iter.Key())
 		deletedTotal++
-		if !isNagquUpgraded {
-			if deletedTotal > maxDelete {
-				return deletedTotal, false
-			}
-		}
 	}
 	return deletedTotal, true
 }
@@ -491,7 +464,7 @@ func (k Keeper) ExistAccountPolicyForResource(ctx sdk.Context, resourceType reso
 		return false
 	}
 	store := ctx.KVStore(k.storeKey)
-	resourceAccountsPolicyStore := prefix.NewStore(store, types.PolicyForAccountPrefix(resourceID, resourceType, ctx.IsUpgraded(upgradetypes.HulunbeierPatch)))
+	resourceAccountsPolicyStore := prefix.NewStore(store, types.PolicyForAccountPrefix(resourceID, resourceType, true))
 	iterator := resourceAccountsPolicyStore.Iterator(nil, nil)
 	defer iterator.Close()
 	return iterator.Valid()
@@ -539,30 +512,28 @@ func (k Keeper) RemoveExpiredPolicies(ctx sdk.Context) {
 
 		// 1. the policy is an account policy, delete policyKey -> policyId.
 		// 2. the policy is group policy within a policy group, delete the index in the policy group
-		if ctx.IsUpgraded(upgradetypes.Pampas) {
-			if policy.Principal.Type == types.PRINCIPAL_TYPE_GNFD_ACCOUNT {
-				policyKey := types.GetPolicyForAccountKey(policy.ResourceId, policy.ResourceType,
-					policy.Principal.MustGetAccountAddress(),
-					ctx.IsUpgraded(upgradetypes.HulunbeierPatch))
-				store.Delete(policyKey)
-			} else if policy.Principal.Type == types.PRINCIPAL_TYPE_GNFD_GROUP {
-				policyGroupKey := types.GetPolicyForGroupKey(policy.ResourceId, policy.ResourceType)
-				bz := store.Get(policyGroupKey)
-				if bz != nil {
-					policyGroup := types.PolicyGroup{}
-					k.cdc.MustUnmarshal(bz, &policyGroup)
-					for i := 0; i < len(policyGroup.Items); i++ {
-						if policyGroup.Items[i].PolicyId.Equal(policyId) {
-							policyGroup.Items = append(policyGroup.Items[:i], policyGroup.Items[i+1:]...)
-							break
-						}
+		if policy.Principal.Type == types.PRINCIPAL_TYPE_GNFD_ACCOUNT {
+			policyKey := types.GetPolicyForAccountKey(policy.ResourceId, policy.ResourceType,
+				policy.Principal.MustGetAccountAddress(),
+				true)
+			store.Delete(policyKey)
+		} else if policy.Principal.Type == types.PRINCIPAL_TYPE_GNFD_GROUP {
+			policyGroupKey := types.GetPolicyForGroupKey(policy.ResourceId, policy.ResourceType)
+			bz := store.Get(policyGroupKey)
+			if bz != nil {
+				policyGroup := types.PolicyGroup{}
+				k.cdc.MustUnmarshal(bz, &policyGroup)
+				for i := 0; i < len(policyGroup.Items); i++ {
+					if policyGroup.Items[i].PolicyId.Equal(policyId) {
+						policyGroup.Items = append(policyGroup.Items[:i], policyGroup.Items[i+1:]...)
+						break
 					}
-					if len(policyGroup.Items) == 0 {
-						// delete the key if no item left
-						store.Delete(policyGroupKey)
-					} else {
-						store.Set(policyGroupKey, k.cdc.MustMarshal(&policyGroup))
-					}
+				}
+				if len(policyGroup.Items) == 0 {
+					// delete the key if no item left
+					store.Delete(policyGroupKey)
+				} else {
+					store.Set(policyGroupKey, k.cdc.MustMarshal(&policyGroup))
 				}
 			}
 		}

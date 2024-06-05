@@ -30,8 +30,8 @@ var (
 	DefaultPaymentAccountCountLimit  uint64 = 200
 	DefaultMaxAutoSettleFlowCount    uint64 = 100
 	DefaultMaxAutoResumeFlowCount    uint64 = 100
-	DefaultFeeDenom                  string = "BNB"
-	DefaultWithdrawTimeLockThreshold        = math.NewIntFromBigInt(big.NewInt(1e18)).MulRaw(100) // 100 BNB
+	DefaultFeeDenom                  string = "azkme"
+	DefaultWithdrawTimeLockThreshold        = math.NewIntFromBigInt(big.NewInt(1e18)).MulRaw(100) // 100 azkme
 	DefaultWithdrawTimeLockDuration  uint64 = 24 * 60 * 60                                        // 1 day
 )
 

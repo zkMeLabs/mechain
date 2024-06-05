@@ -6,7 +6,6 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
 	"github.com/evmos/evmos/v12/x/payment/types"
 )
@@ -33,10 +32,8 @@ func (k msgServer) UpdateParams(goCtx context.Context, req *types.MsgUpdateParam
 		return nil, err
 	}
 
-	if ctx.IsUpgraded(upgradetypes.Nagqu) {
-		params := k.GetParams(ctx)
-		_ = ctx.EventManager().EmitTypedEvents(&params)
-	}
+	params := k.GetParams(ctx)
+	_ = ctx.EventManager().EmitTypedEvents(&params)
 
 	return &types.MsgUpdateParamsResponse{}, nil
 }

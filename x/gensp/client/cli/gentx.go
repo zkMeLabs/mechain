@@ -51,7 +51,7 @@ $ %s gentx 10000000000000000000000000BNB --home ./deployment/localup/.local/sp0 
     --bls-pub-key=84a22236c7859ba4e52f43412801b30d3ad1d2f23324a26b001646f30c299357cacb6ccfc017854d9830db8e63639ce6 \
     --bls-proof=987406f0dd2e5f5f3e9e3e447f832dbf73809479ea552fe9b23e06e65651c01a5893e92a797d12078ef9b0c9eb72b8d90faaee65f738e222793d94b80a58cd0f329375ee04e8460f12f4772cf42859d30dd6444ed3350c3335aedf1dbde3bb68 \
 	--approval-address=0x68a60866C1e98e277a7389c9Ad90c10cb56debc9 \
-	--keyring-backend=test --chain-id=greenfield_9000-121 \
+	--keyring-backend=test --chain-id=mechain_1000000-121 \
 	--moniker=sp0 --details=sp0 --website=http://website --endpoint="http://127.0.0.1:9033" \
 	--node tcp://localhost:26752 --node-id sp0 --ip 127.0.0.1 \
 	--gas '' --output-document=./deployment/localup/.local/gensptx/gentx-sp0.json

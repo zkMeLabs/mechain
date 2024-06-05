@@ -242,8 +242,9 @@ func startStandAlone(ctx *server.Context, opts StartOptions) error {
 	if err != nil {
 		return err
 	}
-
-	app := opts.AppCreator(ctx.Logger, db, traceWriter, "", nil, ctx.Viper)
+	srvCfg := serverconfig.DefaultConfig()
+	srvCfg.MinGasPrices = "5000000000azkme"
+	app := opts.AppCreator(ctx.Logger, db, traceWriter, "", srvCfg, ctx.Viper)
 
 	config, err := config.GetConfig(ctx.Viper)
 	if err != nil {
@@ -344,8 +345,9 @@ func startInProcess(ctx *server.Context, clientCtx client.Context, opts StartOpt
 		logger.Error("invalid server config", "error", err.Error())
 		return err
 	}
-
-	app := opts.AppCreator(ctx.Logger, db, traceWriter, "", nil, ctx.Viper)
+	srvCfg := serverconfig.DefaultConfig()
+	srvCfg.MinGasPrices = "5000000000azkme"
+	app := opts.AppCreator(ctx.Logger, db, traceWriter, "", srvCfg, ctx.Viper)
 
 	nodeKey, err := p2p.LoadOrGenNodeKey(cfg.NodeKeyFile())
 	if err != nil {

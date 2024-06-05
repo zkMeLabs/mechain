@@ -12,7 +12,7 @@ import (
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/evmos/evmos/v12/crypto/ethsecp256k1"
+	"github.com/cosmos/cosmos-sdk/crypto/keys/eth/ethsecp256k1"
 )
 
 func init() {
@@ -101,30 +101,32 @@ func TestGetEvmosAddressFromBech32(t *testing.T) {
 		{
 			"evmos address",
 			"evmos1qql8ag4cluz6r4dz28p3w00dnc9w8ueuafmxps",
-			"evmos1qql8ag4cluz6r4dz28p3w00dnc9w8ueuafmxps",
+			"evmos1qql8ag4cluz6r4dz28p3w00dnc9w8ueuafmxps", // "0x003E7EA2B8FF05A1D5a251c3173DEd9E0aE3F33c",
 			false,
 		},
 		{
 			"cosmos address",
 			"cosmos1qql8ag4cluz6r4dz28p3w00dnc9w8ueulg2gmc",
-			"evmos1qql8ag4cluz6r4dz28p3w00dnc9w8ueuafmxps",
+			"evmos1qql8ag4cluz6r4dz28p3w00dnc9w8ueuafmxps", // "0x003E7EA2B8FF05A1D5a251c3173DEd9E0aE3F33c",
 			false,
 		},
 		{
 			"osmosis address",
 			"osmo1qql8ag4cluz6r4dz28p3w00dnc9w8ueuhnecd2",
-			"evmos1qql8ag4cluz6r4dz28p3w00dnc9w8ueuafmxps",
+			"evmos1qql8ag4cluz6r4dz28p3w00dnc9w8ueuafmxps", // "0x003E7EA2B8FF05A1D5a251c3173DEd9E0aE3F33c",
 			false,
 		},
 	}
 
 	for _, tc := range testCases {
 		addr, err := GetEvmosAddressFromBech32(tc.address)
+		expAddress, experr := GetEvmosAddressFromBech32(tc.expAddress)
 		if tc.expError {
 			require.Error(t, err, tc.name)
 		} else {
 			require.NoError(t, err, tc.name)
-			require.Equal(t, tc.expAddress, addr.String(), tc.name)
+			require.NoError(t, experr, tc.name)
+			require.Equal(t, expAddress.String(), addr.String(), tc.name)
 		}
 	}
 }
@@ -137,7 +139,7 @@ func TestEvmosCoinDenom(t *testing.T) {
 	}{
 		{
 			"valid denom - native coin",
-			"aevmos",
+			"azkme",
 			false,
 		},
 		{

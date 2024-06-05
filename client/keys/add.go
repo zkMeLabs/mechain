@@ -23,8 +23,6 @@ import (
 	"fmt"
 	"sort"
 
-	cryptohd "github.com/evmos/evmos/v12/crypto/hd"
-
 	bip39 "github.com/cosmos/go-bip39"
 	"github.com/spf13/cobra"
 
@@ -98,7 +96,7 @@ func RunAddCmd(ctx client.Context, cmd *cobra.Command, args []string, inBuf *buf
 
 	if dryRun, _ := cmd.Flags().GetBool(flags.FlagDryRun); dryRun {
 		// use in memory keybase
-		kb = keyring.NewInMemory(ctx.Codec, cryptohd.EthSecp256k1Option())
+		kb = keyring.NewInMemory(ctx.Codec, keyring.ETHAlgoOption())
 	} else {
 		_, err = kb.Key(name)
 		if err == nil {

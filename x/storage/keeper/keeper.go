@@ -11,10 +11,10 @@ import (
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 	"github.com/cosmos/gogoproto/proto"
 
-	"github.com/evmos/evmos/v12/internals/sequence"
+	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/evmos/evmos/v12/internal/sequence"
 	gnfdtypes "github.com/evmos/evmos/v12/types"
 	types2 "github.com/evmos/evmos/v12/types"
 	"github.com/evmos/evmos/v12/types/common"
@@ -30,14 +30,14 @@ import (
 
 type (
 	Keeper struct {
-		cdc                codec.BinaryCodec
-		storeKey           storetypes.StoreKey
-		tStoreKey          storetypes.StoreKey
-		spKeeper           types.SpKeeper
-		paymentKeeper      types.PaymentKeeper
-		accountKeeper      types.AccountKeeper
-		permKeeper         types.PermissionKeeper
-		crossChainKeeper   types.CrossChainKeeper
+		cdc           codec.BinaryCodec
+		storeKey      storetypes.StoreKey
+		tStoreKey     storetypes.StoreKey
+		spKeeper      types.SpKeeper
+		paymentKeeper types.PaymentKeeper
+		accountKeeper types.AccountKeeper
+		permKeeper    types.PermissionKeeper
+		// crossChainKeeper   types.CrossChainKeeper
 		virtualGroupKeeper types.VirtualGroupKeeper
 
 		// sequence
@@ -57,19 +57,19 @@ func NewKeeper(
 	spKeeper types.SpKeeper,
 	paymentKeeper types.PaymentKeeper,
 	permKeeper types.PermissionKeeper,
-	crossChainKeeper types.CrossChainKeeper,
+	// crossChainKeeper types.CrossChainKeeper,
 	virtualGroupKeeper types.VirtualGroupKeeper,
 	authority string,
 ) *Keeper {
 	k := Keeper{
-		cdc:                cdc,
-		storeKey:           storeKey,
-		tStoreKey:          tStoreKey,
-		accountKeeper:      accountKeeper,
-		spKeeper:           spKeeper,
-		paymentKeeper:      paymentKeeper,
-		permKeeper:         permKeeper,
-		crossChainKeeper:   crossChainKeeper,
+		cdc:           cdc,
+		storeKey:      storeKey,
+		tStoreKey:     tStoreKey,
+		accountKeeper: accountKeeper,
+		spKeeper:      spKeeper,
+		paymentKeeper: paymentKeeper,
+		permKeeper:    permKeeper,
+		// crossChainKeeper:   crossChainKeeper,
 		virtualGroupKeeper: virtualGroupKeeper,
 		authority:          authority,
 	}
@@ -117,20 +117,9 @@ func (k Keeper) CreateBucket(
 		return sdkmath.ZeroUint(), errors.Wrap(types.ErrNoSuchStorageProvider, "the storage provider is not in service")
 	}
 
-	if !ctx.IsUpgraded(upgradetypes.Serengeti) {
-		// check primary sp approval
-		if opts.PrimarySpApproval.ExpiredHeight < uint64(ctx.BlockHeight()) {
-			return sdkmath.ZeroUint(), errors.Wrapf(types.ErrInvalidApproval, "The approval of sp is expired.")
-		}
-		err = k.VerifySPAndSignature(ctx, sp, opts.ApprovalMsgBytes, opts.PrimarySpApproval.Sig, ownerAcc)
-		if err != nil {
-			return sdkmath.ZeroUint(), err
-		}
-	} else {
-		err = k.VerifySP(ctx, sp, ownerAcc)
-		if err != nil {
-			return sdkmath.ZeroUint(), err
-		}
+	err = k.VerifySP(ctx, sp, ownerAcc)
+	if err != nil {
+		return sdkmath.ZeroUint(), err
 	}
 
 	gvgFamily, err := k.virtualGroupKeeper.GetAndCheckGVGFamilyAvailableForNewBucket(ctx, opts.PrimarySpApproval.GlobalVirtualGroupFamilyId)
@@ -243,9 +232,9 @@ func (k Keeper) doDeleteBucket(ctx sdk.Context, operator sdk.AccAddress, bucketI
 	store.Delete(types.GetQuotaKey(bucketInfo.Id))
 	store.Delete(types.GetInternalBucketInfoKey(bucketInfo.Id))
 	store.Delete(types.GetMigrationBucketKey(bucketInfo.Id))
-	if ctx.IsUpgraded(upgradetypes.Pawnee) {
-		store.Delete(types.GetLockedObjectCountKey(bucketInfo.Id))
-	}
+
+	store.Delete(types.GetLockedObjectCountKey(bucketInfo.Id))
+
 	err := k.appendResourceIdForGarbageCollection(ctx, resource.RESOURCE_TYPE_BUCKET, bucketInfo.Id)
 	if err != nil {
 		return err
@@ -270,10 +259,9 @@ func (k Keeper) doDeleteBucket(ctx sdk.Context, operator sdk.AccAddress, bucketI
 		}
 	}
 
-	if ctx.IsUpgraded(upgradetypes.Erdos) {
-		// delete bucket flow rate limit status
-		k.deleteBucketFlowRateLimitStatus(ctx, bucketInfo.BucketName, bucketInfo.Id)
-	}
+	// delete bucket flow rate limit status
+	k.deleteBucketFlowRateLimitStatus(ctx, bucketInfo.BucketName, bucketInfo.Id)
+
 	return nil
 }
 
@@ -349,9 +337,9 @@ func (k Keeper) ForceDeleteBucket(ctx sdk.Context, bucketId sdkmath.Uint, cap ui
 				ctx.Logger().Error("unlock store fee error", "err", err)
 				return false, deleted, err
 			}
-			if ctx.IsUpgraded(upgradetypes.Pawnee) {
-				k.DecreaseLockedObjectCount(ctx, bucketInfo.Id)
-			}
+
+			k.DecreaseLockedObjectCount(ctx, bucketInfo.Id)
+
 		} else if objectStatus == types.OBJECT_STATUS_SEALED {
 			internalBucketInfo := k.MustGetInternalBucketInfo(ctx, bucketInfo.Id)
 			if err = k.UnChargeObjectStoreFee(ctx, bucketInfo, internalBucketInfo, &objectInfo); err != nil {
@@ -404,11 +392,9 @@ func (k Keeper) UpdateBucketInfo(ctx sdk.Context, operator sdk.AccAddress, bucke
 		return types.ErrSourceTypeMismatch
 	}
 
-	if ctx.IsUpgraded(upgradetypes.Hulunbeier) {
-		sp := k.MustGetPrimarySPForBucket(ctx, bucketInfo)
-		if sp.Status == sptypes.STATUS_GRACEFUL_EXITING || sp.Status == sptypes.STATUS_FORCED_EXITING {
-			return types.ErrUpdateQuotaFailed.Wrapf("The SP is in %s, bucket can not be updated", sp.Status)
-		}
+	sp := k.MustGetPrimarySPForBucket(ctx, bucketInfo)
+	if sp.Status == sptypes.STATUS_GRACEFUL_EXITING || sp.Status == sptypes.STATUS_FORCED_EXITING {
+		return types.ErrUpdateQuotaFailed.Wrapf("The SP is in %s, bucket can not be updated", sp.Status)
 	}
 
 	// check permission
@@ -451,10 +437,8 @@ func (k Keeper) UpdateBucketInfo(ctx sdk.Context, operator sdk.AccAddress, bucke
 			return err
 		}
 
-		if ctx.IsUpgraded(upgradetypes.Pawnee) {
-			if !paymentAcc.Equals(sdk.MustAccAddressFromHex(bucketInfo.PaymentAddress)) && k.GetLockedObjectCount(ctx, bucketInfo.Id) != 0 {
-				return types.ErrUpdatePaymentAccountFailed.Wrapf("The bucket %s has unseald objects", bucketInfo.BucketName)
-			}
+		if !paymentAcc.Equals(sdk.MustAccAddressFromHex(bucketInfo.PaymentAddress)) && k.GetLockedObjectCount(ctx, bucketInfo.Id) != 0 {
+			return types.ErrUpdatePaymentAccountFailed.Wrapf("The bucket %s has unseald objects", bucketInfo.BucketName)
 		}
 	} else {
 		paymentAcc = sdk.MustAccAddressFromHex(bucketInfo.PaymentAddress)
@@ -629,19 +613,9 @@ func (k Keeper) CreateObject(
 		objectInfoCreator = sdk.AccAddress{}
 	}
 
-	if !ctx.IsUpgraded(upgradetypes.Serengeti) {
-		if opts.PrimarySpApproval.ExpiredHeight < uint64(ctx.BlockHeight()) {
-			return sdkmath.ZeroUint(), errors.Wrapf(types.ErrInvalidApproval, "The approval of sp is expired.")
-		}
-		err = k.VerifySPAndSignature(ctx, sp, opts.ApprovalMsgBytes, opts.PrimarySpApproval.Sig, operator)
-		if err != nil {
-			return sdkmath.ZeroUint(), err
-		}
-	} else {
-		err = k.VerifySP(ctx, sp, operator)
-		if err != nil {
-			return sdkmath.ZeroUint(), err
-		}
+	err = k.VerifySP(ctx, sp, operator)
+	if err != nil {
+		return sdkmath.ZeroUint(), err
 	}
 
 	objectKey := types.GetObjectKey(bucketName, objectName)
@@ -690,10 +664,9 @@ func (k Keeper) CreateObject(
 
 	bbz := k.cdc.MustMarshal(bucketInfo)
 	store.Set(types.GetBucketByIDKey(bucketInfo.Id), bbz)
-	if ctx.IsUpgraded(upgradetypes.Pawnee) {
-		if objectInfo.ObjectStatus == types.OBJECT_STATUS_CREATED {
-			k.IncreaseLockedObjectCount(ctx, bucketInfo.Id)
-		}
+
+	if objectInfo.ObjectStatus == types.OBJECT_STATUS_CREATED {
+		k.IncreaseLockedObjectCount(ctx, bucketInfo.Id)
 	}
 
 	obz := k.cdc.MustMarshal(&objectInfo)
@@ -911,9 +884,8 @@ func (k Keeper) SealObject(
 
 	bbz := k.cdc.MustMarshal(bucketInfo)
 	store.Set(types.GetBucketByIDKey(bucketInfo.Id), bbz)
-	if ctx.IsUpgraded(upgradetypes.Pawnee) {
-		k.DecreaseLockedObjectCount(ctx, bucketInfo.Id)
-	}
+
+	k.DecreaseLockedObjectCount(ctx, bucketInfo.Id)
 
 	obz := k.cdc.MustMarshal(objectInfo)
 	store.Set(types.GetObjectByIDKey(objectInfo.Id), obz)
@@ -974,24 +946,18 @@ func (k Keeper) CancelCreateObject(
 	}
 
 	var creator sdk.AccAddress
-	owner := sdk.MustAccAddressFromHex(objectInfo.Owner)
 	if objectInfo.Creator != "" {
 		creator = sdk.MustAccAddressFromHex(objectInfo.Creator)
 	}
 
-	if ctx.IsUpgraded(upgradetypes.Pawnee) {
-		// check permission, does not include checking the creator
-		effect := k.VerifyObjectPermission(ctx, bucketInfo, objectInfo, operator, permtypes.ACTION_DELETE_OBJECT)
-		if effect != permtypes.EFFECT_ALLOW && !operator.Equals(creator) {
-			return types.ErrAccessDenied.Wrapf(
-				"The operator(%s) has no DeleteObject permission of the bucket(%s), object(%s)",
-				operator.String(), bucketName, objectName)
-		}
-	} else {
-		if !operator.Equals(owner) && !operator.Equals(creator) {
-			return errors.Wrapf(types.ErrAccessDenied, "Only allowed owner/creator to do cancel create object")
-		}
+	// check permission, does not include checking the creator
+	effect := k.VerifyObjectPermission(ctx, bucketInfo, objectInfo, operator, permtypes.ACTION_DELETE_OBJECT)
+	if effect != permtypes.EFFECT_ALLOW && !operator.Equals(creator) {
+		return types.ErrAccessDenied.Wrapf(
+			"The operator(%s) has no DeleteObject permission of the bucket(%s), object(%s)",
+			operator.String(), bucketName, objectName)
 	}
+
 	err := k.UnlockObjectStoreFee(ctx, bucketInfo, objectInfo)
 	if err != nil {
 		return err
@@ -999,10 +965,9 @@ func (k Keeper) CancelCreateObject(
 
 	bbz := k.cdc.MustMarshal(bucketInfo)
 	store.Set(types.GetBucketByIDKey(bucketInfo.Id), bbz)
-	if ctx.IsUpgraded(upgradetypes.Pawnee) {
-		if objectInfo.ObjectStatus == types.OBJECT_STATUS_CREATED {
-			k.DecreaseLockedObjectCount(ctx, bucketInfo.Id)
-		}
+
+	if objectInfo.ObjectStatus == types.OBJECT_STATUS_CREATED {
+		k.DecreaseLockedObjectCount(ctx, bucketInfo.Id)
 	}
 
 	store.Delete(types.GetObjectKey(bucketName, objectName))
@@ -1043,10 +1008,7 @@ func (k Keeper) DeleteObject(
 	}
 
 	if objectInfo.ObjectStatus == types.OBJECT_STATUS_CREATED {
-		if ctx.IsUpgraded(upgradetypes.Pawnee) {
-			return k.CancelCreateObject(ctx, operator, bucketName, objectName, types.CancelCreateObjectOptions{SourceType: types.SOURCE_TYPE_ORIGIN})
-		}
-		return types.ErrObjectNotSealed
+		return k.CancelCreateObject(ctx, operator, bucketName, objectName, types.CancelCreateObjectOptions{SourceType: types.SOURCE_TYPE_ORIGIN})
 	}
 	// check permission
 	effect := k.VerifyObjectPermission(ctx, bucketInfo, objectInfo, operator, permtypes.ACTION_DELETE_OBJECT)
@@ -1134,9 +1096,7 @@ func (k Keeper) ForceDeleteObject(ctx sdk.Context, objectId sdkmath.Uint) error 
 			ctx.Logger().Error("unlock store fee error", "err", err)
 			return err
 		}
-		if ctx.IsUpgraded(upgradetypes.Pawnee) {
-			k.DecreaseLockedObjectCount(ctx, bucketInfo.Id)
-		}
+		k.DecreaseLockedObjectCount(ctx, bucketInfo.Id)
 	} else if objectStatus == types.OBJECT_STATUS_SEALED {
 		internalBucketInfo := k.MustGetInternalBucketInfo(ctx, bucketInfo.Id)
 		err := k.UnChargeObjectStoreFee(ctx, bucketInfo, internalBucketInfo, objectInfo)
@@ -1209,19 +1169,9 @@ func (k Keeper) CopyObject(
 			operator.String(), srcObjectInfo.BucketName, srcObjectInfo.ObjectName)
 	}
 
-	if !ctx.IsUpgraded(upgradetypes.Serengeti) {
-		if opts.PrimarySpApproval.ExpiredHeight < uint64(ctx.BlockHeight()) {
-			return sdkmath.ZeroUint(), errors.Wrapf(types.ErrInvalidApproval, "The approval of sp is expired.")
-		}
-		err = k.VerifySPAndSignature(ctx, dstPrimarySP, opts.ApprovalMsgBytes, opts.PrimarySpApproval.Sig, operator)
-		if err != nil {
-			return sdkmath.ZeroUint(), err
-		}
-	} else {
-		err = k.VerifySP(ctx, dstPrimarySP, operator)
-		if err != nil {
-			return sdkmath.ZeroUint(), err
-		}
+	err = k.VerifySP(ctx, dstPrimarySP, operator)
+	if err != nil {
+		return sdkmath.ZeroUint(), err
 	}
 
 	// check payload size, the empty object doesn't need sealed
@@ -1262,10 +1212,8 @@ func (k Keeper) CopyObject(
 
 	bbz := k.cdc.MustMarshal(dstBucketInfo)
 	store.Set(types.GetBucketByIDKey(dstBucketInfo.Id), bbz)
-	if ctx.IsUpgraded(upgradetypes.Pawnee) {
-		if objectInfo.ObjectStatus == types.OBJECT_STATUS_CREATED {
-			k.IncreaseLockedObjectCount(ctx, dstBucketInfo.Id)
-		}
+	if objectInfo.ObjectStatus == types.OBJECT_STATUS_CREATED {
+		k.IncreaseLockedObjectCount(ctx, dstBucketInfo.Id)
 	}
 
 	obz := k.cdc.MustMarshal(&objectInfo)
@@ -1334,9 +1282,7 @@ func (k Keeper) RejectSealObject(ctx sdk.Context, operator sdk.AccAddress, bucke
 		store.Delete(types.GetObjectByIDKey(objectInfo.Id))
 	}
 
-	if ctx.IsUpgraded(upgradetypes.Pawnee) {
-		k.DecreaseLockedObjectCount(ctx, bucketInfo.Id)
-	}
+	k.DecreaseLockedObjectCount(ctx, bucketInfo.Id)
 
 	return ctx.EventManager().EmitTypedEvents(&types.EventRejectSealObject{
 		Operator:   operator.String(),
@@ -1366,9 +1312,6 @@ func (k Keeper) DiscontinueObject(ctx sdk.Context, operator sdk.AccAddress, buck
 	spInState := k.MustGetPrimarySPForBucket(ctx, bucketInfo)
 
 	if sp.Id != spInState.Id {
-		if !ctx.IsUpgraded(upgradetypes.Hulunbeier) {
-			return errors.Wrapf(types.ErrAccessDenied, "only primary sp is allowed to do discontinue objects")
-		}
 		swapInInfo, found := k.virtualGroupKeeper.GetSwapInInfo(ctx, bucketInfo.GlobalVirtualGroupFamilyId, virtualgroupmoduletypes.NoSpecifiedGVGId)
 		if !found || swapInInfo.TargetSpId != spInState.Id || swapInInfo.SuccessorSpId != sp.Id {
 			return errors.Wrapf(types.ErrAccessDenied, "the sp is not allowed to do discontinue objects")
@@ -1730,7 +1673,7 @@ func (k Keeper) VerifySPAndSignature(_ sdk.Context, sp *sptypes.StorageProvider,
 	}
 	approvalAccAddress := sdk.MustAccAddressFromHex(sp.ApprovalAddress)
 
-	err := gnfdtypes.VerifySignature(approvalAccAddress, sdk.Keccak256(sigData), signature)
+	err := gnfdtypes.VerifySignature(approvalAccAddress, crypto.Keccak256(sigData), signature)
 	if err != nil {
 		return errors.Wrapf(types.ErrInvalidApproval, "verify signature error: %s", err)
 	}
@@ -2409,21 +2352,21 @@ func (k Keeper) hasGroup(ctx sdk.Context, groupID sdkmath.Uint) bool {
 	return store.Has(types.GetGroupByIDKey(groupID))
 }
 
-func (k Keeper) GetSourceTypeByChainId(ctx sdk.Context, chainId sdk.ChainID) (types.SourceType, error) {
-	if chainId == 0 {
-		return 0, types.ErrChainNotSupported
-	}
+// func (k Keeper) GetSourceTypeByChainId(ctx sdk.Context, chainId sdk.ChainID) (types.SourceType, error) {
+// 	if chainId == 0 {
+// 		return 0, types.ErrChainNotSupported
+// 	}
 
-	if chainId == k.crossChainKeeper.GetDestBscChainID() {
-		return types.SOURCE_TYPE_BSC_CROSS_CHAIN, nil
-	}
+// 	// if chainId == k.crossChainKeeper.GetDestBscChainID() {
+// 	// 	return types.SOURCE_TYPE_BSC_CROSS_CHAIN, nil
+// 	// }
 
-	if chainId == k.crossChainKeeper.GetDestOpChainID() {
-		return types.SOURCE_TYPE_OP_CROSS_CHAIN, nil
-	}
+// 	// if chainId == k.crossChainKeeper.GetDestOpChainID() {
+// 	// 	return types.SOURCE_TYPE_OP_CROSS_CHAIN, nil
+// 	// }
 
-	return 0, types.ErrChainNotSupported
-}
+// 	return 0, types.ErrChainNotSupported
+// }
 
 func (k Keeper) SetTag(ctx sdk.Context, operator sdk.AccAddress, grn types2.GRN, tags *types.ResourceTags) error {
 	store := ctx.KVStore(k.storeKey)
@@ -2438,21 +2381,13 @@ func (k Keeper) SetTag(ctx sdk.Context, operator sdk.AccAddress, grn types2.GRN,
 		if !found {
 			return types.ErrNoSuchBucket.Wrapf("bucketName: %s", bucketName)
 		}
-		if ctx.IsUpgraded(upgradetypes.Ural) {
-			// check permission
-			effect := k.VerifyBucketPermission(ctx, bucketInfo, operator, permtypes.ACTION_UPDATE_BUCKET_INFO, nil)
-			if effect != permtypes.EFFECT_ALLOW {
-				return types.ErrAccessDenied.Wrapf("The operator(%s) has no updateBucketInfo permission of the bucket(%s)",
-					operator.String(), bucketName)
-			}
-		} else {
-			resOwner := sdk.MustAccAddressFromHex(bucketInfo.Owner)
-			if !operator.Equals(resOwner) {
-				return types.ErrAccessDenied.Wrapf(
-					"Only resource owner can set tag, operator (%s), owner(%s)",
-					operator.String(), resOwner.String())
-			}
+		// check permission
+		effect := k.VerifyBucketPermission(ctx, bucketInfo, operator, permtypes.ACTION_UPDATE_BUCKET_INFO, nil)
+		if effect != permtypes.EFFECT_ALLOW {
+			return types.ErrAccessDenied.Wrapf("The operator(%s) has no updateBucketInfo permission of the bucket(%s)",
+				operator.String(), bucketName)
 		}
+
 		bucketInfo.Tags = tags
 		bz := k.cdc.MustMarshal(bucketInfo)
 		store.Set(types.GetBucketByIDKey(bucketInfo.Id), bz)
@@ -2465,25 +2400,17 @@ func (k Keeper) SetTag(ctx sdk.Context, operator sdk.AccAddress, grn types2.GRN,
 		if !found {
 			return types.ErrNoSuchObject.Wrapf("BucketName: %s, objectName: %s", bucketName, objectName)
 		}
-		if ctx.IsUpgraded(upgradetypes.Ural) {
-			bucketInfo, found := k.GetBucketInfo(ctx, bucketName)
-			if !found {
-				return types.ErrNoSuchBucket.Wrapf("bucketName: %s", bucketName)
-			}
-			effect := k.VerifyObjectPermission(ctx, bucketInfo, objectInfo, operator, permtypes.ACTION_UPDATE_OBJECT_INFO)
-			if effect != permtypes.EFFECT_ALLOW {
-				return types.ErrAccessDenied.Wrapf(
-					"The operator(%s) has no updateObjectInfo permission of the bucket(%s), object(%s)",
-					operator.String(), bucketName, objectName)
-			}
-		} else {
-			resOwner := sdk.MustAccAddressFromHex(objectInfo.Owner)
-			if !operator.Equals(resOwner) {
-				return types.ErrAccessDenied.Wrapf(
-					"Only resource owner can set tag, operator (%s), owner(%s)",
-					operator.String(), resOwner.String())
-			}
+		bucketInfo, found := k.GetBucketInfo(ctx, bucketName)
+		if !found {
+			return types.ErrNoSuchBucket.Wrapf("bucketName: %s", bucketName)
 		}
+		effect := k.VerifyObjectPermission(ctx, bucketInfo, objectInfo, operator, permtypes.ACTION_UPDATE_OBJECT_INFO)
+		if effect != permtypes.EFFECT_ALLOW {
+			return types.ErrAccessDenied.Wrapf(
+				"The operator(%s) has no updateObjectInfo permission of the bucket(%s), object(%s)",
+				operator.String(), bucketName, objectName)
+		}
+
 		objectInfo.Tags = tags
 		obz := k.cdc.MustMarshal(objectInfo)
 		store.Set(types.GetObjectByIDKey(objectInfo.Id), obz)
@@ -2496,22 +2423,13 @@ func (k Keeper) SetTag(ctx sdk.Context, operator sdk.AccAddress, grn types2.GRN,
 		if !found {
 			return types.ErrNoSuchBucket.Wrapf("groupOwner: %s, groupName: %s", groupOwner.String(), groupName)
 		}
-		if ctx.IsUpgraded(upgradetypes.Ural) {
-			effect := k.VerifyGroupPermission(ctx, groupInfo, operator, permtypes.ACTION_UPDATE_GROUP_INFO)
-			if effect != permtypes.EFFECT_ALLOW {
-				return types.ErrAccessDenied.Wrapf(
-					"The operator(%s) has no updateGroupInfo permission of the group(%s), owner(%s)",
-					operator.String(), groupInfo.GroupName, groupInfo.Owner)
-			}
-		} else {
-			resOwner := sdk.MustAccAddressFromHex(groupInfo.Owner)
-			if !operator.Equals(resOwner) {
-				return types.ErrAccessDenied.Wrapf(
-					"Only resource owner can set tag, operator (%s), owner(%s)",
-					operator.String(), resOwner.String())
-			}
-
+		effect := k.VerifyGroupPermission(ctx, groupInfo, operator, permtypes.ACTION_UPDATE_GROUP_INFO)
+		if effect != permtypes.EFFECT_ALLOW {
+			return types.ErrAccessDenied.Wrapf(
+				"The operator(%s) has no updateGroupInfo permission of the group(%s), owner(%s)",
+				operator.String(), groupInfo.GroupName, groupInfo.Owner)
 		}
+
 		groupInfo.Tags = tags
 		gbz := k.cdc.MustMarshal(groupInfo)
 		store.Set(types.GetGroupByIDKey(groupInfo.Id), gbz)

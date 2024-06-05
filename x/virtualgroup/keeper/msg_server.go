@@ -7,7 +7,6 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
 	"github.com/ethereum/go-ethereum/crypto"
 	gnfdtypes "github.com/evmos/evmos/v12/types"
@@ -45,28 +44,25 @@ func (k msgServer) UpdateParams(goCtx context.Context, req *types.MsgUpdateParam
 		return nil, err
 	}
 
-	if ctx.IsUpgraded(upgradetypes.Nagqu) {
-		params := k.GetParams(ctx)
-		_ = ctx.EventManager().EmitTypedEvents(&params)
-	}
+	params := k.GetParams(ctx)
+	_ = ctx.EventManager().EmitTypedEvents(&params)
 
 	return &types.MsgUpdateParamsResponse{}, nil
 }
 
 func (k msgServer) CreateGlobalVirtualGroup(goCtx context.Context, req *types.MsgCreateGlobalVirtualGroup) (*types.MsgCreateGlobalVirtualGroupResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	if ctx.IsUpgraded(upgradetypes.Pampas) {
-		expectSecondarySPNum := int(k.storageKeeper.GetExpectSecondarySPNumForECObject(ctx, ctx.BlockTime().Unix()))
-		if len(req.GetSecondarySpIds()) != expectSecondarySPNum {
-			return nil, types.ErrInvalidSecondarySPCount.Wrapf("the number of secondary sp in the Global virtual group should be %d", expectSecondarySPNum)
+
+	expectSecondarySPNum := int(k.storageKeeper.GetExpectSecondarySPNumForECObject(ctx, ctx.BlockTime().Unix()))
+	if len(req.GetSecondarySpIds()) != expectSecondarySPNum {
+		return nil, types.ErrInvalidSecondarySPCount.Wrapf("the number of secondary sp in the Global virtual group should be %d", expectSecondarySPNum)
+	}
+	spIdSet := make(map[uint32]struct{}, len(req.GetSecondarySpIds()))
+	for _, spId := range req.GetSecondarySpIds() {
+		if _, ok := spIdSet[spId]; ok {
+			return nil, types.ErrDuplicateSecondarySP.Wrapf("the SP(id=%d) is duplicate in the Global virtual group.", spId)
 		}
-		spIdSet := make(map[uint32]struct{}, len(req.GetSecondarySpIds()))
-		for _, spId := range req.GetSecondarySpIds() {
-			if _, ok := spIdSet[spId]; ok {
-				return nil, types.ErrDuplicateSecondarySP.Wrapf("the SP(id=%d) is duplicate in the Global virtual group.", spId)
-			}
-			spIdSet[spId] = struct{}{}
-		}
+		spIdSet[spId] = struct{}{}
 	}
 
 	var gvgStatisticsWithinSPs []*types.GVGStatisticsWithinSP
@@ -107,19 +103,17 @@ func (k msgServer) CreateGlobalVirtualGroup(goCtx context.Context, req *types.Ms
 		return nil, err
 	}
 
-	if ctx.IsUpgraded(upgradetypes.Manchurian) {
-		for _, gvgID := range gvgFamily.GlobalVirtualGroupIds {
-			gvg, found := k.GetGVG(ctx, gvgID)
-			if !found {
-				return nil, types.ErrGVGNotExist
+	for _, gvgID := range gvgFamily.GlobalVirtualGroupIds {
+		gvg, found := k.GetGVG(ctx, gvgID)
+		if !found {
+			return nil, types.ErrGVGNotExist
+		}
+		for i, secondarySPId := range gvg.SecondarySpIds {
+			if secondarySPId != secondarySpIds[i] {
+				break
 			}
-			for i, secondarySPId := range gvg.SecondarySpIds {
-				if secondarySPId != secondarySpIds[i] {
-					break
-				}
-				if i == len(secondarySpIds)-1 {
-					return nil, types.ErrDuplicateGVG.Wrapf("the global virtual group family already has a GVG with same SP in same order")
-				}
+			if i == len(secondarySpIds)-1 {
+				return nil, types.ErrDuplicateGVG.Wrapf("the global virtual group family already has a GVG with same SP in same order")
 			}
 		}
 	}
@@ -381,20 +375,7 @@ func (k msgServer) CompleteSwapOut(goCtx context.Context, msg *types.MsgComplete
 func (k msgServer) Settle(goCtx context.Context, req *types.MsgSettle) (*types.MsgSettleResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	addr := sdk.MustAccAddressFromHex(req.StorageProvider)
 	var sp *sptypes.StorageProvider
-
-	pampasUpgraded := ctx.IsUpgraded(upgradetypes.Pampas)
-	if !pampasUpgraded {
-		found := false
-		sp, found = k.spKeeper.GetStorageProviderByOperatorAddr(ctx, addr)
-		if !found {
-			sp, found = k.spKeeper.GetStorageProviderByFundingAddr(ctx, addr)
-			if !found {
-				return nil, sptypes.ErrStorageProviderNotFound.Wrapf("The address must be operator/funding address of sp.")
-			}
-		}
-	}
 
 	if req.GlobalVirtualGroupFamilyId != types.NoSpecifiedFamilyId {
 		family, found := k.GetGVGFamily(ctx, req.GlobalVirtualGroupFamilyId)
@@ -402,11 +383,9 @@ func (k msgServer) Settle(goCtx context.Context, req *types.MsgSettle) (*types.M
 			return nil, types.ErrGVGFamilyNotExist
 		}
 
-		if pampasUpgraded {
-			sp, found = k.spKeeper.GetStorageProvider(ctx, family.PrimarySpId)
-			if !found {
-				return nil, sptypes.ErrStorageProviderNotFound.Wrapf("Cannot find storage provider %d.", family.PrimarySpId)
-			}
+		sp, found = k.spKeeper.GetStorageProvider(ctx, family.PrimarySpId)
+		if !found {
+			return nil, sptypes.ErrStorageProviderNotFound.Wrapf("Cannot find storage provider %d.", family.PrimarySpId)
 		}
 
 		err := k.SettleAndDistributeGVGFamily(ctx, sp, family)
@@ -423,19 +402,6 @@ func (k msgServer) Settle(goCtx context.Context, req *types.MsgSettle) (*types.M
 			gvg, found := k.GetGVG(ctx, gvgID)
 			if !found {
 				return nil, types.ErrGVGNotExist
-			}
-
-			if !pampasUpgraded {
-				permitted := false
-				for _, id := range gvg.SecondarySpIds {
-					if id == sp.Id {
-						permitted = true
-						break
-					}
-				}
-				if !permitted {
-					return nil, sdkerrors.Wrapf(types.ErrSettleFailed, "storage provider %d is not in the group", sp.Id)
-				}
 			}
 
 			err := k.SettleAndDistributeGVG(ctx, gvg)
@@ -462,24 +428,22 @@ func (k msgServer) StorageProviderExit(goCtx context.Context, msg *types.MsgStor
 		return nil, sptypes.ErrStorageProviderExitFailed.Wrapf("sp not in service, status: %s", sp.Status.String())
 	}
 
-	if ctx.IsUpgraded(upgradetypes.Hulunbeier) {
-		stat, found := k.GetGVGStatisticsWithinSP(ctx, sp.Id)
-		if found && stat.BreakRedundancyReqmtGvgCount != 0 {
-			return nil, types.ErrSPCanNotExit.Wrapf("The SP has %d GVG that break the redundancy requirement, need to be resolved before exit.", stat.BreakRedundancyReqmtGvgCount)
-		}
+	stat, found := k.GetGVGStatisticsWithinSP(ctx, sp.Id)
+	if found && stat.BreakRedundancyReqmtGvgCount != 0 {
+		return nil, types.ErrSPCanNotExit.Wrapf("The SP has %d GVG that break the redundancy requirement, need to be resolved before exit.", stat.BreakRedundancyReqmtGvgCount)
+	}
 
-		// can only allow 1 sp exit at a time, a GVG can have only 1 SwapInInfo associated.
-		exitingSPNum := uint32(0)
-		sps := k.spKeeper.GetAllStorageProviders(ctx)
-		maxSPExitingNum := k.SpConcurrentExitNum(ctx)
+	// can only allow 1 sp exit at a time, a GVG can have only 1 SwapInInfo associated.
+	exitingSPNum := uint32(0)
+	sps := k.spKeeper.GetAllStorageProviders(ctx)
+	maxSPExitingNum := k.SpConcurrentExitNum(ctx)
 
-		for _, curSP := range sps {
-			if curSP.Status == sptypes.STATUS_GRACEFUL_EXITING ||
-				curSP.Status == sptypes.STATUS_FORCED_EXITING {
-				exitingSPNum++
-				if exitingSPNum >= maxSPExitingNum {
-					return nil, sptypes.ErrStorageProviderExitFailed.Wrapf("There are %d SP exiting, only allow %d sp exit concurrently", exitingSPNum, maxSPExitingNum)
-				}
+	for _, curSP := range sps {
+		if curSP.Status == sptypes.STATUS_GRACEFUL_EXITING ||
+			curSP.Status == sptypes.STATUS_FORCED_EXITING {
+			exitingSPNum++
+			if exitingSPNum >= maxSPExitingNum {
+				return nil, sptypes.ErrStorageProviderExitFailed.Wrapf("There are %d SP exiting, only allow %d sp exit concurrently", exitingSPNum, maxSPExitingNum)
 			}
 		}
 	}
@@ -538,25 +502,17 @@ func (k msgServer) CompleteStorageProviderExit(goCtx context.Context, msg *types
 	if err != nil {
 		return nil, err
 	}
-	if ctx.IsUpgraded(upgradetypes.Hulunbeier) {
-		if err = ctx.EventManager().EmitTypedEvents(&types.EventCompleteStorageProviderExit{
-			StorageProviderId:      sp.Id,
-			OperatorAddress:        msg.Operator,
-			StorageProviderAddress: sp.OperatorAddress,
-			TotalDeposit:           sp.TotalDeposit,
-			ForcedExit:             forcedExit,
-		}); err != nil {
-			return nil, err
-		}
-	} else {
-		if err = ctx.EventManager().EmitTypedEvents(&types.EventCompleteStorageProviderExit{
-			StorageProviderId: sp.Id,
-			OperatorAddress:   sp.OperatorAddress,
-			TotalDeposit:      sp.TotalDeposit,
-		}); err != nil {
-			return nil, err
-		}
+
+	if err = ctx.EventManager().EmitTypedEvents(&types.EventCompleteStorageProviderExit{
+		StorageProviderId:      sp.Id,
+		OperatorAddress:        msg.Operator,
+		StorageProviderAddress: sp.OperatorAddress,
+		TotalDeposit:           sp.TotalDeposit,
+		ForcedExit:             forcedExit,
+	}); err != nil {
+		return nil, err
 	}
+
 	return &types.MsgCompleteStorageProviderExitResponse{}, nil
 }
 

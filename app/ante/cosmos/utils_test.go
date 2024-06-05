@@ -6,13 +6,13 @@ import (
 	sdkmath "cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/tx"
+	"github.com/cosmos/cosmos-sdk/crypto/keys/eth/ethsecp256k1"
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/tx/signing"
 	authsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
 	"github.com/cosmos/cosmos-sdk/x/authz"
 	"github.com/evmos/evmos/v12/app"
-	"github.com/evmos/evmos/v12/crypto/ethsecp256k1"
 	"github.com/evmos/evmos/v12/encoding"
 )
 
@@ -60,7 +60,7 @@ func generatePrivKeyAddressPairs(accCount int) ([]*ethsecp256k1.PrivKey, []sdk.A
 	)
 
 	for i := range testPrivKeys {
-		testPrivKeys[i], err = ethsecp256k1.GenerateKey()
+		testPrivKeys[i], err = ethsecp256k1.GenPrivKey()
 		if err != nil {
 			return nil, nil, err
 		}

@@ -12,7 +12,6 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	gov "github.com/cosmos/cosmos-sdk/x/gov/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 	"github.com/prysmaticlabs/prysm/crypto/bls"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -360,10 +359,8 @@ func (k msgServer) UpdateParams(goCtx context.Context, req *types.MsgUpdateParam
 		return nil, err
 	}
 
-	if ctx.IsUpgraded(upgradetypes.Nagqu) {
-		params := k.GetParams(ctx)
-		_ = ctx.EventManager().EmitTypedEvents(&params)
-	}
+	params := k.GetParams(ctx)
+	_ = ctx.EventManager().EmitTypedEvents(&params)
 
 	return &types.MsgUpdateParamsResponse{}, nil
 }

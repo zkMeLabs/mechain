@@ -19,12 +19,13 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	ethtypes "github.com/ethereum/go-ethereum/core/types"
 
+	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/cosmos/cosmos-sdk/crypto/keys/eth/eip712"
+	"github.com/cosmos/cosmos-sdk/crypto/keys/eth/ethsecp256k1"
 	"github.com/evmos/evmos/v12/app"
 	"github.com/evmos/evmos/v12/app/ante"
 	evmante "github.com/evmos/evmos/v12/app/ante/evm"
-	"github.com/evmos/evmos/v12/crypto/ethsecp256k1"
 	"github.com/evmos/evmos/v12/encoding"
-	"github.com/evmos/evmos/v12/ethereum/eip712"
 	"github.com/evmos/evmos/v12/testutil"
 	"github.com/evmos/evmos/v12/types"
 	"github.com/evmos/evmos/v12/utils"
@@ -37,7 +38,7 @@ type AnteTestSuite struct {
 	suite.Suite
 
 	ctx             sdk.Context
-	app             *app.App
+	app             *app.Evmos
 	clientCtx       client.Context
 	anteHandler     sdk.AnteHandler
 	ethSigner       ethtypes.Signer
@@ -57,11 +58,11 @@ func (suite *AnteTestSuite) StateDB() *statedb.StateDB {
 
 func (suite *AnteTestSuite) SetupTest() {
 	checkTx := false
-	priv, err := ethsecp256k1.GenerateKey()
+	priv, err := ethsecp256k1.GenPrivKey()
 	suite.Require().NoError(err)
 	suite.priv = priv
 
-	suite.app = app.EthSetup(checkTx, func(app *app.App, genesis simapp.GenesisState) simapp.GenesisState {
+	suite.app = app.EthSetup(checkTx, func(app *app.Evmos, genesis simapp.GenesisState) simapp.GenesisState {
 		if suite.enableFeemarket {
 			// setup feemarketGenesis params
 			feemarketGenesis := feemarkettypes.DefaultGenesisState()
@@ -106,7 +107,8 @@ func (suite *AnteTestSuite) SetupTest() {
 	encodingConfig := encoding.MakeConfig(app.ModuleBasics)
 	// We're using TestMsg amino encoding in some tests, so register it here.
 	encodingConfig.Amino.RegisterConcrete(&testdata.TestMsg{}, "testdata.TestMsg", nil)
-	eip712.SetEncodingConfig(encodingConfig)
+	eip712.AminoCodec = encodingConfig.Amino
+	eip712.ProtoCodec = codec.NewProtoCodec(encodingConfig.InterfaceRegistry)
 
 	suite.clientCtx = client.Context{}.WithTxConfig(encodingConfig.TxConfig)
 
@@ -121,6 +123,7 @@ func (suite *AnteTestSuite) SetupTest() {
 		SigGasConsumer:         ante.SigVerificationGasConsumer,
 		ExtensionOptionChecker: types.HasDynamicFeeExtensionOption,
 		TxFeeChecker:           evmante.NewDynamicFeeChecker(suite.app.EvmKeeper),
+		GashubKeeper:           suite.app.GashubKeeper,
 	})
 
 	suite.anteHandler = anteHandler

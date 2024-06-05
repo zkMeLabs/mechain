@@ -6,7 +6,8 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/evmos/evmos/v12/internals/sequence"
+	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/evmos/evmos/v12/internal/sequence"
 )
 
 const (
@@ -70,31 +71,31 @@ var (
 
 // GetBucketKey return the bucket name store key
 func GetBucketKey(bucketName string) []byte {
-	bucketNameHash := sdk.Keccak256([]byte(bucketName))
+	bucketNameHash := crypto.Keccak256([]byte(bucketName))
 	return append(BucketInfoPrefix, bucketNameHash...)
 }
 
 // GetObjectKey return the object name store key
 func GetObjectKey(bucketName string, objectName string) []byte {
-	bucketNameHash := sdk.Keccak256([]byte(bucketName))
-	objectNameHash := sdk.Keccak256([]byte(objectName))
+	bucketNameHash := crypto.Keccak256([]byte(bucketName))
+	objectNameHash := crypto.Keccak256([]byte(objectName))
 	return append(ObjectInfoPrefix, append(bucketNameHash, objectNameHash...)...)
 }
 
 func GetObjectKeyOnlyBucketPrefix(bucketName string) []byte {
-	return append(ObjectInfoPrefix, sdk.Keccak256([]byte(bucketName))...)
+	return append(ObjectInfoPrefix, crypto.Keccak256([]byte(bucketName))...)
 }
 
 // GetShadowObjectKey return the shadow object name store key
 func GetShadowObjectKey(bucketName string, objectName string) []byte {
-	bucketNameHash := sdk.Keccak256([]byte(bucketName))
-	objectNameHash := sdk.Keccak256([]byte(objectName))
+	bucketNameHash := crypto.Keccak256([]byte(bucketName))
+	objectNameHash := crypto.Keccak256([]byte(objectName))
 	return append(ShadowObjectInfoPrefix, append(bucketNameHash, objectNameHash...)...)
 }
 
 // GetGroupKey return the group name store key
 func GetGroupKey(owner sdk.AccAddress, groupName string) []byte {
-	groupNameHash := sdk.Keccak256([]byte(groupName))
+	groupNameHash := crypto.Keccak256([]byte(groupName))
 	return append(GroupInfoPrefix, append(owner.Bytes(), groupNameHash...)...)
 }
 
@@ -178,12 +179,12 @@ func GetLockedObjectCountKey(bucketId math.Uint) []byte {
 
 // GetBucketFlowRateLimitKey return the bucket rate limit store key
 func GetBucketFlowRateLimitKey(paymentAccount, bucketOwner sdk.AccAddress, bucketName string) []byte {
-	bucketNameHash := sdk.Keccak256([]byte(bucketName))
+	bucketNameHash := crypto.Keccak256([]byte(bucketName))
 	return append(BucketRateLimitPrefix, append(paymentAccount.Bytes(), append(bucketOwner, bucketNameHash...)...)...)
 }
 
 // GetBucketFlowRateLimitStatusKey return the bucket rate limit store key
 func GetBucketFlowRateLimitStatusKey(bucketName string) []byte {
-	bucketNameHash := sdk.Keccak256([]byte(bucketName))
+	bucketNameHash := crypto.Keccak256([]byte(bucketName))
 	return append(BucketRateLimitPrefix, bucketNameHash...)
 }

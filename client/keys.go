@@ -24,9 +24,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/keys"
 	"github.com/spf13/cobra"
 
+	"github.com/cosmos/cosmos-sdk/crypto/hd"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	clientkeys "github.com/evmos/evmos/v12/client/keys"
-	"github.com/evmos/evmos/v12/crypto/hd"
 )
 
 // KeyCommands registers a sub-tree of commands to interact with
@@ -99,7 +99,7 @@ The pass backend requires GnuPG: https://gnupg.org/
 }
 
 func runAddCmd(cmd *cobra.Command, args []string) error {
-	clientCtx := client.GetClientContextFromCmd(cmd).WithKeyringOptions(hd.EthSecp256k1Option())
+	clientCtx := client.GetClientContextFromCmd(cmd).WithKeyringOptions(keyring.ETHAlgoOption())
 	clientCtx, err := client.ReadPersistentCommandFlags(clientCtx, cmd.Flags())
 	if err != nil {
 		return err

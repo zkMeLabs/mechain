@@ -11,10 +11,10 @@ import (
 
 	"github.com/cometbft/cometbft/crypto/tmhash"
 	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/cosmos/cosmos-sdk/crypto/keys/eth/eip712"
 	"github.com/cosmos/cosmos-sdk/x/auth/migrations/legacytx"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	"github.com/evmos/evmos/v12/ethereum/eip712"
 	"github.com/prysmaticlabs/prysm/crypto/bls"
 
 	"github.com/ethereum/go-ethereum/common"
@@ -23,6 +23,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
+	"github.com/cosmos/cosmos-sdk/crypto/keys/eth/ethsecp256k1"
 	kmultisig "github.com/cosmos/cosmos-sdk/crypto/keys/multisig"
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	"github.com/cosmos/cosmos-sdk/crypto/types/multisig"
@@ -35,13 +36,14 @@ import (
 	authz "github.com/cosmos/cosmos-sdk/x/authz"
 	ibctypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
 	ibcclienttypes "github.com/cosmos/ibc-go/v7/modules/core/02-client/types"
-	"github.com/evmos/evmos/v12/crypto/ethsecp256k1"
 
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
 	evtypes "github.com/cosmos/cosmos-sdk/x/evidence/types"
 	"github.com/cosmos/cosmos-sdk/x/feegrant"
 	govtypesv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
+	"github.com/evmos/evmos/v12/e2e/core"
+	"github.com/evmos/evmos/v12/testutil/sample"
 	utiltx "github.com/evmos/evmos/v12/testutil/tx"
 	evmtypes "github.com/evmos/evmos/v12/x/evm/types"
 )
@@ -285,11 +287,18 @@ func (suite *AnteTestSuite) CreateTestEIP712GrantAllowance(from sdk.AccAddress, 
 
 func (suite *AnteTestSuite) CreateTestEIP712MsgEditValidator(from sdk.AccAddress, priv cryptotypes.PrivKey, chainID string, gas uint64, gasAmount sdk.Coins) (client.TxBuilder, error) {
 	valAddr := sdk.AccAddress(from.Bytes())
+	newRelayerAddr := core.GenRandomAddr()
+	newChallengerAddr := core.GenRandomAddr()
+	blsPubKey, blsProof := sample.RandBlsPubKeyAndBlsProof()
 	msgEdit := stakingtypes.NewMsgEditValidator(
 		valAddr,
 		stakingtypes.NewDescription("moniker", "identity", "website", "security_contract", "details"),
 		nil,
 		nil,
+		newRelayerAddr,
+		newChallengerAddr,
+		blsPubKey,
+		blsProof,
 	)
 	return suite.CreateTestEIP712SingleMessageTxBuilder(priv, chainID, gas, gasAmount, msgEdit)
 }
@@ -321,7 +330,7 @@ func (suite *AnteTestSuite) CreateTestEIP712SubmitProposalV1(from sdk.AccAddress
 	suite.Require().True(ok)
 	content1, err := govtypesv1.NewLegacyContent(
 		proposal1,
-		sdk.MustBech32ifyAddressBytes(sdk.GetConfig().GetBech32AccountAddrPrefix(), authAcc.GetAddress().Bytes()),
+		authAcc.GetAddress().String(),
 	)
 	suite.Require().NoError(err)
 
@@ -329,7 +338,7 @@ func (suite *AnteTestSuite) CreateTestEIP712SubmitProposalV1(from sdk.AccAddress
 	suite.Require().True(ok)
 	content2, err := govtypesv1.NewLegacyContent(
 		proposal2,
-		sdk.MustBech32ifyAddressBytes(sdk.GetConfig().GetBech32AccountAddrPrefix(), authAcc.GetAddress().Bytes()),
+		authAcc.GetAddress().String(),
 	)
 	suite.Require().NoError(err)
 
@@ -342,7 +351,7 @@ func (suite *AnteTestSuite) CreateTestEIP712SubmitProposalV1(from sdk.AccAddress
 	msgProposal, err := govtypesv1.NewMsgSubmitProposal(
 		proposalMsgs,
 		sdk.NewCoins(sdk.NewCoin(evmtypes.DefaultEVMDenom, sdkmath.NewInt(100))),
-		sdk.MustBech32ifyAddressBytes(sdk.GetConfig().GetBech32AccountAddrPrefix(), from.Bytes()),
+		from.String(),
 		"Metadata", "title", "summary",
 	)
 
@@ -499,7 +508,7 @@ func (suite *AnteTestSuite) GenerateMultipleKeys(n int) ([]cryptotypes.PrivKey, 
 	privKeys := make([]cryptotypes.PrivKey, n)
 	pubKeys := make([]cryptotypes.PubKey, n)
 	for i := 0; i < n; i++ {
-		privKey, err := ethsecp256k1.GenerateKey()
+		privKey, err := ethsecp256k1.GenPrivKey()
 		suite.Require().NoError(err)
 		privKeys[i] = privKey
 		pubKeys[i] = privKey.PubKey()
@@ -576,7 +585,7 @@ func (suite *AnteTestSuite) createSignerBytes(chainID string, signMode signing.S
 	acc, err := sdkante.GetSignerAcc(suite.ctx, suite.app.AccountKeeper, sdk.AccAddress(pubKey.Address()))
 	suite.Require().NoError(err)
 	signerInfo := authsigning.SignerData{
-		Address:       sdk.MustBech32ifyAddressBytes(sdk.GetConfig().GetBech32AccountAddrPrefix(), acc.GetAddress().Bytes()),
+		Address:       acc.GetAddress().String(),
 		ChainID:       chainID,
 		AccountNumber: acc.GetAccountNumber(),
 		Sequence:      acc.GetSequence(),

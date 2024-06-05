@@ -9,7 +9,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	distributiontypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
-	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
 	"github.com/evmos/evmos/v12/x/challenge/types"
 	paymentmoduletypes "github.com/evmos/evmos/v12/x/payment/types"
@@ -201,7 +200,7 @@ func (k msgServer) doSlashAndRewards(ctx sdk.Context, challengeId uint64, voteRe
 ) error {
 	challengerReward, eachValidatorReward, submitterReward := sdkmath.ZeroInt(), sdkmath.ZeroInt(), sdkmath.ZeroInt()
 
-	noNeedCalculation := ctx.IsUpgraded(upgradetypes.Nagqu) && slashAmount.IsZero()
+	noNeedCalculation := slashAmount.IsZero()
 
 	if !noNeedCalculation {
 		challengerReward, eachValidatorReward, submitterReward = k.calculateSlashRewards(ctx, slashAmount,

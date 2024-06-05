@@ -23,9 +23,9 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 
+	"github.com/cosmos/cosmos-sdk/crypto/keys/eth/ethsecp256k1"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	ethtypes "github.com/ethereum/go-ethereum/core/types"
-	"github.com/evmos/evmos/v12/crypto/ethsecp256k1"
 	"github.com/evmos/evmos/v12/server/config"
 	"github.com/evmos/evmos/v12/testutil"
 	utiltx "github.com/evmos/evmos/v12/testutil/tx"
@@ -44,13 +44,14 @@ import (
 	channeltypes "github.com/cosmos/ibc-go/v7/modules/core/04-channel/types"
 	porttypes "github.com/cosmos/ibc-go/v7/modules/core/05-port/types"
 	"github.com/cosmos/ibc-go/v7/modules/core/exported"
+	"github.com/prysmaticlabs/prysm/crypto/bls"
 )
 
 type KeeperTestSuite struct {
 	suite.Suite
 
 	ctx              sdk.Context
-	app              *app.App
+	app              *app.Evmos
 	queryClientEvm   evm.QueryClient
 	queryClient      types.QueryClient
 	address          common.Address
@@ -80,14 +81,14 @@ func (suite *KeeperTestSuite) SetupTest() {
 
 func (suite *KeeperTestSuite) DoSetupTest(t require.TestingT) {
 	// account key
-	priv, err := ethsecp256k1.GenerateKey()
+	priv, err := ethsecp256k1.GenPrivKey()
 	require.NoError(t, err)
 	suite.priv = priv
 	suite.address = common.BytesToAddress(priv.PubKey().Address().Bytes())
 	suite.signer = utiltx.NewSigner(priv)
 
 	// consensus key
-	privCons, err := ethsecp256k1.GenerateKey()
+	privCons, err := ethsecp256k1.GenPrivKey()
 	require.NoError(t, err)
 	consAddress := sdk.ConsAddress(privCons.PubKey().Address())
 	suite.consAddress = consAddress
@@ -117,9 +118,11 @@ func (suite *KeeperTestSuite) DoSetupTest(t require.TestingT) {
 
 	// Set Validator
 	valAddr := sdk.AccAddress(suite.address.Bytes())
-	validator, err := stakingtypes.NewValidator(valAddr, privCons.PubKey(), stakingtypes.Description{})
+	blsSecretKey, _ := bls.RandKey()
+	blsPk := blsSecretKey.PublicKey().Marshal()
+	validator, err := stakingtypes.NewValidator(valAddr, privCons.PubKey(), stakingtypes.Description{}, valAddr, valAddr, valAddr, blsPk)
 	require.NoError(t, err)
-	validator = stakingkeeper.TestingUpdateValidator(&suite.app.StakingKeeper, suite.ctx, validator, true)
+	validator = stakingkeeper.TestingUpdateValidator(suite.app.StakingKeeper, suite.ctx, validator, true)
 	err = suite.app.StakingKeeper.Hooks().AfterValidatorCreated(suite.ctx, validator.GetOperator())
 	require.NoError(t, err)
 	err = suite.app.StakingKeeper.SetValidatorByConsAddr(suite.ctx, validator)

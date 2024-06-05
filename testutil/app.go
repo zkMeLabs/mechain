@@ -30,7 +30,7 @@ func NewTestApp(
 	loadLatest bool,
 	chainID string,
 	options ...func(baseApp *baseapp.BaseApp),
-) (*app.App, params.EncodingConfig, error) {
+) (*app.Evmos, params.EncodingConfig, error) {
 	// create public key
 	privVal := mock.NewPV()
 	pubKey, _ := privVal.GetPubKey()
@@ -51,7 +51,7 @@ func NewTestApp(
 
 	encCfg := encoding.MakeConfig(app.ModuleBasics)
 	options = append(options, baseapp.SetChainID(chainID))
-	nApp := app.New(
+	nApp := app.NewEvmos(
 		logger,
 		db,
 		traceStore,
@@ -59,6 +59,7 @@ func NewTestApp(
 		app.DefaultNodeHome,
 		0,
 		encCfg,
+		app.NewDefaultAppConfig(),
 		simtestutil.EmptyAppOptions{},
 		options...,
 	)

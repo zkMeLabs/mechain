@@ -44,12 +44,12 @@ func TestEvmosExport(t *testing.T) {
 
 	db := dbm.NewMemDB()
 	chainID := utils.MainnetChainID + "-1"
-	app := New(
+	app := NewEvmos(
 		log.NewTMLogger(log.NewSyncWriter(os.Stdout)),
 		db, nil, true,
 		DefaultNodeHome, 0,
 		encoding.MakeConfig(ModuleBasics),
-		&AppConfig{CrossChain: NewDefaultAppConfig().CrossChain},
+		NewDefaultAppConfig(),
 		simtestutil.NewAppOptionsWithFlagHome(DefaultNodeHome),
 		baseapp.SetChainID(chainID),
 	)
@@ -70,12 +70,12 @@ func TestEvmosExport(t *testing.T) {
 	app.Commit()
 
 	// Making a new app object with the db, so that initchain hasn't been called
-	app2 := New(
+	app2 := NewEvmos(
 		log.NewTMLogger(log.NewSyncWriter(os.Stdout)),
 		db, nil, true,
 		DefaultNodeHome, 0,
 		encoding.MakeConfig(ModuleBasics),
-		&AppConfig{CrossChain: NewDefaultAppConfig().CrossChain},
+		NewDefaultAppConfig(),
 		simtestutil.NewAppOptionsWithFlagHome(DefaultNodeHome),
 		baseapp.SetChainID(chainID),
 	)

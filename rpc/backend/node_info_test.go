@@ -5,11 +5,11 @@ import (
 	"math/big"
 
 	tmrpcclient "github.com/cometbft/cometbft/rpc/client"
+	"github.com/cosmos/cosmos-sdk/crypto/keys/eth/ethsecp256k1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
-	"github.com/evmos/evmos/v12/crypto/ethsecp256k1"
 	"github.com/evmos/evmos/v12/rpc/backend/mocks"
 	"github.com/evmos/evmos/v12/types"
 	"github.com/spf13/viper"
@@ -311,7 +311,7 @@ func (suite *BackendTestSuite) TestSetEtherbase() {
 }
 
 func (suite *BackendTestSuite) TestImportRawKey() {
-	priv, _ := ethsecp256k1.GenerateKey()
+	priv, _ := ethsecp256k1.GenPrivKey()
 	privHex := common.Bytes2Hex(priv.Bytes())
 	pubAddr := common.BytesToAddress(priv.PubKey().Address().Bytes())
 

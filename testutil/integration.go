@@ -25,8 +25,8 @@ import (
 	govv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
+	"github.com/cosmos/cosmos-sdk/crypto/keys/eth/ethsecp256k1"
 	"github.com/evmos/evmos/v12/app"
-	"github.com/evmos/evmos/v12/crypto/ethsecp256k1"
 )
 
 // SubmitProposal delivers a submit proposal tx for a given gov content.
@@ -34,7 +34,7 @@ import (
 // event.
 func SubmitProposal(
 	ctx sdk.Context,
-	appEvmos *app.App,
+	appEvmos *app.Evmos,
 	pk *ethsecp256k1.PrivKey,
 	content govv1beta1.Content,
 	eventNum int,
@@ -63,14 +63,14 @@ func SubmitProposal(
 // Delegate delivers a delegate tx
 func Delegate(
 	ctx sdk.Context,
-	appEvmos *app.App,
+	appEvmos *app.Evmos,
 	priv *ethsecp256k1.PrivKey,
 	delegateAmount sdk.Coin,
 	validator stakingtypes.Validator,
 ) (abci.ResponseDeliverTx, error) {
 	accountAddress := sdk.AccAddress(priv.PubKey().Address().Bytes())
 
-	val, err := sdk.ValAddressFromHex(validator.OperatorAddress)
+	val, err := sdk.AccAddressFromHexUnsafe(validator.OperatorAddress)
 	if err != nil {
 		return abci.ResponseDeliverTx{}, err
 	}
@@ -82,7 +82,7 @@ func Delegate(
 // Vote delivers a vote tx with the VoteOption "yes"
 func Vote(
 	ctx sdk.Context,
-	appEvmos *app.App,
+	appEvmos *app.Evmos,
 	priv *ethsecp256k1.PrivKey,
 	proposalID uint64,
 	voteOption govv1beta1.VoteOption,

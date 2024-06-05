@@ -12,11 +12,11 @@ import (
 	authtx "github.com/cosmos/cosmos-sdk/x/auth/tx"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
+	"github.com/cosmos/cosmos-sdk/crypto/keys/eth/ethsecp256k1"
 	"github.com/ethereum/go-ethereum/common"
 	ethtypes "github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/core/vm"
 	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/evmos/evmos/v12/crypto/ethsecp256k1"
 	utiltx "github.com/evmos/evmos/v12/testutil/tx"
 	"github.com/evmos/evmos/v12/x/evm/statedb"
 	"github.com/evmos/evmos/v12/x/evm/types"
@@ -457,7 +457,7 @@ func (suite *KeeperTestSuite) TestSuicide() {
 	db = suite.StateDB()
 
 	// Generate 2nd address
-	privkey, _ := ethsecp256k1.GenerateKey()
+	privkey, _ := ethsecp256k1.GenPrivKey()
 	key, err := privkey.ToECDSA()
 	suite.Require().NoError(err)
 	addr2 := crypto.PubkeyToAddress(key.PublicKey)

@@ -12,8 +12,7 @@ import (
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
-	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
-	"github.com/evmos/evmos/v12/internals/sequence"
+	"github.com/evmos/evmos/v12/internal/sequence"
 	sptypes "github.com/evmos/evmos/v12/x/sp/types"
 	"github.com/evmos/evmos/v12/x/virtualgroup/types"
 )
@@ -162,20 +161,8 @@ func (k Keeper) DeleteGVG(ctx sdk.Context, primarySp *sptypes.StorageProvider, g
 		return err
 	}
 
-	if len(gvgFamily.GlobalVirtualGroupIds) == 0 &&
-		k.paymentKeeper.IsEmptyNetFlow(ctx, sdk.MustAccAddressFromHex(gvgFamily.VirtualPaymentAddress)) &&
-		!ctx.IsUpgraded(upgradetypes.Manchurian) {
-		store.Delete(types.GetGVGFamilyKey(gvg.FamilyId))
-		if err := ctx.EventManager().EmitTypedEvents(&types.EventDeleteGlobalVirtualGroupFamily{
-			Id:          gvgFamily.Id,
-			PrimarySpId: gvgFamily.PrimarySpId,
-		}); err != nil {
-			return err
-		}
-	} else {
-		if err := k.SetGVGFamilyAndEmitUpdateEvent(ctx, gvgFamily); err != nil {
-			return err
-		}
+	if err := k.SetGVGFamilyAndEmitUpdateEvent(ctx, gvgFamily); err != nil {
+		return err
 	}
 	return nil
 }
@@ -250,11 +237,11 @@ func (k Keeper) GetOrCreateEmptyGVGFamily(ctx sdk.Context, familyID uint32, prim
 			PrimarySpId:           primarySPID,
 			VirtualPaymentAddress: k.DeriveVirtualPaymentAccount(types.GVGFamilyName, id).String(),
 		}
-		if ctx.IsUpgraded(upgradetypes.Serengeti) {
-			gvgFamilyStatistics := k.GetOrCreateGVGFamilyStatisticsWithinSP(ctx, primarySPID)
-			gvgFamilyStatistics.GlobalVirtualGroupFamilyIds = append(gvgFamilyStatistics.GlobalVirtualGroupFamilyIds, id)
-			k.SetGVGFamilyStatisticsWithinSP(ctx, gvgFamilyStatistics)
-		}
+
+		gvgFamilyStatistics := k.GetOrCreateGVGFamilyStatisticsWithinSP(ctx, primarySPID)
+		gvgFamilyStatistics.GlobalVirtualGroupFamilyIds = append(gvgFamilyStatistics.GlobalVirtualGroupFamilyIds, id)
+		k.SetGVGFamilyStatisticsWithinSP(ctx, gvgFamilyStatistics)
+
 		return &gvgFamily, nil
 	} else {
 		bz := store.Get(types.GetGVGFamilyKey(familyID))
@@ -295,10 +282,9 @@ func (k Keeper) SwapAsPrimarySP(ctx sdk.Context, primarySP, successorSP *sptypes
 	dstStat := k.GetOrCreateGVGStatisticsWithinSP(ctx, successorSP.Id)
 	var srcVGFStat *types.GVGFamilyStatisticsWithinSP
 	var dstVGFStat *types.GVGFamilyStatisticsWithinSP
-	if ctx.IsUpgraded(upgradetypes.Serengeti) {
-		srcVGFStat = k.MustGetGVGFamilyStatisticsWithinSP(ctx, primarySP.Id)
-		dstVGFStat = k.GetOrCreateGVGFamilyStatisticsWithinSP(ctx, successorSP.Id)
-	}
+
+	srcVGFStat = k.MustGetGVGFamilyStatisticsWithinSP(ctx, primarySP.Id)
+	dstVGFStat = k.GetOrCreateGVGFamilyStatisticsWithinSP(ctx, successorSP.Id)
 
 	var gvgs []*types.GlobalVirtualGroup
 	for _, gvgID := range family.GlobalVirtualGroupIds {
@@ -368,11 +354,10 @@ func (k Keeper) SwapAsPrimarySP(ctx sdk.Context, primarySP, successorSP *sptypes
 	}
 	k.SetGVGStatisticsWithSP(ctx, srcStat)
 	k.SetGVGStatisticsWithSP(ctx, dstStat)
-	if ctx.IsUpgraded(upgradetypes.Serengeti) {
-		k.DeleteSpecificGVGFamilyStatisticsFromSP(ctx, srcVGFStat.SpId, family.Id)
-		dstVGFStat.GlobalVirtualGroupFamilyIds = append(dstVGFStat.GlobalVirtualGroupFamilyIds, family.Id)
-		k.SetGVGFamilyStatisticsWithinSP(ctx, dstVGFStat)
-	}
+
+	k.DeleteSpecificGVGFamilyStatisticsFromSP(ctx, srcVGFStat.SpId, family.Id)
+	dstVGFStat.GlobalVirtualGroupFamilyIds = append(dstVGFStat.GlobalVirtualGroupFamilyIds, family.Id)
+	k.SetGVGFamilyStatisticsWithinSP(ctx, dstVGFStat)
 
 	return nil
 }

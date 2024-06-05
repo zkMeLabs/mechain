@@ -34,7 +34,7 @@ import (
 	ibcgotesting "github.com/cosmos/ibc-go/v7/testing"
 	"github.com/cosmos/ibc-go/v7/testing/mock"
 
-	"github.com/evmos/evmos/v12/crypto/ethsecp256k1"
+	"github.com/cosmos/cosmos-sdk/crypto/keys/eth/ethsecp256k1"
 	evmostypes "github.com/evmos/evmos/v12/types"
 	"github.com/evmos/evmos/v12/utils"
 	evmtypes "github.com/evmos/evmos/v12/x/evm/types"
@@ -72,7 +72,7 @@ func NewTestChain(t *testing.T, coord *ibcgotesting.Coordinator, chainID string)
 	signers[pubKey.Address().String()] = privVal
 
 	// generate genesis account
-	senderPrivKey, err := ethsecp256k1.GenerateKey()
+	senderPrivKey, err := ethsecp256k1.GenPrivKey()
 	if err != nil {
 		panic(err)
 	}

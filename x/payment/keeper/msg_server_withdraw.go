@@ -6,7 +6,6 @@ import (
 	"cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
 	"github.com/evmos/evmos/v12/x/payment/types"
 )
@@ -15,31 +14,29 @@ func (k msgServer) Withdraw(goCtx context.Context, msg *types.MsgWithdraw) (*typ
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	creator := sdk.MustAccAddressFromHex(msg.Creator)
 
-	if ctx.IsUpgraded(upgradetypes.Nagqu) {
-		if msg.From == "" { // withdraw from the locked one
-			delayedWithdrawal, found := k.GetDelayedWithdrawalRecord(ctx, creator)
-			if !found {
-				return nil, errors.Wrapf(types.ErrNoDelayedWithdrawal, "delayed withdrawal not found %s", creator.String())
-			}
-			if !delayedWithdrawal.Amount.Equal(msg.Amount) {
-				return nil, errors.Wrapf(types.ErrIncorrectWithdrawAmount, "withdrawal amount should be equal to the delayed %s", delayedWithdrawal.Amount)
-			}
-
-			now := ctx.BlockTime().Unix()
-			end := delayedWithdrawal.UnlockTimestamp
-			if now <= end {
-				return nil, errors.Wrapf(types.ErrNotReachTimeLockDuration, "delayed withdrawal should be after %d", end)
-			}
-
-			k.RemoveDelayedWithdrawalRecord(ctx, creator)
-			// withdraw it from module account directly
-			delayedFrom := sdk.MustAccAddressFromHex(delayedWithdrawal.From)
-			err := k.bankTransfer(ctx, creator, delayedFrom, msg.Amount)
-			if err != nil {
-				return nil, err
-			}
-			return &types.MsgWithdrawResponse{}, nil
+	if msg.From == "" { // withdraw from the locked one
+		delayedWithdrawal, found := k.GetDelayedWithdrawalRecord(ctx, creator)
+		if !found {
+			return nil, errors.Wrapf(types.ErrNoDelayedWithdrawal, "delayed withdrawal not found %s", creator.String())
 		}
+		if !delayedWithdrawal.Amount.Equal(msg.Amount) {
+			return nil, errors.Wrapf(types.ErrIncorrectWithdrawAmount, "withdrawal amount should be equal to the delayed %s", delayedWithdrawal.Amount)
+		}
+
+		now := ctx.BlockTime().Unix()
+		end := delayedWithdrawal.UnlockTimestamp
+		if now <= end {
+			return nil, errors.Wrapf(types.ErrNotReachTimeLockDuration, "delayed withdrawal should be after %d", end)
+		}
+
+		k.RemoveDelayedWithdrawalRecord(ctx, creator)
+		// withdraw it from module account directly
+		delayedFrom := sdk.MustAccAddressFromHex(delayedWithdrawal.From)
+		err := k.bankTransfer(ctx, creator, delayedFrom, msg.Amount)
+		if err != nil {
+			return nil, err
+		}
+		return &types.MsgWithdrawResponse{}, nil
 	}
 
 	from := sdk.MustAccAddressFromHex(msg.From)
@@ -77,22 +74,20 @@ func (k msgServer) Withdraw(goCtx context.Context, msg *types.MsgWithdraw) (*typ
 		return nil, errors.Wrapf(types.ErrInsufficientBalance, "static balance: %s after withdraw", streamRecord.StaticBalance)
 	}
 
-	if ctx.IsUpgraded(upgradetypes.Nagqu) {
-		params := k.GetParams(ctx)
-		if msg.Amount.GTE(*params.WithdrawTimeLockThreshold) {
-			// check whether there is delayed withdrawal, if there is delayed withdrawal, must withdraw it firstly
-			if _, found := k.GetDelayedWithdrawalRecord(ctx, creator); found {
-				return nil, errors.Wrapf(types.ErrExistsDelayedWithdrawal, "delayed withdrawal should be proceed firstly %s", creator.String())
-			}
-			delayedWithdrawal := &types.DelayedWithdrawalRecord{
-				Addr:            creator.String(),
-				Amount:          msg.Amount,
-				From:            from.String(),
-				UnlockTimestamp: ctx.BlockTime().Unix() + int64(params.WithdrawTimeLockDuration),
-			}
-			k.SetDelayedWithdrawalRecord(ctx, delayedWithdrawal)
-			return &types.MsgWithdrawResponse{}, nil // user can query `DelayedWithdrawal` to find the details
+	params := k.GetParams(ctx)
+	if msg.Amount.GTE(*params.WithdrawTimeLockThreshold) {
+		// check whether there is delayed withdrawal, if there is delayed withdrawal, must withdraw it firstly
+		if _, found := k.GetDelayedWithdrawalRecord(ctx, creator); found {
+			return nil, errors.Wrapf(types.ErrExistsDelayedWithdrawal, "delayed withdrawal should be proceed firstly %s", creator.String())
 		}
+		delayedWithdrawal := &types.DelayedWithdrawalRecord{
+			Addr:            creator.String(),
+			Amount:          msg.Amount,
+			From:            from.String(),
+			UnlockTimestamp: ctx.BlockTime().Unix() + int64(params.WithdrawTimeLockDuration),
+		}
+		k.SetDelayedWithdrawalRecord(ctx, delayedWithdrawal)
+		return &types.MsgWithdrawResponse{}, nil // user can query `DelayedWithdrawal` to find the details
 	}
 
 	// bank transfer

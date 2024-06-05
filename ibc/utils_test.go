@@ -1,6 +1,7 @@
 package ibc
 
 import (
+	"github.com/evmos/evmos/v12/utils"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -89,8 +90,8 @@ func TestGetTransferSenderRecipient(t *testing.T) {
 					},
 				),
 			},
-			"evmos1qql8ag4cluz6r4dz28p3w00dnc9w8ueuafmxps",
-			"evmos1x2w87cvt5mqjncav4lxy8yfreynn273xn5335v",
+			"evmos1qql8ag4cluz6r4dz28p3w00dnc9w8ueuafmxps", // "0x003E7EA2B8FF05A1D5a251c3173DEd9E0aE3F33c",
+			"evmos1x2w87cvt5mqjncav4lxy8yfreynn273xn5335v", // "0x329C7f618BA6c129e3acafcC439123C927357a26",
 			false,
 		},
 		{
@@ -104,8 +105,8 @@ func TestGetTransferSenderRecipient(t *testing.T) {
 					},
 				),
 			},
-			"evmos1x2w87cvt5mqjncav4lxy8yfreynn273xn5335v",
-			"evmos1qql8ag4cluz6r4dz28p3w00dnc9w8ueuafmxps",
+			"evmos1x2w87cvt5mqjncav4lxy8yfreynn273xn5335v", // "0x329C7f618BA6c129e3acafcC439123C927357a26",
+			"evmos1qql8ag4cluz6r4dz28p3w00dnc9w8ueuafmxps", // "0x003E7EA2B8FF05A1D5a251c3173DEd9E0aE3F33c",
 			false,
 		},
 		{
@@ -119,8 +120,8 @@ func TestGetTransferSenderRecipient(t *testing.T) {
 					},
 				),
 			},
-			"evmos1qql8ag4cluz6r4dz28p3w00dnc9w8ueuafmxps",
-			"evmos1x2w87cvt5mqjncav4lxy8yfreynn273xn5335v",
+			"evmos1qql8ag4cluz6r4dz28p3w00dnc9w8ueuafmxps", // "0x003E7EA2B8FF05A1D5a251c3173DEd9E0aE3F33c",
+			"evmos1x2w87cvt5mqjncav4lxy8yfreynn273xn5335v", // "0x329C7f618BA6c129e3acafcC439123C927357a26",
 			false,
 		},
 	}
@@ -131,8 +132,12 @@ func TestGetTransferSenderRecipient(t *testing.T) {
 			require.Error(t, err, tc.name)
 		} else {
 			require.NoError(t, err, tc.name)
-			require.Equal(t, tc.expSender, sender.String())
-			require.Equal(t, tc.expRecipient, recipient.String())
+			expSender, err := utils.GetEvmosAddressFromBech32(tc.expSender)
+			expRecipient, err := utils.GetEvmosAddressFromBech32(tc.expRecipient)
+			require.NoError(t, err, tc.name)
+
+			require.Equal(t, expSender.String(), sender.String())
+			require.Equal(t, expRecipient.String(), recipient.String())
 		}
 	}
 }
@@ -240,9 +245,9 @@ func TestGetReceivedCoin(t *testing.T) {
 			"channel-0",
 			"transfer",
 			"channel-0",
-			"transfer/channel-0/aevmos",
+			"transfer/channel-0/azkme",
 			"10",
-			sdk.Coin{Denom: "aevmos", Amount: sdk.NewInt(10)},
+			sdk.Coin{Denom: "azkme", Amount: sdk.NewInt(10)},
 		},
 		{
 			"transfer 2x ibc wrapped coin to destination which is its source",

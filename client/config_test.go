@@ -5,6 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/cometbft/cometbft/libs/cli"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/spf13/cobra"
 )
@@ -20,6 +21,9 @@ func TestInitConfigNonNotExistError(t *testing.T) {
 	if err := cmd.PersistentFlags().Set(flags.FlagHome, subDir); err != nil {
 		t.Fatalf("Could not set home flag [%T] %v", err, err)
 	}
+	cmd.PersistentFlags().String(flags.FlagChainID, "", "The network chain ID")
+	cmd.PersistentFlags().StringP(cli.EncodingFlag, "e", "hex", "Binary encoding (hex|b64|btc)")
+	cmd.PersistentFlags().StringP(cli.OutputFlag, "o", "text", "Output format (text|json)")
 
 	if err := InitConfig(cmd); !os.IsPermission(err) {
 		t.Fatalf("Failed to catch permissions error, got: [%T] %v", err, err)

@@ -22,7 +22,7 @@ type KeeperTestSuite struct {
 	suite.Suite
 
 	ctx         sdk.Context
-	app         *app.App
+	app         *app.Evmos
 	queryClient types.QueryClient
 	address     common.Address
 	consAddress sdk.ConsAddress

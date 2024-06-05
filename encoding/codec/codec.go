@@ -35,6 +35,6 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 // RegisterInterfaces registers Interfaces from types, crypto, and SDK std.
 func RegisterInterfaces(interfaceRegistry codectypes.InterfaceRegistry) {
 	std.RegisterInterfaces(interfaceRegistry)
-	cryptocodec.RegisterInterfaces(interfaceRegistry)
+	// cryptocodec.RegisterInterfaces(interfaceRegistry)
 	types.RegisterInterfaces(interfaceRegistry)
 }

@@ -42,7 +42,7 @@ func TestSendTokenWithTxOptionSucceed(t *testing.T) {
 	payerAddr, err := sdk.AccAddressFromHexUnsafe(km.GetAddr().String())
 	assert.NoError(t, err)
 	mode := tx.BroadcastMode_BROADCAST_MODE_SYNC
-	feeAmt := sdk.NewCoins(sdk.NewCoin("BNB", sdk.NewInt(int64(10000000000000)))) // gasPrice * gasLimit
+	feeAmt := sdk.NewCoins(sdk.NewCoin("azkme", sdk.NewInt(int64(10000000000000)))) // gasPrice * gasLimit
 
 	txOpt := &types.TxOption{
 		Mode:       &mode,
@@ -160,7 +160,7 @@ func TestSendTokenWithOverrideAccount(t *testing.T) {
 	payerAddr, err := sdk.AccAddressFromHexUnsafe(km2.GetAddr().String())
 	assert.NoError(t, err)
 	mode := tx.BroadcastMode_BROADCAST_MODE_SYNC
-	feeAmt := sdk.NewCoins(sdk.NewCoin("BNB", sdk.NewInt(int64(10000000000000)))) // gasPrice * gasLimit
+	feeAmt := sdk.NewCoins(sdk.NewCoin("azkme", sdk.NewInt(int64(10000000000000)))) // gasPrice * gasLimit
 	txOpt := &types.TxOption{
 		Mode:               &mode,
 		NoSimulate:         true,

@@ -9,7 +9,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/telemetry"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 	"github.com/evmos/evmos/v12/x/payment/types"
 )
 
@@ -124,12 +123,8 @@ func (k Keeper) UpdateFrozenStreamRecord(ctx sdk.Context, streamRecord *types.St
 		streamRecord.LockBalance = streamRecord.LockBalance.Add(change.LockBalanceChange)
 		streamRecord.StaticBalance = streamRecord.StaticBalance.Sub(change.LockBalanceChange)
 		if streamRecord.LockBalance.IsNegative() {
-			if ctx.IsUpgraded(upgradetypes.Pawnee) {
-				streamRecord.StaticBalance = streamRecord.StaticBalance.Add(streamRecord.LockBalance)
-				streamRecord.LockBalance = sdkmath.ZeroInt()
-			} else {
-				return fmt.Errorf("lock balance can not become negative, current: %s", streamRecord.LockBalance)
-			}
+			streamRecord.StaticBalance = streamRecord.StaticBalance.Add(streamRecord.LockBalance)
+			streamRecord.LockBalance = sdkmath.ZeroInt()
 		}
 	}
 	if !change.RateChange.IsZero() {
@@ -164,12 +159,8 @@ func (k Keeper) UpdateStreamRecord(ctx sdk.Context, streamRecord *types.StreamRe
 		streamRecord.LockBalance = streamRecord.LockBalance.Add(change.LockBalanceChange)
 		streamRecord.StaticBalance = streamRecord.StaticBalance.Sub(change.LockBalanceChange)
 		if streamRecord.LockBalance.IsNegative() {
-			if ctx.IsUpgraded(upgradetypes.Pawnee) {
-				streamRecord.StaticBalance = streamRecord.StaticBalance.Add(streamRecord.LockBalance)
-				streamRecord.LockBalance = sdkmath.ZeroInt()
-			} else {
-				return fmt.Errorf("lock balance can not become negative, current: %s", streamRecord.LockBalance)
-			}
+			streamRecord.StaticBalance = streamRecord.StaticBalance.Add(streamRecord.LockBalance)
+			streamRecord.LockBalance = sdkmath.ZeroInt()
 		}
 	}
 	// update buffer balance
@@ -208,7 +199,7 @@ func (k Keeper) UpdateStreamRecord(ctx sdk.Context, streamRecord *types.StreamRe
 	}
 	// if the change is a pay (which decreases the static balance or netflow rate), the left static balance should be enough
 	if !forced && isPay && streamRecord.StaticBalance.IsNegative() {
-		return fmt.Errorf("stream account %s balance not enough, lack of %s BNB", streamRecord.Account, streamRecord.StaticBalance.Abs())
+		return fmt.Errorf("stream account %s balance not enough, lack of %s azkme", streamRecord.Account, streamRecord.StaticBalance.Abs())
 	}
 	// calculate settle time
 	var settleTimestamp int64 = 0
@@ -216,7 +207,7 @@ func (k Keeper) UpdateStreamRecord(ctx sdk.Context, streamRecord *types.StreamRe
 		payDuration := streamRecord.StaticBalance.Add(streamRecord.BufferBalance).Quo(streamRecord.NetflowRate.Abs())
 		if payDuration.LTE(sdkmath.NewIntFromUint64(params.ForcedSettleTime)) {
 			if !forced {
-				return fmt.Errorf("stream account %s lacks of %s BNB", streamRecord.Account, streamRecord.StaticBalance.Abs())
+				return fmt.Errorf("stream account %s lacks of %s azkme", streamRecord.Account, streamRecord.StaticBalance.Abs())
 			}
 			err := k.ForceSettle(ctx, streamRecord)
 			if err != nil {

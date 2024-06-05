@@ -13,11 +13,11 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
+	"github.com/cosmos/cosmos-sdk/crypto/keys/eth/ethsecp256k1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/ethereum/go-ethereum/common"
 	ethtypes "github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/evmos/evmos/v12/crypto/ethsecp256k1"
 	utiltx "github.com/evmos/evmos/v12/testutil/tx"
 
 	"github.com/evmos/evmos/v12/app"
@@ -697,7 +697,7 @@ func (suite *MsgsTestSuite) TestMsgEthereumTx_Getters() {
 }
 
 func (suite *MsgsTestSuite) TestFromEthereumTx() {
-	privkey, _ := ethsecp256k1.GenerateKey()
+	privkey, _ := ethsecp256k1.GenPrivKey()
 	ethPriv, err := privkey.ToECDSA()
 	suite.Require().NoError(err)
 

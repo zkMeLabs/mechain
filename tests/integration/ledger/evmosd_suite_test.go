@@ -20,8 +20,8 @@ import (
 
 	"github.com/cometbft/cometbft/crypto/tmhash"
 	"github.com/cometbft/cometbft/version"
+	"github.com/cosmos/cosmos-sdk/crypto/hd"
 	"github.com/evmos/evmos/v12/app"
-	"github.com/evmos/evmos/v12/crypto/hd"
 	"github.com/evmos/evmos/v12/tests/integration/ledger/mocks"
 	utiltx "github.com/evmos/evmos/v12/testutil/tx"
 	"github.com/evmos/evmos/v12/utils"
@@ -45,7 +45,7 @@ var s *LedgerTestSuite
 type LedgerTestSuite struct {
 	suite.Suite
 
-	app *app.App
+	app *app.Evmos
 	ctx sdk.Context
 
 	ledger       *mocks.SECP256K1
@@ -156,7 +156,7 @@ func (suite *LedgerTestSuite) evmosAddKeyCmd() *cobra.Command {
 	cmd.Flags().AddFlagSet(keys.Commands("home").PersistentFlags())
 
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
-		clientCtx := client.GetClientContextFromCmd(cmd).WithKeyringOptions(hd.EthSecp256k1Option())
+		clientCtx := client.GetClientContextFromCmd(cmd).WithKeyringOptions(keyring.ETHAlgoOption())
 		clientCtx, err := client.ReadPersistentCommandFlags(clientCtx, cmd.Flags())
 		if err != nil {
 			return err

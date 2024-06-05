@@ -6,6 +6,7 @@ import (
 	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/ethereum/go-ethereum/crypto"
 )
 
 const TypeMsgAttest = "attest"
@@ -101,6 +102,6 @@ func (msg *MsgAttest) GetBlsSignBytes(chainId string) [32]byte {
 	bs = append(bs, resultBz...)
 	bs = append(bs, spOperatorBz...)
 	bs = append(bs, challengerBz...)
-	hash := sdk.Keccak256Hash(bs)
+	hash := crypto.Keccak256Hash(bs)
 	return hash
 }
