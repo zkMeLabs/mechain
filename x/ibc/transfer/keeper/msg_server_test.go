@@ -123,6 +123,27 @@ func (suite *KeeperTestSuite) TestTransfer() {
 			false,
 		},
 		{
+			"no-op - pair not registered",
+			func() *types.MsgTransfer {
+				senderAcc := sdk.AccAddress(suite.address.Bytes())
+
+				coin := sdk.NewCoin("test", sdk.NewInt(10))
+				coins := sdk.NewCoins(coin)
+
+				err := suite.app.BankKeeper.MintCoins(suite.ctx, erc20types.ModuleName, coins)
+				suite.Require().NoError(err)
+
+				err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, erc20types.ModuleName, senderAcc, coins)
+				suite.Require().NoError(err)
+				suite.Commit()
+
+				transferMsg := types.NewMsgTransfer("transfer", "channel-0", coin, senderAcc.String(), "", timeoutHeight, 0, "")
+
+				return transferMsg
+			},
+			true,
+		},
+		{
 			"no-op - pair is disabled",
 			func() *types.MsgTransfer {
 				contractAddr, err := suite.DeployContract("coin", "token", uint8(6))
