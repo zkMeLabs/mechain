@@ -12,6 +12,14 @@
       "program": "${workspaceFolder}/cmd/mechaind",
       "args": ["version"],
       "cwd": "${workspaceFolder}/build"
+    },
+    {
+      "name": "Launch Test Function",
+      "type": "go",
+      "request": "launch",
+      "mode": "test",
+      "program": "${fileDirname}",
+      "args": ["-testify.m", "^(TestTransfer)$"]
     }
   ]
 }

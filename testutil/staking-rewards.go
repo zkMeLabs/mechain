@@ -92,7 +92,7 @@ func PrepareAccountsForDelegationRewards(t *testing.T, ctx sdk.Context, app *app
 		// Set up validator and delegate to it
 		privKey := ed25519.GenPrivKey()
 		addr2, _ := testutiltx.NewAccAddressAndKey()
-		err := FundAccountWithBaseDenom(ctx, app.BankKeeper, addr2, reward.Int64())
+		err := FundAccountWithBaseDenom(ctx, app.BankKeeper, addr2, 2*reward.Int64()) // only validator can delegate
 		if err != nil {
 			return sdk.Context{}, fmt.Errorf("failed to fund validator account: %s", err.Error())
 		}
@@ -104,7 +104,7 @@ func PrepareAccountsForDelegationRewards(t *testing.T, ctx sdk.Context, app *app
 		err = app.StakingKeeper.SetParams(ctx, stakingParams)
 		require.NoError(t, err)
 
-		stakingHelper := teststaking.NewHelper(t, ctx, &app.StakingKeeper)
+		stakingHelper := teststaking.NewHelper(t, ctx, app.StakingKeeper)
 		stakingHelper.Commission = stakingtypes.NewCommissionRates(zeroDec, zeroDec, zeroDec)
 		stakingHelper.Denom = utils.BaseDenom
 
@@ -112,11 +112,11 @@ func PrepareAccountsForDelegationRewards(t *testing.T, ctx sdk.Context, app *app
 		// self-delegate the same amount of tokens as the delegate address also stakes
 		// this ensures, that the delegation rewards are 50% of the total rewards
 		stakingHelper.CreateValidator(valAddr, privKey.PubKey(), reward, true)
-		stakingHelper.Delegate(addr, valAddr, reward)
+		stakingHelper.Delegate(valAddr, valAddr, reward) // validator delegate self
 
 		// end block to bond validator and increase block height
 		// Not using Commit() here because code panics due to invalid block height
-		staking.EndBlocker(ctx, &app.StakingKeeper)
+		staking.EndBlocker(ctx, app.StakingKeeper)
 
 		// allocate rewards to validator (of these 50% will be paid out to the delegator)
 		validator := app.StakingKeeper.Validator(ctx, valAddr)

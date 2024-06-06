@@ -93,13 +93,13 @@ func (suite *AnteTestSuite) TestDeductFeeDecorator() {
 			postCheck: func() {
 				// the balance should not have changed
 				balance := suite.app.BankKeeper.GetBalance(suite.ctx, addr, utils.BaseDenom)
-				suite.Require().Equal(sdk.NewInt(1e5), balance.Amount, "expected balance to be unchanged")
+				suite.Require().Equal(sdk.NewInt(2e5), balance.Amount, "expected balance to be unchanged") // user not delegate
 
 				// the rewards should not have changed
 				rewards, err := testutil.GetTotalDelegationRewards(suite.ctx, suite.app.DistrKeeper, addr)
 				suite.Require().NoError(err, "failed to get total delegation rewards")
 				suite.Require().Equal(
-					sdk.NewDecCoins(sdk.NewDecCoin(utils.BaseDenom, sdk.NewInt(1e5))),
+					sdk.NewDecCoins(sdk.NewDecCoin(utils.BaseDenom, sdk.NewInt(0))),
 					rewards,
 					"expected rewards to be unchanged")
 			},

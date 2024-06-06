@@ -8,6 +8,7 @@ import (
 
 	"github.com/evmos/evmos/v12/utils"
 	"github.com/evmos/evmos/v12/x/evm/keeper"
+	"github.com/prysmaticlabs/prysm/crypto/bls"
 
 	sdkmath "cosmossdk.io/math"
 	"github.com/cosmos/gogoproto/proto"
@@ -156,7 +157,9 @@ func (suite *EvmTestSuite) DoSetupTest(t require.TestingT) {
 	suite.app.AccountKeeper.SetAccount(suite.ctx, acc)
 
 	valAddr := sdk.AccAddress(address.Bytes())
-	validator, err := stakingtypes.NewValidator(valAddr, priv.PubKey(), stakingtypes.Description{})
+	blsSecretKey, _ := bls.RandKey()
+	blsPk := blsSecretKey.PublicKey().Marshal()
+	validator, err := stakingtypes.NewValidator(valAddr, priv.PubKey(), stakingtypes.Description{}, valAddr, valAddr, valAddr, blsPk)
 	require.NoError(t, err)
 
 	err = suite.app.StakingKeeper.SetValidatorByConsAddr(suite.ctx, validator)
@@ -543,20 +546,8 @@ func (suite *EvmTestSuite) TestOutOfGasWhenDeployContract() {
 	}
 	tx := types.NewTx(ethTxParams)
 	suite.SignTx(tx)
-
-	defer func() {
-		//nolint:revive // allow empty code block that just contains TODO in test code
-		if r := recover(); r != nil {
-			// TODO: snapshotting logic
-		} else {
-			suite.Require().Fail("panic did not happen")
-		}
-	}()
-
 	_, err := suite.handler(suite.ctx, tx)
-	suite.Require().NoError(err)
-
-	suite.Require().Fail("panic did not happen")
+	suite.Require().ErrorContains(err, "intrinsic gas too low")
 }
 
 func (suite *EvmTestSuite) TestErrorWhenDeployContract() {

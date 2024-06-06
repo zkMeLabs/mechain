@@ -120,11 +120,12 @@ func TestGetEvmosAddressFromBech32(t *testing.T) {
 
 	for _, tc := range testCases {
 		addr, err := GetEvmosAddressFromBech32(tc.address)
+		expAddress, err := GetEvmosAddressFromBech32(tc.expAddress)
 		if tc.expError {
 			require.Error(t, err, tc.name)
 		} else {
 			require.NoError(t, err, tc.name)
-			require.Equal(t, tc.expAddress, addr.String(), tc.name)
+			require.Equal(t, expAddress.String(), addr.String(), tc.name)
 		}
 	}
 }

@@ -17,7 +17,7 @@ the Github issue reference in the following format:
 
 * (<tag>) \#<issue-number> message
 
-The issue numbers will later be link-ified during the release process so you do
+The issue numbers will later be link-field during the release process so you do
 not have to worry about including a link manually, but you can if you wish.
 
 Types of changes (Stanzas):

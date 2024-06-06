@@ -70,7 +70,7 @@ func Delegate(
 ) (abci.ResponseDeliverTx, error) {
 	accountAddress := sdk.AccAddress(priv.PubKey().Address().Bytes())
 
-	val, err := sdk.ValAddressFromHex(validator.OperatorAddress)
+	val, err := sdk.AccAddressFromHexUnsafe(validator.OperatorAddress)
 	if err != nil {
 		return abci.ResponseDeliverTx{}, err
 	}

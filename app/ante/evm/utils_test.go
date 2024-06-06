@@ -42,6 +42,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/feegrant"
 	govtypesv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
+	"github.com/evmos/evmos/v12/e2e/core"
+	"github.com/evmos/evmos/v12/testutil/sample"
 	utiltx "github.com/evmos/evmos/v12/testutil/tx"
 	evmtypes "github.com/evmos/evmos/v12/x/evm/types"
 )
@@ -285,11 +287,18 @@ func (suite *AnteTestSuite) CreateTestEIP712GrantAllowance(from sdk.AccAddress, 
 
 func (suite *AnteTestSuite) CreateTestEIP712MsgEditValidator(from sdk.AccAddress, priv cryptotypes.PrivKey, chainID string, gas uint64, gasAmount sdk.Coins) (client.TxBuilder, error) {
 	valAddr := sdk.AccAddress(from.Bytes())
+	newRelayerAddr := core.GenRandomAddr()
+	newChallengerAddr := core.GenRandomAddr()
+	blsPubKey, blsProof := sample.RandBlsPubKeyAndBlsProof()
 	msgEdit := stakingtypes.NewMsgEditValidator(
 		valAddr,
 		stakingtypes.NewDescription("moniker", "identity", "website", "security_contract", "details"),
 		nil,
 		nil,
+		newRelayerAddr,
+		newChallengerAddr,
+		blsPubKey,
+		blsProof,
 	)
 	return suite.CreateTestEIP712SingleMessageTxBuilder(priv, chainID, gas, gasAmount, msgEdit)
 }

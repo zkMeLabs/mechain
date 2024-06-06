@@ -59,6 +59,7 @@ func NewTestApp(
 		app.DefaultNodeHome,
 		0,
 		encCfg,
+		&app.AppConfig{CrossChain: app.NewDefaultAppConfig().CrossChain},
 		simtestutil.EmptyAppOptions{},
 		options...,
 	)

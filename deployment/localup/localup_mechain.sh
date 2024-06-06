@@ -34,6 +34,8 @@ function init() {
 function generate_genesis() {
     size=$1
 
+    declare -a addrs=("0x00000be6819f41400225702d32d3dd23663dd690" "0x1111102dd32160b064f2a512cdef74bfdb6a9f96" "0x2222207b1f7b8d37566d9a2778732451dbfbc5d0")
+
     declare -a validator_addrs=()
     for ((i = 0; i < ${size}; i++)); do
         # export validator addresses
@@ -60,6 +62,11 @@ function generate_genesis() {
 
     mkdir -p ${workspace}/.local/gentx
     for ((i = 0; i < ${size}; i++)); do
+        for addr in "${addrs[@]}";do
+            # preallocate funds for testing purposes.
+            ${bin} add-genesis-account $addr ${GENESIS_ACCOUNT_BALANCE}${STAKING_BOND_DENOM} --home ${workspace}/.local/validator${i}
+        done
+
         for validator_addr in "${validator_addrs[@]}"; do
             # init genesis account in genesis state
             ${bin} add-genesis-account $validator_addr ${GENESIS_ACCOUNT_BALANCE}${STAKING_BOND_DENOM} --home ${workspace}/.local/validator${i}
@@ -125,7 +132,7 @@ function generate_genesis() {
         sed -i -e "s/\"denom_metadata\": \[\]/\"denom_metadata\": \[${NATIVE_COIN_DESC}\]/g" ${workspace}/.local/validator${i}/config/genesis.json
         sed -i -e "s/seeds = \"[^\"]*\"/seeds = \"\"/g" ${workspace}/.local/validator${i}/config/config.toml
         sed -i -e "s/persistent_peers = \".*\"/persistent_peers = \"${persistent_peers}\"/g" ${workspace}/.local/validator${i}/config/config.toml
-        sed -i -e "s/timeout_commit = \"5s\"/timeout_commit = \"500ms\"/g" ${workspace}/.local/validator${i}/config/config.toml
+        sed -i -e "s/timeout_commit = \"3s\"/timeout_commit = \"1s\"/g" ${workspace}/.local/validator${i}/config/config.toml
         sed -i -e "s/addr_book_strict = true/addr_book_strict = false/g" ${workspace}/.local/validator${i}/config/config.toml
         sed -i -e "s/allow_duplicate_ip = false/allow_duplicate_ip = true/g" ${workspace}/.local/validator${i}/config/config.toml
         sed -i -e "s/snapshot-interval = 0/snapshot-interval = ${SNAPSHOT_INTERVAL}/g" ${workspace}/.local/validator${i}/config/app.toml
@@ -146,6 +153,7 @@ function generate_genesis() {
         sed -i -e "s/\"update_price_disallowed_days\": 2/\"update_price_disallowed_days\": 0/g" ${workspace}/.local/validator${i}/config/genesis.json
         #sed -i -e "s/\"community_tax\": \"0.020000000000000000\"/\"community_tax\": \"0\"/g" ${workspace}/.local/validator${i}/config/genesis.json
         sed -i -e "s/log_level = \"info\"/\log_level= \"debug\"/g" ${workspace}/.local/validator${i}/config/config.toml
+        sed -i -e "s/cors_allowed_origins = \[\]/cors_allowed_origins = \[\"*\"\]/g" ${workspace}/.local/validator${i}/config/config.toml
         sed -i -e "s#node = \"tcp://localhost:26657\"#node = \"tcp://localhost:$((${VALIDATOR_RPC_PORT_START} + ${i}))\"#g" ${workspace}/.local/validator${i}/config/client.toml
         sed -i -e "/Address defines the gRPC server address to bind to/{N;s/address = \"localhost:9090\"/address = \"localhost:$((${VALIDATOR_GRPC_PORT_START} + ${i}))\"/;}" ${workspace}/.local/validator${i}/config/app.toml
         sed -i -e "/Address defines the gRPC-web server address to bind to/{N;s/address = \"localhost:9091\"/address = \"localhost:$((${VALIDATOR_GRPC_PORT_START} - 1 - ${i}))\"/;}" ${workspace}/.local/validator${i}/config/app.toml
@@ -166,11 +174,14 @@ function start() {
     for ((i = 0; i < ${size}; i++)); do
         mkdir -p ${workspace}/.local/validator${i}/logs
         nohup ${bin} start --home ${workspace}/.local/validator${i} \
+            --keyring-backend test \
+            --api.enabled-unsafe-cors true \
             --address 0.0.0.0:$((${VALIDATOR_ADDRESS_PORT_START} + ${i})) \
             --grpc.address 0.0.0.0:$((${VALIDATOR_GRPC_PORT_START} + ${i})) \
             --p2p.laddr tcp://0.0.0.0:$((${VALIDATOR_P2P_PORT_START} + ${i})) \
             --p2p.external-address 127.0.0.1:$((${VALIDATOR_P2P_PORT_START} + ${i})) \
             --rpc.laddr tcp://0.0.0.0:$((${VALIDATOR_RPC_PORT_START} + ${i})) \
+            --rpc.unsafe true \
             --log_format json >${workspace}/.local/validator${i}/logs/node.log &
     done
 }

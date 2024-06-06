@@ -1,4 +1,4 @@
-package main_test
+package cmd
 
 import (
 	"fmt"
@@ -10,12 +10,11 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/evmos/evmos/v12/app"
-	mechaind "github.com/evmos/evmos/v12/cmd/mechaind"
 	"github.com/evmos/evmos/v12/utils"
 )
 
 func TestInitCmd(t *testing.T) {
-	rootCmd, _ := mechaind.NewRootCmd()
+	rootCmd, _ := NewRootCmd()
 	rootCmd.SetArgs([]string{
 		"init",       // Test the init cmd
 		"evmos-test", // Moniker
@@ -28,7 +27,7 @@ func TestInitCmd(t *testing.T) {
 }
 
 func TestAddKeyLedgerCmd(t *testing.T) {
-	rootCmd, _ := mechaind.NewRootCmd()
+	rootCmd, _ := NewRootCmd()
 	rootCmd.SetArgs([]string{
 		"keys",
 		"add",
