@@ -39,7 +39,7 @@ func InitConfig() *Config {
 func InitE2eConfig() *Config {
 	config := &Config{
 		GrpcAddr:             "localhost:9090",
-		TendermintAddr:       "http://127.0.0.1:26750",
+		TendermintAddr:       "http://127.0.0.1:26657",
 		ChainId:              "mechain_1000000-121",
 		Denom:                "azkme",
 		ValidatorMnemonic:    ParseValidatorMnemonic(0),
@@ -119,5 +119,5 @@ func ParseValidatorHomeDir(i int) string {
 
 // ParseValidatorTmRPCAddrDir returns the home dir of the validator
 func ParseValidatorTmRPCAddrDir(i int) string {
-	return fmt.Sprintf("tcp://0.0.0.0:%d", 26750+i)
+	return fmt.Sprintf("tcp://0.0.0.0:%d", 26657+i)
 }
