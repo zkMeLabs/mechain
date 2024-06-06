@@ -165,7 +165,7 @@ func (app *Evmos) saveUnbalancedBlockHeight(ctx sdk.Context) {
 }
 
 func (app *Evmos) getUnbalancedBlockHeight(ctx sdk.Context) (uint64, bool) {
-	reconStore := app.CommitMultiStore().GetCommitStore(sdk.NewKVStoreKey(reconStoreKey)).(*iavl.Store)
+	reconStore := app.CommitMultiStore().GetCommitStore(app.GetKey(reconStoreKey)).(*iavl.Store)
 	bz := reconStore.Get(unbalancedBlockHeightKey)
 	if bz == nil {
 		return 0, false

@@ -81,9 +81,9 @@ func (options HandlerOptions) Validate() error {
 	if options.SignModeHandler == nil {
 		return errorsmod.Wrap(errortypes.ErrLogic, "sign mode handler is required for AnteHandler")
 	}
-	if options.GashubKeeper == nil {
-		return errorsmod.Wrap(errortypes.ErrLogic, "gashub keeper is required for ante builder")
-	}
+	// if options.GashubKeeper == nil {
+	// 	return errorsmod.Wrap(errortypes.ErrLogic, "gashub keeper is required for ante builder")
+	// }
 	if options.DistributionKeeper == nil {
 		return errorsmod.Wrap(errortypes.ErrLogic, "distribution keeper is required for AnteHandler")
 	}

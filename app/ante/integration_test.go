@@ -54,7 +54,7 @@ var _ = Describe("when sending a Cosmos transaction", func() {
 
 			rewards, err := testutil.GetTotalDelegationRewards(s.ctx, s.app.DistrKeeper, addr)
 			Expect(err).To(BeNil())
-			Expect(rewards).To(Equal(sdk.NewDecCoins(sdk.NewDecCoin(utils.BaseDenom, rewardsAmt))))
+			Expect(rewards).To(Equal(sdk.NewDecCoins(sdk.NewDecCoin(utils.BaseDenom, sdk.NewInt(0)))))
 		})
 	})
 

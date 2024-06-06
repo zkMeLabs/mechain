@@ -546,20 +546,8 @@ func (suite *EvmTestSuite) TestOutOfGasWhenDeployContract() {
 	}
 	tx := types.NewTx(ethTxParams)
 	suite.SignTx(tx)
-
-	defer func() {
-		//nolint:revive // allow empty code block that just contains TODO in test code
-		if r := recover(); r != nil {
-			// TODO: snapshotting logic
-		} else {
-			suite.Require().Fail("panic did not happen")
-		}
-	}()
-
 	_, err := suite.handler(suite.ctx, tx)
-	suite.Require().NoError(err)
-
-	suite.Require().Fail("panic did not happen")
+	suite.Require().ErrorContains(err, "intrinsic gas too low")
 }
 
 func (suite *EvmTestSuite) TestErrorWhenDeployContract() {
