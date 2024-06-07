@@ -109,7 +109,8 @@ func (k Keeper) ValidatorAccount(c context.Context, req *types.QueryValidatorAcc
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
-	consAddr, err := sdk.ConsAddressFromBech32(req.ConsAddress)
+	// TODO: cons address is currently in hex format, but we should change it to bech32 format, consistent with cosmos sdk
+	consAddr, err := sdk.ConsAddressFromHex(req.ConsAddress)
 	if err != nil {
 		return nil, status.Error(
 			codes.InvalidArgument, err.Error(),
