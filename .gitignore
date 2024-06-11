@@ -91,3 +91,4 @@ deployment/localup/nodes
 deployment/localup/mechaind
 deployment/localup/config.json
 deployment/localup/.local
+sp.json

@@ -44,18 +44,17 @@ func (c *Contract) ListBuckets(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract
 		return nil, err
 	}
 
-	var tags []Tag
-	for _, bucketInfo := range res.BucketInfos {
-		for _, tag := range bucketInfo.Tags.Tags {
-			tags = append(tags, Tag{
-				Key:   tag.Key,
-				Value: tag.Value,
-			})
-		}
-	}
-
 	var bucketInfos []BucketInfo
 	for _, bucketInfo := range res.BucketInfos {
+		var tags []Tag
+		if bucketInfo.Tags != nil {
+			for _, tag := range bucketInfo.Tags.Tags {
+				tags = append(tags, Tag{
+					Key:   tag.Key,
+					Value: tag.Value,
+				})
+			}
+		}
 		bucketInfos = append(bucketInfos, BucketInfo{
 			Owner:                      common.HexToAddress(bucketInfo.Owner),
 			BucketName:                 bucketInfo.BucketName,
