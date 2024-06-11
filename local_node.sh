@@ -19,11 +19,11 @@ if [ "$3" == "--start" ]; then
     START=true
 fi
 
-bash ./deployment/localup/localup_mechain.sh stop
+bash ./deployment/localup/localup.sh stop
 
-bash ./deployment/localup/localup_mechain.sh init $SIZE $SP_SIZE
-bash ./deployment/localup/localup_mechain.sh generate $SIZE $SP_SIZE
+bash ./deployment/localup/localup.sh init $SIZE $SP_SIZE
+bash ./deployment/localup/localup.sh generate $SIZE $SP_SIZE
 
 if [ "$START" = true ]; then
-    bash ./deployment/localup/localup_mechain.sh start $SIZE
+    bash ./deployment/localup/localup.sh start $SIZE
 fi
