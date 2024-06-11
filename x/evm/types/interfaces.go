@@ -16,6 +16,7 @@
 package types
 
 import (
+	"github.com/ethereum/go-ethereum/common"
 	"math/big"
 
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
@@ -81,3 +82,15 @@ type (
 		GetParamSetIfExists(ctx sdk.Context, ps LegacyParams)
 	}
 )
+
+// EvmLogHandler defines the interface for evm log handler
+type EvmLogHandler interface {
+	// EventID Return the id of the log signature it handles
+	EventID() common.Hash
+	// Handle Process the log
+	Handle(ctx sdk.Context, msg core.Message, log *ethtypes.Log) error
+}
+
+type MethodArgs interface {
+	Validate() error
+}
