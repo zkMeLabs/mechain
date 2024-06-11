@@ -72,5 +72,9 @@ func (c *Contract) ListBuckets(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract
 		})
 	}
 
-	return method.Outputs.Pack(bucketInfos)
+	var pageResponse PageResponse
+	pageResponse.NextKey = res.Pagination.NextKey
+	pageResponse.Total = res.Pagination.Total
+
+	return method.Outputs.Pack(bucketInfos, pageResponse)
 }
