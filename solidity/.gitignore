@@ -1,0 +1,10 @@
+.DS_Store
+typechain
+node_modules
+package-lock.json
+cache
+.env
+contracts/LICENSE
+contracts/README.md
+contracts/build
+artifacts

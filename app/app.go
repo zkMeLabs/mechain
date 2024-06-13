@@ -20,6 +20,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/ethereum/go-ethereum/core/vm"
 	"io"
 	"net/http"
 	"os"
@@ -140,6 +141,9 @@ import (
 	evmostypes "github.com/evmos/evmos/v12/types"
 	"github.com/evmos/evmos/v12/x/evm"
 	evmkeeper "github.com/evmos/evmos/v12/x/evm/keeper"
+	precompilesbank "github.com/evmos/evmos/v12/x/evm/precompiles/bank"
+	precompilesstorage "github.com/evmos/evmos/v12/x/evm/precompiles/storage"
+	precompilesvirtualgroup "github.com/evmos/evmos/v12/x/evm/precompiles/virtualgroup"
 	evmtypes "github.com/evmos/evmos/v12/x/evm/types"
 	"github.com/evmos/evmos/v12/x/feemarket"
 	feemarketkeeper "github.com/evmos/evmos/v12/x/feemarket/keeper"
@@ -920,6 +924,7 @@ func NewEvmos(
 	app.SetEndBlocker(app.EndBlocker)
 	app.setupUpgradeHandlers()
 	app.SetUpgradeChecker(app.UpgradeKeeper.IsUpgraded)
+	app.EvmPrecompiled()
 
 	// RegisterUpgradeHandlers is used for registering any on-chain upgrades.
 	err = app.RegisterUpgradeHandlers(app.ChainID(), &app.appConfig.Config)
@@ -1269,6 +1274,29 @@ func initParamsKeeper(
 	// evmos subspaces
 	paramsKeeper.Subspace(erc20types.ModuleName)
 	return paramsKeeper
+}
+
+// EvmPrecompiled  set evm precompiled contracts
+func (app *Evmos) EvmPrecompiled() {
+	precompiled := evmkeeper.BerlinPrecompiled()
+
+	// bank precompile
+	precompiled[precompilesbank.GetAddress()] = func(ctx sdk.Context) vm.PrecompiledContract {
+		return precompilesbank.NewPrecompiledContract(ctx, app.BankKeeper)
+	}
+
+	// storage precompile
+	precompiled[precompilesstorage.GetAddress()] = func(ctx sdk.Context) vm.PrecompiledContract {
+		return precompilesstorage.NewPrecompiledContract(ctx, app.StorageKeeper)
+	}
+
+	// virtualgroup precompile
+	precompiled[precompilesvirtualgroup.GetAddress()] = func(ctx sdk.Context) vm.PrecompiledContract {
+		return precompilesvirtualgroup.NewPrecompiledContract(ctx, app.VirtualgroupKeeper)
+	}
+
+	// set precompiled contracts
+	app.EvmKeeper.WithPrecompiled(precompiled)
 }
 
 func (app *Evmos) setupUpgradeHandlers() {

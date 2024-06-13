@@ -125,3 +125,8 @@ func (e *RevertError) ErrorCode() int {
 func (e *RevertError) ErrorData() interface{} {
 	return e.reason
 }
+
+func PackRetError(str string) ([]byte, error) {
+	pack, _ := abi.Arguments{{Type: TypeString}}.Pack(str)
+	return pack, errors.New(str)
+}
