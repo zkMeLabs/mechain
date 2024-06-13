@@ -143,6 +143,7 @@ import (
 	evmkeeper "github.com/evmos/evmos/v12/x/evm/keeper"
 	precompilesbank "github.com/evmos/evmos/v12/x/evm/precompiles/bank"
 	precompilesstorage "github.com/evmos/evmos/v12/x/evm/precompiles/storage"
+	precompilesvirtualgroup "github.com/evmos/evmos/v12/x/evm/precompiles/virtualgroup"
 	evmtypes "github.com/evmos/evmos/v12/x/evm/types"
 	"github.com/evmos/evmos/v12/x/feemarket"
 	feemarketkeeper "github.com/evmos/evmos/v12/x/feemarket/keeper"
@@ -1287,6 +1288,11 @@ func (app *Evmos) EvmPrecompiled() {
 	// storage precompile
 	precompiled[precompilesstorage.GetAddress()] = func(ctx sdk.Context) vm.PrecompiledContract {
 		return precompilesstorage.NewPrecompiledContract(ctx, app.StorageKeeper)
+	}
+
+	// virtualgroup precompile
+	precompiled[precompilesvirtualgroup.GetAddress()] = func(ctx sdk.Context) vm.PrecompiledContract {
+		return precompilesvirtualgroup.NewPrecompiledContract(ctx, app.VirtualgroupKeeper)
 	}
 
 	// set precompiled contracts

@@ -99,7 +99,7 @@ interface IStorage {
     ) external view returns (BucketInfo[] memory bucketInfos, PageResponse calldata pageResponse);
 
     /**
-     * @dev Send defines an Event emitted when a given amount of tokens send fromAddress to toAddress
+     * @dev CreateBucket defines an Event emitted when a user create a bucket
      */
     event CreateBucket(
         address indexed creator,

@@ -1,4 +1,4 @@
-package storage
+package virtualgroup
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -6,25 +6,25 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	ethtypes "github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/core/vm"
-	storagekeeper "github.com/evmos/evmos/v12/x/storage/keeper"
+	virtualgroupkeeper "github.com/evmos/evmos/v12/x/virtualgroup/keeper"
 
 	"github.com/evmos/evmos/v12/x/evm/types"
 )
 
 type Contract struct {
-	ctx           sdk.Context
-	storageKeeper storagekeeper.Keeper
+	ctx                sdk.Context
+	virtualGroupKeeper virtualgroupkeeper.Keeper
 }
 
-func NewPrecompiledContract(ctx sdk.Context, storageKeeper storagekeeper.Keeper) *Contract {
+func NewPrecompiledContract(ctx sdk.Context, virtualGroupKeeper virtualgroupkeeper.Keeper) *Contract {
 	return &Contract{
-		ctx:           ctx,
-		storageKeeper: storageKeeper,
+		ctx:                ctx,
+		virtualGroupKeeper: virtualGroupKeeper,
 	}
 }
 
 func (c *Contract) Address() common.Address {
-	return storageAddress
+	return virtualGroupAddress
 }
 
 func (c *Contract) RequiredGas(input []byte) uint64 {
@@ -34,10 +34,10 @@ func (c *Contract) RequiredGas(input []byte) uint64 {
 	}
 
 	switch method.Name {
-	case CreateBucketMethodName:
-		return CreateBucketGas
-	case ListBucketsMethodName:
-		return ListBucketsGas
+	case CreateGlobalVirtualGroupMethodName:
+		return CreateGlobalVirtualGroupGas
+	case GlobalVirtualGroupFamiliesMethodName:
+		return GlobalVirtualGroupFamiliesGas
 	default:
 		return 0
 	}
@@ -54,10 +54,10 @@ func (c *Contract) Run(evm *vm.EVM, contract *vm.Contract, readonly bool) (ret [
 	method, err := GetMethodByID(contract.Input)
 	if err == nil {
 		switch method.Name {
-		case CreateBucketMethodName:
-			ret, err = c.CreateBucke(ctx, evm, contract, readonly)
-		case ListBucketsMethodName:
-			ret, err = c.ListBuckets(ctx, evm, contract, readonly)
+		case CreateGlobalVirtualGroupMethodName:
+			ret, err = c.CreateGlobalVirtualGroup(ctx, evm, contract, readonly)
+		case GlobalVirtualGroupFamiliesMethodName:
+			ret, err = c.GlobalVirtualGroupFamilies(ctx, evm, contract, readonly)
 		}
 	}
 

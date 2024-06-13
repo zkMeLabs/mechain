@@ -1,4 +1,4 @@
-package storage
+package virtualgroup
 
 import (
 	"bytes"
@@ -9,16 +9,16 @@ import (
 )
 
 var (
-	storageAddress = common.HexToAddress(types.StorageAddress)
-	storageABI     = types.MustABIJson(IStorageMetaData.ABI)
+	virtualGroupAddress = common.HexToAddress(types.VirtualGroupAddress)
+	virtualGroupABI     = types.MustABIJson(IVirtualGroupMetaData.ABI)
 )
 
 func GetAddress() common.Address {
-	return storageAddress
+	return virtualGroupAddress
 }
 
 func GetMethod(name string) (abi.Method, error) {
-	method := storageABI.Methods[name]
+	method := virtualGroupABI.Methods[name]
 	if method.ID == nil {
 		return abi.Method{}, fmt.Errorf("method %s is not exist", name)
 	}
@@ -29,7 +29,7 @@ func GetMethodByID(input []byte) (abi.Method, error) {
 	if len(input) < 4 {
 		return abi.Method{}, fmt.Errorf("input length %d is too short", len(input))
 	}
-	for _, method := range storageABI.Methods {
+	for _, method := range virtualGroupABI.Methods {
 		if bytes.Equal(input[:4], method.ID) {
 			return method, nil
 		}
@@ -46,7 +46,7 @@ func MustMethod(name string) abi.Method {
 }
 
 func GetEvent(name string) (abi.Event, error) {
-	event := storageABI.Events[name]
+	event := virtualGroupABI.Events[name]
 	if event.ID == (common.Hash{}) {
 		return abi.Event{}, fmt.Errorf("event %s is not exist", name)
 	}
@@ -62,29 +62,26 @@ func MustEvent(name string) abi.Event {
 }
 
 type (
-	ApprovalJson    = Approval
+	CoinJson        = Coin
 	PageRequestJson = PageRequest
 )
 
-type CreateBucketArgs struct {
-	BucketName        string         `abi:"bucketName"`
-	Visibility        uint8          `abi:"visibility"`
-	PaymentAddress    common.Address `abi:"paymentAddress"`
-	PrimarySpAddress  common.Address `abi:"primarySpAddress"`
-	PrimarySpApproval ApprovalJson   `abi:"primarySpApproval"`
-	ChargedReadQuota  uint64         `abi:"chargedReadQuota"`
+type CreateGlobalVirtualGroupArgs struct {
+	FamilyId       uint32   `abi:"familyId"`
+	SecondarySpIds []uint32 `abi:"secondarySpIds"`
+	Deposit        CoinJson `abi:"deposit"`
 }
 
-// Validate CreateBucketArgs args
-func (args *CreateBucketArgs) Validate() error {
+// Validate CreateGlobalVirtualGroupArgs args
+func (args *CreateGlobalVirtualGroupArgs) Validate() error {
 	return nil
 }
 
-type ListBucketsArgs struct {
+type GlobalVirtualGroupFamiliesArgs struct {
 	Pagination PageRequestJson `abi:"pagination"`
 }
 
-// Validate ListBucketsArgs the args
-func (args *ListBucketsArgs) Validate() error {
+// Validate GlobalVirtualGroupFamiliesArgs the args
+func (args *GlobalVirtualGroupFamiliesArgs) Validate() error {
 	return nil
 }
