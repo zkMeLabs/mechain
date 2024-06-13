@@ -1,6 +1,7 @@
 package storage
 
 import (
+	"encoding/base64"
 	"errors"
 	"github.com/ethereum/go-ethereum/common"
 
@@ -15,15 +16,18 @@ import (
 
 const (
 	CreateBucketGas = 60_000
+	CreateObjectGas = 60_000
 
 	CreateBucketMethodName = "createBucket"
+	CreateObjectMethodName = "createObject"
 
 	CreateBucketEventName = "CreateBucket"
+	CreateObjectEventName = "CreateObject"
 )
 
-func (c *Contract) CreateBucke(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
+func (c *Contract) CreateBucket(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	if readonly {
-		return nil, errors.New("send method readonly")
+		return nil, errors.New("create bucket method readonly")
 	}
 
 	method := MustMethod(CreateBucketMethodName)
@@ -68,6 +72,67 @@ func (c *Contract) CreateBucke(ctx sdk.Context, evm *vm.EVM, contract *vm.Contra
 			common.BytesToHash(args.PrimarySpAddress.Bytes()),
 		},
 		res.BucketId.BigInt(),
+	); err != nil {
+		return nil, err
+	}
+
+	return method.Outputs.Pack(true)
+}
+
+func (c *Contract) CreateObject(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
+	if readonly {
+		return nil, errors.New("create object method readonly")
+	}
+
+	method := MustMethod(CreateObjectMethodName)
+
+	var args CreateObjectArgs
+	err := types.ParseMethodArgs(method, &args, contract.Input[4:])
+	if err != nil {
+		return nil, err
+	}
+
+	var expectChecksums [][]byte
+	for _, checksum := range args.ExpectChecksums {
+		checksumBytes, err := base64.StdEncoding.DecodeString(checksum)
+		if err != nil {
+			return nil, err
+		}
+		expectChecksums = append(expectChecksums, checksumBytes)
+	}
+
+	msg := &storagetypes.MsgCreateObject{
+		Creator:     contract.Caller().String(),
+		BucketName:  args.BucketName,
+		ObjectName:  args.ObjectName,
+		PayloadSize: args.PayloadSize,
+		Visibility:  storagetypes.VisibilityType(args.Visibility),
+		ContentType: args.ContentType,
+		PrimarySpApproval: &mechaincommon.Approval{
+			ExpiredHeight:              args.PrimarySpApproval.ExpiredHeight,
+			GlobalVirtualGroupFamilyId: args.PrimarySpApproval.GlobalVirtualGroupFamilyId,
+			Sig:                        args.PrimarySpApproval.Sig,
+		},
+		ExpectChecksums: expectChecksums,
+		RedundancyType:  storagetypes.RedundancyType(args.RedundancyType),
+	}
+
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
+
+	server := storagekeeper.NewMsgServerImpl(c.storageKeeper)
+	res, err := server.CreateObject(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
+
+	// add log
+	if err := c.AddLog(
+		evm,
+		MustEvent(CreateObjectEventName),
+		[]common.Hash{common.BytesToHash(contract.Caller().Bytes())},
+		res.ObjectId.BigInt(),
 	); err != nil {
 		return nil, err
 	}

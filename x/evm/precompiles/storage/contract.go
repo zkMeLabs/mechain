@@ -38,6 +38,10 @@ func (c *Contract) RequiredGas(input []byte) uint64 {
 		return CreateBucketGas
 	case ListBucketsMethodName:
 		return ListBucketsGas
+	case CreateObjectMethodName:
+		return CreateObjectGas
+	case ListObjectsMethodName:
+		return ListObjectsGas
 	default:
 		return 0
 	}
@@ -55,9 +59,13 @@ func (c *Contract) Run(evm *vm.EVM, contract *vm.Contract, readonly bool) (ret [
 	if err == nil {
 		switch method.Name {
 		case CreateBucketMethodName:
-			ret, err = c.CreateBucke(ctx, evm, contract, readonly)
+			ret, err = c.CreateBucket(ctx, evm, contract, readonly)
 		case ListBucketsMethodName:
 			ret, err = c.ListBuckets(ctx, evm, contract, readonly)
+		case CreateObjectMethodName:
+			ret, err = c.CreateObject(ctx, evm, contract, readonly)
+		case ListObjectsMethodName:
+			ret, err = c.ListObjects(ctx, evm, contract, readonly)
 		}
 	}
 

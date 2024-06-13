@@ -88,3 +88,29 @@ type ListBucketsArgs struct {
 func (args *ListBucketsArgs) Validate() error {
 	return nil
 }
+
+type CreateObjectArgs struct {
+	BucketName        string       `abi:"bucketName"`
+	ObjectName        string       `abi:"objectName"`
+	PayloadSize       uint64       `abi:"payloadSize"`
+	Visibility        uint8        `abi:"visibility"`
+	ContentType       string       `abi:"contentType"`
+	PrimarySpApproval ApprovalJson `abi:"primarySpApproval"`
+	ExpectChecksums   []string     `abi:"expectChecksums"`
+	RedundancyType    uint8        `abi:"redundancyType"`
+}
+
+// Validate CreateObjectArgs args
+func (args *CreateObjectArgs) Validate() error {
+	return nil
+}
+
+type ListObjectsArgs struct {
+	Pagination PageRequestJson `abi:"pagination"`
+	BucketName string          `abi:"bucketName"`
+}
+
+// Validate ListObjectsArgs the args
+func (args *ListObjectsArgs) Validate() error {
+	return nil
+}
