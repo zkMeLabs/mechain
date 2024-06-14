@@ -128,3 +128,17 @@ type SealObjectArgs struct {
 func (args *SealObjectArgs) Validate() error {
 	return nil
 }
+
+type SealObjectV2Args struct {
+	SealAddress                 common.Address `abi:"sealAddress"`
+	BucketName                  string         `abi:"bucketName"`
+	ObjectName                  string         `abi:"objectName"`
+	GlobalVirtualGroupId        uint32         `abi:"globalVirtualGroupId"`
+	SecondarySpBlsAggSignatures string         `abi:"secondarySpBlsAggSignatures"`
+	ExpectChecksums             []string       `abi:"expectChecksums"`
+}
+
+// Validate SealObjectV2Args args
+func (args *SealObjectV2Args) Validate() error {
+	return nil
+}

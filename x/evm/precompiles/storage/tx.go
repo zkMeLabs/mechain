@@ -19,14 +19,17 @@ const (
 	CreateBucketGas = 60_000
 	CreateObjectGas = 60_000
 	SealObjectGas   = 60_000
+	SealObjectV2Gas = 60_000
 
 	CreateBucketMethodName = "createBucket"
 	CreateObjectMethodName = "createObject"
 	SealObjectMethodName   = "sealObject"
+	SealObjectV2MethodName = "sealObjectV2"
 
 	CreateBucketEventName = "CreateBucket"
 	CreateObjectEventName = "CreateObject"
 	SealObjectEventName   = "SealObject"
+	SealObjectV2EventName = "SealObjectV2"
 )
 
 func (c *Contract) CreateBucket(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
@@ -184,6 +187,67 @@ func (c *Contract) SealObject(ctx sdk.Context, evm *vm.EVM, contract *vm.Contrac
 	if err := c.AddLog(
 		evm,
 		MustEvent(SealObjectEventName),
+		[]common.Hash{
+			common.BytesToHash(contract.Caller().Bytes()),
+			common.BytesToHash(args.SealAddress.Bytes()),
+		},
+	); err != nil {
+		return nil, err
+	}
+
+	return method.Outputs.Pack(true)
+}
+
+func (c *Contract) SealObjectV2(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
+	if readonly {
+		return nil, errors.New("seal object V2 method readonly")
+	}
+
+	method := MustMethod(SealObjectV2MethodName)
+
+	var args SealObjectV2Args
+	err := types.ParseMethodArgs(method, &args, contract.Input[4:])
+	if err != nil {
+		return nil, err
+	}
+
+	secondarySpBlsAggSignatures, err := base64.StdEncoding.DecodeString(args.SecondarySpBlsAggSignatures)
+	if err != nil {
+		return nil, err
+	}
+
+	var expectChecksums [][]byte
+	for _, checksum := range args.ExpectChecksums {
+		checksumBytes, err := base64.StdEncoding.DecodeString(checksum)
+		if err != nil {
+			return nil, err
+		}
+		expectChecksums = append(expectChecksums, checksumBytes)
+	}
+
+	msg := &storagetypes.MsgSealObjectV2{
+		Operator:                    args.SealAddress.String(),
+		BucketName:                  args.BucketName,
+		ObjectName:                  args.ObjectName,
+		GlobalVirtualGroupId:        args.GlobalVirtualGroupId,
+		SecondarySpBlsAggSignatures: secondarySpBlsAggSignatures,
+		ExpectChecksums:             expectChecksums,
+	}
+
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
+
+	server := storagekeeper.NewMsgServerImpl(c.storageKeeper)
+	_, err = server.SealObjectV2(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
+
+	// add log
+	if err := c.AddLog(
+		evm,
+		MustEvent(SealObjectV2EventName),
 		[]common.Hash{
 			common.BytesToHash(contract.Caller().Bytes()),
 			common.BytesToHash(args.SealAddress.Bytes()),
