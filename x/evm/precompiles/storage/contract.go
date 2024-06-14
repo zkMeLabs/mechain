@@ -42,6 +42,8 @@ func (c *Contract) RequiredGas(input []byte) uint64 {
 		return CreateObjectGas
 	case ListObjectsMethodName:
 		return ListObjectsGas
+	case SealObjectMethodName:
+		return SealObjectGas
 	default:
 		return 0
 	}
@@ -66,6 +68,8 @@ func (c *Contract) Run(evm *vm.EVM, contract *vm.Contract, readonly bool) (ret [
 			ret, err = c.CreateObject(ctx, evm, contract, readonly)
 		case ListObjectsMethodName:
 			ret, err = c.ListObjects(ctx, evm, contract, readonly)
+		case SealObjectMethodName:
+			ret, err = c.SealObject(ctx, evm, contract, readonly)
 		}
 	}
 

@@ -3,6 +3,7 @@ package storage
 import (
 	"bytes"
 	"fmt"
+
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/evmos/evmos/v12/types"
@@ -112,5 +113,18 @@ type ListObjectsArgs struct {
 
 // Validate ListObjectsArgs the args
 func (args *ListObjectsArgs) Validate() error {
+	return nil
+}
+
+type SealObjectArgs struct {
+	SealAddress                 common.Address `abi:"sealAddress"`
+	BucketName                  string         `abi:"bucketName"`
+	ObjectName                  string         `abi:"objectName"`
+	GlobalVirtualGroupId        uint32         `abi:"globalVirtualGroupId"`
+	SecondarySpBlsAggSignatures string         `abi:"secondarySpBlsAggSignatures"`
+}
+
+// Validate SealObjectArgs args
+func (args *SealObjectArgs) Validate() error {
 	return nil
 }

@@ -3,6 +3,7 @@ package storage
 import (
 	"encoding/base64"
 	"errors"
+
 	"github.com/ethereum/go-ethereum/common"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -17,12 +18,15 @@ import (
 const (
 	CreateBucketGas = 60_000
 	CreateObjectGas = 60_000
+	SealObjectGas   = 60_000
 
 	CreateBucketMethodName = "createBucket"
 	CreateObjectMethodName = "createObject"
+	SealObjectMethodName   = "sealObject"
 
 	CreateBucketEventName = "CreateBucket"
 	CreateObjectEventName = "CreateObject"
+	SealObjectEventName   = "SealObject"
 )
 
 func (c *Contract) CreateBucket(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
@@ -133,6 +137,57 @@ func (c *Contract) CreateObject(ctx sdk.Context, evm *vm.EVM, contract *vm.Contr
 		MustEvent(CreateObjectEventName),
 		[]common.Hash{common.BytesToHash(contract.Caller().Bytes())},
 		res.ObjectId.BigInt(),
+	); err != nil {
+		return nil, err
+	}
+
+	return method.Outputs.Pack(true)
+}
+
+func (c *Contract) SealObject(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
+	if readonly {
+		return nil, errors.New("seal object method readonly")
+	}
+
+	method := MustMethod(SealObjectMethodName)
+
+	var args SealObjectArgs
+	err := types.ParseMethodArgs(method, &args, contract.Input[4:])
+	if err != nil {
+		return nil, err
+	}
+
+	secondarySpBlsAggSignatures, err := base64.StdEncoding.DecodeString(args.SecondarySpBlsAggSignatures)
+	if err != nil {
+		return nil, err
+	}
+
+	msg := &storagetypes.MsgSealObject{
+		Operator:                    args.SealAddress.String(),
+		BucketName:                  args.BucketName,
+		ObjectName:                  args.ObjectName,
+		GlobalVirtualGroupId:        args.GlobalVirtualGroupId,
+		SecondarySpBlsAggSignatures: secondarySpBlsAggSignatures,
+	}
+
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
+
+	server := storagekeeper.NewMsgServerImpl(c.storageKeeper)
+	_, err = server.SealObject(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
+
+	// add log
+	if err := c.AddLog(
+		evm,
+		MustEvent(SealObjectEventName),
+		[]common.Hash{
+			common.BytesToHash(contract.Caller().Bytes()),
+			common.BytesToHash(args.SealAddress.Bytes()),
+		},
 	); err != nil {
 		return nil, err
 	}

@@ -179,6 +179,17 @@ interface IStorage {
     ) external view returns (ObjectInfo[] memory objectInfos, PageResponse calldata pageResponse);
 
     /**
+     * @dev sealObject defines a method for seal a object.
+     */
+    function sealObject(
+        address sealAddress,
+        string memory bucketName,
+        string memory objectName,
+        uint32 globalVirtualGroupId,
+        string memory secondarySpBlsAggSignatures
+    ) external returns (bool success);
+
+    /**
      * @dev CreateBucket defines an Event emitted when a user create a bucket
      */
     event CreateBucket(
@@ -194,5 +205,13 @@ interface IStorage {
     event CreateObject(
         address indexed creator,
         uint256 id
+    );
+
+    /**
+     * @dev SealObject defines an Event emitted when a user seal a object
+     */
+    event SealObject(
+        address indexed creator,
+        address indexed sealAddress
     );
 }
