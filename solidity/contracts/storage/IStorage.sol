@@ -136,6 +136,21 @@ struct ObjectInfo {
     int64 version;
 }
 
+struct GroupInfo {
+    // owner is the owner of the group. It can not changed once it created.
+    address owner;
+    // group_name is the name of group which is unique under an account.
+    string groupName;
+    // sourceType define the source of the group.
+    SourceType sourceType;
+    // id is the unique identifier of group
+    uint256 id;
+    // extra is used to store extra info for the group
+    string extra;
+    // tags defines a list of tags the group has
+    Tag[] tags;
+}
+
 interface IStorage {
     /**
      * @dev createBucket defines a method for create a bucket.
@@ -179,6 +194,14 @@ interface IStorage {
     ) external view returns (ObjectInfo[] memory objectInfos, PageResponse calldata pageResponse);
 
     /**
+     * @dev listGroups queries all the groups.
+     */
+    function listGroups(
+        PageRequest calldata pagination,
+        string memory groupOwner
+    ) external view returns (GroupInfo[] memory groupInfos, PageResponse calldata pageResponse);
+
+    /**
      * @dev sealObject defines a method for seal a object.
      */
     function sealObject(
@@ -199,6 +222,14 @@ interface IStorage {
         uint32 globalVirtualGroupId,
         string memory secondarySpBlsAggSignatures,
         string[] memory expectChecksums
+    ) external returns (bool success);
+
+    /**
+     * @dev createGroup defines a method for create a group.
+     */
+    function createGroup(
+        string memory groupName,
+        string memory extra
     ) external returns (bool success);
 
     /**
@@ -233,5 +264,13 @@ interface IStorage {
     event SealObjectV2(
         address indexed creator,
         address indexed sealAddress
+    );
+
+    /**
+     * @dev CreateGroup defines an Event emitted when a user create a group
+     */
+    event CreateGroup(
+        address indexed creator,
+        uint256 id
     );
 }

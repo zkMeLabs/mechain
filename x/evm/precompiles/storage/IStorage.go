@@ -52,6 +52,16 @@ type BucketInfo struct {
 	SpAsDelegatedAgentDisabled bool
 }
 
+// GroupInfo is an auto generated low-level Go binding around an user-defined struct.
+type GroupInfo struct {
+	Owner      common.Address
+	GroupName  string
+	SourceType uint8
+	Id         *big.Int
+	Extra      string
+	Tags       []Tag
+}
+
 // ObjectInfo is an auto generated low-level Go binding around an user-defined struct.
 type ObjectInfo struct {
 	Owner               common.Address
@@ -98,7 +108,7 @@ type Tag struct {
 
 // IStorageMetaData contains all meta data concerning the IStorage contract.
 var IStorageMetaData = &bind.MetaData{
-	ABI: "[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"paymentAddress\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"primarySpAddress\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"}],\"name\":\"CreateBucket\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"}],\"name\":\"CreateObject\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sealAddress\",\"type\":\"address\"}],\"name\":\"SealObject\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sealAddress\",\"type\":\"address\"}],\"name\":\"SealObjectV2\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"bucketName\",\"type\":\"string\"},{\"internalType\":\"enumVisibilityType\",\"name\":\"visibility\",\"type\":\"uint8\"},{\"internalType\":\"address\",\"name\":\"paymentAddress\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"primarySpAddress\",\"type\":\"address\"},{\"components\":[{\"internalType\":\"uint64\",\"name\":\"expiredHeight\",\"type\":\"uint64\"},{\"internalType\":\"uint32\",\"name\":\"globalVirtualGroupFamilyId\",\"type\":\"uint32\"},{\"internalType\":\"bytes\",\"name\":\"sig\",\"type\":\"bytes\"}],\"internalType\":\"structApproval\",\"name\":\"primarySpApproval\",\"type\":\"tuple\"},{\"internalType\":\"uint64\",\"name\":\"chargedReadQuota\",\"type\":\"uint64\"}],\"name\":\"createBucket\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"bucketName\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"objectName\",\"type\":\"string\"},{\"internalType\":\"uint64\",\"name\":\"payloadSize\",\"type\":\"uint64\"},{\"internalType\":\"enumVisibilityType\",\"name\":\"visibility\",\"type\":\"uint8\"},{\"internalType\":\"string\",\"name\":\"contentType\",\"type\":\"string\"},{\"components\":[{\"internalType\":\"uint64\",\"name\":\"expiredHeight\",\"type\":\"uint64\"},{\"internalType\":\"uint32\",\"name\":\"globalVirtualGroupFamilyId\",\"type\":\"uint32\"},{\"internalType\":\"bytes\",\"name\":\"sig\",\"type\":\"bytes\"}],\"internalType\":\"structApproval\",\"name\":\"primarySpApproval\",\"type\":\"tuple\"},{\"internalType\":\"string[]\",\"name\":\"expectChecksums\",\"type\":\"string[]\"},{\"internalType\":\"enumRedundancyType\",\"name\":\"redundancyType\",\"type\":\"uint8\"}],\"name\":\"createObject\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"bytes\",\"name\":\"key\",\"type\":\"bytes\"},{\"internalType\":\"uint64\",\"name\":\"offset\",\"type\":\"uint64\"},{\"internalType\":\"uint64\",\"name\":\"limit\",\"type\":\"uint64\"},{\"internalType\":\"bool\",\"name\":\"countTotal\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"reverse\",\"type\":\"bool\"}],\"internalType\":\"structPageRequest\",\"name\":\"pagination\",\"type\":\"tuple\"}],\"name\":\"listBuckets\",\"outputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"bucketName\",\"type\":\"string\"},{\"internalType\":\"enumVisibilityType\",\"name\":\"visibility\",\"type\":\"uint8\"},{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"},{\"internalType\":\"enumSourceType\",\"name\":\"sourceType\",\"type\":\"uint8\"},{\"internalType\":\"int64\",\"name\":\"createAt\",\"type\":\"int64\"},{\"internalType\":\"address\",\"name\":\"paymentAddress\",\"type\":\"address\"},{\"internalType\":\"uint32\",\"name\":\"globalVirtualGroupFamilyId\",\"type\":\"uint32\"},{\"internalType\":\"uint64\",\"name\":\"chargedReadQuota\",\"type\":\"uint64\"},{\"internalType\":\"enumBucketStatus\",\"name\":\"bucketStatus\",\"type\":\"uint8\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"key\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"value\",\"type\":\"string\"}],\"internalType\":\"structTag[]\",\"name\":\"tags\",\"type\":\"tuple[]\"},{\"internalType\":\"bool\",\"name\":\"spAsDelegatedAgentDisabled\",\"type\":\"bool\"}],\"internalType\":\"structBucketInfo[]\",\"name\":\"bucketInfos\",\"type\":\"tuple[]\"},{\"components\":[{\"internalType\":\"bytes\",\"name\":\"nextKey\",\"type\":\"bytes\"},{\"internalType\":\"uint64\",\"name\":\"total\",\"type\":\"uint64\"}],\"internalType\":\"structPageResponse\",\"name\":\"pageResponse\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"bytes\",\"name\":\"key\",\"type\":\"bytes\"},{\"internalType\":\"uint64\",\"name\":\"offset\",\"type\":\"uint64\"},{\"internalType\":\"uint64\",\"name\":\"limit\",\"type\":\"uint64\"},{\"internalType\":\"bool\",\"name\":\"countTotal\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"reverse\",\"type\":\"bool\"}],\"internalType\":\"structPageRequest\",\"name\":\"pagination\",\"type\":\"tuple\"},{\"internalType\":\"string\",\"name\":\"bucketName\",\"type\":\"string\"}],\"name\":\"listObjects\",\"outputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"bucketName\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"objectName\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"},{\"internalType\":\"uint32\",\"name\":\"localVirtualGroupId\",\"type\":\"uint32\"},{\"internalType\":\"uint64\",\"name\":\"payloadSize\",\"type\":\"uint64\"},{\"internalType\":\"enumVisibilityType\",\"name\":\"visibility\",\"type\":\"uint8\"},{\"internalType\":\"string\",\"name\":\"contentType\",\"type\":\"string\"},{\"internalType\":\"int64\",\"name\":\"createAt\",\"type\":\"int64\"},{\"internalType\":\"enumObjectStatus\",\"name\":\"objectStatus\",\"type\":\"uint8\"},{\"internalType\":\"enumRedundancyType\",\"name\":\"redundancyType\",\"type\":\"uint8\"},{\"internalType\":\"enumSourceType\",\"name\":\"sourceType\",\"type\":\"uint8\"},{\"internalType\":\"string[]\",\"name\":\"checksums\",\"type\":\"string[]\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"key\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"value\",\"type\":\"string\"}],\"internalType\":\"structTag[]\",\"name\":\"tags\",\"type\":\"tuple[]\"},{\"internalType\":\"bool\",\"name\":\"isUpdating\",\"type\":\"bool\"},{\"internalType\":\"int64\",\"name\":\"updatedAt\",\"type\":\"int64\"},{\"internalType\":\"address\",\"name\":\"updatedBy\",\"type\":\"address\"},{\"internalType\":\"int64\",\"name\":\"version\",\"type\":\"int64\"}],\"internalType\":\"structObjectInfo[]\",\"name\":\"objectInfos\",\"type\":\"tuple[]\"},{\"components\":[{\"internalType\":\"bytes\",\"name\":\"nextKey\",\"type\":\"bytes\"},{\"internalType\":\"uint64\",\"name\":\"total\",\"type\":\"uint64\"}],\"internalType\":\"structPageResponse\",\"name\":\"pageResponse\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"sealAddress\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"bucketName\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"objectName\",\"type\":\"string\"},{\"internalType\":\"uint32\",\"name\":\"globalVirtualGroupId\",\"type\":\"uint32\"},{\"internalType\":\"string\",\"name\":\"secondarySpBlsAggSignatures\",\"type\":\"string\"}],\"name\":\"sealObject\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"sealAddress\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"bucketName\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"objectName\",\"type\":\"string\"},{\"internalType\":\"uint32\",\"name\":\"globalVirtualGroupId\",\"type\":\"uint32\"},{\"internalType\":\"string\",\"name\":\"secondarySpBlsAggSignatures\",\"type\":\"string\"},{\"internalType\":\"string[]\",\"name\":\"expectChecksums\",\"type\":\"string[]\"}],\"name\":\"sealObjectV2\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
+	ABI: "[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"paymentAddress\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"primarySpAddress\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"}],\"name\":\"CreateBucket\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"}],\"name\":\"CreateGroup\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"}],\"name\":\"CreateObject\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sealAddress\",\"type\":\"address\"}],\"name\":\"SealObject\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sealAddress\",\"type\":\"address\"}],\"name\":\"SealObjectV2\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"bucketName\",\"type\":\"string\"},{\"internalType\":\"enumVisibilityType\",\"name\":\"visibility\",\"type\":\"uint8\"},{\"internalType\":\"address\",\"name\":\"paymentAddress\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"primarySpAddress\",\"type\":\"address\"},{\"components\":[{\"internalType\":\"uint64\",\"name\":\"expiredHeight\",\"type\":\"uint64\"},{\"internalType\":\"uint32\",\"name\":\"globalVirtualGroupFamilyId\",\"type\":\"uint32\"},{\"internalType\":\"bytes\",\"name\":\"sig\",\"type\":\"bytes\"}],\"internalType\":\"structApproval\",\"name\":\"primarySpApproval\",\"type\":\"tuple\"},{\"internalType\":\"uint64\",\"name\":\"chargedReadQuota\",\"type\":\"uint64\"}],\"name\":\"createBucket\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"groupName\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"extra\",\"type\":\"string\"}],\"name\":\"createGroup\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"bucketName\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"objectName\",\"type\":\"string\"},{\"internalType\":\"uint64\",\"name\":\"payloadSize\",\"type\":\"uint64\"},{\"internalType\":\"enumVisibilityType\",\"name\":\"visibility\",\"type\":\"uint8\"},{\"internalType\":\"string\",\"name\":\"contentType\",\"type\":\"string\"},{\"components\":[{\"internalType\":\"uint64\",\"name\":\"expiredHeight\",\"type\":\"uint64\"},{\"internalType\":\"uint32\",\"name\":\"globalVirtualGroupFamilyId\",\"type\":\"uint32\"},{\"internalType\":\"bytes\",\"name\":\"sig\",\"type\":\"bytes\"}],\"internalType\":\"structApproval\",\"name\":\"primarySpApproval\",\"type\":\"tuple\"},{\"internalType\":\"string[]\",\"name\":\"expectChecksums\",\"type\":\"string[]\"},{\"internalType\":\"enumRedundancyType\",\"name\":\"redundancyType\",\"type\":\"uint8\"}],\"name\":\"createObject\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"bytes\",\"name\":\"key\",\"type\":\"bytes\"},{\"internalType\":\"uint64\",\"name\":\"offset\",\"type\":\"uint64\"},{\"internalType\":\"uint64\",\"name\":\"limit\",\"type\":\"uint64\"},{\"internalType\":\"bool\",\"name\":\"countTotal\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"reverse\",\"type\":\"bool\"}],\"internalType\":\"structPageRequest\",\"name\":\"pagination\",\"type\":\"tuple\"}],\"name\":\"listBuckets\",\"outputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"bucketName\",\"type\":\"string\"},{\"internalType\":\"enumVisibilityType\",\"name\":\"visibility\",\"type\":\"uint8\"},{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"},{\"internalType\":\"enumSourceType\",\"name\":\"sourceType\",\"type\":\"uint8\"},{\"internalType\":\"int64\",\"name\":\"createAt\",\"type\":\"int64\"},{\"internalType\":\"address\",\"name\":\"paymentAddress\",\"type\":\"address\"},{\"internalType\":\"uint32\",\"name\":\"globalVirtualGroupFamilyId\",\"type\":\"uint32\"},{\"internalType\":\"uint64\",\"name\":\"chargedReadQuota\",\"type\":\"uint64\"},{\"internalType\":\"enumBucketStatus\",\"name\":\"bucketStatus\",\"type\":\"uint8\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"key\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"value\",\"type\":\"string\"}],\"internalType\":\"structTag[]\",\"name\":\"tags\",\"type\":\"tuple[]\"},{\"internalType\":\"bool\",\"name\":\"spAsDelegatedAgentDisabled\",\"type\":\"bool\"}],\"internalType\":\"structBucketInfo[]\",\"name\":\"bucketInfos\",\"type\":\"tuple[]\"},{\"components\":[{\"internalType\":\"bytes\",\"name\":\"nextKey\",\"type\":\"bytes\"},{\"internalType\":\"uint64\",\"name\":\"total\",\"type\":\"uint64\"}],\"internalType\":\"structPageResponse\",\"name\":\"pageResponse\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"bytes\",\"name\":\"key\",\"type\":\"bytes\"},{\"internalType\":\"uint64\",\"name\":\"offset\",\"type\":\"uint64\"},{\"internalType\":\"uint64\",\"name\":\"limit\",\"type\":\"uint64\"},{\"internalType\":\"bool\",\"name\":\"countTotal\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"reverse\",\"type\":\"bool\"}],\"internalType\":\"structPageRequest\",\"name\":\"pagination\",\"type\":\"tuple\"},{\"internalType\":\"string\",\"name\":\"groupOwner\",\"type\":\"string\"}],\"name\":\"listGroups\",\"outputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"groupName\",\"type\":\"string\"},{\"internalType\":\"enumSourceType\",\"name\":\"sourceType\",\"type\":\"uint8\"},{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"extra\",\"type\":\"string\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"key\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"value\",\"type\":\"string\"}],\"internalType\":\"structTag[]\",\"name\":\"tags\",\"type\":\"tuple[]\"}],\"internalType\":\"structGroupInfo[]\",\"name\":\"groupInfos\",\"type\":\"tuple[]\"},{\"components\":[{\"internalType\":\"bytes\",\"name\":\"nextKey\",\"type\":\"bytes\"},{\"internalType\":\"uint64\",\"name\":\"total\",\"type\":\"uint64\"}],\"internalType\":\"structPageResponse\",\"name\":\"pageResponse\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"bytes\",\"name\":\"key\",\"type\":\"bytes\"},{\"internalType\":\"uint64\",\"name\":\"offset\",\"type\":\"uint64\"},{\"internalType\":\"uint64\",\"name\":\"limit\",\"type\":\"uint64\"},{\"internalType\":\"bool\",\"name\":\"countTotal\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"reverse\",\"type\":\"bool\"}],\"internalType\":\"structPageRequest\",\"name\":\"pagination\",\"type\":\"tuple\"},{\"internalType\":\"string\",\"name\":\"bucketName\",\"type\":\"string\"}],\"name\":\"listObjects\",\"outputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"bucketName\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"objectName\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"},{\"internalType\":\"uint32\",\"name\":\"localVirtualGroupId\",\"type\":\"uint32\"},{\"internalType\":\"uint64\",\"name\":\"payloadSize\",\"type\":\"uint64\"},{\"internalType\":\"enumVisibilityType\",\"name\":\"visibility\",\"type\":\"uint8\"},{\"internalType\":\"string\",\"name\":\"contentType\",\"type\":\"string\"},{\"internalType\":\"int64\",\"name\":\"createAt\",\"type\":\"int64\"},{\"internalType\":\"enumObjectStatus\",\"name\":\"objectStatus\",\"type\":\"uint8\"},{\"internalType\":\"enumRedundancyType\",\"name\":\"redundancyType\",\"type\":\"uint8\"},{\"internalType\":\"enumSourceType\",\"name\":\"sourceType\",\"type\":\"uint8\"},{\"internalType\":\"string[]\",\"name\":\"checksums\",\"type\":\"string[]\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"key\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"value\",\"type\":\"string\"}],\"internalType\":\"structTag[]\",\"name\":\"tags\",\"type\":\"tuple[]\"},{\"internalType\":\"bool\",\"name\":\"isUpdating\",\"type\":\"bool\"},{\"internalType\":\"int64\",\"name\":\"updatedAt\",\"type\":\"int64\"},{\"internalType\":\"address\",\"name\":\"updatedBy\",\"type\":\"address\"},{\"internalType\":\"int64\",\"name\":\"version\",\"type\":\"int64\"}],\"internalType\":\"structObjectInfo[]\",\"name\":\"objectInfos\",\"type\":\"tuple[]\"},{\"components\":[{\"internalType\":\"bytes\",\"name\":\"nextKey\",\"type\":\"bytes\"},{\"internalType\":\"uint64\",\"name\":\"total\",\"type\":\"uint64\"}],\"internalType\":\"structPageResponse\",\"name\":\"pageResponse\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"sealAddress\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"bucketName\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"objectName\",\"type\":\"string\"},{\"internalType\":\"uint32\",\"name\":\"globalVirtualGroupId\",\"type\":\"uint32\"},{\"internalType\":\"string\",\"name\":\"secondarySpBlsAggSignatures\",\"type\":\"string\"}],\"name\":\"sealObject\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"sealAddress\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"bucketName\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"objectName\",\"type\":\"string\"},{\"internalType\":\"uint32\",\"name\":\"globalVirtualGroupId\",\"type\":\"uint32\"},{\"internalType\":\"string\",\"name\":\"secondarySpBlsAggSignatures\",\"type\":\"string\"},{\"internalType\":\"string[]\",\"name\":\"expectChecksums\",\"type\":\"string[]\"}],\"name\":\"sealObjectV2\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
 }
 
 // IStorageABI is the input ABI used to generate the binding from.
@@ -292,6 +302,51 @@ func (_IStorage *IStorageCallerSession) ListBuckets(pagination PageRequest) (str
 	return _IStorage.Contract.ListBuckets(&_IStorage.CallOpts, pagination)
 }
 
+// ListGroups is a free data retrieval call binding the contract method 0xb8e92c80.
+//
+// Solidity: function listGroups((bytes,uint64,uint64,bool,bool) pagination, string groupOwner) view returns((address,string,uint8,uint256,string,(string,string)[])[] groupInfos, (bytes,uint64) pageResponse)
+func (_IStorage *IStorageCaller) ListGroups(opts *bind.CallOpts, pagination PageRequest, groupOwner string) (struct {
+	GroupInfos   []GroupInfo
+	PageResponse PageResponse
+}, error) {
+	var out []interface{}
+	err := _IStorage.contract.Call(opts, &out, "listGroups", pagination, groupOwner)
+
+	outstruct := new(struct {
+		GroupInfos   []GroupInfo
+		PageResponse PageResponse
+	})
+	if err != nil {
+		return *outstruct, err
+	}
+
+	outstruct.GroupInfos = *abi.ConvertType(out[0], new([]GroupInfo)).(*[]GroupInfo)
+	outstruct.PageResponse = *abi.ConvertType(out[1], new(PageResponse)).(*PageResponse)
+
+	return *outstruct, err
+
+}
+
+// ListGroups is a free data retrieval call binding the contract method 0xb8e92c80.
+//
+// Solidity: function listGroups((bytes,uint64,uint64,bool,bool) pagination, string groupOwner) view returns((address,string,uint8,uint256,string,(string,string)[])[] groupInfos, (bytes,uint64) pageResponse)
+func (_IStorage *IStorageSession) ListGroups(pagination PageRequest, groupOwner string) (struct {
+	GroupInfos   []GroupInfo
+	PageResponse PageResponse
+}, error) {
+	return _IStorage.Contract.ListGroups(&_IStorage.CallOpts, pagination, groupOwner)
+}
+
+// ListGroups is a free data retrieval call binding the contract method 0xb8e92c80.
+//
+// Solidity: function listGroups((bytes,uint64,uint64,bool,bool) pagination, string groupOwner) view returns((address,string,uint8,uint256,string,(string,string)[])[] groupInfos, (bytes,uint64) pageResponse)
+func (_IStorage *IStorageCallerSession) ListGroups(pagination PageRequest, groupOwner string) (struct {
+	GroupInfos   []GroupInfo
+	PageResponse PageResponse
+}, error) {
+	return _IStorage.Contract.ListGroups(&_IStorage.CallOpts, pagination, groupOwner)
+}
+
 // ListObjects is a free data retrieval call binding the contract method 0xccd7ddf7.
 //
 // Solidity: function listObjects((bytes,uint64,uint64,bool,bool) pagination, string bucketName) view returns((address,address,string,string,uint256,uint32,uint64,uint8,string,int64,uint8,uint8,uint8,string[],(string,string)[],bool,int64,address,int64)[] objectInfos, (bytes,uint64) pageResponse)
@@ -356,6 +411,27 @@ func (_IStorage *IStorageSession) CreateBucket(bucketName string, visibility uin
 // Solidity: function createBucket(string bucketName, uint8 visibility, address paymentAddress, address primarySpAddress, (uint64,uint32,bytes) primarySpApproval, uint64 chargedReadQuota) returns(bool success)
 func (_IStorage *IStorageTransactorSession) CreateBucket(bucketName string, visibility uint8, paymentAddress common.Address, primarySpAddress common.Address, primarySpApproval Approval, chargedReadQuota uint64) (*types.Transaction, error) {
 	return _IStorage.Contract.CreateBucket(&_IStorage.TransactOpts, bucketName, visibility, paymentAddress, primarySpAddress, primarySpApproval, chargedReadQuota)
+}
+
+// CreateGroup is a paid mutator transaction binding the contract method 0x1e4a97dd.
+//
+// Solidity: function createGroup(string groupName, string extra) returns(bool success)
+func (_IStorage *IStorageTransactor) CreateGroup(opts *bind.TransactOpts, groupName string, extra string) (*types.Transaction, error) {
+	return _IStorage.contract.Transact(opts, "createGroup", groupName, extra)
+}
+
+// CreateGroup is a paid mutator transaction binding the contract method 0x1e4a97dd.
+//
+// Solidity: function createGroup(string groupName, string extra) returns(bool success)
+func (_IStorage *IStorageSession) CreateGroup(groupName string, extra string) (*types.Transaction, error) {
+	return _IStorage.Contract.CreateGroup(&_IStorage.TransactOpts, groupName, extra)
+}
+
+// CreateGroup is a paid mutator transaction binding the contract method 0x1e4a97dd.
+//
+// Solidity: function createGroup(string groupName, string extra) returns(bool success)
+func (_IStorage *IStorageTransactorSession) CreateGroup(groupName string, extra string) (*types.Transaction, error) {
+	return _IStorage.Contract.CreateGroup(&_IStorage.TransactOpts, groupName, extra)
 }
 
 // CreateObject is a paid mutator transaction binding the contract method 0x6c29c2dc.
@@ -578,6 +654,151 @@ func (_IStorage *IStorageFilterer) WatchCreateBucket(opts *bind.WatchOpts, sink 
 func (_IStorage *IStorageFilterer) ParseCreateBucket(log types.Log) (*IStorageCreateBucket, error) {
 	event := new(IStorageCreateBucket)
 	if err := _IStorage.contract.UnpackLog(event, "CreateBucket", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
+// IStorageCreateGroupIterator is returned from FilterCreateGroup and is used to iterate over the raw logs and unpacked data for CreateGroup events raised by the IStorage contract.
+type IStorageCreateGroupIterator struct {
+	Event *IStorageCreateGroup // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *IStorageCreateGroupIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(IStorageCreateGroup)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(IStorageCreateGroup)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *IStorageCreateGroupIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *IStorageCreateGroupIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// IStorageCreateGroup represents a CreateGroup event raised by the IStorage contract.
+type IStorageCreateGroup struct {
+	Creator common.Address
+	Id      *big.Int
+	Raw     types.Log // Blockchain specific contextual infos
+}
+
+// FilterCreateGroup is a free log retrieval operation binding the contract event 0x88d8a40d3d79893e13972978642d5fe29930912ee4c0b62a535815945c1d7bd0.
+//
+// Solidity: event CreateGroup(address indexed creator, uint256 id)
+func (_IStorage *IStorageFilterer) FilterCreateGroup(opts *bind.FilterOpts, creator []common.Address) (*IStorageCreateGroupIterator, error) {
+
+	var creatorRule []interface{}
+	for _, creatorItem := range creator {
+		creatorRule = append(creatorRule, creatorItem)
+	}
+
+	logs, sub, err := _IStorage.contract.FilterLogs(opts, "CreateGroup", creatorRule)
+	if err != nil {
+		return nil, err
+	}
+	return &IStorageCreateGroupIterator{contract: _IStorage.contract, event: "CreateGroup", logs: logs, sub: sub}, nil
+}
+
+// WatchCreateGroup is a free log subscription operation binding the contract event 0x88d8a40d3d79893e13972978642d5fe29930912ee4c0b62a535815945c1d7bd0.
+//
+// Solidity: event CreateGroup(address indexed creator, uint256 id)
+func (_IStorage *IStorageFilterer) WatchCreateGroup(opts *bind.WatchOpts, sink chan<- *IStorageCreateGroup, creator []common.Address) (event.Subscription, error) {
+
+	var creatorRule []interface{}
+	for _, creatorItem := range creator {
+		creatorRule = append(creatorRule, creatorItem)
+	}
+
+	logs, sub, err := _IStorage.contract.WatchLogs(opts, "CreateGroup", creatorRule)
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(IStorageCreateGroup)
+				if err := _IStorage.contract.UnpackLog(event, "CreateGroup", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseCreateGroup is a log parse operation binding the contract event 0x88d8a40d3d79893e13972978642d5fe29930912ee4c0b62a535815945c1d7bd0.
+//
+// Solidity: event CreateGroup(address indexed creator, uint256 id)
+func (_IStorage *IStorageFilterer) ParseCreateGroup(log types.Log) (*IStorageCreateGroup, error) {
+	event := new(IStorageCreateGroup)
+	if err := _IStorage.contract.UnpackLog(event, "CreateGroup", log); err != nil {
 		return nil, err
 	}
 	event.Raw = log

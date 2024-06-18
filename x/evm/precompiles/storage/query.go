@@ -3,6 +3,7 @@ package storage
 import (
 	"bytes"
 	"encoding/base64"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	"github.com/ethereum/go-ethereum/common"
@@ -14,9 +15,11 @@ import (
 const (
 	ListBucketsGas = 50_000
 	ListObjectsGas = 50_000
+	ListGroupsGas  = 50_000
 
 	ListBucketsMethodName = "listBuckets"
 	ListObjectsMethodName = "listObjects"
+	ListGroupsMethodName  = "listGroups"
 )
 
 // ListBuckets queries the total buckets.
@@ -158,4 +161,63 @@ func (c *Contract) ListObjects(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract
 	pageResponse.Total = res.Pagination.Total
 
 	return method.Outputs.Pack(objectInfos, pageResponse)
+}
+
+// ListGroups queries the user's total groups.
+func (c *Contract) ListGroups(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract, _ bool) ([]byte, error) {
+	method := MustMethod(ListGroupsMethodName)
+
+	// parse args
+	var args ListGroupsArgs
+	if err := types.ParseMethodArgs(method, &args, contract.Input[4:]); err != nil {
+		return nil, err
+	}
+	if bytes.Equal(args.Pagination.Key, []byte{0}) {
+		args.Pagination.Key = nil
+	}
+
+	msg := &storagetypes.QueryListGroupsRequest{
+		Pagination: &query.PageRequest{
+			Key:        args.Pagination.Key,
+			Offset:     args.Pagination.Offset,
+			Limit:      args.Pagination.Limit,
+			CountTotal: args.Pagination.CountTotal,
+			Reverse:    args.Pagination.Reverse,
+		},
+		GroupOwner: args.GroupOwner,
+	}
+
+	res, err := c.storageKeeper.ListGroups(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
+
+	var groupInfos []GroupInfo
+	for _, groupInfo := range res.GroupInfos {
+		var tags []Tag
+
+		if groupInfo.Tags != nil {
+			for _, tag := range groupInfo.Tags.Tags {
+				tags = append(tags, Tag{
+					Key:   tag.Key,
+					Value: tag.Value,
+				})
+			}
+		}
+
+		groupInfos = append(groupInfos, GroupInfo{
+			Owner:      common.HexToAddress(groupInfo.Owner),
+			GroupName:  groupInfo.GroupName,
+			SourceType: uint8(groupInfo.SourceType),
+			Id:         groupInfo.Id.BigInt(),
+			Extra:      groupInfo.Extra,
+			Tags:       tags,
+		})
+	}
+
+	var pageResponse PageResponse
+	pageResponse.NextKey = res.Pagination.NextKey
+	pageResponse.Total = res.Pagination.Total
+
+	return method.Outputs.Pack(groupInfos, pageResponse)
 }

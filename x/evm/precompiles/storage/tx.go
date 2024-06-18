@@ -18,18 +18,21 @@ import (
 const (
 	CreateBucketGas = 60_000
 	CreateObjectGas = 60_000
-	SealObjectGas   = 60_000
-	SealObjectV2Gas = 60_000
+	SealObjectGas   = 100_000
+	SealObjectV2Gas = 100_000
+	CreateGroupGas  = 60_000
 
 	CreateBucketMethodName = "createBucket"
 	CreateObjectMethodName = "createObject"
 	SealObjectMethodName   = "sealObject"
 	SealObjectV2MethodName = "sealObjectV2"
+	CreateGroupMethodName  = "createGroup"
 
 	CreateBucketEventName = "CreateBucket"
 	CreateObjectEventName = "CreateObject"
 	SealObjectEventName   = "SealObject"
 	SealObjectV2EventName = "SealObjectV2"
+	CreateGroupEventName  = "CreateGroup"
 )
 
 func (c *Contract) CreateBucket(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
@@ -252,6 +255,48 @@ func (c *Contract) SealObjectV2(ctx sdk.Context, evm *vm.EVM, contract *vm.Contr
 			common.BytesToHash(contract.Caller().Bytes()),
 			common.BytesToHash(args.SealAddress.Bytes()),
 		},
+	); err != nil {
+		return nil, err
+	}
+
+	return method.Outputs.Pack(true)
+}
+
+func (c *Contract) CreateGroup(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
+	if readonly {
+		return nil, errors.New("create group method readonly")
+	}
+
+	method := MustMethod(CreateGroupMethodName)
+
+	var args CreateGroupArgs
+	err := types.ParseMethodArgs(method, &args, contract.Input[4:])
+	if err != nil {
+		return nil, err
+	}
+
+	msg := &storagetypes.MsgCreateGroup{
+		Creator:   contract.Caller().String(),
+		GroupName: args.GroupName,
+		Extra:     args.Extra,
+	}
+
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
+
+	server := storagekeeper.NewMsgServerImpl(c.storageKeeper)
+	res, err := server.CreateGroup(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
+
+	// add log
+	if err := c.AddLog(
+		evm,
+		MustEvent(CreateGroupEventName),
+		[]common.Hash{common.BytesToHash(contract.Caller().Bytes())},
+		res.GroupId.BigInt(),
 	); err != nil {
 		return nil, err
 	}

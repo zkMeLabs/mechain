@@ -142,3 +142,23 @@ type SealObjectV2Args struct {
 func (args *SealObjectV2Args) Validate() error {
 	return nil
 }
+
+type CreateGroupArgs struct {
+	GroupName string `abi:"groupName"`
+	Extra     string `abi:"extra"`
+}
+
+// Validate CreateGroupArgs args
+func (args *CreateGroupArgs) Validate() error {
+	return nil
+}
+
+type ListGroupsArgs struct {
+	Pagination PageRequestJson `abi:"pagination"`
+	GroupOwner string          `abi:"groupOwner"`
+}
+
+// Validate ListGroupsArgs the args
+func (args *ListGroupsArgs) Validate() error {
+	return nil
+}
