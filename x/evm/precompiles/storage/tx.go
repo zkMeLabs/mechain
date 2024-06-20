@@ -2,6 +2,7 @@ package storage
 
 import (
 	"errors"
+
 	"github.com/ethereum/go-ethereum/common"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -21,7 +22,7 @@ const (
 	CreateBucketEventName = "CreateBucket"
 )
 
-func (c *Contract) CreateBucke(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
+func (c *Contract) CreateBucket(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	if readonly {
 		return nil, errors.New("send method readonly")
 	}
