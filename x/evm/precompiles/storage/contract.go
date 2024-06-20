@@ -55,7 +55,7 @@ func (c *Contract) Run(evm *vm.EVM, contract *vm.Contract, readonly bool) (ret [
 	if err == nil {
 		switch method.Name {
 		case CreateBucketMethodName:
-			ret, err = c.CreateBucke(ctx, evm, contract, readonly)
+			ret, err = c.CreateBucket(ctx, evm, contract, readonly)
 		case ListBucketsMethodName:
 			ret, err = c.ListBuckets(ctx, evm, contract, readonly)
 		}
