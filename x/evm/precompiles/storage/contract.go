@@ -38,6 +38,20 @@ func (c *Contract) RequiredGas(input []byte) uint64 {
 		return CreateBucketGas
 	case ListBucketsMethodName:
 		return ListBucketsGas
+	case HeadBucketMethodName:
+		return HeadBucketGas
+	case CreateObjectMethodName:
+		return CreateObjectGas
+	case ListObjectsMethodName:
+		return ListObjectsGas
+	case SealObjectMethodName:
+		return SealObjectGas
+	case SealObjectV2MethodName:
+		return SealObjectV2Gas
+	case CreateGroupMethodName:
+		return CreateGroupGas
+	case ListGroupsMethodName:
+		return ListGroupsGas
 	default:
 		return 0
 	}
@@ -58,6 +72,20 @@ func (c *Contract) Run(evm *vm.EVM, contract *vm.Contract, readonly bool) (ret [
 			ret, err = c.CreateBucket(ctx, evm, contract, readonly)
 		case ListBucketsMethodName:
 			ret, err = c.ListBuckets(ctx, evm, contract, readonly)
+		case HeadBucketMethodName:
+			ret, err = c.HeadBucket(ctx, evm, contract, readonly)
+		case CreateObjectMethodName:
+			ret, err = c.CreateObject(ctx, evm, contract, readonly)
+		case ListObjectsMethodName:
+			ret, err = c.ListObjects(ctx, evm, contract, readonly)
+		case SealObjectMethodName:
+			ret, err = c.SealObject(ctx, evm, contract, readonly)
+		case SealObjectV2MethodName:
+			ret, err = c.SealObjectV2(ctx, evm, contract, readonly)
+		case CreateGroupMethodName:
+			ret, err = c.CreateGroup(ctx, evm, contract, readonly)
+		case ListGroupsMethodName:
+			ret, err = c.ListGroups(ctx, evm, contract, readonly)
 		}
 	}
 

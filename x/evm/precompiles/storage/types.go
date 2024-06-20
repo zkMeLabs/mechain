@@ -3,6 +3,7 @@ package storage
 import (
 	"bytes"
 	"fmt"
+
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/evmos/evmos/v12/types"
@@ -86,5 +87,87 @@ type ListBucketsArgs struct {
 
 // Validate ListBucketsArgs the args
 func (args *ListBucketsArgs) Validate() error {
+	return nil
+}
+
+type HeadBucketArgs struct {
+	BucketName string `abi:"bucketName"`
+}
+
+// Validate HeadBucketArgs the args
+func (args *HeadBucketArgs) Validate() error {
+	return nil
+}
+
+type CreateObjectArgs struct {
+	BucketName        string       `abi:"bucketName"`
+	ObjectName        string       `abi:"objectName"`
+	PayloadSize       uint64       `abi:"payloadSize"`
+	Visibility        uint8        `abi:"visibility"`
+	ContentType       string       `abi:"contentType"`
+	PrimarySpApproval ApprovalJson `abi:"primarySpApproval"`
+	ExpectChecksums   []string     `abi:"expectChecksums"`
+	RedundancyType    uint8        `abi:"redundancyType"`
+}
+
+// Validate CreateObjectArgs args
+func (args *CreateObjectArgs) Validate() error {
+	return nil
+}
+
+type ListObjectsArgs struct {
+	Pagination PageRequestJson `abi:"pagination"`
+	BucketName string          `abi:"bucketName"`
+}
+
+// Validate ListObjectsArgs the args
+func (args *ListObjectsArgs) Validate() error {
+	return nil
+}
+
+type SealObjectArgs struct {
+	SealAddress                 common.Address `abi:"sealAddress"`
+	BucketName                  string         `abi:"bucketName"`
+	ObjectName                  string         `abi:"objectName"`
+	GlobalVirtualGroupId        uint32         `abi:"globalVirtualGroupId"`
+	SecondarySpBlsAggSignatures string         `abi:"secondarySpBlsAggSignatures"`
+}
+
+// Validate SealObjectArgs args
+func (args *SealObjectArgs) Validate() error {
+	return nil
+}
+
+type SealObjectV2Args struct {
+	SealAddress                 common.Address `abi:"sealAddress"`
+	BucketName                  string         `abi:"bucketName"`
+	ObjectName                  string         `abi:"objectName"`
+	GlobalVirtualGroupId        uint32         `abi:"globalVirtualGroupId"`
+	SecondarySpBlsAggSignatures string         `abi:"secondarySpBlsAggSignatures"`
+	ExpectChecksums             []string       `abi:"expectChecksums"`
+}
+
+// Validate SealObjectV2Args args
+func (args *SealObjectV2Args) Validate() error {
+	return nil
+}
+
+type CreateGroupArgs struct {
+	GroupName string `abi:"groupName"`
+	Extra     string `abi:"extra"`
+}
+
+// Validate CreateGroupArgs args
+func (args *CreateGroupArgs) Validate() error {
+	return nil
+}
+
+type ListGroupsArgs struct {
+	Pagination PageRequestJson `abi:"pagination"`
+	GroupOwner string          `abi:"groupOwner"`
+}
+
+// Validate ListGroupsArgs the args
+func (args *ListGroupsArgs) Validate() error {
 	return nil
 }
