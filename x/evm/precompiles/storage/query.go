@@ -16,10 +16,12 @@ const (
 	ListBucketsGas = 50_000
 	ListObjectsGas = 50_000
 	ListGroupsGas  = 50_000
+	HeadBucketGas  = 50_000
 
 	ListBucketsMethodName = "listBuckets"
 	ListObjectsMethodName = "listObjects"
 	ListGroupsMethodName  = "listGroups"
+	HeadBucketMethodName  = "headBucket"
 )
 
 // ListBuckets queries the total buckets.
@@ -220,4 +222,56 @@ func (c *Contract) ListGroups(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract,
 	pageResponse.Total = res.Pagination.Total
 
 	return method.Outputs.Pack(groupInfos, pageResponse)
+}
+
+// HeadBucket queries the bucket's info.
+func (c *Contract) HeadBucket(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract, _ bool) ([]byte, error) {
+	method := MustMethod(HeadBucketMethodName)
+
+	// parse args
+	var args HeadBucketArgs
+	if err := types.ParseMethodArgs(method, &args, contract.Input[4:]); err != nil {
+		return nil, err
+	}
+
+	msg := &storagetypes.QueryHeadBucketRequest{
+		BucketName: args.BucketName,
+	}
+
+	res, err := c.storageKeeper.HeadBucket(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
+
+	var tags []Tag
+	if res.BucketInfo.Tags != nil {
+		for _, tag := range res.BucketInfo.Tags.Tags {
+			tags = append(tags, Tag{
+				Key:   tag.Key,
+				Value: tag.Value,
+			})
+		}
+	}
+
+	bucketInfo := BucketInfo{
+		Owner:                      common.HexToAddress(res.BucketInfo.Owner),
+		BucketName:                 res.BucketInfo.BucketName,
+		Visibility:                 uint8(res.BucketInfo.Visibility),
+		Id:                         res.BucketInfo.Id.BigInt(),
+		SourceType:                 uint8(res.BucketInfo.SourceType),
+		CreateAt:                   res.BucketInfo.CreateAt,
+		PaymentAddress:             common.HexToAddress(res.BucketInfo.PaymentAddress),
+		GlobalVirtualGroupFamilyId: res.BucketInfo.GlobalVirtualGroupFamilyId,
+		ChargedReadQuota:           res.BucketInfo.ChargedReadQuota,
+		BucketStatus:               uint8(res.BucketInfo.BucketStatus),
+		Tags:                       tags,
+		SpAsDelegatedAgentDisabled: res.BucketInfo.SpAsDelegatedAgentDisabled,
+	}
+	extraInfo := BucketExtraInfo{
+		IsRateLimited:   res.ExtraInfo.IsRateLimited,
+		FlowRateLimit:   res.ExtraInfo.FlowRateLimit.BigInt(),
+		CurrentFlowRate: res.ExtraInfo.CurrentFlowRate.BigInt(),
+	}
+
+	return method.Outputs.Pack(bucketInfo, extraInfo)
 }

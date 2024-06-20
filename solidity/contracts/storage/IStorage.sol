@@ -95,6 +95,12 @@ struct BucketInfo {
     bool spAsDelegatedAgentDisabled;
 }
 
+struct BucketExtraInfo {
+    bool IsRateLimited;
+    uint256 FlowRateLimit;
+    uint256 CurrentFlowRate;
+}
+
 struct ObjectInfo {
     // owner is the object owner
     address owner;
@@ -231,6 +237,13 @@ interface IStorage {
         string memory groupName,
         string memory extra
     ) external returns (bool success);
+
+    /**
+     * @dev headBucket queries the bucket's info.
+     */
+    function headBucket(
+        string memory bucketName
+    ) external view returns (BucketInfo memory bucketInfo, BucketExtraInfo memory bucketExtraInfo);
 
     /**
      * @dev CreateBucket defines an Event emitted when a user create a bucket

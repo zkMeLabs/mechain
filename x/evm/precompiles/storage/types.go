@@ -90,6 +90,15 @@ func (args *ListBucketsArgs) Validate() error {
 	return nil
 }
 
+type HeadBucketArgs struct {
+	BucketName string `abi:"bucketName"`
+}
+
+// Validate HeadBucketArgs the args
+func (args *HeadBucketArgs) Validate() error {
+	return nil
+}
+
 type CreateObjectArgs struct {
 	BucketName        string       `abi:"bucketName"`
 	ObjectName        string       `abi:"objectName"`
