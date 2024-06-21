@@ -3,11 +3,13 @@ package storage
 import (
 	"encoding/base64"
 	"errors"
+	"time"
 
 	"github.com/ethereum/go-ethereum/common"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/ethereum/go-ethereum/core/vm"
+	gtypes "github.com/evmos/evmos/v12/types"
 	mechaincommon "github.com/evmos/evmos/v12/types/common"
 	storagekeeper "github.com/evmos/evmos/v12/x/storage/keeper"
 	storagetypes "github.com/evmos/evmos/v12/x/storage/types"
@@ -16,23 +18,38 @@ import (
 )
 
 const (
-	CreateBucketGas = 60_000
-	CreateObjectGas = 60_000
-	SealObjectGas   = 100_000
-	SealObjectV2Gas = 100_000
-	CreateGroupGas  = 60_000
+	CreateBucketGas     = 60_000
+	CreateObjectGas     = 60_000
+	SealObjectGas       = 100_000
+	SealObjectV2Gas     = 100_000
+	UpdateObjectInfoGas = 60_000
+	CreateGroupGas      = 60_000
+	UpdateGroupGas      = 60_000
+	DeleteGroupGas      = 60_000
+	RenewGroupMemberGas = 60_000
+	SetTagForGroupGas   = 60_000
 
-	CreateBucketMethodName = "createBucket"
-	CreateObjectMethodName = "createObject"
-	SealObjectMethodName   = "sealObject"
-	SealObjectV2MethodName = "sealObjectV2"
-	CreateGroupMethodName  = "createGroup"
+	CreateBucketMethodName     = "createBucket"
+	CreateObjectMethodName     = "createObject"
+	SealObjectMethodName       = "sealObject"
+	SealObjectV2MethodName     = "sealObjectV2"
+	UpdateObjectInfoMethodName = "updateObjectInfo"
+	CreateGroupMethodName      = "createGroup"
+	UpdateGroupMethodName      = "updateGroup"
+	DeleteGroupMethodName      = "deleteGroup"
+	RenewGroupMemberMethodName = "renewGroupMember"
+	SetTagForGroupMethodName   = "setTagForGroup"
 
-	CreateBucketEventName = "CreateBucket"
-	CreateObjectEventName = "CreateObject"
-	SealObjectEventName   = "SealObject"
-	SealObjectV2EventName = "SealObjectV2"
-	CreateGroupEventName  = "CreateGroup"
+	CreateBucketEventName     = "CreateBucket"
+	CreateObjectEventName     = "CreateObject"
+	SealObjectEventName       = "SealObject"
+	SealObjectV2EventName     = "SealObjectV2"
+	UpdateObjectInfoEventName = "UpdateObjectInfo"
+	CreateGroupEventName      = "CreateGroup"
+	UpdateGroupEventName      = "UpdateGroup"
+	DeleteGroupEventName      = "DeleteGroup"
+	RenewGroupMemberEventName = "RenewGroupMember"
+	SetTagForGroupEventName   = "SetTagForGroup"
 )
 
 func (c *Contract) CreateBucket(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
@@ -262,6 +279,48 @@ func (c *Contract) SealObjectV2(ctx sdk.Context, evm *vm.EVM, contract *vm.Contr
 	return method.Outputs.Pack(true)
 }
 
+func (c *Contract) UpdateObjectInfo(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
+	if readonly {
+		return nil, errors.New("update object info method readonly")
+	}
+
+	method := MustMethod(UpdateObjectInfoMethodName)
+
+	var args UpdateObjectInfoArgs
+	err := types.ParseMethodArgs(method, &args, contract.Input[4:])
+	if err != nil {
+		return nil, err
+	}
+
+	msg := &storagetypes.MsgUpdateObjectInfo{
+		Operator:   contract.Caller().String(),
+		BucketName: args.BucketName,
+		ObjectName: args.ObjectName,
+		Visibility: storagetypes.VisibilityType(args.Visibility),
+	}
+
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
+
+	server := storagekeeper.NewMsgServerImpl(c.storageKeeper)
+	_, err = server.UpdateObjectInfo(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
+
+	// add log
+	if err := c.AddLog(
+		evm,
+		MustEvent(UpdateObjectInfoEventName),
+		[]common.Hash{common.BytesToHash(contract.Caller().Bytes())},
+	); err != nil {
+		return nil, err
+	}
+
+	return method.Outputs.Pack(true)
+}
+
 func (c *Contract) CreateGroup(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	if readonly {
 		return nil, errors.New("create group method readonly")
@@ -297,6 +356,252 @@ func (c *Contract) CreateGroup(ctx sdk.Context, evm *vm.EVM, contract *vm.Contra
 		MustEvent(CreateGroupEventName),
 		[]common.Hash{common.BytesToHash(contract.Caller().Bytes())},
 		res.GroupId.BigInt(),
+	); err != nil {
+		return nil, err
+	}
+
+	return method.Outputs.Pack(true)
+}
+
+func (c *Contract) UpdateGroup(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
+	if readonly {
+		return nil, errors.New("update group method readonly")
+	}
+
+	method := MustMethod(UpdateGroupMethodName)
+
+	var args UpdateGroupArgs
+	err := types.ParseMethodArgs(method, &args, contract.Input[4:])
+	if err != nil {
+		return nil, err
+	}
+
+	if args.GroupName == "" {
+		return nil, errors.New("group name is empty")
+	}
+	if len(args.MembersToAdd) == 0 && len(args.MembersToDelete) == 0 {
+		return nil, errors.New("no update member")
+	}
+	if args.ExpirationTime != nil && len(args.MembersToAdd) != len(args.ExpirationTime) {
+		return nil, errors.New("please provide expirationTime for every new add member")
+	}
+
+	membersToAdd := make([]*storagetypes.MsgGroupMember, 0)
+	if args.MembersToAdd != nil {
+		for i, members := range args.MembersToAdd {
+			var exp time.Time
+			if args.ExpirationTime[i] != 0 {
+				exp = time.Unix(args.ExpirationTime[i], 0)
+			} else {
+				exp = storagetypes.MaxTimeStamp
+			}
+			membersToAdd = append(membersToAdd, &storagetypes.MsgGroupMember{
+				Member:         members.String(),
+				ExpirationTime: &exp,
+			})
+		}
+	}
+
+	var membersToDelete []string
+	if args.MembersToDelete != nil {
+		for _, members := range args.MembersToDelete {
+			membersToDelete = append(membersToDelete, members.String())
+		}
+	}
+
+	msg := &storagetypes.MsgUpdateGroupMember{
+		Operator:        contract.Caller().String(),
+		GroupOwner:      args.GroupOwner.String(),
+		GroupName:       args.GroupName,
+		MembersToAdd:    membersToAdd,
+		MembersToDelete: membersToDelete,
+	}
+
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
+
+	server := storagekeeper.NewMsgServerImpl(c.storageKeeper)
+	_, err = server.UpdateGroupMember(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
+
+	// add log
+	if err := c.AddLog(
+		evm,
+		MustEvent(UpdateGroupEventName),
+		[]common.Hash{common.BytesToHash(contract.Caller().Bytes())},
+	); err != nil {
+		return nil, err
+	}
+
+	return method.Outputs.Pack(true)
+}
+
+func (c *Contract) DeleteGroup(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
+	if readonly {
+		return nil, errors.New("delete group method readonly")
+	}
+
+	method := MustMethod(DeleteGroupMethodName)
+
+	var args DeleteGroupArgs
+	err := types.ParseMethodArgs(method, &args, contract.Input[4:])
+	if err != nil {
+		return nil, err
+	}
+
+	msg := &storagetypes.MsgDeleteGroup{
+		Operator:  contract.Caller().String(),
+		GroupName: args.GroupName,
+	}
+
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
+
+	server := storagekeeper.NewMsgServerImpl(c.storageKeeper)
+	_, err = server.DeleteGroup(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
+
+	// add log
+	if err := c.AddLog(
+		evm,
+		MustEvent(DeleteGroupEventName),
+		[]common.Hash{common.BytesToHash(contract.Caller().Bytes())},
+	); err != nil {
+		return nil, err
+	}
+
+	return method.Outputs.Pack(true)
+}
+
+func (c *Contract) RenewGroupMember(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
+	if readonly {
+		return nil, errors.New("renew group member method readonly")
+	}
+
+	method := MustMethod(RenewGroupMemberMethodName)
+
+	var args RenewGroupMemberArgs
+	err := types.ParseMethodArgs(method, &args, contract.Input[4:])
+	if err != nil {
+		return nil, err
+	}
+
+	if args.GroupName == "" {
+		return nil, errors.New("group name is empty")
+	}
+	if len(args.Members) == 0 {
+		return nil, errors.New("no renew member")
+	}
+	if args.ExpirationTime != nil && len(args.Members) != len(args.ExpirationTime) {
+		return nil, errors.New("please provide expirationTime for every renew member")
+	}
+
+	membersToRenew := make([]*storagetypes.MsgGroupMember, 0)
+	if args.Members != nil {
+		for i, members := range args.Members {
+			var exp time.Time
+			if args.ExpirationTime[i] != 0 {
+				exp = time.Unix(args.ExpirationTime[i], 0)
+			} else {
+				exp = storagetypes.MaxTimeStamp
+			}
+			membersToRenew = append(membersToRenew, &storagetypes.MsgGroupMember{
+				Member:         members.String(),
+				ExpirationTime: &exp,
+			})
+		}
+	}
+
+	msg := &storagetypes.MsgRenewGroupMember{
+		Operator:   contract.Caller().String(),
+		GroupOwner: args.GroupOwner.String(),
+		GroupName:  args.GroupName,
+		Members:    membersToRenew,
+	}
+
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
+
+	server := storagekeeper.NewMsgServerImpl(c.storageKeeper)
+	_, err = server.RenewGroupMember(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
+
+	// add log
+	if err := c.AddLog(
+		evm,
+		MustEvent(RenewGroupMemberEventName),
+		[]common.Hash{common.BytesToHash(contract.Caller().Bytes())},
+	); err != nil {
+		return nil, err
+	}
+
+	return method.Outputs.Pack(true)
+}
+
+func (c *Contract) SetTagForGroup(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
+	if readonly {
+		return nil, errors.New("set tag for group method readonly")
+	}
+
+	method := MustMethod(SetTagForGroupMethodName)
+
+	var args SetTagForGroupArgs
+	err := types.ParseMethodArgs(method, &args, contract.Input[4:])
+	if err != nil {
+		return nil, err
+	}
+
+	if args.Tags == nil {
+		return nil, errors.New("invalid tags parameter")
+	}
+	if args.GroupName == "" {
+		return nil, errors.New("group name is empty")
+	}
+	addr, err := sdk.AccAddressFromHexUnsafe(contract.Caller().String())
+	if err != nil {
+		return nil, err
+	}
+	grn := gtypes.NewGroupGRN(addr, args.GroupName)
+	var tags storagetypes.ResourceTags
+	if args.Tags != nil {
+		for _, tag := range args.Tags {
+			tags.Tags = append(tags.Tags, storagetypes.ResourceTags_Tag{
+				Key:   tag.Key,
+				Value: tag.Value,
+			})
+		}
+	}
+
+	msg := &storagetypes.MsgSetTag{
+		Operator: contract.Caller().String(),
+		Resource: grn.String(),
+		Tags:     &tags,
+	}
+
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
+
+	server := storagekeeper.NewMsgServerImpl(c.storageKeeper)
+	_, err = server.SetTag(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
+
+	// add log
+	if err := c.AddLog(
+		evm,
+		MustEvent(SetTagForGroupEventName),
+		[]common.Hash{common.BytesToHash(contract.Caller().Bytes())},
 	); err != nil {
 		return nil, err
 	}
