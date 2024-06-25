@@ -81,6 +81,18 @@ func (args *CreateBucketArgs) Validate() error {
 	return nil
 }
 
+type UpdateBucketArgs struct {
+	BucketName        string         `abi:"bucketName"`
+	ChargedReadQuota  uint64         `abi:"chargedReadQuota"`
+	PaymentAddress    common.Address `abi:"paymentAddress"`
+	Visibility        uint8          `abi:"visibility"`
+}
+
+// Validate CreateBucketArgs args
+func (args *UpdateBucketArgs) Validate() error {
+	return nil
+}
+
 type ListBucketsArgs struct {
 	Pagination PageRequestJson `abi:"pagination"`
 }

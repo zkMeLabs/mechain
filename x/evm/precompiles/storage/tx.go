@@ -17,18 +17,21 @@ import (
 
 const (
 	CreateBucketGas = 60_000
+	UpdateBucketInfoGas = 60_000
 	CreateObjectGas = 60_000
 	SealObjectGas   = 100_000
 	SealObjectV2Gas = 100_000
 	CreateGroupGas  = 60_000
 
 	CreateBucketMethodName = "createBucket"
+	UpdateBucketInfoMethodName = "updateBucketInfo"
 	CreateObjectMethodName = "createObject"
 	SealObjectMethodName   = "sealObject"
 	SealObjectV2MethodName = "sealObjectV2"
 	CreateGroupMethodName  = "createGroup"
 
 	CreateBucketEventName = "CreateBucket"
+	UpdateBucketInfoEventName = "UpdateBucket"
 	CreateObjectEventName = "CreateObject"
 	SealObjectEventName   = "SealObject"
 	SealObjectV2EventName = "SealObjectV2"
@@ -86,6 +89,40 @@ func (c *Contract) CreateBucket(ctx sdk.Context, evm *vm.EVM, contract *vm.Contr
 		return nil, err
 	}
 
+	return method.Outputs.Pack(true)
+}
+
+func (c *Contract) UpdateBucketInfo(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
+	if readonly {
+		return nil, errors.New("update bucket method readonly")
+	}
+	method := MustMethod(UpdateBucketInfoMethodName)
+
+	var args UpdateBucketArgs
+	if err:= types.ParseMethodArgs(method, &args, contract.Input[4:]); err != nil {
+		return nil,err
+	}
+	msg:=&storagetypes.MsgUpdateBucketInfo{
+		Operator: contract.CallerAddress.String(),
+		BucketName: args.BucketName,
+		Visibility: storagetypes.VisibilityType(args.Visibility),
+		PaymentAddress: args.PaymentAddress.String(),
+		ChargedReadQuota:&mechaincommon.UInt64Value{Value: args.ChargedReadQuota},
+	}
+	if err:=msg.ValidateBasic();err!=nil {
+		return nil,err
+	}
+	server := storagekeeper.NewMsgServerImpl(c.storageKeeper)
+	if _,err:=server.UpdateBucketInfo(ctx,msg); err!=nil {
+		return nil,err
+	}
+	if err:=c.AddLog(evm, MustEvent(UpdateBucketInfoEventName),[]common.Hash{
+		common.BytesToHash(contract.Caller().Bytes()),
+		common.BytesToHash([]byte(args.BucketName)),
+		common.BytesToHash(args.PaymentAddress.Bytes()),
+	},args.Visibility)	;err!=nil {
+		return nil,err
+	}
 	return method.Outputs.Pack(true)
 }
 

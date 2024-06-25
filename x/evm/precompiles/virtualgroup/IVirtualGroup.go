@@ -26,7 +26,6 @@ var (
 	_ = common.Big1
 	_ = types.BloomLookup
 	_ = event.NewSubscription
-	_ = abi.ConvertType
 )
 
 // Coin is an auto generated low-level Go binding around an user-defined struct.
@@ -164,11 +163,11 @@ func NewIVirtualGroupFilterer(address common.Address, filterer bind.ContractFilt
 
 // bindIVirtualGroup binds a generic wrapper to an already deployed contract.
 func bindIVirtualGroup(address common.Address, caller bind.ContractCaller, transactor bind.ContractTransactor, filterer bind.ContractFilterer) (*bind.BoundContract, error) {
-	parsed, err := IVirtualGroupMetaData.GetAbi()
+	parsed, err := abi.JSON(strings.NewReader(IVirtualGroupABI))
 	if err != nil {
 		return nil, err
 	}
-	return bind.NewBoundContract(address, *parsed, caller, transactor, filterer), nil
+	return bind.NewBoundContract(address, parsed, caller, transactor, filterer), nil
 }
 
 // Call invokes the (constant) contract method with params as input values and
