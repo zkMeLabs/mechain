@@ -182,6 +182,13 @@ interface IStorage {
     ) external returns (bool success);
 
     /**
+     * @dev deleteBucket defines a method for delete a bucket.
+     */
+    function deleteBucket(
+        string memory bucketName
+    ) external returns (bool success);
+
+    /**
      * @dev createObject defines a method for create a object.
      */
     function createObject(
@@ -327,6 +334,11 @@ interface IStorage {
         address indexed primarySpAddress,
         uint256 id
     );
+
+    /**
+     * @dev DeleteBucket defines an Event emitted when a user delete a bucket
+     */
+    event DeleteBucket(address indexed creator);
 
     /**
      * @dev CreateObject defines an Event emitted when a user create a object

@@ -19,6 +19,7 @@ import (
 
 const (
 	CreateBucketGas     = 60_000
+	DeleteBucketGas     = 60_000
 	CreateObjectGas     = 60_000
 	SealObjectGas       = 100_000
 	SealObjectV2Gas     = 100_000
@@ -30,6 +31,7 @@ const (
 	SetTagForGroupGas   = 60_000
 
 	CreateBucketMethodName     = "createBucket"
+	DeleteBucketMethodName     = "deleteBucket"
 	CreateObjectMethodName     = "createObject"
 	SealObjectMethodName       = "sealObject"
 	SealObjectV2MethodName     = "sealObjectV2"
@@ -41,6 +43,7 @@ const (
 	SetTagForGroupMethodName   = "setTagForGroup"
 
 	CreateBucketEventName     = "CreateBucket"
+	DeleteBucketEventName     = "DeleteBucket"
 	CreateObjectEventName     = "CreateObject"
 	SealObjectEventName       = "SealObject"
 	SealObjectV2EventName     = "SealObjectV2"
@@ -99,6 +102,46 @@ func (c *Contract) CreateBucket(ctx sdk.Context, evm *vm.EVM, contract *vm.Contr
 			common.BytesToHash(args.PrimarySpAddress.Bytes()),
 		},
 		res.BucketId.BigInt(),
+	); err != nil {
+		return nil, err
+	}
+
+	return method.Outputs.Pack(true)
+}
+
+func (c *Contract) DeleteBucket(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
+	if readonly {
+		return nil, errors.New("delete bucket method readonly")
+	}
+
+	method := MustMethod(DeleteBucketMethodName)
+
+	var args DeleteBucketArgs
+	err := types.ParseMethodArgs(method, &args, contract.Input[4:])
+	if err != nil {
+		return nil, err
+	}
+
+	msg := &storagetypes.MsgDeleteBucket{
+		Operator:   contract.Caller().String(),
+		BucketName: args.BucketName,
+	}
+
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
+
+	server := storagekeeper.NewMsgServerImpl(c.storageKeeper)
+	_, err = server.DeleteBucket(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
+
+	// add log
+	if err := c.AddLog(
+		evm,
+		MustEvent(DeleteBucketEventName),
+		[]common.Hash{common.BytesToHash(contract.Caller().Bytes())},
 	); err != nil {
 		return nil, err
 	}

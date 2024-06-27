@@ -99,6 +99,15 @@ func (args *HeadBucketArgs) Validate() error {
 	return nil
 }
 
+type DeleteBucketArgs struct {
+	BucketName string `abi:"bucketName"`
+}
+
+// Validate DeleteBucketArgs args
+func (args *DeleteBucketArgs) Validate() error {
+	return nil
+}
+
 type CreateObjectArgs struct {
 	BucketName        string       `abi:"bucketName"`
 	ObjectName        string       `abi:"objectName"`
