@@ -1,0 +1,35 @@
+{
+  "messages":[
+    {
+      "@type":"/greenfield.sp.MsgCreateStorageProvider",
+      "description":{
+        "moniker": "sp0",
+        "identity":"",
+        "website":"",
+        "security_contact":"",
+        "details":""
+      },
+      "sp_address":"0xb6c559b6dd7B13324a61F8149F16639628c9d8fE",
+      "funding_address":"0xfe26a3D8fA067F5234b8b0377a41b446E82b33b9",
+      "seal_address":"0x942a7C3eA3011b831D94BdcA8b950fE26853e74d",
+      "approval_address":"0x8FEe9d987Ce29Dd7e9A6aF5eb9d8AA5f98a367b1",
+      "gc_address": "0x9c024772c932b3E6748AbE50C4e895086Be18249",
+      "maintenance_address": "0xbE03316B1D7c3FCB69136e47e02442d6Fb3396dB",
+      "endpoint": "https://www.greenfield.io",
+      "deposit":{
+        "denom":"azkme",
+        "amount":"10000000000000000000000"
+      },
+      "read_price": "0.087",
+      "store_price": "0.0048",
+      "free_read_quota": 10000000000,
+      "creator":"0x7b5Fe22B5446f7C62Ea27B8BD71CeF94e03f3dF2",
+      "bls_key": "89f5e82d1bbb7c751b063d6d69d30c5812a088cabb9ed015b1741939a45a896d83b5435d63257b954450c26d857de4e1",
+      "bls_proof": "987406f0dd2e5f5f3e9e3e447f832dbf73809479ea552fe9b23e06e65651c01a5893e92a797d12078ef9b0c9eb72b8d90faaee65f738e222793d94b80a58cd0f329375ee04e8460f12f4772cf42859d30dd6444ed3350c3335aedf1dbde3bb68"
+    }
+  ],
+  "title": "create sp",
+  "summary": "temp",
+  "metadata": "4pIMOgIGx1vZGU=",
+  "deposit": "1000000000000000000azkme"
+}

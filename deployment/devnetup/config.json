@@ -1,0 +1,68 @@
+{
+  "app": {
+    "prefix": "mc",
+    "chain_name": "mechain",
+    "chain_id": "mechain_1000000-1",
+    "denoms": [
+      "azkme"
+    ],
+    "port": {
+      "api.address": 1317,
+      "rosetta.address": 8080,
+      "grpc.address": 9090,
+      "grpc-web.address": 7070,
+      "json-rpc.address": 8545,
+      "json-rpc.ws-address": 7545,
+      "json-rpc.metrics-address": 6065
+    },
+    "cfg": {
+      "minimum-gas-prices": "\"0azkme\"",
+      "pruning": "\"nothing\"",
+      "api.swagger": "true",
+      "api.enabled-unsafe-cors": "true",
+      "rosetta.enable": "false",
+      "rosetta.denom-to-suggest": "\"0azkme\"",
+      "grpc.enable": "true",
+      "grpc-web.enable": "true",
+      "grpc-web.enable-unsafe-cors": "true",
+      "json-rpc.enable": "true",
+      "json-rpc.api": "\"eth,txpool,personal,net,debug,web3\""
+    }
+  },
+  "tendermint": {
+    "port": {
+      "rpc.laddr": 26657,
+      "rpc.pprof_laddr": 5050,
+      "p2p.laddr": 10000,
+      "instrumentation.prometheus_listen_addr": 16660
+    },
+    "cfg": {
+      "consensus.timeout_commit": "\"1s\"",
+      "rpc.cors_allowed_origins": "[\"*\"]",
+      "instrumentation.prometheus": "true",
+      "p2p.allow_duplicate_ip": "true",
+      "p2p.seeds": "\"\""
+    }
+  },
+  "preMineAccounts": [
+    "0x00000Be6819f41400225702D32d3dd23663Dd690",
+    "0x1111102Dd32160B064F2A512CDEf74bFdB6a9F96"
+  ],
+  "privateKeys": [
+    {
+      "name": "alice",
+      "key": "f78a036930ce63791ea6ea20072986d8c3f16a6811f6a2583b0787c45086f769"
+    },
+    {
+      "name": "bob",
+      "key": "95e06fa1a8411d7f6693f486f0f450b122c58feadbcee43fbd02e13da59395d5"
+    }
+  ],
+  "preMinePerAccount": "10000000000000000000000000",
+  "genesisCfg": [
+    "app_state.gov.params.voting_period='600s'",
+    "app_state.feemarket.params.no_base_fee=false",
+    "app_state.feemarket.params.base_fee='10000000000'",
+    "app_state.feemarket.params.min_gas_price='10000000000.000000000000000000'"
+  ]
+}
