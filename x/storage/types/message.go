@@ -76,7 +76,7 @@ var (
 	_ sdk.Msg = &MsgCreateBucket{}
 	_ sdk.Msg = &MsgDeleteBucket{}
 	_ sdk.Msg = &MsgUpdateBucketInfo{}
-	// _ sdk.Msg = &MsgMirrorBucket{}
+	_ sdk.Msg = &MsgMirrorBucket{}
 	_ sdk.Msg = &MsgDiscontinueBucket{}
 
 	// For object
@@ -86,7 +86,7 @@ var (
 	_ sdk.Msg = &MsgCopyObject{}
 	_ sdk.Msg = &MsgDeleteObject{}
 	_ sdk.Msg = &MsgCancelCreateObject{}
-	// _ sdk.Msg = &MsgMirrorObject{}
+	_ sdk.Msg = &MsgMirrorObject{}
 	_ sdk.Msg = &MsgDiscontinueObject{}
 	_ sdk.Msg = &MsgUpdateObjectInfo{}
 
@@ -96,7 +96,7 @@ var (
 	_ sdk.Msg = &MsgUpdateGroupMember{}
 	_ sdk.Msg = &MsgUpdateGroupExtra{}
 	_ sdk.Msg = &MsgLeaveGroup{}
-	// _ sdk.Msg = &MsgMirrorGroup{}
+	_ sdk.Msg = &MsgMirrorGroup{}
 
 	// For permission policy
 	_ sdk.Msg = &MsgPutPolicy{}
@@ -1392,185 +1392,185 @@ func (msg *MsgDeletePolicy) ValidateRuntime(ctx sdk.Context) error {
 	return nil
 }
 
-// // NewMsgMirrorBucket creates a new MsgMirrorBucket instance
-// func NewMsgMirrorBucket(operator sdk.AccAddress, destChainId sdk.ChainID, id Uint, bucketName string) *MsgMirrorBucket {
-// 	return &MsgMirrorBucket{
-// 		Operator:    operator.String(),
-// 		Id:          id,
-// 		BucketName:  bucketName,
-// 		DestChainId: uint32(destChainId),
-// 	}
-// }
+// NewMsgMirrorBucket creates a new MsgMirrorBucket instance
+func NewMsgMirrorBucket(operator sdk.AccAddress, destChainId sdk.ChainID, id Uint, bucketName string) *MsgMirrorBucket {
+	return &MsgMirrorBucket{
+		Operator:    operator.String(),
+		Id:          id,
+		BucketName:  bucketName,
+		DestChainId: uint32(destChainId),
+	}
+}
 
 // Route implements the sdk.Msg interface.
-// func (msg *MsgMirrorBucket) Route() string {
-// 	return RouterKey
-// }
+func (msg *MsgMirrorBucket) Route() string {
+	return RouterKey
+}
 
-// // Type implements the sdk.Msg interface.
-// func (msg *MsgMirrorBucket) Type() string {
-// 	return TypeMsgMirrorBucket
-// }
+// Type implements the sdk.Msg interface.
+func (msg *MsgMirrorBucket) Type() string {
+	return TypeMsgMirrorBucket
+}
 
-// // GetSigners implements the sdk.Msg interface.
-// func (msg *MsgMirrorBucket) GetSigners() []sdk.AccAddress {
-// 	creator, err := sdk.AccAddressFromHexUnsafe(msg.Operator)
-// 	if err != nil {
-// 		panic(err)
-// 	}
-// 	return []sdk.AccAddress{creator}
-// }
+// GetSigners implements the sdk.Msg interface.
+func (msg *MsgMirrorBucket) GetSigners() []sdk.AccAddress {
+	creator, err := sdk.AccAddressFromHexUnsafe(msg.Operator)
+	if err != nil {
+		panic(err)
+	}
+	return []sdk.AccAddress{creator}
+}
 
-// // GetSignBytes implements the sdk.Msg interface.
-// func (msg *MsgMirrorBucket) GetSignBytes() []byte {
-// 	bz := ModuleCdc.MustMarshalJSON(msg)
-// 	return sdk.MustSortJSON(bz)
-// }
+// GetSignBytes implements the sdk.Msg interface.
+func (msg *MsgMirrorBucket) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
+}
 
-// // ValidateBasic implements the sdk.Msg interface.
-// func (msg *MsgMirrorBucket) ValidateBasic() error {
-// 	_, err := sdk.AccAddressFromHexUnsafe(msg.Operator)
-// 	if err != nil {
-// 		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
-// 	}
+// ValidateBasic implements the sdk.Msg interface.
+func (msg *MsgMirrorBucket) ValidateBasic() error {
+	_, err := sdk.AccAddressFromHexUnsafe(msg.Operator)
+	if err != nil {
+		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+	}
 
-// 	if !msg.Id.IsNil() && msg.Id.GT(sdk.NewUint(0)) {
-// 		if msg.BucketName != "" {
-// 			return errors.Wrap(gnfderrors.ErrInvalidBucketName, "Bucket name should be empty")
-// 		}
-// 		return nil
-// 	}
+	if !msg.Id.IsNil() && msg.Id.GT(sdk.NewUint(0)) {
+		if msg.BucketName != "" {
+			return errors.Wrap(gnfderrors.ErrInvalidBucketName, "Bucket name should be empty")
+		}
+		return nil
+	}
 
-// 	err = s3util.CheckValidBucketName(msg.BucketName)
-// 	if err != nil {
-// 		return err
-// 	}
+	err = s3util.CheckValidBucketName(msg.BucketName)
+	if err != nil {
+		return err
+	}
 
-// 	return nil
-// }
+	return nil
+}
 
-// // NewMsgMirrorObject creates a new MsgMirrorObject instance
-// func NewMsgMirrorObject(operator sdk.AccAddress, destChainId sdk.ChainID, id Uint, bucketName, objectName string) *MsgMirrorObject {
-// 	return &MsgMirrorObject{
-// 		Operator:    operator.String(),
-// 		DestChainId: uint32(destChainId),
-// 		Id:          id,
-// 		BucketName:  bucketName,
-// 		ObjectName:  objectName,
-// 	}
-// }
-
-// Route implements the sdk.Msg interface.
-// func (msg *MsgMirrorObject) Route() string {
-// 	return RouterKey
-// }
-
-// // Type implements the sdk.Msg interface.
-// func (msg *MsgMirrorObject) Type() string {
-// 	return TypeMsgMirrorObject
-// }
-
-// // GetSigners implements the sdk.Msg interface.
-// func (msg *MsgMirrorObject) GetSigners() []sdk.AccAddress {
-// 	creator, err := sdk.AccAddressFromHexUnsafe(msg.Operator)
-// 	if err != nil {
-// 		panic(err)
-// 	}
-// 	return []sdk.AccAddress{creator}
-// }
-
-// // GetSignBytes returns the message bytes to sign over.
-// func (msg *MsgMirrorObject) GetSignBytes() []byte {
-// 	bz := ModuleCdc.MustMarshalJSON(msg)
-// 	return sdk.MustSortJSON(bz)
-// }
-
-// // ValidateBasic implements the sdk.Msg interface.
-// func (msg *MsgMirrorObject) ValidateBasic() error {
-// 	_, err := sdk.AccAddressFromHexUnsafe(msg.Operator)
-// 	if err != nil {
-// 		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
-// 	}
-
-// 	if !msg.Id.IsNil() && msg.Id.GT(sdk.NewUint(0)) {
-// 		if msg.BucketName != "" {
-// 			return errors.Wrap(gnfderrors.ErrInvalidBucketName, "Bucket name should be empty")
-// 		}
-// 		if msg.ObjectName != "" {
-// 			return errors.Wrap(gnfderrors.ErrInvalidObjectName, "Object name should be empty")
-// 		}
-// 		return nil
-// 	}
-
-// 	err = s3util.CheckValidBucketName(msg.BucketName)
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	err = s3util.CheckValidObjectName(msg.ObjectName)
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	return nil
-// }
-
-// // NewMsgMirrorGroup creates a new MsgMirrorGroup instance
-// func NewMsgMirrorGroup(operator sdk.AccAddress, destChainId sdk.ChainID, id Uint, groupName string) *MsgMirrorGroup {
-// 	return &MsgMirrorGroup{
-// 		Operator:    operator.String(),
-// 		DestChainId: uint32(destChainId),
-// 		Id:          id,
-// 		GroupName:   groupName,
-// 	}
-// }
+// NewMsgMirrorObject creates a new MsgMirrorObject instance
+func NewMsgMirrorObject(operator sdk.AccAddress, destChainId sdk.ChainID, id Uint, bucketName, objectName string) *MsgMirrorObject {
+	return &MsgMirrorObject{
+		Operator:    operator.String(),
+		DestChainId: uint32(destChainId),
+		Id:          id,
+		BucketName:  bucketName,
+		ObjectName:  objectName,
+	}
+}
 
 // Route implements the sdk.Msg interface.
-// func (msg *MsgMirrorGroup) Route() string {
-// 	return RouterKey
-// }
+func (msg *MsgMirrorObject) Route() string {
+	return RouterKey
+}
 
-// // Type implements the sdk.Msg interface.
-// func (msg *MsgMirrorGroup) Type() string {
-// 	return TypeMsgMirrorGroup
-// }
+// Type implements the sdk.Msg interface.
+func (msg *MsgMirrorObject) Type() string {
+	return TypeMsgMirrorObject
+}
 
-// // GetSigners implements the sdk.Msg interface.
-// func (msg *MsgMirrorGroup) GetSigners() []sdk.AccAddress {
-// 	creator, err := sdk.AccAddressFromHexUnsafe(msg.Operator)
-// 	if err != nil {
-// 		panic(err)
-// 	}
-// 	return []sdk.AccAddress{creator}
-// }
+// GetSigners implements the sdk.Msg interface.
+func (msg *MsgMirrorObject) GetSigners() []sdk.AccAddress {
+	creator, err := sdk.AccAddressFromHexUnsafe(msg.Operator)
+	if err != nil {
+		panic(err)
+	}
+	return []sdk.AccAddress{creator}
+}
 
-// // GetSignBytes returns the message bytes to sign over.
-// func (msg *MsgMirrorGroup) GetSignBytes() []byte {
-// 	bz := ModuleCdc.MustMarshalJSON(msg)
-// 	return sdk.MustSortJSON(bz)
-// }
+// GetSignBytes returns the message bytes to sign over.
+func (msg *MsgMirrorObject) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
+}
 
-// // ValidateBasic implements the sdk.Msg interface.
-// func (msg *MsgMirrorGroup) ValidateBasic() error {
-// 	_, err := sdk.AccAddressFromHexUnsafe(msg.Operator)
-// 	if err != nil {
-// 		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
-// 	}
+// ValidateBasic implements the sdk.Msg interface.
+func (msg *MsgMirrorObject) ValidateBasic() error {
+	_, err := sdk.AccAddressFromHexUnsafe(msg.Operator)
+	if err != nil {
+		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+	}
 
-// 	if !msg.Id.IsNil() && msg.Id.GT(sdk.NewUint(0)) {
-// 		if msg.GroupName != "" {
-// 			return errors.Wrap(gnfderrors.ErrInvalidGroupName, "Group name should be empty")
-// 		}
-// 		return nil
-// 	}
+	if !msg.Id.IsNil() && msg.Id.GT(sdk.NewUint(0)) {
+		if msg.BucketName != "" {
+			return errors.Wrap(gnfderrors.ErrInvalidBucketName, "Bucket name should be empty")
+		}
+		if msg.ObjectName != "" {
+			return errors.Wrap(gnfderrors.ErrInvalidObjectName, "Object name should be empty")
+		}
+		return nil
+	}
 
-// 	err = s3util.CheckValidGroupName(msg.GroupName)
-// 	if err != nil {
-// 		return gnfderrors.ErrInvalidGroupName.Wrapf("invalid groupName (%s)", err)
-// 	}
+	err = s3util.CheckValidBucketName(msg.BucketName)
+	if err != nil {
+		return err
+	}
 
-// 	return nil
-// }
+	err = s3util.CheckValidObjectName(msg.ObjectName)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// NewMsgMirrorGroup creates a new MsgMirrorGroup instance
+func NewMsgMirrorGroup(operator sdk.AccAddress, destChainId sdk.ChainID, id Uint, groupName string) *MsgMirrorGroup {
+	return &MsgMirrorGroup{
+		Operator:    operator.String(),
+		DestChainId: uint32(destChainId),
+		Id:          id,
+		GroupName:   groupName,
+	}
+}
+
+// Route implements the sdk.Msg interface.
+func (msg *MsgMirrorGroup) Route() string {
+	return RouterKey
+}
+
+// Type implements the sdk.Msg interface.
+func (msg *MsgMirrorGroup) Type() string {
+	return TypeMsgMirrorGroup
+}
+
+// GetSigners implements the sdk.Msg interface.
+func (msg *MsgMirrorGroup) GetSigners() []sdk.AccAddress {
+	creator, err := sdk.AccAddressFromHexUnsafe(msg.Operator)
+	if err != nil {
+		panic(err)
+	}
+	return []sdk.AccAddress{creator}
+}
+
+// GetSignBytes returns the message bytes to sign over.
+func (msg *MsgMirrorGroup) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
+}
+
+// ValidateBasic implements the sdk.Msg interface.
+func (msg *MsgMirrorGroup) ValidateBasic() error {
+	_, err := sdk.AccAddressFromHexUnsafe(msg.Operator)
+	if err != nil {
+		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+	}
+
+	if !msg.Id.IsNil() && msg.Id.GT(sdk.NewUint(0)) {
+		if msg.GroupName != "" {
+			return errors.Wrap(gnfderrors.ErrInvalidGroupName, "Group name should be empty")
+		}
+		return nil
+	}
+
+	err = s3util.CheckValidGroupName(msg.GroupName)
+	if err != nil {
+		return gnfderrors.ErrInvalidGroupName.Wrapf("invalid groupName (%s)", err)
+	}
+
+	return nil
+}
 
 // GetSignBytes implements the LegacyMsg interface.
 func (m *MsgUpdateParams) GetSignBytes() []byte {

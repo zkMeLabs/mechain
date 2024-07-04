@@ -175,6 +175,7 @@ func NewRootCmd() (*cobra.Command, params.EncodingConfig) {
 	}
 
 	cfg := sdk.GetConfig()
+	cfg.SetCoinType(app.CoinType)
 	cfg.Seal()
 
 	a := appCreator{encodingConfig}
@@ -353,7 +354,7 @@ func (a appCreator) newApp(logger log.Logger, db dbm.DB, traceStore io.Writer, c
 		cast.ToString(appOpts.Get(flags.FlagHome)),
 		cast.ToUint(appOpts.Get(sdkserver.FlagInvCheckPeriod)),
 		a.encCfg,
-		&app.AppConfig{Config: *serverCfg},
+		&app.AppConfig{Config: *serverCfg, CrossChain: AppConfig.CrossChain, PaymentCheck: AppConfig.PaymentCheck},
 		appOpts,
 		baseapp.SetPruning(pruningOpts),
 		baseapp.SetEventing(cast.ToString(appOpts.Get(sdkserver.FlagEventing))),
