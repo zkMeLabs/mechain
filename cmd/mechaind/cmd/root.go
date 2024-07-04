@@ -175,7 +175,6 @@ func NewRootCmd() (*cobra.Command, params.EncodingConfig) {
 	}
 
 	cfg := sdk.GetConfig()
-	cfg.SetCoinType(app.CoinType)
 	cfg.Seal()
 
 	a := appCreator{encodingConfig}

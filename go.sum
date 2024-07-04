@@ -1536,8 +1536,8 @@ github.com/zkMeLabs/mechain-cosmos-sdk/simapp v0.0.0-20240702092947-e2e82fa7b665
 github.com/zkMeLabs/mechain-cosmos-sdk/simapp v0.0.0-20240702092947-e2e82fa7b665/go.mod h1:NkkIfKhBhs1y3XnEzkLk2S4jH0QKBCTwUjQYXH46LcA=
 github.com/zkMeLabs/mechain-ibc-go v0.0.0-20240704102753-35ebf276defa h1:7Ssa7ZjTFgb9/28V1IkJXSi7euVcMy5yk0GASZG+7js=
 github.com/zkMeLabs/mechain-ibc-go v0.0.0-20240704102753-35ebf276defa/go.mod h1:lyxOjCeojL5BpbfzvThx5hcKr2dBXemSM/x3DP+gGdI=
-github.com/zkMeLabs/mechain-ledger-go v0.0.0-20240606024659-869ddf6430ad h1:ghpzjafxRdy/0/t1EXIkxKHX5RU/8vrQS9I7/WD4vYk=
-github.com/zkMeLabs/mechain-ledger-go v0.0.0-20240606024659-869ddf6430ad/go.mod h1:HX1K8vy9s79PhOQd7Ctc3tzstukBDaTHafDpRc4CSwU=
+github.com/zkMeLabs/mechain-ledger-go v0.0.0-20240704110518-6d1aa37752a2 h1:F5A2nDccFuIQLjFwSY5KJzmqmI8Tnd4N9kcOcjqyLEw=
+github.com/zkMeLabs/mechain-ledger-go v0.0.0-20240704110518-6d1aa37752a2/go.mod h1:CFjz7467w4zPL09rCPl82wdy2KNOstG+hJ3Yhi2q65s=
 github.com/zondax/hid v0.9.1 h1:gQe66rtmyZ8VeGFcOpbuH3r7erYtNEAezCAYu8LdkJo=
 github.com/zondax/hid v0.9.1/go.mod h1:l5wttcP0jwtdLjqjMMWFVEE7d1zO0jvSPA9OPZxWpEM=
 github.com/zondax/ledger-go v0.14.1 h1:Pip65OOl4iJ84WTpA4BKChvOufMhhbxED3BaihoZN4c=

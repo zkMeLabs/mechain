@@ -208,7 +208,6 @@ import (
 const (
 	Name      = "mechaind"
 	ShortName = "mechaind"
-	CoinType  = 60
 )
 
 var (

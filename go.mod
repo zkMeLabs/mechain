@@ -239,7 +239,7 @@ replace (
 	github.com/cosmos/ibc-go/v7 => github.com/zkMeLabs/mechain-ibc-go v0.0.0-20240704102753-35ebf276defa
 	// use Evmos geth fork
 	github.com/ethereum/go-ethereum => github.com/evmos/go-ethereum v1.10.26-evmos-rc2
-	github.com/evmos/evmos-ledger-go => github.com/zkMeLabs/mechain-ledger-go v0.0.0-20240606024659-869ddf6430ad
+	github.com/evmos/evmos-ledger-go => github.com/zkMeLabs/mechain-ledger-go v0.0.0-20240704110518-6d1aa37752a2
 	// Security Advisory https://github.com/advisories/GHSA-h395-qcrw-5vmq
 	github.com/gin-gonic/gin => github.com/gin-gonic/gin v1.9.1
 	// use cosmos flavored protobufs
