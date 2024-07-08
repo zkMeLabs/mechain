@@ -50,10 +50,24 @@ func (c *Contract) RequiredGas(input []byte) uint64 {
 		return SealObjectGas
 	case SealObjectV2MethodName:
 		return SealObjectV2Gas
+	case UpdateObjectInfoMethodName:
+		return UpdateObjectInfoGas
 	case CreateGroupMethodName:
 		return CreateGroupGas
 	case ListGroupsMethodName:
 		return ListGroupsGas
+	case UpdateGroupMethodName:
+		return UpdateGroupGas
+	case HeadGroupMethodName:
+		return HeadGroupGas
+	case DeleteGroupMethodName:
+		return DeleteGroupGas
+	case HeadGroupMemberMethodName:
+		return HeadGroupMemberGas
+	case RenewGroupMemberMethodName:
+		return RenewGroupMemberGas
+	case SetTagForGroupMethodName:
+		return SetTagForGroupGas
 	default:
 		return 0
 	}
@@ -86,10 +100,24 @@ func (c *Contract) Run(evm *vm.EVM, contract *vm.Contract, readonly bool) (ret [
 			ret, err = c.SealObject(ctx, evm, contract, readonly)
 		case SealObjectV2MethodName:
 			ret, err = c.SealObjectV2(ctx, evm, contract, readonly)
+		case UpdateObjectInfoMethodName:
+			ret, err = c.UpdateObjectInfo(ctx, evm, contract, readonly)
 		case CreateGroupMethodName:
 			ret, err = c.CreateGroup(ctx, evm, contract, readonly)
 		case ListGroupsMethodName:
 			ret, err = c.ListGroups(ctx, evm, contract, readonly)
+		case UpdateGroupMethodName:
+			ret, err = c.UpdateGroup(ctx, evm, contract, readonly)
+		case HeadGroupMethodName:
+			ret, err = c.HeadGroup(ctx, evm, contract, readonly)
+		case DeleteGroupMethodName:
+			ret, err = c.DeleteGroup(ctx, evm, contract, readonly)
+		case HeadGroupMemberMethodName:
+			ret, err = c.HeadGroupMember(ctx, evm, contract, readonly)
+		case RenewGroupMemberMethodName:
+			ret, err = c.RenewGroupMember(ctx, evm, contract, readonly)
+		case SetTagForGroupMethodName:
+			ret, err = c.SetTagForGroup(ctx, evm, contract, readonly)
 		}
 	}
 

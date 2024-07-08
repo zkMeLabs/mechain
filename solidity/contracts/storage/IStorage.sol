@@ -157,6 +157,17 @@ struct GroupInfo {
     Tag[] tags;
 }
 
+struct GroupMember {
+    // id is an unique u256 sequence for each group member. It also be used as NFT tokenID
+    uint256 id;
+    // group_id is the unique id of the group
+    uint256 groupId;
+    // member is the account address of the member
+    address member;
+    // expiration_time defines the timestamp(UNIX) of the member expiration
+    int64 expirationTime;
+}
+
 interface IStorage {
     /**
      * @dev createBucket defines a method for create a bucket.
@@ -214,7 +225,7 @@ interface IStorage {
      */
     function listGroups(
         PageRequest calldata pagination,
-        string memory groupOwner
+        address groupOwner
     ) external view returns (GroupInfo[] memory groupInfos, PageResponse calldata pageResponse);
 
     /**
@@ -241,6 +252,15 @@ interface IStorage {
     ) external returns (bool success);
 
     /**
+     * @dev updateObjectInfo defines a method for update object visibility.
+     */
+    function updateObjectInfo(
+        string memory bucketName,
+        string memory objectName,
+        VisibilityType visibility
+    ) external returns (bool success);
+
+    /**
      * @dev createGroup defines a method for create a group.
      */
     function createGroup(
@@ -254,6 +274,59 @@ interface IStorage {
     function headBucket(
         string memory bucketName
     ) external view returns (BucketInfo memory bucketInfo, BucketExtraInfo memory bucketExtraInfo);
+
+    /**
+     * @dev headGroup queries the group's info.
+     */
+    function headGroup(
+        address groupOwner,
+        string memory groupName
+    ) external view returns (GroupInfo memory groupInfo);
+
+    /**
+     * @dev updateGroup defines a method for update a group's member.
+     */
+    function updateGroup(
+        address groupOwner,
+        string memory groupName,
+        address[] memory membersToAdd,
+        int64[] memory expirationTime,
+        address[] memory membersToDelete
+    ) external returns (bool success);
+
+    /**
+     * @dev headGroupMember queries the group member's info.
+     */
+    function headGroupMember(
+        address member,
+        address groupOwner,
+        string memory groupName
+    ) external view returns (GroupMember memory groupMember);
+
+    /**
+     * @dev deleteGroup defines a method for delete a group.
+     */
+    function deleteGroup(
+        string memory groupName
+    ) external returns (bool success);
+
+    /**
+     * @dev renewGroupMember defines a method for update the expire time of group member.
+     */
+    function renewGroupMember(
+        address groupOwner,
+        string memory groupName,
+        address[] memory members,
+        int64[] memory expirationTime
+    ) external returns (bool success);
+
+    /**
+     * @dev setTagForGroup defines a method for set tags for the given group.
+     */
+    function setTagForGroup(
+        string memory groupName,
+        Tag[] memory tags
+    ) external returns (bool success);
 
     /**
      * @dev CreateBucket defines an Event emitted when a user create a bucket
@@ -300,10 +373,35 @@ interface IStorage {
     );
 
     /**
+     * @dev UpdateObjectInfo defines an Event emitted when a user update object visibility
+     */
+    event UpdateObjectInfo(address indexed creator);
+
+    /**
      * @dev CreateGroup defines an Event emitted when a user create a group
      */
     event CreateGroup(
         address indexed creator,
         uint256 id
     );
+
+    /**
+     * @dev UpdateGroup defines an Event emitted when a user update a group's member
+     */
+    event UpdateGroup(address indexed creator);
+
+    /**
+     * @dev DeleteGroup defines an Event emitted when a user delete a group
+     */
+    event DeleteGroup(address indexed creator);
+
+    /**
+     * @dev RenewGroupMember defines an Event emitted when a user renew group member
+     */
+    event RenewGroupMember(address indexed creator);
+
+    /**
+     * @dev SetTagForGroup defines an Event emitted when a user set tags for the given group
+     */
+    event SetTagForGroup(address indexed creator);
 }

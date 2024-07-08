@@ -68,6 +68,14 @@ type GroupInfo struct {
 	Tags       []Tag
 }
 
+// GroupMember is an auto generated low-level Go binding around an user-defined struct.
+type GroupMember struct {
+	Id             *big.Int
+	GroupId        *big.Int
+	Member         common.Address
+	ExpirationTime int64
+}
+
 // ObjectInfo is an auto generated low-level Go binding around an user-defined struct.
 type ObjectInfo struct {
 	Owner               common.Address
@@ -114,7 +122,7 @@ type Tag struct {
 
 // IStorageMetaData contains all meta data concerning the IStorage contract.
 var IStorageMetaData = &bind.MetaData{
-	ABI: "[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"paymentAddress\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"primarySpAddress\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"}],\"name\":\"CreateBucket\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"string\",\"name\":\"bucketName\",\"type\":\"string\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"PaymentAddress\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint8\",\"name\":\"Visibility\",\"type\":\"uint8\"}],\"name\":\"CreateBucket\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"}],\"name\":\"CreateGroup\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"}],\"name\":\"CreateObject\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sealAddress\",\"type\":\"address\"}],\"name\":\"SealObject\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sealAddress\",\"type\":\"address\"}],\"name\":\"SealObjectV2\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"bucketName\",\"type\":\"string\"},{\"internalType\":\"enumVisibilityType\",\"name\":\"visibility\",\"type\":\"uint8\"},{\"internalType\":\"address\",\"name\":\"paymentAddress\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"primarySpAddress\",\"type\":\"address\"},{\"components\":[{\"internalType\":\"uint64\",\"name\":\"expiredHeight\",\"type\":\"uint64\"},{\"internalType\":\"uint32\",\"name\":\"globalVirtualGroupFamilyId\",\"type\":\"uint32\"},{\"internalType\":\"bytes\",\"name\":\"sig\",\"type\":\"bytes\"}],\"internalType\":\"structApproval\",\"name\":\"primarySpApproval\",\"type\":\"tuple\"},{\"internalType\":\"uint64\",\"name\":\"chargedReadQuota\",\"type\":\"uint64\"}],\"name\":\"createBucket\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"groupName\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"extra\",\"type\":\"string\"}],\"name\":\"createGroup\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"bucketName\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"objectName\",\"type\":\"string\"},{\"internalType\":\"uint64\",\"name\":\"payloadSize\",\"type\":\"uint64\"},{\"internalType\":\"enumVisibilityType\",\"name\":\"visibility\",\"type\":\"uint8\"},{\"internalType\":\"string\",\"name\":\"contentType\",\"type\":\"string\"},{\"components\":[{\"internalType\":\"uint64\",\"name\":\"expiredHeight\",\"type\":\"uint64\"},{\"internalType\":\"uint32\",\"name\":\"globalVirtualGroupFamilyId\",\"type\":\"uint32\"},{\"internalType\":\"bytes\",\"name\":\"sig\",\"type\":\"bytes\"}],\"internalType\":\"structApproval\",\"name\":\"primarySpApproval\",\"type\":\"tuple\"},{\"internalType\":\"string[]\",\"name\":\"expectChecksums\",\"type\":\"string[]\"},{\"internalType\":\"enumRedundancyType\",\"name\":\"redundancyType\",\"type\":\"uint8\"}],\"name\":\"createObject\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"bucketName\",\"type\":\"string\"}],\"name\":\"headBucket\",\"outputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"bucketName\",\"type\":\"string\"},{\"internalType\":\"enumVisibilityType\",\"name\":\"visibility\",\"type\":\"uint8\"},{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"},{\"internalType\":\"enumSourceType\",\"name\":\"sourceType\",\"type\":\"uint8\"},{\"internalType\":\"int64\",\"name\":\"createAt\",\"type\":\"int64\"},{\"internalType\":\"address\",\"name\":\"paymentAddress\",\"type\":\"address\"},{\"internalType\":\"uint32\",\"name\":\"globalVirtualGroupFamilyId\",\"type\":\"uint32\"},{\"internalType\":\"uint64\",\"name\":\"chargedReadQuota\",\"type\":\"uint64\"},{\"internalType\":\"enumBucketStatus\",\"name\":\"bucketStatus\",\"type\":\"uint8\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"key\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"value\",\"type\":\"string\"}],\"internalType\":\"structTag[]\",\"name\":\"tags\",\"type\":\"tuple[]\"},{\"internalType\":\"bool\",\"name\":\"spAsDelegatedAgentDisabled\",\"type\":\"bool\"}],\"internalType\":\"structBucketInfo\",\"name\":\"bucketInfo\",\"type\":\"tuple\"},{\"components\":[{\"internalType\":\"bool\",\"name\":\"IsRateLimited\",\"type\":\"bool\"},{\"internalType\":\"uint256\",\"name\":\"FlowRateLimit\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"CurrentFlowRate\",\"type\":\"uint256\"}],\"internalType\":\"structBucketExtraInfo\",\"name\":\"bucketExtraInfo\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"bytes\",\"name\":\"key\",\"type\":\"bytes\"},{\"internalType\":\"uint64\",\"name\":\"offset\",\"type\":\"uint64\"},{\"internalType\":\"uint64\",\"name\":\"limit\",\"type\":\"uint64\"},{\"internalType\":\"bool\",\"name\":\"countTotal\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"reverse\",\"type\":\"bool\"}],\"internalType\":\"structPageRequest\",\"name\":\"pagination\",\"type\":\"tuple\"}],\"name\":\"listBuckets\",\"outputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"bucketName\",\"type\":\"string\"},{\"internalType\":\"enumVisibilityType\",\"name\":\"visibility\",\"type\":\"uint8\"},{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"},{\"internalType\":\"enumSourceType\",\"name\":\"sourceType\",\"type\":\"uint8\"},{\"internalType\":\"int64\",\"name\":\"createAt\",\"type\":\"int64\"},{\"internalType\":\"address\",\"name\":\"paymentAddress\",\"type\":\"address\"},{\"internalType\":\"uint32\",\"name\":\"globalVirtualGroupFamilyId\",\"type\":\"uint32\"},{\"internalType\":\"uint64\",\"name\":\"chargedReadQuota\",\"type\":\"uint64\"},{\"internalType\":\"enumBucketStatus\",\"name\":\"bucketStatus\",\"type\":\"uint8\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"key\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"value\",\"type\":\"string\"}],\"internalType\":\"structTag[]\",\"name\":\"tags\",\"type\":\"tuple[]\"},{\"internalType\":\"bool\",\"name\":\"spAsDelegatedAgentDisabled\",\"type\":\"bool\"}],\"internalType\":\"structBucketInfo[]\",\"name\":\"bucketInfos\",\"type\":\"tuple[]\"},{\"components\":[{\"internalType\":\"bytes\",\"name\":\"nextKey\",\"type\":\"bytes\"},{\"internalType\":\"uint64\",\"name\":\"total\",\"type\":\"uint64\"}],\"internalType\":\"structPageResponse\",\"name\":\"pageResponse\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"bytes\",\"name\":\"key\",\"type\":\"bytes\"},{\"internalType\":\"uint64\",\"name\":\"offset\",\"type\":\"uint64\"},{\"internalType\":\"uint64\",\"name\":\"limit\",\"type\":\"uint64\"},{\"internalType\":\"bool\",\"name\":\"countTotal\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"reverse\",\"type\":\"bool\"}],\"internalType\":\"structPageRequest\",\"name\":\"pagination\",\"type\":\"tuple\"},{\"internalType\":\"string\",\"name\":\"groupOwner\",\"type\":\"string\"}],\"name\":\"listGroups\",\"outputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"groupName\",\"type\":\"string\"},{\"internalType\":\"enumSourceType\",\"name\":\"sourceType\",\"type\":\"uint8\"},{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"extra\",\"type\":\"string\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"key\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"value\",\"type\":\"string\"}],\"internalType\":\"structTag[]\",\"name\":\"tags\",\"type\":\"tuple[]\"}],\"internalType\":\"structGroupInfo[]\",\"name\":\"groupInfos\",\"type\":\"tuple[]\"},{\"components\":[{\"internalType\":\"bytes\",\"name\":\"nextKey\",\"type\":\"bytes\"},{\"internalType\":\"uint64\",\"name\":\"total\",\"type\":\"uint64\"}],\"internalType\":\"structPageResponse\",\"name\":\"pageResponse\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"bytes\",\"name\":\"key\",\"type\":\"bytes\"},{\"internalType\":\"uint64\",\"name\":\"offset\",\"type\":\"uint64\"},{\"internalType\":\"uint64\",\"name\":\"limit\",\"type\":\"uint64\"},{\"internalType\":\"bool\",\"name\":\"countTotal\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"reverse\",\"type\":\"bool\"}],\"internalType\":\"structPageRequest\",\"name\":\"pagination\",\"type\":\"tuple\"},{\"internalType\":\"string\",\"name\":\"bucketName\",\"type\":\"string\"}],\"name\":\"listObjects\",\"outputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"bucketName\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"objectName\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"},{\"internalType\":\"uint32\",\"name\":\"localVirtualGroupId\",\"type\":\"uint32\"},{\"internalType\":\"uint64\",\"name\":\"payloadSize\",\"type\":\"uint64\"},{\"internalType\":\"enumVisibilityType\",\"name\":\"visibility\",\"type\":\"uint8\"},{\"internalType\":\"string\",\"name\":\"contentType\",\"type\":\"string\"},{\"internalType\":\"int64\",\"name\":\"createAt\",\"type\":\"int64\"},{\"internalType\":\"enumObjectStatus\",\"name\":\"objectStatus\",\"type\":\"uint8\"},{\"internalType\":\"enumRedundancyType\",\"name\":\"redundancyType\",\"type\":\"uint8\"},{\"internalType\":\"enumSourceType\",\"name\":\"sourceType\",\"type\":\"uint8\"},{\"internalType\":\"string[]\",\"name\":\"checksums\",\"type\":\"string[]\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"key\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"value\",\"type\":\"string\"}],\"internalType\":\"structTag[]\",\"name\":\"tags\",\"type\":\"tuple[]\"},{\"internalType\":\"bool\",\"name\":\"isUpdating\",\"type\":\"bool\"},{\"internalType\":\"int64\",\"name\":\"updatedAt\",\"type\":\"int64\"},{\"internalType\":\"address\",\"name\":\"updatedBy\",\"type\":\"address\"},{\"internalType\":\"int64\",\"name\":\"version\",\"type\":\"int64\"}],\"internalType\":\"structObjectInfo[]\",\"name\":\"objectInfos\",\"type\":\"tuple[]\"},{\"components\":[{\"internalType\":\"bytes\",\"name\":\"nextKey\",\"type\":\"bytes\"},{\"internalType\":\"uint64\",\"name\":\"total\",\"type\":\"uint64\"}],\"internalType\":\"structPageResponse\",\"name\":\"pageResponse\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"sealAddress\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"bucketName\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"objectName\",\"type\":\"string\"},{\"internalType\":\"uint32\",\"name\":\"globalVirtualGroupId\",\"type\":\"uint32\"},{\"internalType\":\"string\",\"name\":\"secondarySpBlsAggSignatures\",\"type\":\"string\"}],\"name\":\"sealObject\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"sealAddress\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"bucketName\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"objectName\",\"type\":\"string\"},{\"internalType\":\"uint32\",\"name\":\"globalVirtualGroupId\",\"type\":\"uint32\"},{\"internalType\":\"string\",\"name\":\"secondarySpBlsAggSignatures\",\"type\":\"string\"},{\"internalType\":\"string[]\",\"name\":\"expectChecksums\",\"type\":\"string[]\"}],\"name\":\"sealObjectV2\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"bucketName\",\"type\":\"string\"},{\"internalType\":\"enumVisibilityType\",\"name\":\"visibility\",\"type\":\"uint8\"},{\"internalType\":\"address\",\"name\":\"paymentAddress\",\"type\":\"address\"},{\"internalType\":\"uint64\",\"name\":\"chargedReadQuota\",\"type\":\"uint64\"}],\"name\":\"updateBucketInfo\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
+	ABI: "[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"paymentAddress\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"primarySpAddress\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"}],\"name\":\"CreateBucket\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"}],\"name\":\"CreateGroup\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"}],\"name\":\"CreateObject\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"}],\"name\":\"DeleteGroup\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"}],\"name\":\"RenewGroupMember\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sealAddress\",\"type\":\"address\"}],\"name\":\"SealObject\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sealAddress\",\"type\":\"address\"}],\"name\":\"SealObjectV2\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"}],\"name\":\"SetTagForGroup\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"}],\"name\":\"UpdateGroup\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"}],\"name\":\"UpdateObjectInfo\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"bucketName\",\"type\":\"string\"},{\"internalType\":\"enumVisibilityType\",\"name\":\"visibility\",\"type\":\"uint8\"},{\"internalType\":\"address\",\"name\":\"paymentAddress\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"primarySpAddress\",\"type\":\"address\"},{\"components\":[{\"internalType\":\"uint64\",\"name\":\"expiredHeight\",\"type\":\"uint64\"},{\"internalType\":\"uint32\",\"name\":\"globalVirtualGroupFamilyId\",\"type\":\"uint32\"},{\"internalType\":\"bytes\",\"name\":\"sig\",\"type\":\"bytes\"}],\"internalType\":\"structApproval\",\"name\":\"primarySpApproval\",\"type\":\"tuple\"},{\"internalType\":\"uint64\",\"name\":\"chargedReadQuota\",\"type\":\"uint64\"}],\"name\":\"createBucket\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"groupName\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"extra\",\"type\":\"string\"}],\"name\":\"createGroup\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"bucketName\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"objectName\",\"type\":\"string\"},{\"internalType\":\"uint64\",\"name\":\"payloadSize\",\"type\":\"uint64\"},{\"internalType\":\"enumVisibilityType\",\"name\":\"visibility\",\"type\":\"uint8\"},{\"internalType\":\"string\",\"name\":\"contentType\",\"type\":\"string\"},{\"components\":[{\"internalType\":\"uint64\",\"name\":\"expiredHeight\",\"type\":\"uint64\"},{\"internalType\":\"uint32\",\"name\":\"globalVirtualGroupFamilyId\",\"type\":\"uint32\"},{\"internalType\":\"bytes\",\"name\":\"sig\",\"type\":\"bytes\"}],\"internalType\":\"structApproval\",\"name\":\"primarySpApproval\",\"type\":\"tuple\"},{\"internalType\":\"string[]\",\"name\":\"expectChecksums\",\"type\":\"string[]\"},{\"internalType\":\"enumRedundancyType\",\"name\":\"redundancyType\",\"type\":\"uint8\"}],\"name\":\"createObject\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"groupName\",\"type\":\"string\"}],\"name\":\"deleteGroup\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"bucketName\",\"type\":\"string\"}],\"name\":\"headBucket\",\"outputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"bucketName\",\"type\":\"string\"},{\"internalType\":\"enumVisibilityType\",\"name\":\"visibility\",\"type\":\"uint8\"},{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"},{\"internalType\":\"enumSourceType\",\"name\":\"sourceType\",\"type\":\"uint8\"},{\"internalType\":\"int64\",\"name\":\"createAt\",\"type\":\"int64\"},{\"internalType\":\"address\",\"name\":\"paymentAddress\",\"type\":\"address\"},{\"internalType\":\"uint32\",\"name\":\"globalVirtualGroupFamilyId\",\"type\":\"uint32\"},{\"internalType\":\"uint64\",\"name\":\"chargedReadQuota\",\"type\":\"uint64\"},{\"internalType\":\"enumBucketStatus\",\"name\":\"bucketStatus\",\"type\":\"uint8\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"key\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"value\",\"type\":\"string\"}],\"internalType\":\"structTag[]\",\"name\":\"tags\",\"type\":\"tuple[]\"},{\"internalType\":\"bool\",\"name\":\"spAsDelegatedAgentDisabled\",\"type\":\"bool\"}],\"internalType\":\"structBucketInfo\",\"name\":\"bucketInfo\",\"type\":\"tuple\"},{\"components\":[{\"internalType\":\"bool\",\"name\":\"IsRateLimited\",\"type\":\"bool\"},{\"internalType\":\"uint256\",\"name\":\"FlowRateLimit\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"CurrentFlowRate\",\"type\":\"uint256\"}],\"internalType\":\"structBucketExtraInfo\",\"name\":\"bucketExtraInfo\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"groupOwner\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"groupName\",\"type\":\"string\"}],\"name\":\"headGroup\",\"outputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"groupName\",\"type\":\"string\"},{\"internalType\":\"enumSourceType\",\"name\":\"sourceType\",\"type\":\"uint8\"},{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"extra\",\"type\":\"string\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"key\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"value\",\"type\":\"string\"}],\"internalType\":\"structTag[]\",\"name\":\"tags\",\"type\":\"tuple[]\"}],\"internalType\":\"structGroupInfo\",\"name\":\"groupInfo\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"member\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"groupOwner\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"groupName\",\"type\":\"string\"}],\"name\":\"headGroupMember\",\"outputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"groupId\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"member\",\"type\":\"address\"},{\"internalType\":\"int64\",\"name\":\"expirationTime\",\"type\":\"int64\"}],\"internalType\":\"structGroupMember\",\"name\":\"groupMember\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"bytes\",\"name\":\"key\",\"type\":\"bytes\"},{\"internalType\":\"uint64\",\"name\":\"offset\",\"type\":\"uint64\"},{\"internalType\":\"uint64\",\"name\":\"limit\",\"type\":\"uint64\"},{\"internalType\":\"bool\",\"name\":\"countTotal\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"reverse\",\"type\":\"bool\"}],\"internalType\":\"structPageRequest\",\"name\":\"pagination\",\"type\":\"tuple\"}],\"name\":\"listBuckets\",\"outputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"bucketName\",\"type\":\"string\"},{\"internalType\":\"enumVisibilityType\",\"name\":\"visibility\",\"type\":\"uint8\"},{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"},{\"internalType\":\"enumSourceType\",\"name\":\"sourceType\",\"type\":\"uint8\"},{\"internalType\":\"int64\",\"name\":\"createAt\",\"type\":\"int64\"},{\"internalType\":\"address\",\"name\":\"paymentAddress\",\"type\":\"address\"},{\"internalType\":\"uint32\",\"name\":\"globalVirtualGroupFamilyId\",\"type\":\"uint32\"},{\"internalType\":\"uint64\",\"name\":\"chargedReadQuota\",\"type\":\"uint64\"},{\"internalType\":\"enumBucketStatus\",\"name\":\"bucketStatus\",\"type\":\"uint8\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"key\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"value\",\"type\":\"string\"}],\"internalType\":\"structTag[]\",\"name\":\"tags\",\"type\":\"tuple[]\"},{\"internalType\":\"bool\",\"name\":\"spAsDelegatedAgentDisabled\",\"type\":\"bool\"}],\"internalType\":\"structBucketInfo[]\",\"name\":\"bucketInfos\",\"type\":\"tuple[]\"},{\"components\":[{\"internalType\":\"bytes\",\"name\":\"nextKey\",\"type\":\"bytes\"},{\"internalType\":\"uint64\",\"name\":\"total\",\"type\":\"uint64\"}],\"internalType\":\"structPageResponse\",\"name\":\"pageResponse\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"bytes\",\"name\":\"key\",\"type\":\"bytes\"},{\"internalType\":\"uint64\",\"name\":\"offset\",\"type\":\"uint64\"},{\"internalType\":\"uint64\",\"name\":\"limit\",\"type\":\"uint64\"},{\"internalType\":\"bool\",\"name\":\"countTotal\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"reverse\",\"type\":\"bool\"}],\"internalType\":\"structPageRequest\",\"name\":\"pagination\",\"type\":\"tuple\"},{\"internalType\":\"address\",\"name\":\"groupOwner\",\"type\":\"address\"}],\"name\":\"listGroups\",\"outputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"groupName\",\"type\":\"string\"},{\"internalType\":\"enumSourceType\",\"name\":\"sourceType\",\"type\":\"uint8\"},{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"extra\",\"type\":\"string\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"key\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"value\",\"type\":\"string\"}],\"internalType\":\"structTag[]\",\"name\":\"tags\",\"type\":\"tuple[]\"}],\"internalType\":\"structGroupInfo[]\",\"name\":\"groupInfos\",\"type\":\"tuple[]\"},{\"components\":[{\"internalType\":\"bytes\",\"name\":\"nextKey\",\"type\":\"bytes\"},{\"internalType\":\"uint64\",\"name\":\"total\",\"type\":\"uint64\"}],\"internalType\":\"structPageResponse\",\"name\":\"pageResponse\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"bytes\",\"name\":\"key\",\"type\":\"bytes\"},{\"internalType\":\"uint64\",\"name\":\"offset\",\"type\":\"uint64\"},{\"internalType\":\"uint64\",\"name\":\"limit\",\"type\":\"uint64\"},{\"internalType\":\"bool\",\"name\":\"countTotal\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"reverse\",\"type\":\"bool\"}],\"internalType\":\"structPageRequest\",\"name\":\"pagination\",\"type\":\"tuple\"},{\"internalType\":\"string\",\"name\":\"bucketName\",\"type\":\"string\"}],\"name\":\"listObjects\",\"outputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"bucketName\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"objectName\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"},{\"internalType\":\"uint32\",\"name\":\"localVirtualGroupId\",\"type\":\"uint32\"},{\"internalType\":\"uint64\",\"name\":\"payloadSize\",\"type\":\"uint64\"},{\"internalType\":\"enumVisibilityType\",\"name\":\"visibility\",\"type\":\"uint8\"},{\"internalType\":\"string\",\"name\":\"contentType\",\"type\":\"string\"},{\"internalType\":\"int64\",\"name\":\"createAt\",\"type\":\"int64\"},{\"internalType\":\"enumObjectStatus\",\"name\":\"objectStatus\",\"type\":\"uint8\"},{\"internalType\":\"enumRedundancyType\",\"name\":\"redundancyType\",\"type\":\"uint8\"},{\"internalType\":\"enumSourceType\",\"name\":\"sourceType\",\"type\":\"uint8\"},{\"internalType\":\"string[]\",\"name\":\"checksums\",\"type\":\"string[]\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"key\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"value\",\"type\":\"string\"}],\"internalType\":\"structTag[]\",\"name\":\"tags\",\"type\":\"tuple[]\"},{\"internalType\":\"bool\",\"name\":\"isUpdating\",\"type\":\"bool\"},{\"internalType\":\"int64\",\"name\":\"updatedAt\",\"type\":\"int64\"},{\"internalType\":\"address\",\"name\":\"updatedBy\",\"type\":\"address\"},{\"internalType\":\"int64\",\"name\":\"version\",\"type\":\"int64\"}],\"internalType\":\"structObjectInfo[]\",\"name\":\"objectInfos\",\"type\":\"tuple[]\"},{\"components\":[{\"internalType\":\"bytes\",\"name\":\"nextKey\",\"type\":\"bytes\"},{\"internalType\":\"uint64\",\"name\":\"total\",\"type\":\"uint64\"}],\"internalType\":\"structPageResponse\",\"name\":\"pageResponse\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"groupOwner\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"groupName\",\"type\":\"string\"},{\"internalType\":\"address[]\",\"name\":\"members\",\"type\":\"address[]\"},{\"internalType\":\"int64[]\",\"name\":\"expirationTime\",\"type\":\"int64[]\"}],\"name\":\"renewGroupMember\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"sealAddress\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"bucketName\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"objectName\",\"type\":\"string\"},{\"internalType\":\"uint32\",\"name\":\"globalVirtualGroupId\",\"type\":\"uint32\"},{\"internalType\":\"string\",\"name\":\"secondarySpBlsAggSignatures\",\"type\":\"string\"}],\"name\":\"sealObject\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"sealAddress\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"bucketName\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"objectName\",\"type\":\"string\"},{\"internalType\":\"uint32\",\"name\":\"globalVirtualGroupId\",\"type\":\"uint32\"},{\"internalType\":\"string\",\"name\":\"secondarySpBlsAggSignatures\",\"type\":\"string\"},{\"internalType\":\"string[]\",\"name\":\"expectChecksums\",\"type\":\"string[]\"}],\"name\":\"sealObjectV2\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"groupName\",\"type\":\"string\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"key\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"value\",\"type\":\"string\"}],\"internalType\":\"structTag[]\",\"name\":\"tags\",\"type\":\"tuple[]\"}],\"name\":\"setTagForGroup\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"groupOwner\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"groupName\",\"type\":\"string\"},{\"internalType\":\"address[]\",\"name\":\"membersToAdd\",\"type\":\"address[]\"},{\"internalType\":\"int64[]\",\"name\":\"expirationTime\",\"type\":\"int64[]\"},{\"internalType\":\"address[]\",\"name\":\"membersToDelete\",\"type\":\"address[]\"}],\"name\":\"updateGroup\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"bucketName\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"objectName\",\"type\":\"string\"},{\"internalType\":\"enumVisibilityType\",\"name\":\"visibility\",\"type\":\"uint8\"}],\"name\":\"updateObjectInfo\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
 }
 
 // IStorageABI is the input ABI used to generate the binding from.
@@ -308,6 +316,68 @@ func (_IStorage *IStorageCallerSession) HeadBucket(bucketName string) (struct {
 	return _IStorage.Contract.HeadBucket(&_IStorage.CallOpts, bucketName)
 }
 
+// HeadGroup is a free data retrieval call binding the contract method 0x88c070b5.
+//
+// Solidity: function headGroup(address groupOwner, string groupName) view returns((address,string,uint8,uint256,string,(string,string)[]) groupInfo)
+func (_IStorage *IStorageCaller) HeadGroup(opts *bind.CallOpts, groupOwner common.Address, groupName string) (GroupInfo, error) {
+	var out []interface{}
+	err := _IStorage.contract.Call(opts, &out, "headGroup", groupOwner, groupName)
+
+	if err != nil {
+		return *new(GroupInfo), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(GroupInfo)).(*GroupInfo)
+
+	return out0, err
+
+}
+
+// HeadGroup is a free data retrieval call binding the contract method 0x88c070b5.
+//
+// Solidity: function headGroup(address groupOwner, string groupName) view returns((address,string,uint8,uint256,string,(string,string)[]) groupInfo)
+func (_IStorage *IStorageSession) HeadGroup(groupOwner common.Address, groupName string) (GroupInfo, error) {
+	return _IStorage.Contract.HeadGroup(&_IStorage.CallOpts, groupOwner, groupName)
+}
+
+// HeadGroup is a free data retrieval call binding the contract method 0x88c070b5.
+//
+// Solidity: function headGroup(address groupOwner, string groupName) view returns((address,string,uint8,uint256,string,(string,string)[]) groupInfo)
+func (_IStorage *IStorageCallerSession) HeadGroup(groupOwner common.Address, groupName string) (GroupInfo, error) {
+	return _IStorage.Contract.HeadGroup(&_IStorage.CallOpts, groupOwner, groupName)
+}
+
+// HeadGroupMember is a free data retrieval call binding the contract method 0xd4a00c23.
+//
+// Solidity: function headGroupMember(address member, address groupOwner, string groupName) view returns((uint256,uint256,address,int64) groupMember)
+func (_IStorage *IStorageCaller) HeadGroupMember(opts *bind.CallOpts, member common.Address, groupOwner common.Address, groupName string) (GroupMember, error) {
+	var out []interface{}
+	err := _IStorage.contract.Call(opts, &out, "headGroupMember", member, groupOwner, groupName)
+
+	if err != nil {
+		return *new(GroupMember), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(GroupMember)).(*GroupMember)
+
+	return out0, err
+
+}
+
+// HeadGroupMember is a free data retrieval call binding the contract method 0xd4a00c23.
+//
+// Solidity: function headGroupMember(address member, address groupOwner, string groupName) view returns((uint256,uint256,address,int64) groupMember)
+func (_IStorage *IStorageSession) HeadGroupMember(member common.Address, groupOwner common.Address, groupName string) (GroupMember, error) {
+	return _IStorage.Contract.HeadGroupMember(&_IStorage.CallOpts, member, groupOwner, groupName)
+}
+
+// HeadGroupMember is a free data retrieval call binding the contract method 0xd4a00c23.
+//
+// Solidity: function headGroupMember(address member, address groupOwner, string groupName) view returns((uint256,uint256,address,int64) groupMember)
+func (_IStorage *IStorageCallerSession) HeadGroupMember(member common.Address, groupOwner common.Address, groupName string) (GroupMember, error) {
+	return _IStorage.Contract.HeadGroupMember(&_IStorage.CallOpts, member, groupOwner, groupName)
+}
+
 // ListBuckets is a free data retrieval call binding the contract method 0x60c8f8d2.
 //
 // Solidity: function listBuckets((bytes,uint64,uint64,bool,bool) pagination) view returns((address,string,uint8,uint256,uint8,int64,address,uint32,uint64,uint8,(string,string)[],bool)[] bucketInfos, (bytes,uint64) pageResponse)
@@ -353,10 +423,10 @@ func (_IStorage *IStorageCallerSession) ListBuckets(pagination PageRequest) (str
 	return _IStorage.Contract.ListBuckets(&_IStorage.CallOpts, pagination)
 }
 
-// ListGroups is a free data retrieval call binding the contract method 0xb8e92c80.
+// ListGroups is a free data retrieval call binding the contract method 0x6d294e2b.
 //
-// Solidity: function listGroups((bytes,uint64,uint64,bool,bool) pagination, string groupOwner) view returns((address,string,uint8,uint256,string,(string,string)[])[] groupInfos, (bytes,uint64) pageResponse)
-func (_IStorage *IStorageCaller) ListGroups(opts *bind.CallOpts, pagination PageRequest, groupOwner string) (struct {
+// Solidity: function listGroups((bytes,uint64,uint64,bool,bool) pagination, address groupOwner) view returns((address,string,uint8,uint256,string,(string,string)[])[] groupInfos, (bytes,uint64) pageResponse)
+func (_IStorage *IStorageCaller) ListGroups(opts *bind.CallOpts, pagination PageRequest, groupOwner common.Address) (struct {
 	GroupInfos   []GroupInfo
 	PageResponse PageResponse
 }, error) {
@@ -378,20 +448,20 @@ func (_IStorage *IStorageCaller) ListGroups(opts *bind.CallOpts, pagination Page
 
 }
 
-// ListGroups is a free data retrieval call binding the contract method 0xb8e92c80.
+// ListGroups is a free data retrieval call binding the contract method 0x6d294e2b.
 //
-// Solidity: function listGroups((bytes,uint64,uint64,bool,bool) pagination, string groupOwner) view returns((address,string,uint8,uint256,string,(string,string)[])[] groupInfos, (bytes,uint64) pageResponse)
-func (_IStorage *IStorageSession) ListGroups(pagination PageRequest, groupOwner string) (struct {
+// Solidity: function listGroups((bytes,uint64,uint64,bool,bool) pagination, address groupOwner) view returns((address,string,uint8,uint256,string,(string,string)[])[] groupInfos, (bytes,uint64) pageResponse)
+func (_IStorage *IStorageSession) ListGroups(pagination PageRequest, groupOwner common.Address) (struct {
 	GroupInfos   []GroupInfo
 	PageResponse PageResponse
 }, error) {
 	return _IStorage.Contract.ListGroups(&_IStorage.CallOpts, pagination, groupOwner)
 }
 
-// ListGroups is a free data retrieval call binding the contract method 0xb8e92c80.
+// ListGroups is a free data retrieval call binding the contract method 0x6d294e2b.
 //
-// Solidity: function listGroups((bytes,uint64,uint64,bool,bool) pagination, string groupOwner) view returns((address,string,uint8,uint256,string,(string,string)[])[] groupInfos, (bytes,uint64) pageResponse)
-func (_IStorage *IStorageCallerSession) ListGroups(pagination PageRequest, groupOwner string) (struct {
+// Solidity: function listGroups((bytes,uint64,uint64,bool,bool) pagination, address groupOwner) view returns((address,string,uint8,uint256,string,(string,string)[])[] groupInfos, (bytes,uint64) pageResponse)
+func (_IStorage *IStorageCallerSession) ListGroups(pagination PageRequest, groupOwner common.Address) (struct {
 	GroupInfos   []GroupInfo
 	PageResponse PageResponse
 }, error) {
@@ -506,6 +576,48 @@ func (_IStorage *IStorageTransactorSession) CreateObject(bucketName string, obje
 	return _IStorage.Contract.CreateObject(&_IStorage.TransactOpts, bucketName, objectName, payloadSize, visibility, contentType, primarySpApproval, expectChecksums, redundancyType)
 }
 
+// DeleteGroup is a paid mutator transaction binding the contract method 0x2e8b92a9.
+//
+// Solidity: function deleteGroup(string groupName) returns(bool success)
+func (_IStorage *IStorageTransactor) DeleteGroup(opts *bind.TransactOpts, groupName string) (*types.Transaction, error) {
+	return _IStorage.contract.Transact(opts, "deleteGroup", groupName)
+}
+
+// DeleteGroup is a paid mutator transaction binding the contract method 0x2e8b92a9.
+//
+// Solidity: function deleteGroup(string groupName) returns(bool success)
+func (_IStorage *IStorageSession) DeleteGroup(groupName string) (*types.Transaction, error) {
+	return _IStorage.Contract.DeleteGroup(&_IStorage.TransactOpts, groupName)
+}
+
+// DeleteGroup is a paid mutator transaction binding the contract method 0x2e8b92a9.
+//
+// Solidity: function deleteGroup(string groupName) returns(bool success)
+func (_IStorage *IStorageTransactorSession) DeleteGroup(groupName string) (*types.Transaction, error) {
+	return _IStorage.Contract.DeleteGroup(&_IStorage.TransactOpts, groupName)
+}
+
+// RenewGroupMember is a paid mutator transaction binding the contract method 0x3a248669.
+//
+// Solidity: function renewGroupMember(address groupOwner, string groupName, address[] members, int64[] expirationTime) returns(bool success)
+func (_IStorage *IStorageTransactor) RenewGroupMember(opts *bind.TransactOpts, groupOwner common.Address, groupName string, members []common.Address, expirationTime []int64) (*types.Transaction, error) {
+	return _IStorage.contract.Transact(opts, "renewGroupMember", groupOwner, groupName, members, expirationTime)
+}
+
+// RenewGroupMember is a paid mutator transaction binding the contract method 0x3a248669.
+//
+// Solidity: function renewGroupMember(address groupOwner, string groupName, address[] members, int64[] expirationTime) returns(bool success)
+func (_IStorage *IStorageSession) RenewGroupMember(groupOwner common.Address, groupName string, members []common.Address, expirationTime []int64) (*types.Transaction, error) {
+	return _IStorage.Contract.RenewGroupMember(&_IStorage.TransactOpts, groupOwner, groupName, members, expirationTime)
+}
+
+// RenewGroupMember is a paid mutator transaction binding the contract method 0x3a248669.
+//
+// Solidity: function renewGroupMember(address groupOwner, string groupName, address[] members, int64[] expirationTime) returns(bool success)
+func (_IStorage *IStorageTransactorSession) RenewGroupMember(groupOwner common.Address, groupName string, members []common.Address, expirationTime []int64) (*types.Transaction, error) {
+	return _IStorage.Contract.RenewGroupMember(&_IStorage.TransactOpts, groupOwner, groupName, members, expirationTime)
+}
+
 // SealObject is a paid mutator transaction binding the contract method 0xcb95c612.
 //
 // Solidity: function sealObject(address sealAddress, string bucketName, string objectName, uint32 globalVirtualGroupId, string secondarySpBlsAggSignatures) returns(bool success)
@@ -548,25 +660,67 @@ func (_IStorage *IStorageTransactorSession) SealObjectV2(sealAddress common.Addr
 	return _IStorage.Contract.SealObjectV2(&_IStorage.TransactOpts, sealAddress, bucketName, objectName, globalVirtualGroupId, secondarySpBlsAggSignatures, expectChecksums)
 }
 
-// UpdateBucketInfo is a paid mutator transaction binding the contract method 0xa79c9f78.
+// SetTagForGroup is a paid mutator transaction binding the contract method 0x46268406.
 //
-// Solidity: function updateBucketInfo(string bucketName, uint8 visibility, address paymentAddress, uint64 chargedReadQuota) returns(bool success)
-func (_IStorage *IStorageTransactor) UpdateBucketInfo(opts *bind.TransactOpts, bucketName string, visibility uint8, paymentAddress common.Address, chargedReadQuota uint64) (*types.Transaction, error) {
-	return _IStorage.contract.Transact(opts, "updateBucketInfo", bucketName, visibility, paymentAddress, chargedReadQuota)
+// Solidity: function setTagForGroup(string groupName, (string,string)[] tags) returns(bool success)
+func (_IStorage *IStorageTransactor) SetTagForGroup(opts *bind.TransactOpts, groupName string, tags []Tag) (*types.Transaction, error) {
+	return _IStorage.contract.Transact(opts, "setTagForGroup", groupName, tags)
 }
 
-// UpdateBucketInfo is a paid mutator transaction binding the contract method 0xa79c9f78.
+// SetTagForGroup is a paid mutator transaction binding the contract method 0x46268406.
 //
-// Solidity: function updateBucketInfo(string bucketName, uint8 visibility, address paymentAddress, uint64 chargedReadQuota) returns(bool success)
-func (_IStorage *IStorageSession) UpdateBucketInfo(bucketName string, visibility uint8, paymentAddress common.Address, chargedReadQuota uint64) (*types.Transaction, error) {
-	return _IStorage.Contract.UpdateBucketInfo(&_IStorage.TransactOpts, bucketName, visibility, paymentAddress, chargedReadQuota)
+// Solidity: function setTagForGroup(string groupName, (string,string)[] tags) returns(bool success)
+func (_IStorage *IStorageSession) SetTagForGroup(groupName string, tags []Tag) (*types.Transaction, error) {
+	return _IStorage.Contract.SetTagForGroup(&_IStorage.TransactOpts, groupName, tags)
 }
 
-// UpdateBucketInfo is a paid mutator transaction binding the contract method 0xa79c9f78.
+// SetTagForGroup is a paid mutator transaction binding the contract method 0x46268406.
 //
-// Solidity: function updateBucketInfo(string bucketName, uint8 visibility, address paymentAddress, uint64 chargedReadQuota) returns(bool success)
-func (_IStorage *IStorageTransactorSession) UpdateBucketInfo(bucketName string, visibility uint8, paymentAddress common.Address, chargedReadQuota uint64) (*types.Transaction, error) {
-	return _IStorage.Contract.UpdateBucketInfo(&_IStorage.TransactOpts, bucketName, visibility, paymentAddress, chargedReadQuota)
+// Solidity: function setTagForGroup(string groupName, (string,string)[] tags) returns(bool success)
+func (_IStorage *IStorageTransactorSession) SetTagForGroup(groupName string, tags []Tag) (*types.Transaction, error) {
+	return _IStorage.Contract.SetTagForGroup(&_IStorage.TransactOpts, groupName, tags)
+}
+
+// UpdateGroup is a paid mutator transaction binding the contract method 0xc966a7cc.
+//
+// Solidity: function updateGroup(address groupOwner, string groupName, address[] membersToAdd, int64[] expirationTime, address[] membersToDelete) returns(bool success)
+func (_IStorage *IStorageTransactor) UpdateGroup(opts *bind.TransactOpts, groupOwner common.Address, groupName string, membersToAdd []common.Address, expirationTime []int64, membersToDelete []common.Address) (*types.Transaction, error) {
+	return _IStorage.contract.Transact(opts, "updateGroup", groupOwner, groupName, membersToAdd, expirationTime, membersToDelete)
+}
+
+// UpdateGroup is a paid mutator transaction binding the contract method 0xc966a7cc.
+//
+// Solidity: function updateGroup(address groupOwner, string groupName, address[] membersToAdd, int64[] expirationTime, address[] membersToDelete) returns(bool success)
+func (_IStorage *IStorageSession) UpdateGroup(groupOwner common.Address, groupName string, membersToAdd []common.Address, expirationTime []int64, membersToDelete []common.Address) (*types.Transaction, error) {
+	return _IStorage.Contract.UpdateGroup(&_IStorage.TransactOpts, groupOwner, groupName, membersToAdd, expirationTime, membersToDelete)
+}
+
+// UpdateGroup is a paid mutator transaction binding the contract method 0xc966a7cc.
+//
+// Solidity: function updateGroup(address groupOwner, string groupName, address[] membersToAdd, int64[] expirationTime, address[] membersToDelete) returns(bool success)
+func (_IStorage *IStorageTransactorSession) UpdateGroup(groupOwner common.Address, groupName string, membersToAdd []common.Address, expirationTime []int64, membersToDelete []common.Address) (*types.Transaction, error) {
+	return _IStorage.Contract.UpdateGroup(&_IStorage.TransactOpts, groupOwner, groupName, membersToAdd, expirationTime, membersToDelete)
+}
+
+// UpdateObjectInfo is a paid mutator transaction binding the contract method 0xf167e687.
+//
+// Solidity: function updateObjectInfo(string bucketName, string objectName, uint8 visibility) returns(bool success)
+func (_IStorage *IStorageTransactor) UpdateObjectInfo(opts *bind.TransactOpts, bucketName string, objectName string, visibility uint8) (*types.Transaction, error) {
+	return _IStorage.contract.Transact(opts, "updateObjectInfo", bucketName, objectName, visibility)
+}
+
+// UpdateObjectInfo is a paid mutator transaction binding the contract method 0xf167e687.
+//
+// Solidity: function updateObjectInfo(string bucketName, string objectName, uint8 visibility) returns(bool success)
+func (_IStorage *IStorageSession) UpdateObjectInfo(bucketName string, objectName string, visibility uint8) (*types.Transaction, error) {
+	return _IStorage.Contract.UpdateObjectInfo(&_IStorage.TransactOpts, bucketName, objectName, visibility)
+}
+
+// UpdateObjectInfo is a paid mutator transaction binding the contract method 0xf167e687.
+//
+// Solidity: function updateObjectInfo(string bucketName, string objectName, uint8 visibility) returns(bool success)
+func (_IStorage *IStorageTransactorSession) UpdateObjectInfo(bucketName string, objectName string, visibility uint8) (*types.Transaction, error) {
+	return _IStorage.Contract.UpdateObjectInfo(&_IStorage.TransactOpts, bucketName, objectName, visibility)
 }
 
 // IStorageCreateBucketIterator is returned from FilterCreateBucket and is used to iterate over the raw logs and unpacked data for CreateBucket events raised by the IStorage contract.
@@ -1185,6 +1339,294 @@ func (_IStorage *IStorageFilterer) ParseCreateObject(log types.Log) (*IStorageCr
 	return event, nil
 }
 
+// IStorageDeleteGroupIterator is returned from FilterDeleteGroup and is used to iterate over the raw logs and unpacked data for DeleteGroup events raised by the IStorage contract.
+type IStorageDeleteGroupIterator struct {
+	Event *IStorageDeleteGroup // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *IStorageDeleteGroupIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(IStorageDeleteGroup)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(IStorageDeleteGroup)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *IStorageDeleteGroupIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *IStorageDeleteGroupIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// IStorageDeleteGroup represents a DeleteGroup event raised by the IStorage contract.
+type IStorageDeleteGroup struct {
+	Creator common.Address
+	Raw     types.Log // Blockchain specific contextual infos
+}
+
+// FilterDeleteGroup is a free log retrieval operation binding the contract event 0xc4258be7f08176821b6d80b1eb490b28c3a886aa9d7d9fa1df3b19e9e0c149f3.
+//
+// Solidity: event DeleteGroup(address indexed creator)
+func (_IStorage *IStorageFilterer) FilterDeleteGroup(opts *bind.FilterOpts, creator []common.Address) (*IStorageDeleteGroupIterator, error) {
+
+	var creatorRule []interface{}
+	for _, creatorItem := range creator {
+		creatorRule = append(creatorRule, creatorItem)
+	}
+
+	logs, sub, err := _IStorage.contract.FilterLogs(opts, "DeleteGroup", creatorRule)
+	if err != nil {
+		return nil, err
+	}
+	return &IStorageDeleteGroupIterator{contract: _IStorage.contract, event: "DeleteGroup", logs: logs, sub: sub}, nil
+}
+
+// WatchDeleteGroup is a free log subscription operation binding the contract event 0xc4258be7f08176821b6d80b1eb490b28c3a886aa9d7d9fa1df3b19e9e0c149f3.
+//
+// Solidity: event DeleteGroup(address indexed creator)
+func (_IStorage *IStorageFilterer) WatchDeleteGroup(opts *bind.WatchOpts, sink chan<- *IStorageDeleteGroup, creator []common.Address) (event.Subscription, error) {
+
+	var creatorRule []interface{}
+	for _, creatorItem := range creator {
+		creatorRule = append(creatorRule, creatorItem)
+	}
+
+	logs, sub, err := _IStorage.contract.WatchLogs(opts, "DeleteGroup", creatorRule)
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(IStorageDeleteGroup)
+				if err := _IStorage.contract.UnpackLog(event, "DeleteGroup", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseDeleteGroup is a log parse operation binding the contract event 0xc4258be7f08176821b6d80b1eb490b28c3a886aa9d7d9fa1df3b19e9e0c149f3.
+//
+// Solidity: event DeleteGroup(address indexed creator)
+func (_IStorage *IStorageFilterer) ParseDeleteGroup(log types.Log) (*IStorageDeleteGroup, error) {
+	event := new(IStorageDeleteGroup)
+	if err := _IStorage.contract.UnpackLog(event, "DeleteGroup", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
+// IStorageRenewGroupMemberIterator is returned from FilterRenewGroupMember and is used to iterate over the raw logs and unpacked data for RenewGroupMember events raised by the IStorage contract.
+type IStorageRenewGroupMemberIterator struct {
+	Event *IStorageRenewGroupMember // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *IStorageRenewGroupMemberIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(IStorageRenewGroupMember)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(IStorageRenewGroupMember)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *IStorageRenewGroupMemberIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *IStorageRenewGroupMemberIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// IStorageRenewGroupMember represents a RenewGroupMember event raised by the IStorage contract.
+type IStorageRenewGroupMember struct {
+	Creator common.Address
+	Raw     types.Log // Blockchain specific contextual infos
+}
+
+// FilterRenewGroupMember is a free log retrieval operation binding the contract event 0x25951b953380a3fb2f6ba0aa76d234904bbc3718509f8c5e5f86489694070090.
+//
+// Solidity: event RenewGroupMember(address indexed creator)
+func (_IStorage *IStorageFilterer) FilterRenewGroupMember(opts *bind.FilterOpts, creator []common.Address) (*IStorageRenewGroupMemberIterator, error) {
+
+	var creatorRule []interface{}
+	for _, creatorItem := range creator {
+		creatorRule = append(creatorRule, creatorItem)
+	}
+
+	logs, sub, err := _IStorage.contract.FilterLogs(opts, "RenewGroupMember", creatorRule)
+	if err != nil {
+		return nil, err
+	}
+	return &IStorageRenewGroupMemberIterator{contract: _IStorage.contract, event: "RenewGroupMember", logs: logs, sub: sub}, nil
+}
+
+// WatchRenewGroupMember is a free log subscription operation binding the contract event 0x25951b953380a3fb2f6ba0aa76d234904bbc3718509f8c5e5f86489694070090.
+//
+// Solidity: event RenewGroupMember(address indexed creator)
+func (_IStorage *IStorageFilterer) WatchRenewGroupMember(opts *bind.WatchOpts, sink chan<- *IStorageRenewGroupMember, creator []common.Address) (event.Subscription, error) {
+
+	var creatorRule []interface{}
+	for _, creatorItem := range creator {
+		creatorRule = append(creatorRule, creatorItem)
+	}
+
+	logs, sub, err := _IStorage.contract.WatchLogs(opts, "RenewGroupMember", creatorRule)
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(IStorageRenewGroupMember)
+				if err := _IStorage.contract.UnpackLog(event, "RenewGroupMember", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseRenewGroupMember is a log parse operation binding the contract event 0x25951b953380a3fb2f6ba0aa76d234904bbc3718509f8c5e5f86489694070090.
+//
+// Solidity: event RenewGroupMember(address indexed creator)
+func (_IStorage *IStorageFilterer) ParseRenewGroupMember(log types.Log) (*IStorageRenewGroupMember, error) {
+	event := new(IStorageRenewGroupMember)
+	if err := _IStorage.contract.UnpackLog(event, "RenewGroupMember", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
 // IStorageSealObjectIterator is returned from FilterSealObject and is used to iterate over the raw logs and unpacked data for SealObject events raised by the IStorage contract.
 type IStorageSealObjectIterator struct {
 	Event *IStorageSealObject // Event containing the contract specifics and raw log
@@ -1485,6 +1927,438 @@ func (_IStorage *IStorageFilterer) WatchSealObjectV2(opts *bind.WatchOpts, sink 
 func (_IStorage *IStorageFilterer) ParseSealObjectV2(log types.Log) (*IStorageSealObjectV2, error) {
 	event := new(IStorageSealObjectV2)
 	if err := _IStorage.contract.UnpackLog(event, "SealObjectV2", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
+// IStorageSetTagForGroupIterator is returned from FilterSetTagForGroup and is used to iterate over the raw logs and unpacked data for SetTagForGroup events raised by the IStorage contract.
+type IStorageSetTagForGroupIterator struct {
+	Event *IStorageSetTagForGroup // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *IStorageSetTagForGroupIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(IStorageSetTagForGroup)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(IStorageSetTagForGroup)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *IStorageSetTagForGroupIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *IStorageSetTagForGroupIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// IStorageSetTagForGroup represents a SetTagForGroup event raised by the IStorage contract.
+type IStorageSetTagForGroup struct {
+	Creator common.Address
+	Raw     types.Log // Blockchain specific contextual infos
+}
+
+// FilterSetTagForGroup is a free log retrieval operation binding the contract event 0x7673c5e4ad61c5965fc99eb3459def3c9cd8a1ebdada003f97ede074bddb84f6.
+//
+// Solidity: event SetTagForGroup(address indexed creator)
+func (_IStorage *IStorageFilterer) FilterSetTagForGroup(opts *bind.FilterOpts, creator []common.Address) (*IStorageSetTagForGroupIterator, error) {
+
+	var creatorRule []interface{}
+	for _, creatorItem := range creator {
+		creatorRule = append(creatorRule, creatorItem)
+	}
+
+	logs, sub, err := _IStorage.contract.FilterLogs(opts, "SetTagForGroup", creatorRule)
+	if err != nil {
+		return nil, err
+	}
+	return &IStorageSetTagForGroupIterator{contract: _IStorage.contract, event: "SetTagForGroup", logs: logs, sub: sub}, nil
+}
+
+// WatchSetTagForGroup is a free log subscription operation binding the contract event 0x7673c5e4ad61c5965fc99eb3459def3c9cd8a1ebdada003f97ede074bddb84f6.
+//
+// Solidity: event SetTagForGroup(address indexed creator)
+func (_IStorage *IStorageFilterer) WatchSetTagForGroup(opts *bind.WatchOpts, sink chan<- *IStorageSetTagForGroup, creator []common.Address) (event.Subscription, error) {
+
+	var creatorRule []interface{}
+	for _, creatorItem := range creator {
+		creatorRule = append(creatorRule, creatorItem)
+	}
+
+	logs, sub, err := _IStorage.contract.WatchLogs(opts, "SetTagForGroup", creatorRule)
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(IStorageSetTagForGroup)
+				if err := _IStorage.contract.UnpackLog(event, "SetTagForGroup", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseSetTagForGroup is a log parse operation binding the contract event 0x7673c5e4ad61c5965fc99eb3459def3c9cd8a1ebdada003f97ede074bddb84f6.
+//
+// Solidity: event SetTagForGroup(address indexed creator)
+func (_IStorage *IStorageFilterer) ParseSetTagForGroup(log types.Log) (*IStorageSetTagForGroup, error) {
+	event := new(IStorageSetTagForGroup)
+	if err := _IStorage.contract.UnpackLog(event, "SetTagForGroup", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
+// IStorageUpdateGroupIterator is returned from FilterUpdateGroup and is used to iterate over the raw logs and unpacked data for UpdateGroup events raised by the IStorage contract.
+type IStorageUpdateGroupIterator struct {
+	Event *IStorageUpdateGroup // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *IStorageUpdateGroupIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(IStorageUpdateGroup)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(IStorageUpdateGroup)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *IStorageUpdateGroupIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *IStorageUpdateGroupIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// IStorageUpdateGroup represents a UpdateGroup event raised by the IStorage contract.
+type IStorageUpdateGroup struct {
+	Creator common.Address
+	Raw     types.Log // Blockchain specific contextual infos
+}
+
+// FilterUpdateGroup is a free log retrieval operation binding the contract event 0xe6783cc561026c566511a9d9b537069bd52e48ef5766e0220f1ab532dc962b66.
+//
+// Solidity: event UpdateGroup(address indexed creator)
+func (_IStorage *IStorageFilterer) FilterUpdateGroup(opts *bind.FilterOpts, creator []common.Address) (*IStorageUpdateGroupIterator, error) {
+
+	var creatorRule []interface{}
+	for _, creatorItem := range creator {
+		creatorRule = append(creatorRule, creatorItem)
+	}
+
+	logs, sub, err := _IStorage.contract.FilterLogs(opts, "UpdateGroup", creatorRule)
+	if err != nil {
+		return nil, err
+	}
+	return &IStorageUpdateGroupIterator{contract: _IStorage.contract, event: "UpdateGroup", logs: logs, sub: sub}, nil
+}
+
+// WatchUpdateGroup is a free log subscription operation binding the contract event 0xe6783cc561026c566511a9d9b537069bd52e48ef5766e0220f1ab532dc962b66.
+//
+// Solidity: event UpdateGroup(address indexed creator)
+func (_IStorage *IStorageFilterer) WatchUpdateGroup(opts *bind.WatchOpts, sink chan<- *IStorageUpdateGroup, creator []common.Address) (event.Subscription, error) {
+
+	var creatorRule []interface{}
+	for _, creatorItem := range creator {
+		creatorRule = append(creatorRule, creatorItem)
+	}
+
+	logs, sub, err := _IStorage.contract.WatchLogs(opts, "UpdateGroup", creatorRule)
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(IStorageUpdateGroup)
+				if err := _IStorage.contract.UnpackLog(event, "UpdateGroup", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseUpdateGroup is a log parse operation binding the contract event 0xe6783cc561026c566511a9d9b537069bd52e48ef5766e0220f1ab532dc962b66.
+//
+// Solidity: event UpdateGroup(address indexed creator)
+func (_IStorage *IStorageFilterer) ParseUpdateGroup(log types.Log) (*IStorageUpdateGroup, error) {
+	event := new(IStorageUpdateGroup)
+	if err := _IStorage.contract.UnpackLog(event, "UpdateGroup", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
+// IStorageUpdateObjectInfoIterator is returned from FilterUpdateObjectInfo and is used to iterate over the raw logs and unpacked data for UpdateObjectInfo events raised by the IStorage contract.
+type IStorageUpdateObjectInfoIterator struct {
+	Event *IStorageUpdateObjectInfo // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *IStorageUpdateObjectInfoIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(IStorageUpdateObjectInfo)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(IStorageUpdateObjectInfo)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *IStorageUpdateObjectInfoIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *IStorageUpdateObjectInfoIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// IStorageUpdateObjectInfo represents a UpdateObjectInfo event raised by the IStorage contract.
+type IStorageUpdateObjectInfo struct {
+	Creator common.Address
+	Raw     types.Log // Blockchain specific contextual infos
+}
+
+// FilterUpdateObjectInfo is a free log retrieval operation binding the contract event 0x36b6cd148113bd68cf4f008f817459149021b90b5ff3ed0ecf51b58c61d620cd.
+//
+// Solidity: event UpdateObjectInfo(address indexed creator)
+func (_IStorage *IStorageFilterer) FilterUpdateObjectInfo(opts *bind.FilterOpts, creator []common.Address) (*IStorageUpdateObjectInfoIterator, error) {
+
+	var creatorRule []interface{}
+	for _, creatorItem := range creator {
+		creatorRule = append(creatorRule, creatorItem)
+	}
+
+	logs, sub, err := _IStorage.contract.FilterLogs(opts, "UpdateObjectInfo", creatorRule)
+	if err != nil {
+		return nil, err
+	}
+	return &IStorageUpdateObjectInfoIterator{contract: _IStorage.contract, event: "UpdateObjectInfo", logs: logs, sub: sub}, nil
+}
+
+// WatchUpdateObjectInfo is a free log subscription operation binding the contract event 0x36b6cd148113bd68cf4f008f817459149021b90b5ff3ed0ecf51b58c61d620cd.
+//
+// Solidity: event UpdateObjectInfo(address indexed creator)
+func (_IStorage *IStorageFilterer) WatchUpdateObjectInfo(opts *bind.WatchOpts, sink chan<- *IStorageUpdateObjectInfo, creator []common.Address) (event.Subscription, error) {
+
+	var creatorRule []interface{}
+	for _, creatorItem := range creator {
+		creatorRule = append(creatorRule, creatorItem)
+	}
+
+	logs, sub, err := _IStorage.contract.WatchLogs(opts, "UpdateObjectInfo", creatorRule)
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(IStorageUpdateObjectInfo)
+				if err := _IStorage.contract.UnpackLog(event, "UpdateObjectInfo", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseUpdateObjectInfo is a log parse operation binding the contract event 0x36b6cd148113bd68cf4f008f817459149021b90b5ff3ed0ecf51b58c61d620cd.
+//
+// Solidity: event UpdateObjectInfo(address indexed creator)
+func (_IStorage *IStorageFilterer) ParseUpdateObjectInfo(log types.Log) (*IStorageUpdateObjectInfo, error) {
+	event := new(IStorageUpdateObjectInfo)
+	if err := _IStorage.contract.UnpackLog(event, "UpdateObjectInfo", log); err != nil {
 		return nil, err
 	}
 	event.Raw = log

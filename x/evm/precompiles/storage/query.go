@@ -13,15 +13,19 @@ import (
 )
 
 const (
-	ListBucketsGas = 50_000
-	ListObjectsGas = 50_000
-	ListGroupsGas  = 50_000
-	HeadBucketGas  = 50_000
+	ListBucketsGas     = 50_000
+	ListObjectsGas     = 50_000
+	ListGroupsGas      = 50_000
+	HeadBucketGas      = 50_000
+	HeadGroupGas       = 50_000
+	HeadGroupMemberGas = 50_000
 
-	ListBucketsMethodName = "listBuckets"
-	ListObjectsMethodName = "listObjects"
-	ListGroupsMethodName  = "listGroups"
-	HeadBucketMethodName  = "headBucket"
+	ListBucketsMethodName     = "listBuckets"
+	ListObjectsMethodName     = "listObjects"
+	ListGroupsMethodName      = "listGroups"
+	HeadBucketMethodName      = "headBucket"
+	HeadGroupMethodName       = "headGroup"
+	HeadGroupMemberMethodName = "headGroupMember"
 )
 
 // ListBuckets queries the total buckets.
@@ -186,7 +190,7 @@ func (c *Contract) ListGroups(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract,
 			CountTotal: args.Pagination.CountTotal,
 			Reverse:    args.Pagination.Reverse,
 		},
-		GroupOwner: args.GroupOwner,
+		GroupOwner: args.GroupOwner.String(),
 	}
 
 	res, err := c.storageKeeper.ListGroups(ctx, msg)
@@ -274,4 +278,78 @@ func (c *Contract) HeadBucket(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract,
 	}
 
 	return method.Outputs.Pack(bucketInfo, extraInfo)
+}
+
+// HeadGroup queries the group's info.
+func (c *Contract) HeadGroup(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract, _ bool) ([]byte, error) {
+	method := MustMethod(HeadGroupMethodName)
+
+	// parse args
+	var args HeadGroupArgs
+	if err := types.ParseMethodArgs(method, &args, contract.Input[4:]); err != nil {
+		return nil, err
+	}
+
+	msg := &storagetypes.QueryHeadGroupRequest{
+		GroupOwner: args.GroupOwner.String(),
+		GroupName:  args.GroupName,
+	}
+
+	res, err := c.storageKeeper.HeadGroup(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
+
+	var tags []Tag
+	if res.GroupInfo.Tags != nil {
+		for _, tag := range res.GroupInfo.Tags.Tags {
+			tags = append(tags, Tag{
+				Key:   tag.Key,
+				Value: tag.Value,
+			})
+		}
+	}
+
+	groupInfo := GroupInfo{
+		Owner:      common.HexToAddress(res.GroupInfo.Owner),
+		GroupName:  res.GroupInfo.GroupName,
+		SourceType: uint8(res.GroupInfo.SourceType),
+		Id:         res.GroupInfo.Id.BigInt(),
+		Extra:      res.GroupInfo.Extra,
+		Tags:       tags,
+	}
+
+	return method.Outputs.Pack(groupInfo)
+}
+
+// HeadGroupMember queries the group member's info.
+func (c *Contract) HeadGroupMember(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract, _ bool) ([]byte, error) {
+	method := MustMethod(HeadGroupMemberMethodName)
+
+	// parse args
+	var args HeadGroupMemberArgs
+	if err := types.ParseMethodArgs(method, &args, contract.Input[4:]); err != nil {
+		return nil, err
+	}
+
+	msg := &storagetypes.QueryHeadGroupMemberRequest{
+		Member:     args.Member.String(),
+		GroupOwner: args.GroupOwner.String(),
+		GroupName:  args.GroupName,
+	}
+
+	res, err := c.storageKeeper.HeadGroupMember(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
+	expirationTime := res.GroupMember.ExpirationTime.Unix()
+
+	groupMemberInfo := GroupMember{
+		Id:             res.GroupMember.Id.BigInt(),
+		GroupId:        res.GroupMember.GroupId.BigInt(),
+		Member:         common.HexToAddress(res.GroupMember.Member),
+		ExpirationTime: expirationTime,
+	}
+
+	return method.Outputs.Pack(groupMemberInfo)
 }

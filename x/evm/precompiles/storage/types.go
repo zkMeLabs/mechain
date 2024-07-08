@@ -138,7 +138,7 @@ func (args *ListObjectsArgs) Validate() error {
 }
 
 type SealObjectArgs struct {
-	SealAddress                 common.Address `abi:"sealAddress"`
+	SealAddress                 common.Address `abi:"sealAddress"` // primary sp's operater addr or secondary sp's seal addr
 	BucketName                  string         `abi:"bucketName"`
 	ObjectName                  string         `abi:"objectName"`
 	GlobalVirtualGroupId        uint32         `abi:"globalVirtualGroupId"`
@@ -151,7 +151,7 @@ func (args *SealObjectArgs) Validate() error {
 }
 
 type SealObjectV2Args struct {
-	SealAddress                 common.Address `abi:"sealAddress"`
+	SealAddress                 common.Address `abi:"sealAddress"` // primary sp's operater addr or secondary sp's seal addr
 	BucketName                  string         `abi:"bucketName"`
 	ObjectName                  string         `abi:"objectName"`
 	GlobalVirtualGroupId        uint32         `abi:"globalVirtualGroupId"`
@@ -161,6 +161,17 @@ type SealObjectV2Args struct {
 
 // Validate SealObjectV2Args args
 func (args *SealObjectV2Args) Validate() error {
+	return nil
+}
+
+type UpdateObjectInfoArgs struct {
+	BucketName string `abi:"bucketName"`
+	ObjectName string `abi:"objectName"`
+	Visibility uint8  `abi:"visibility"`
+}
+
+// Validate UpdateObjectInfoArgs args
+func (args *UpdateObjectInfoArgs) Validate() error {
 	return nil
 }
 
@@ -176,10 +187,75 @@ func (args *CreateGroupArgs) Validate() error {
 
 type ListGroupsArgs struct {
 	Pagination PageRequestJson `abi:"pagination"`
-	GroupOwner string          `abi:"groupOwner"`
+	GroupOwner common.Address  `abi:"groupOwner"`
 }
 
 // Validate ListGroupsArgs the args
 func (args *ListGroupsArgs) Validate() error {
+	return nil
+}
+
+type UpdateGroupArgs struct {
+	GroupOwner      common.Address   `abi:"groupOwner"`
+	GroupName       string           `abi:"groupName"`
+	MembersToAdd    []common.Address `abi:"membersToAdd"`
+	ExpirationTime  []int64          `abi:"expirationTime"`
+	MembersToDelete []common.Address `abi:"membersToDelete"`
+}
+
+// Validate UpdateGroupArgs the args
+func (args *UpdateGroupArgs) Validate() error {
+	return nil
+}
+
+type HeadGroupArgs struct {
+	GroupOwner common.Address `abi:"groupOwner"`
+	GroupName  string         `abi:"groupName"`
+}
+
+// Validate HeadGroupArgs the args
+func (args *HeadGroupArgs) Validate() error {
+	return nil
+}
+
+type DeleteGroupArgs struct {
+	GroupName string `abi:"groupName"`
+}
+
+// Validate DeleteGroupArgs the args
+func (args *DeleteGroupArgs) Validate() error {
+	return nil
+}
+
+type HeadGroupMemberArgs struct {
+	Member     common.Address `abi:"member"`
+	GroupOwner common.Address `abi:"groupOwner"`
+	GroupName  string         `abi:"groupName"`
+}
+
+// Validate HeadGroupMemberArgs the args
+func (args *HeadGroupMemberArgs) Validate() error {
+	return nil
+}
+
+type RenewGroupMemberArgs struct {
+	GroupOwner     common.Address   `abi:"groupOwner"`
+	GroupName      string           `abi:"groupName"`
+	Members        []common.Address `abi:"members"`
+	ExpirationTime []int64          `abi:"expirationTime"`
+}
+
+// Validate RenewGroupMemberArgs the args
+func (args *RenewGroupMemberArgs) Validate() error {
+	return nil
+}
+
+type SetTagForGroupArgs struct {
+	GroupName string `abi:"groupName"`
+	Tags      []Tag  `abi:"tags"`
+}
+
+// Validate SetTagForGroupArgs the args
+func (args *SetTagForGroupArgs) Validate() error {
 	return nil
 }
