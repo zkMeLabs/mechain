@@ -52,7 +52,7 @@ const (
 	DeleteGroupEventName      = "DeleteGroup"
 	RenewGroupMemberEventName = "RenewGroupMember"
 	SetTagForGroupEventName   = "SetTagForGroup"
-	UpdateBucketInfoEventName = "UpdateBucket"
+	UpdateBucketInfoEventName = "UpdateBucketInfo"
 )
 
 func (c *Contract) CreateBucket(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {

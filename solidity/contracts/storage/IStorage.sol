@@ -339,9 +339,9 @@ interface IStorage {
     );
 
     /**
-     * @dev UpdateBucket defines an Event emitted when a user update a bucket
+     * @dev UpdateBucketInfo defines an Event emitted when a user update a bucket
      */
-    event CreateBucket(
+    event UpdateBucketInfo(
         address indexed operator,
         string indexed bucketName,
         address indexed PaymentAddress,
