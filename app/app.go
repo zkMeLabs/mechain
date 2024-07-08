@@ -686,6 +686,7 @@ func NewEvmos(
 		app.PermissionmoduleKeeper,
 		// app.CrossChainKeeper,
 		app.VirtualgroupKeeper,
+		app.EvmKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 	storageModule := storagemodule.NewAppModule(appCodec, app.StorageKeeper, app.AccountKeeper, app.BankKeeper, app.SpKeeper)

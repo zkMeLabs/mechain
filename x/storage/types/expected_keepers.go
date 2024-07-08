@@ -2,6 +2,11 @@ package types
 
 import (
 	"context"
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/core"
+	"github.com/ethereum/go-ethereum/core/vm"
+	"github.com/evmos/evmos/v12/x/evm/statedb"
+	evmtypes "github.com/evmos/evmos/v12/x/evm/types"
 	time "time"
 
 	"cosmossdk.io/math"
@@ -19,6 +24,7 @@ import (
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)
 type AccountKeeper interface {
+	GetSequence(sdk.Context, sdk.AccAddress) (uint64, error)
 	GetAccount(ctx sdk.Context, addr sdk.AccAddress) authtypes.AccountI
 	GetModuleAddress(name string) sdk.AccAddress
 	// Methods imported from account should be defined here
@@ -143,4 +149,12 @@ type StorageMsgServer interface {
 	CancelMigrateBucket(context.Context, *MsgCancelMigrateBucket) (*MsgCancelMigrateBucketResponse, error)
 	SetTag(context.Context, *MsgSetTag) (*MsgSetTagResponse, error)
 	SetBucketFlowRateLimit(context.Context, *MsgSetBucketFlowRateLimit) (*MsgSetBucketFlowRateLimitResponse, error)
+}
+
+// EVMKeeper defines the expected EVM keeper interface used on erc20
+type EVMKeeper interface {
+	GetParams(ctx sdk.Context) evmtypes.Params
+	GetAccountWithoutBalance(ctx sdk.Context, addr common.Address) *statedb.Account
+	EstimateGas(c context.Context, req *evmtypes.EthCallRequest) (*evmtypes.EstimateGasResponse, error)
+	ApplyMessage(ctx sdk.Context, msg core.Message, tracer vm.EVMLogger, commit bool) (*evmtypes.MsgEthereumTxResponse, error)
 }
