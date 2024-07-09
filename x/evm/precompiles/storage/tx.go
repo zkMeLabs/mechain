@@ -120,18 +120,26 @@ func (c *Contract) UpdateBucketInfo(ctx sdk.Context, evm *vm.EVM, contract *vm.C
 	if err := types.ParseMethodArgs(method, &args, contract.Input[4:]); err != nil {
 		return nil, err
 	}
+	
+	bucketInfo, found :=c.storageKeeper.GetBucketInfo(ctx, args.BucketName)
+	if !found {
+		return nil, errors.New("bucket not found")
+	}
+
 	msg := &storagetypes.MsgUpdateBucketInfo{
 		Operator:   contract.CallerAddress.String(),
 		BucketName: args.BucketName,
+		Visibility: bucketInfo.Visibility,
+		PaymentAddress: args.PaymentAddress.String(),
+		ChargedReadQuota: &mechaincommon.UInt64Value{Value: uint64(bucketInfo.ChargedReadQuota)},
 	}
-	if args.UpdateMask&uint8(UpdateBucketInfoMaskVisibility) != 0 {
+
+	if args.Visibility != -1 {
 		msg.Visibility = storagetypes.VisibilityType(args.Visibility)
 	}
-	if args.UpdateMask&uint8(UpdateBucketInfoMaskPaymentAddress) != 0 {
-		msg.PaymentAddress = args.PaymentAddress.String()
-	}
-	if args.UpdateMask&uint8(UpdateBucketInfoMaskChargedReadQuota) != 0 {
-		msg.ChargedReadQuota = &mechaincommon.UInt64Value{Value: uint64(args.ChargedReadQuota)}
+
+	if args.ChargedReadQuota.Int64() != -1{
+		msg.ChargedReadQuota = &mechaincommon.UInt64Value{Value: uint64(args.ChargedReadQuota.Uint64())}
 	}
 
 	if err := msg.ValidateBasic(); err != nil {

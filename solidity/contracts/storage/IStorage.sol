@@ -187,10 +187,9 @@ interface IStorage {
      */
     function updateBucketInfo(
         string memory bucketName,
-        VisibilityType visibility,
+        int8 visibility,
         address paymentAddress,
-        uint64 chargedReadQuota,
-        uint8 updateMask // 1: visibility, 2: paymentAddress, 4: chargedReadQuota
+        int128 chargedReadQuota
     ) external returns (bool success);
 
     /**
@@ -347,7 +346,7 @@ interface IStorage {
         address indexed operator,
         bytes32 indexed bucketName,
         address indexed PaymentAddress,
-        uint8 Visibility
+        int8 Visibility
     );
 
     /**

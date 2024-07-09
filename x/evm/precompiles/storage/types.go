@@ -4,10 +4,12 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"math/big"
 
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/evmos/evmos/v12/types"
+	storagetypes "github.com/evmos/evmos/v12/x/storage/types"
 )
 
 var (
@@ -82,22 +84,11 @@ func (args *CreateBucketArgs) Validate() error {
 	return nil
 }
 
-// UpdateBucketInfoMask is the status to update.
-type UpdateBucketInfoMask uint8
-
-const (
-	UpdateBucketInfoMaskNone UpdateBucketInfoMask = iota
-	UpdateBucketInfoMaskVisibility = 1
-	UpdateBucketInfoMaskPaymentAddress = 2
-	UpdateBucketInfoMaskChargedReadQuota = 4
-)
-
 type UpdateBucketInfoArgs struct {
-	BucketName        string         `abi:"bucketName"`
-	ChargedReadQuota  uint64         `abi:"chargedReadQuota"`
-	PaymentAddress    common.Address `abi:"paymentAddress"`
-	Visibility        uint8          `abi:"visibility"`
-	UpdateMask 	  	  uint8         `abi:"updateMask"`
+	BucketName       string         `abi:"bucketName"`
+	ChargedReadQuota *big.Int       `abi:"chargedReadQuota"`
+	PaymentAddress   common.Address `abi:"paymentAddress"`
+	Visibility       int8           `abi:"visibility"`
 }
 
 // Validate CreateBucketArgs args
@@ -105,8 +96,14 @@ func (args *UpdateBucketInfoArgs) Validate() error {
 	if args.BucketName == "" {
 		return errors.New("empty bucket name")
 	}
-	if args.UpdateMask == uint8(UpdateBucketInfoMaskNone) {
-		return errors.New("no update mask")
+
+	if args.ChargedReadQuota.Int64() != -1 && !args.ChargedReadQuota.IsUint64() {
+		return errors.New("charged read quota is invalid")
+	}
+
+	if args.Visibility != -1 && storagetypes.VisibilityType(args.Visibility) != storagetypes.VISIBILITY_TYPE_PRIVATE &&
+		storagetypes.VisibilityType(args.Visibility) != storagetypes.VISIBILITY_TYPE_PUBLIC_READ {
+		return errors.New("visibility is invalid")
 	}
 	return nil
 }
@@ -156,7 +153,7 @@ func (args *ListObjectsArgs) Validate() error {
 }
 
 type SealObjectArgs struct {
-	SealAddress                 common.Address `abi:"sealAddress"` // primary sp's operater addr or secondary sp's seal addr
+	SealAddress                 common.Address `abi:"sealAddress"` // primary sp's operator addr or secondary sp's seal addr
 	BucketName                  string         `abi:"bucketName"`
 	ObjectName                  string         `abi:"objectName"`
 	GlobalVirtualGroupId        uint32         `abi:"globalVirtualGroupId"`
@@ -169,7 +166,7 @@ func (args *SealObjectArgs) Validate() error {
 }
 
 type SealObjectV2Args struct {
-	SealAddress                 common.Address `abi:"sealAddress"` // primary sp's operater addr or secondary sp's seal addr
+	SealAddress                 common.Address `abi:"sealAddress"` // primary sp's operator addr or secondary sp's seal addr
 	BucketName                  string         `abi:"bucketName"`
 	ObjectName                  string         `abi:"objectName"`
 	GlobalVirtualGroupId        uint32         `abi:"globalVirtualGroupId"`
