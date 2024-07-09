@@ -423,7 +423,9 @@ func (k Keeper) UpdateBucketInfo(ctx sdk.Context, operator sdk.AccAddress, bucke
 		// save quota update time
 		k.setQuotaUpdateTime(ctx, bucketInfo.Id, blockTime)
 	}
-
+	if opts.Visibility > types.VISIBILITY_TYPE_INHERIT {
+		return types.ErrInvalidVisibility
+	}
 	if opts.Visibility != types.VISIBILITY_TYPE_UNSPECIFIED {
 		bucketInfo.Visibility = opts.Visibility
 	}
