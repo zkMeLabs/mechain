@@ -9,7 +9,6 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/evmos/evmos/v12/types"
-	storagetypes "github.com/evmos/evmos/v12/x/storage/types"
 )
 
 var (
@@ -99,11 +98,6 @@ func (args *UpdateBucketInfoArgs) Validate() error {
 
 	if args.ChargedReadQuota.Int64() != -1 && !args.ChargedReadQuota.IsUint64() {
 		return errors.New("charged read quota is invalid")
-	}
-
-	if args.Visibility != -1 && storagetypes.VisibilityType(args.Visibility) != storagetypes.VISIBILITY_TYPE_PRIVATE &&
-		storagetypes.VisibilityType(args.Visibility) != storagetypes.VISIBILITY_TYPE_PUBLIC_READ {
-		return errors.New("visibility is invalid")
 	}
 	return nil
 }

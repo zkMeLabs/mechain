@@ -121,24 +121,16 @@ func (c *Contract) UpdateBucketInfo(ctx sdk.Context, evm *vm.EVM, contract *vm.C
 		return nil, err
 	}
 	
-	bucketInfo, found :=c.storageKeeper.GetBucketInfo(ctx, args.BucketName)
-	if !found {
-		return nil, errors.New("bucket not found")
-	}
-
 	msg := &storagetypes.MsgUpdateBucketInfo{
 		Operator:   contract.CallerAddress.String(),
 		BucketName: args.BucketName,
-		Visibility: bucketInfo.Visibility,
-		PaymentAddress: args.PaymentAddress.String(),
-		ChargedReadQuota: &mechaincommon.UInt64Value{Value: uint64(bucketInfo.ChargedReadQuota)},
+		Visibility: storagetypes.VisibilityType(args.Visibility),
+		PaymentAddress: args.PaymentAddress.String(),		
 	}
 
-	if args.Visibility != -1 {
-		msg.Visibility = storagetypes.VisibilityType(args.Visibility)
-	}
-
-	if args.ChargedReadQuota.Int64() != -1{
+	if args.ChargedReadQuota.Int64() == -1{
+		msg.ChargedReadQuota =nil
+	} else {
 		msg.ChargedReadQuota = &mechaincommon.UInt64Value{Value: uint64(args.ChargedReadQuota.Uint64())}
 	}
 
