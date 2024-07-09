@@ -181,6 +181,17 @@ interface IStorage {
         uint64 chargedReadQuota
     ) external returns (bool success);
 
+
+    /**
+     * @dev updateBucketInfo defines a method for update a bucket.
+     */
+    function updateBucketInfo(
+        string memory bucketName,
+        VisibilityType visibility,
+        address paymentAddress,
+        int128 chargedReadQuota
+    ) external returns (bool success);
+
     /**
      * @dev createObject defines a method for create a object.
      */
@@ -326,6 +337,16 @@ interface IStorage {
         address indexed paymentAddress,
         address indexed primarySpAddress,
         uint256 id
+    );
+
+    /**
+     * @dev UpdateBucketInfo defines an Event emitted when a user update a bucket
+     */
+    event UpdateBucketInfo(
+        address indexed operator,
+        bytes32 indexed bucketName,
+        address indexed paymentAddress,
+        uint8 visibility
     );
 
     /**

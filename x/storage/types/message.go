@@ -289,6 +289,10 @@ func (msg *MsgUpdateBucketInfo) ValidateBasic() error {
 		return err
 	}
 
+	if msg.Visibility > VISIBILITY_TYPE_INHERIT {
+		return ErrInvalidVisibility
+	}
+
 	if msg.PaymentAddress != "" {
 		_, err = sdk.AccAddressFromHexUnsafe(msg.PaymentAddress)
 		if err != nil {

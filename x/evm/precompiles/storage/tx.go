@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/crypto"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/ethereum/go-ethereum/core/vm"
@@ -28,6 +29,7 @@ const (
 	DeleteGroupGas      = 60_000
 	RenewGroupMemberGas = 60_000
 	SetTagForGroupGas   = 60_000
+	UpdateBucketInfoGas = 60_000
 
 	CreateBucketMethodName     = "createBucket"
 	CreateObjectMethodName     = "createObject"
@@ -39,6 +41,7 @@ const (
 	DeleteGroupMethodName      = "deleteGroup"
 	RenewGroupMemberMethodName = "renewGroupMember"
 	SetTagForGroupMethodName   = "setTagForGroup"
+	UpdateBucketInfoMethodName = "updateBucketInfo"
 
 	CreateBucketEventName     = "CreateBucket"
 	CreateObjectEventName     = "CreateObject"
@@ -50,6 +53,7 @@ const (
 	DeleteGroupEventName      = "DeleteGroup"
 	RenewGroupMemberEventName = "RenewGroupMember"
 	SetTagForGroupEventName   = "SetTagForGroup"
+	UpdateBucketInfoEventName = "UpdateBucketInfo"
 )
 
 func (c *Contract) CreateBucket(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
@@ -103,6 +107,50 @@ func (c *Contract) CreateBucket(ctx sdk.Context, evm *vm.EVM, contract *vm.Contr
 		return nil, err
 	}
 
+	return method.Outputs.Pack(true)
+}
+
+func (c *Contract) UpdateBucketInfo(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
+	if readonly {
+		return nil, errors.New("update bucket method readonly")
+	}
+	method := MustMethod(UpdateBucketInfoMethodName)
+
+	var args UpdateBucketInfoArgs
+	if err := types.ParseMethodArgs(method, &args, contract.Input[4:]); err != nil {
+		return nil, err
+	}
+
+	msg := &storagetypes.MsgUpdateBucketInfo{
+		Operator:       contract.CallerAddress.String(),
+		BucketName:     args.BucketName,
+		Visibility:     storagetypes.VisibilityType(args.Visibility),
+		PaymentAddress: args.PaymentAddress.String(),
+	}
+	if args.PaymentAddress == (common.Address{}) {
+		msg.PaymentAddress = ""
+	}
+	if args.ChargedReadQuota.Int64() == -1 {
+		msg.ChargedReadQuota = nil
+	} else {
+		msg.ChargedReadQuota = &mechaincommon.UInt64Value{Value: uint64(args.ChargedReadQuota.Uint64())}
+	}
+
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
+	server := storagekeeper.NewMsgServerImpl(c.storageKeeper)
+	if _, err := server.UpdateBucketInfo(ctx, msg); err != nil {
+		return nil, err
+	}
+	bucketNameHash := crypto.Keccak256([]byte(args.BucketName))
+	if err := c.AddLog(evm, MustEvent(UpdateBucketInfoEventName), []common.Hash{
+		common.BytesToHash(contract.Caller().Bytes()),
+		common.BytesToHash(bucketNameHash),
+		common.BytesToHash(args.PaymentAddress.Bytes()),
+	}, args.Visibility); err != nil {
+		return nil, err
+	}
 	return method.Outputs.Pack(true)
 }
 

@@ -36,6 +36,8 @@ func (c *Contract) RequiredGas(input []byte) uint64 {
 	switch method.Name {
 	case CreateBucketMethodName:
 		return CreateBucketGas
+	case UpdateBucketInfoMethodName:
+		return UpdateBucketInfoGas
 	case ListBucketsMethodName:
 		return ListBucketsGas
 	case HeadBucketMethodName:
@@ -84,6 +86,8 @@ func (c *Contract) Run(evm *vm.EVM, contract *vm.Contract, readonly bool) (ret [
 		switch method.Name {
 		case CreateBucketMethodName:
 			ret, err = c.CreateBucket(ctx, evm, contract, readonly)
+		case UpdateBucketInfoMethodName:
+			ret, err = c.UpdateBucketInfo(ctx, evm, contract, readonly)
 		case ListBucketsMethodName:
 			ret, err = c.ListBuckets(ctx, evm, contract, readonly)
 		case HeadBucketMethodName:
