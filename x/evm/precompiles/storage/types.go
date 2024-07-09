@@ -87,7 +87,7 @@ type UpdateBucketInfoArgs struct {
 	BucketName       string         `abi:"bucketName"`
 	ChargedReadQuota *big.Int       `abi:"chargedReadQuota"`
 	PaymentAddress   common.Address `abi:"paymentAddress"`
-	Visibility       int8           `abi:"visibility"`
+	Visibility       uint8          `abi:"visibility"`
 }
 
 // Validate CreateBucketArgs args
