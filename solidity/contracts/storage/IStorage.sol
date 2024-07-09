@@ -345,7 +345,7 @@ interface IStorage {
     event UpdateBucketInfo(
         address indexed operator,
         bytes32 indexed bucketName,
-        address indexed PaymentAddress,
+        address indexed paymentAddress,
         int8 Visibility
     );
 
