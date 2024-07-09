@@ -117,41 +117,37 @@ func (c *Contract) UpdateBucketInfo(ctx sdk.Context, evm *vm.EVM, contract *vm.C
 	method := MustMethod(UpdateBucketInfoMethodName)
 
 	var args UpdateBucketInfoArgs
-	if err:= types.ParseMethodArgs(method, &args, contract.Input[4:]); err != nil {
-		return nil,err
+	if err := types.ParseMethodArgs(method, &args, contract.Input[4:]); err != nil {
+		return nil, err
 	}
-	msg:=&storagetypes.MsgUpdateBucketInfo{
-		Operator: contract.CallerAddress.String(),
-		BucketName: args.BucketName,		
-		
+	msg := &storagetypes.MsgUpdateBucketInfo{
+		Operator:   contract.CallerAddress.String(),
+		BucketName: args.BucketName,
 	}
-	if args.UpdateMask == uint8(UpdateBucketInfoMaskNone) {
-		return nil, errors.New("no update mask")
-	}
-	if args.UpdateMask & uint8(UpdateBucketInfoMaskVisibility) != 0 {
+	if args.UpdateMask&uint8(UpdateBucketInfoMaskVisibility) != 0 {
 		msg.Visibility = storagetypes.VisibilityType(args.Visibility)
 	}
-	if args.UpdateMask & uint8(UpdateBucketInfoMaskPaymentAddress) != 0 {
+	if args.UpdateMask&uint8(UpdateBucketInfoMaskPaymentAddress) != 0 {
 		msg.PaymentAddress = args.PaymentAddress.String()
 	}
-	if args.UpdateMask & uint8(UpdateBucketInfoMaskChargedReadQuota) != 0 {
+	if args.UpdateMask&uint8(UpdateBucketInfoMaskChargedReadQuota) != 0 {
 		msg.ChargedReadQuota = &mechaincommon.UInt64Value{Value: uint64(args.ChargedReadQuota)}
 	}
-	
-	if err:=msg.ValidateBasic();err!=nil {
-		return nil,err
+
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
 	}
 	server := storagekeeper.NewMsgServerImpl(c.storageKeeper)
-	if _,err:=server.UpdateBucketInfo(ctx,msg); err!=nil {
-		return nil,err
+	if _, err := server.UpdateBucketInfo(ctx, msg); err != nil {
+		return nil, err
 	}
 	bucketNameHash := crypto.Keccak256([]byte(args.BucketName))
-	if err:=c.AddLog(evm, MustEvent(UpdateBucketInfoEventName),[]common.Hash{
+	if err := c.AddLog(evm, MustEvent(UpdateBucketInfoEventName), []common.Hash{
 		common.BytesToHash(contract.Caller().Bytes()),
-		common.BytesToHash(bucketNameHash),	
+		common.BytesToHash(bucketNameHash),
 		common.BytesToHash(args.PaymentAddress.Bytes()),
-	},args.Visibility)	;err!=nil {
-		return nil,err
+	}, args.Visibility); err != nil {
+		return nil, err
 	}
 	return method.Outputs.Pack(true)
 }
@@ -358,7 +354,7 @@ func (c *Contract) UpdateObjectInfo(ctx sdk.Context, evm *vm.EVM, contract *vm.C
 	if err != nil {
 		return nil, err
 	}
-	
+
 	// add log
 	if err := c.AddLog(
 		evm,

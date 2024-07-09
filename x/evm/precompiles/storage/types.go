@@ -2,12 +2,12 @@ package storage
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/evmos/evmos/v12/types"
-	storagetypes "github.com/evmos/evmos/v12/x/storage/types"
 )
 
 var (
@@ -87,21 +87,27 @@ type UpdateBucketInfoMask uint8
 
 const (
 	UpdateBucketInfoMaskNone UpdateBucketInfoMask = iota
-	UpdateBucketInfoMaskVisibility
-	UpdateBucketInfoMaskPaymentAddress
-	UpdateBucketInfoMaskChargedReadQuota
+	UpdateBucketInfoMaskVisibility = 1
+	UpdateBucketInfoMaskPaymentAddress = 2
+	UpdateBucketInfoMaskChargedReadQuota = 4
 )
 
 type UpdateBucketInfoArgs struct {
 	BucketName        string         `abi:"bucketName"`
 	ChargedReadQuota  uint64         `abi:"chargedReadQuota"`
 	PaymentAddress    common.Address `abi:"paymentAddress"`
-	Visibility        storagetypes.VisibilityType          `abi:"visibility"`
+	Visibility        uint8          `abi:"visibility"`
 	UpdateMask 	  	  uint8         `abi:"updateMask"`
 }
 
 // Validate CreateBucketArgs args
 func (args *UpdateBucketInfoArgs) Validate() error {
+	if args.BucketName == "" {
+		return errors.New("empty bucket name")
+	}
+	if args.UpdateMask == uint8(UpdateBucketInfoMaskNone) {
+		return errors.New("no update mask")
+	}
 	return nil
 }
 
