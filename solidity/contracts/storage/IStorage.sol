@@ -181,6 +181,12 @@ interface IStorage {
         uint64 chargedReadQuota
     ) external returns (bool success);
 
+    enum UpdateBucketInfoMask {
+        None,
+        Visibility,
+        PaymentAddress,
+        ChargedReadQuota
+    }
     /**
      * @dev updateBucketInfo defines a method for update a bucket.
      */
@@ -188,7 +194,8 @@ interface IStorage {
         string memory bucketName,
         VisibilityType visibility,
         address paymentAddress,
-        uint64 chargedReadQuota
+        uint64 chargedReadQuota,
+        uint8 updateMask
     ) external returns (bool success);
 
     /**
@@ -343,7 +350,7 @@ interface IStorage {
      */
     event UpdateBucketInfo(
         address indexed operator,
-        string indexed bucketName,
+        bytes32 indexed bucketName,
         address indexed PaymentAddress,
         uint8 Visibility
     );

@@ -7,6 +7,7 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/evmos/evmos/v12/types"
+	storagetypes "github.com/evmos/evmos/v12/x/storage/types"
 )
 
 var (
@@ -81,15 +82,26 @@ func (args *CreateBucketArgs) Validate() error {
 	return nil
 }
 
-type UpdateBucketArgs struct {
+// UpdateBucketInfoMask is the status to update.
+type UpdateBucketInfoMask uint8
+
+const (
+	UpdateBucketInfoMaskNone UpdateBucketInfoMask = iota
+	UpdateBucketInfoMaskVisibility
+	UpdateBucketInfoMaskPaymentAddress
+	UpdateBucketInfoMaskChargedReadQuota
+)
+
+type UpdateBucketInfoArgs struct {
 	BucketName        string         `abi:"bucketName"`
 	ChargedReadQuota  uint64         `abi:"chargedReadQuota"`
 	PaymentAddress    common.Address `abi:"paymentAddress"`
-	Visibility        uint8          `abi:"visibility"`
+	Visibility        storagetypes.VisibilityType          `abi:"visibility"`
+	UpdateMask 	  	  uint8         `abi:"updateMask"`
 }
 
 // Validate CreateBucketArgs args
-func (args *UpdateBucketArgs) Validate() error {
+func (args *UpdateBucketInfoArgs) Validate() error {
 	return nil
 }
 
