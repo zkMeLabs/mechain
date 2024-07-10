@@ -284,3 +284,15 @@ func (args *HeadObjectArgs) Validate() error {
 	}
 	return nil
 }
+
+type HeadObjectByIdArgs struct {
+	ObjectId string `abi:"objectId"`
+}
+
+// Validate HeadObjectArgs the args
+func (args *HeadObjectByIdArgs) Validate() error {
+	if args.ObjectId == "" {
+		return errors.New("empty object id")
+	}
+	return nil
+}

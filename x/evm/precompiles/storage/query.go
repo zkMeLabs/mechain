@@ -3,6 +3,7 @@ package storage
 import (
 	"bytes"
 	"encoding/base64"
+	"encoding/hex"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
@@ -10,6 +11,7 @@ import (
 	"github.com/ethereum/go-ethereum/core/vm"
 	"github.com/evmos/evmos/v12/x/evm/types"
 	storagetypes "github.com/evmos/evmos/v12/x/storage/types"
+	vgtypes "github.com/evmos/evmos/v12/x/virtualgroup/types"
 )
 
 const (
@@ -19,6 +21,8 @@ const (
 	HeadBucketGas      = 50_000
 	HeadGroupGas       = 50_000
 	HeadGroupMemberGas = 50_000
+	HeadObjectGas      = 50_000
+	HeadObjectByIdGas  = 50_000
 
 	ListBucketsMethodName     = "listBuckets"
 	ListObjectsMethodName     = "listObjects"
@@ -27,6 +31,7 @@ const (
 	HeadGroupMethodName       = "headGroup"
 	HeadGroupMemberMethodName = "headGroupMember"
 	HeadObjectMethodName      = "headObject"
+	HeadObjectByIdMethodName  = "headObjectById"
 )
 
 // ListBuckets queries the total buckets.
@@ -374,39 +379,76 @@ func (c *Contract) HeadObject(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract,
 	if err != nil {
 		return nil, err
 	}
+	objectInfo := buildObjectInfo(res.ObjectInfo)
+	gvg := buildGlobalVirtualGroup(res.GlobalVirtualGroup)
+	return method.Outputs.Pack(objectInfo, gvg)
+}
 
-	var tags []Tag
-	if res.ObjectInfo.Tags != nil {
-		for _, tag := range res.ObjectInfo.Tags.Tags {
-			tags = append(tags, Tag{
+// HeadObjectById queries the object's info.
+func (c *Contract) HeadObjectById(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract, _ bool) ([]byte, error) {
+	method := MustMethod(HeadObjectByIdMethodName)
+
+	// parse args
+	var args HeadObjectByIdArgs
+	if err := types.ParseMethodArgs(method, &args, contract.Input[4:]); err != nil {
+		return nil, err
+	}
+	msg := &storagetypes.QueryHeadObjectByIdRequest{
+		ObjectId: args.ObjectId,
+	}
+	res, err := c.storageKeeper.HeadObjectById(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
+	objectInfo := buildObjectInfo(res.ObjectInfo)
+	gvg := buildGlobalVirtualGroup(res.GlobalVirtualGroup)
+	return method.Outputs.Pack(objectInfo, gvg)
+}
+
+func buildObjectInfo(o *storagetypes.ObjectInfo) *ObjectInfo {
+	n := &ObjectInfo{
+		Owner:               common.HexToAddress(o.Owner),
+		Creator:             common.HexToAddress(o.Creator),
+		BucketName:          o.BucketName,
+		ObjectName:          o.ObjectName,
+		Id:                  o.Id.BigInt(),
+		LocalVirtualGroupId: o.LocalVirtualGroupId,
+		PayloadSize:         o.PayloadSize,
+		Visibility:          uint8(o.Visibility),
+		ContentType:         o.ContentType,
+		CreateAt:            o.CreateAt,
+		ObjectStatus:        uint8(o.ObjectStatus),
+		RedundancyType:      uint8(o.RedundancyType),
+		SourceType:          uint8(o.SourceType),
+		Checksums:           []string{},
+		Tags:                []Tag{},
+		IsUpdating:          o.IsUpdating,
+		UpdatedAt:           o.UpdatedAt,
+		UpdatedBy:           common.HexToAddress(o.UpdatedBy),
+		Version:             o.Version,
+	}
+	for i := range o.Checksums {
+		n.Checksums = append(n.Checksums, hex.EncodeToString(o.Checksums[i]))
+	}
+	if o.Tags != nil {
+		for _, tag := range o.Tags.Tags {
+			n.Tags = append(n.Tags, Tag{
 				Key:   tag.Key,
 				Value: tag.Value,
 			})
 		}
 	}
+	return n
+}
 
-	objectInfo := ObjectInfo{
-		Owner:               common.HexToAddress(res.ObjectInfo.Owner),
-		Creator:             common.HexToAddress(res.ObjectInfo.Creator),
-		BucketName:          res.ObjectInfo.BucketName,
-		ObjectName:          res.ObjectInfo.ObjectName,
-		Id:                  res.ObjectInfo.Id.BigInt(),
-		LocalVirtualGroupId: res.ObjectInfo.LocalVirtualGroupId,
-		PayloadSize:         res.ObjectInfo.PayloadSize,
-		Visibility:          uint8(res.ObjectInfo.Visibility),
-		ContentType:         res.ObjectInfo.ContentType,
-		CreateAt:            res.ObjectInfo.CreateAt,
-		ObjectStatus:        uint8(res.ObjectInfo.ObjectStatus),
-		RedundancyType:      uint8(res.ObjectInfo.RedundancyType),
-		SourceType:          uint8(res.ObjectInfo.SourceType),
-		// Checksums: 	res.ObjectInfo.Checksums	,
-		Checksums: []string{},
-		Tags:       tags,
-		IsUpdating: res.ObjectInfo.IsUpdating,
-		UpdatedAt:  res.ObjectInfo.UpdatedAt,
-		UpdatedBy:  common.HexToAddress(res.ObjectInfo.UpdatedBy),
-		Version:    res.ObjectInfo.Version,
+func buildGlobalVirtualGroup(g *vgtypes.GlobalVirtualGroup) *GlobalVirtualGroup {
+	return &GlobalVirtualGroup{
+		Id:                    g.Id,
+		FamilyId:              g.FamilyId,
+		PrimarySpId:           g.PrimarySpId,
+		SecondarySpIds:        g.SecondarySpIds,
+		StoredSize:            g.StoredSize,
+		VirtualPaymentAddress: common.HexToAddress(g.VirtualPaymentAddress),
+		TotalDeposit:          g.TotalDeposit.String(),
 	}
-
-	return method.Outputs.Pack(objectInfo)
 }
