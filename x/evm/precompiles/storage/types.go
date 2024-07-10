@@ -14,54 +14,31 @@ import (
 var (
 	storageAddress = common.HexToAddress(types.StorageAddress)
 	storageABI     = types.MustABIJson(IStorageMetaData.ABI)
+	invalidMethod  = abi.Method{}
 )
 
 func GetAddress() common.Address {
 	return storageAddress
 }
 
-func GetMethod(name string) (abi.Method, error) {
-	method := storageABI.Methods[name]
-	if method.ID == nil {
-		return abi.Method{}, fmt.Errorf("method %s is not exist", name)
-	}
-	return method, nil
-}
-
 func GetMethodByID(input []byte) (abi.Method, error) {
 	if len(input) < 4 {
-		return abi.Method{}, fmt.Errorf("input length %d is too short", len(input))
+		return invalidMethod, fmt.Errorf("input length %d is too short", len(input))
 	}
 	for _, method := range storageABI.Methods {
 		if bytes.Equal(input[:4], method.ID) {
 			return method, nil
 		}
 	}
-	return abi.Method{}, fmt.Errorf("method id %s is not exist", string(input[:4]))
+	return invalidMethod, fmt.Errorf("method id %s is not exist", string(input[:4]))
 }
 
-func MustMethod(name string) abi.Method {
-	method, err := GetMethod(name)
-	if err != nil {
-		panic(err)
-	}
-	return method
+func GetAbiMethod(name string) abi.Method {
+	return storageABI.Methods[name]
 }
 
-func GetEvent(name string) (abi.Event, error) {
-	event := storageABI.Events[name]
-	if event.ID == (common.Hash{}) {
-		return abi.Event{}, fmt.Errorf("event %s is not exist", name)
-	}
-	return event, nil
-}
-
-func MustEvent(name string) abi.Event {
-	event, err := GetEvent(name)
-	if err != nil {
-		panic(err)
-	}
-	return event
+func GetAbiEvent(name string) abi.Event {
+	return storageABI.Events[name]
 }
 
 type (
@@ -214,6 +191,15 @@ type UpdateGroupArgs struct {
 
 // Validate UpdateGroupArgs the args
 func (args *UpdateGroupArgs) Validate() error {
+	if args.GroupName == "" {
+		return errors.New("group name is empty")
+	}
+	if len(args.MembersToAdd) == 0 && len(args.MembersToDelete) == 0 {
+		return errors.New("no update member")
+	}
+	if args.ExpirationTime != nil && len(args.MembersToAdd) != len(args.ExpirationTime) {
+		return errors.New("please provide expirationTime for every new add member")
+	}
 	return nil
 }
 
@@ -266,6 +252,12 @@ type SetTagForGroupArgs struct {
 
 // Validate SetTagForGroupArgs the args
 func (args *SetTagForGroupArgs) Validate() error {
+	if args.Tags == nil {
+		return errors.New("invalid tags parameter")
+	}
+	if args.GroupName == "" {
+		return errors.New("group name is empty")
+	}
 	return nil
 }
 

@@ -1,6 +1,8 @@
 package storage
 
 import (
+	"fmt"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
@@ -11,16 +13,28 @@ import (
 	"github.com/evmos/evmos/v12/x/evm/types"
 )
 
-type Contract struct {
-	ctx           sdk.Context
-	storageKeeper storagekeeper.Keeper
-}
+type (
+	precompiledContractFunc func(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error)
+	Contract                struct {
+		ctx           sdk.Context
+		storageKeeper storagekeeper.Keeper
+		handlers      map[string]precompiledContractFunc
+		gasMeters     map[string]uint64
+		events        map[string]string
+	}
+)
 
 func NewPrecompiledContract(ctx sdk.Context, storageKeeper storagekeeper.Keeper) *Contract {
-	return &Contract{
+	c := &Contract{
 		ctx:           ctx,
 		storageKeeper: storageKeeper,
+		handlers:      make(map[string]precompiledContractFunc),
+		gasMeters:     make(map[string]uint64),
+		events:        make(map[string]string),
 	}
+	c.registerQuery()
+	c.registerTx()
+	return c
 }
 
 func (c *Contract) Address() common.Address {
@@ -32,112 +46,32 @@ func (c *Contract) RequiredGas(input []byte) uint64 {
 	if err != nil {
 		return 0
 	}
-
-	switch method.Name {
-	case CreateBucketMethodName:
-		return CreateBucketGas
-	case UpdateBucketInfoMethodName:
-		return UpdateBucketInfoGas
-	case ListBucketsMethodName:
-		return ListBucketsGas
-	case HeadBucketMethodName:
-		return HeadBucketGas
-	case CreateObjectMethodName:
-		return CreateObjectGas
-	case ListObjectsMethodName:
-		return ListObjectsGas
-	case SealObjectMethodName:
-		return SealObjectGas
-	case SealObjectV2MethodName:
-		return SealObjectV2Gas
-	case UpdateObjectInfoMethodName:
-		return UpdateObjectInfoGas
-	case CreateGroupMethodName:
-		return CreateGroupGas
-	case ListGroupsMethodName:
-		return ListGroupsGas
-	case UpdateGroupMethodName:
-		return UpdateGroupGas
-	case HeadGroupMethodName:
-		return HeadGroupGas
-	case DeleteGroupMethodName:
-		return DeleteGroupGas
-	case HeadGroupMemberMethodName:
-		return HeadGroupMemberGas
-	case RenewGroupMemberMethodName:
-		return RenewGroupMemberGas
-	case SetTagForGroupMethodName:
-		return SetTagForGroupGas
-	case HeadObjectMethodName:
-		return HeadObjectGas
-	case HeadObjectByIdMethodName:
-		return HeadObjectByIdGas
-	default:
-		return 0
-	}
+	return c.gasMeters[method.Name]
 }
 
 func (c *Contract) Run(evm *vm.EVM, contract *vm.Contract, readonly bool) (ret []byte, err error) {
 	if len(contract.Input) < 4 {
 		return types.PackRetError("invalid input")
 	}
-
 	ctx, commit := c.ctx.CacheContext()
 	snapshot := evm.StateDB.Snapshot()
-
-	method, err := GetMethodByID(contract.Input)
-	if err == nil {
-		switch method.Name {
-		case CreateBucketMethodName:
-			ret, err = c.CreateBucket(ctx, evm, contract, readonly)
-		case UpdateBucketInfoMethodName:
-			ret, err = c.UpdateBucketInfo(ctx, evm, contract, readonly)
-		case ListBucketsMethodName:
-			ret, err = c.ListBuckets(ctx, evm, contract, readonly)
-		case HeadBucketMethodName:
-			ret, err = c.HeadBucket(ctx, evm, contract, readonly)
-		case CreateObjectMethodName:
-			ret, err = c.CreateObject(ctx, evm, contract, readonly)
-		case ListObjectsMethodName:
-			ret, err = c.ListObjects(ctx, evm, contract, readonly)
-		case SealObjectMethodName:
-			ret, err = c.SealObject(ctx, evm, contract, readonly)
-		case SealObjectV2MethodName:
-			ret, err = c.SealObjectV2(ctx, evm, contract, readonly)
-		case UpdateObjectInfoMethodName:
-			ret, err = c.UpdateObjectInfo(ctx, evm, contract, readonly)
-		case CreateGroupMethodName:
-			ret, err = c.CreateGroup(ctx, evm, contract, readonly)
-		case ListGroupsMethodName:
-			ret, err = c.ListGroups(ctx, evm, contract, readonly)
-		case UpdateGroupMethodName:
-			ret, err = c.UpdateGroup(ctx, evm, contract, readonly)
-		case HeadGroupMethodName:
-			ret, err = c.HeadGroup(ctx, evm, contract, readonly)
-		case DeleteGroupMethodName:
-			ret, err = c.DeleteGroup(ctx, evm, contract, readonly)
-		case HeadGroupMemberMethodName:
-			ret, err = c.HeadGroupMember(ctx, evm, contract, readonly)
-		case RenewGroupMemberMethodName:
-			ret, err = c.RenewGroupMember(ctx, evm, contract, readonly)
-		case SetTagForGroupMethodName:
-			ret, err = c.SetTagForGroup(ctx, evm, contract, readonly)
-		case HeadObjectMethodName:
-			ret, err = c.HeadObject(ctx, evm, contract, readonly)
-		case HeadObjectByIdMethodName:
-			ret, err = c.HeadObjectById(ctx, evm, contract, readonly)
-		default:
-			ret, err = types.PackRetError("method not handled")
+	defer func() {
+		if err != nil {
+			evm.StateDB.RevertToSnapshot(snapshot)
 		}
-	}
-
+	}()
+	method, err := GetMethodByID(contract.Input)
 	if err != nil {
-		// revert evm state
-		evm.StateDB.RevertToSnapshot(snapshot)
 		return types.PackRetError(err.Error())
 	}
-
-	// commit and append events
+	handler, ok := c.handlers[method.Name]
+	if !ok {
+		return types.PackRetError("method not handled")
+	}
+	ret, err = handler(ctx, evm, contract, readonly)
+	if err != nil {
+		return nil, err
+	}
 	commit()
 	return ret, nil
 }
@@ -154,4 +88,19 @@ func (c *Contract) AddLog(evm *vm.EVM, event abi.Event, topics []common.Hash, ar
 		BlockNumber: evm.Context.BlockNumber.Uint64(),
 	})
 	return nil
+}
+
+func (c *Contract) registerMethod(methodName string, gas uint64, handler precompiledContractFunc, eventName string) {
+	method, ok := storageABI.Methods[methodName]
+	if !ok {
+		panic(fmt.Errorf("method %s is not exist", methodName))
+	}
+	c.handlers[method.Name] = handler
+	c.gasMeters[method.Name] = gas
+	if eventName != "" {
+		if _, ok := storageABI.Events[eventName]; !ok {
+			panic(fmt.Errorf("event %s is not exist", eventName))
+		}
+		c.events[method.Name] = eventName
+	}
 }
