@@ -68,6 +68,10 @@ func (c *Contract) RequiredGas(input []byte) uint64 {
 		return RenewGroupMemberGas
 	case SetTagForGroupMethodName:
 		return SetTagForGroupGas
+	case HeadObjectMethodName:
+		return HeadObjectGas
+	case HeadObjectByIdMethodName:
+		return HeadObjectByIdGas
 	default:
 		return 0
 	}
@@ -118,6 +122,12 @@ func (c *Contract) Run(evm *vm.EVM, contract *vm.Contract, readonly bool) (ret [
 			ret, err = c.RenewGroupMember(ctx, evm, contract, readonly)
 		case SetTagForGroupMethodName:
 			ret, err = c.SetTagForGroup(ctx, evm, contract, readonly)
+		case HeadObjectMethodName:
+			ret, err = c.HeadObject(ctx, evm, contract, readonly)
+		case HeadObjectByIdMethodName:
+			ret, err = c.HeadObjectById(ctx, evm, contract, readonly)
+		default:
+			ret, err = types.PackRetError("method not handled")
 		}
 	}
 

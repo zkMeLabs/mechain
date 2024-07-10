@@ -3,7 +3,7 @@
 pragma solidity ^0.8.0;
 
 import "../common/Types.sol";
-
+import "../virtualgroup/Types.sol";
 // VisibilityType is the resources public status.
 enum VisibilityType {
     UnSpecified,
@@ -328,6 +328,22 @@ interface IStorage {
         string memory groupName,
         Tag[] memory tags
     ) external returns (bool success);
+
+    /**
+     * @dev headObject queries the object's info.
+     */
+    function headObject(
+        string memory bucketName,
+        string memory objectName
+    ) external view returns (ObjectInfo memory objectInfo, GlobalVirtualGroup memory globalVirtualGroup);
+
+    /**
+     * @dev headObjectById queries the object's info.
+     */
+    function headObjectById(
+        string memory objectId
+    ) external view returns (ObjectInfo memory objectInfo, GlobalVirtualGroup memory globalVirtualGroup);
+
 
     /**
      * @dev CreateBucket defines an Event emitted when a user create a bucket
