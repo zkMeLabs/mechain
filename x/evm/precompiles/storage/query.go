@@ -375,8 +375,8 @@ func (c *Contract) HeadObject(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract,
 	if err != nil {
 		return nil, err
 	}
-	objectInfo := buildObjectInfo(res.ObjectInfo)
-	gvg := buildGlobalVirtualGroup(res.GlobalVirtualGroup)
+	objectInfo := outputsObjectInfo(res.ObjectInfo)
+	gvg := outputsGlobalVirtualGroup(res.GlobalVirtualGroup)
 	return method.Outputs.Pack(objectInfo, gvg)
 }
 
@@ -394,12 +394,12 @@ func (c *Contract) HeadObjectById(ctx sdk.Context, _ *vm.EVM, contract *vm.Contr
 	if err != nil {
 		return nil, err
 	}
-	objectInfo := buildObjectInfo(res.ObjectInfo)
-	gvg := buildGlobalVirtualGroup(res.GlobalVirtualGroup)
+	objectInfo := outputsObjectInfo(res.ObjectInfo)
+	gvg := outputsGlobalVirtualGroup(res.GlobalVirtualGroup)
 	return method.Outputs.Pack(objectInfo, gvg)
 }
 
-func buildObjectInfo(o *storagetypes.ObjectInfo) *ObjectInfo {
+func outputsObjectInfo(o *storagetypes.ObjectInfo) *ObjectInfo {
 	n := &ObjectInfo{
 		Owner:               common.HexToAddress(o.Owner),
 		Creator:             common.HexToAddress(o.Creator),
@@ -435,7 +435,7 @@ func buildObjectInfo(o *storagetypes.ObjectInfo) *ObjectInfo {
 	return n
 }
 
-func buildGlobalVirtualGroup(g *vgtypes.GlobalVirtualGroup) *GlobalVirtualGroup {
+func outputsGlobalVirtualGroup(g *vgtypes.GlobalVirtualGroup) *GlobalVirtualGroup {
 	return &GlobalVirtualGroup{
 		Id:                    g.Id,
 		FamilyId:              g.FamilyId,
