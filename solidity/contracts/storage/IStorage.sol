@@ -330,6 +330,22 @@ interface IStorage {
     ) external returns (bool success);
 
     /**
+     * @dev headObject queries the object's info.
+     */
+    function headObject(
+        string memory bucketName,
+        string memory objectName
+    ) external view returns (ObjectInfo memory objectInfo);
+
+    /**
+     * @dev headObjectById queries the object's info.
+     */
+    function headObjectById(
+        string memory objectId
+    ) external view returns (ObjectInfo memory objectInfo);
+
+
+    /**
      * @dev CreateBucket defines an Event emitted when a user create a bucket
      */
     event CreateBucket(

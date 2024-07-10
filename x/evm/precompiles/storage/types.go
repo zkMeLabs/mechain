@@ -268,3 +268,19 @@ type SetTagForGroupArgs struct {
 func (args *SetTagForGroupArgs) Validate() error {
 	return nil
 }
+
+type HeadObjectArgs struct {
+	BucketName string `abi:"bucketName"`
+	ObjectName string `abi:"objectName"`
+}
+
+// Validate HeadObjectArgs the args
+func (args *HeadObjectArgs) Validate() error {
+	if args.BucketName == "" {
+		return errors.New("empty bucket name")
+	}
+	if args.ObjectName == "" {
+		return errors.New("empty object name")
+	}
+	return nil
+}

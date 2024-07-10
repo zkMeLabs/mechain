@@ -26,6 +26,7 @@ const (
 	HeadBucketMethodName      = "headBucket"
 	HeadGroupMethodName       = "headGroup"
 	HeadGroupMemberMethodName = "headGroupMember"
+	HeadObjectMethodName      = "headObject"
 )
 
 // ListBuckets queries the total buckets.
@@ -352,4 +353,60 @@ func (c *Contract) HeadGroupMember(ctx sdk.Context, _ *vm.EVM, contract *vm.Cont
 	}
 
 	return method.Outputs.Pack(groupMemberInfo)
+}
+
+// HeadObject queries the object's info.
+func (c *Contract) HeadObject(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract, _ bool) ([]byte, error) {
+	method := MustMethod(HeadObjectMethodName)
+
+	// parse args
+	var args HeadObjectArgs
+	if err := types.ParseMethodArgs(method, &args, contract.Input[4:]); err != nil {
+		return nil, err
+	}
+
+	msg := &storagetypes.QueryHeadObjectRequest{
+		BucketName: args.BucketName,
+		ObjectName: args.ObjectName,
+	}
+
+	res, err := c.storageKeeper.HeadObject(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
+
+	var tags []Tag
+	if res.ObjectInfo.Tags != nil {
+		for _, tag := range res.ObjectInfo.Tags.Tags {
+			tags = append(tags, Tag{
+				Key:   tag.Key,
+				Value: tag.Value,
+			})
+		}
+	}
+
+	objectInfo := ObjectInfo{
+		Owner:               common.HexToAddress(res.ObjectInfo.Owner),
+		Creator:             common.HexToAddress(res.ObjectInfo.Creator),
+		BucketName:          res.ObjectInfo.BucketName,
+		ObjectName:          res.ObjectInfo.ObjectName,
+		Id:                  res.ObjectInfo.Id.BigInt(),
+		LocalVirtualGroupId: res.ObjectInfo.LocalVirtualGroupId,
+		PayloadSize:         res.ObjectInfo.PayloadSize,
+		Visibility:          uint8(res.ObjectInfo.Visibility),
+		ContentType:         res.ObjectInfo.ContentType,
+		CreateAt:            res.ObjectInfo.CreateAt,
+		ObjectStatus:        uint8(res.ObjectInfo.ObjectStatus),
+		RedundancyType:      uint8(res.ObjectInfo.RedundancyType),
+		SourceType:          uint8(res.ObjectInfo.SourceType),
+		// Checksums: 	res.ObjectInfo.Checksums	,
+		Checksums: []string{},
+		Tags:       tags,
+		IsUpdating: res.ObjectInfo.IsUpdating,
+		UpdatedAt:  res.ObjectInfo.UpdatedAt,
+		UpdatedBy:  common.HexToAddress(res.ObjectInfo.UpdatedBy),
+		Version:    res.ObjectInfo.Version,
+	}
+
+	return method.Outputs.Pack(objectInfo)
 }
