@@ -363,18 +363,14 @@ func (c *Contract) HeadGroupMember(ctx sdk.Context, _ *vm.EVM, contract *vm.Cont
 // HeadObject queries the object's info.
 func (c *Contract) HeadObject(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract, _ bool) ([]byte, error) {
 	method := MustMethod(HeadObjectMethodName)
-
-	// parse args
 	var args HeadObjectArgs
 	if err := types.ParseMethodArgs(method, &args, contract.Input[4:]); err != nil {
 		return nil, err
 	}
-
 	msg := &storagetypes.QueryHeadObjectRequest{
 		BucketName: args.BucketName,
 		ObjectName: args.ObjectName,
 	}
-
 	res, err := c.storageKeeper.HeadObject(ctx, msg)
 	if err != nil {
 		return nil, err
@@ -387,8 +383,6 @@ func (c *Contract) HeadObject(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract,
 // HeadObjectById queries the object's info.
 func (c *Contract) HeadObjectById(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract, _ bool) ([]byte, error) {
 	method := MustMethod(HeadObjectByIdMethodName)
-
-	// parse args
 	var args HeadObjectByIdArgs
 	if err := types.ParseMethodArgs(method, &args, contract.Input[4:]); err != nil {
 		return nil, err

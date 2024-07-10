@@ -70,6 +70,8 @@ func (c *Contract) RequiredGas(input []byte) uint64 {
 		return SetTagForGroupGas
 	case HeadObjectMethodName:
 		return HeadObjectGas
+	case HeadObjectByIdMethodName:
+		return HeadObjectByIdGas
 	default:
 		return 0
 	}

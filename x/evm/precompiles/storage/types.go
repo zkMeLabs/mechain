@@ -289,7 +289,7 @@ type HeadObjectByIdArgs struct {
 	ObjectId string `abi:"objectId"`
 }
 
-// Validate HeadObjectArgs the args
+// Validate HeadObjectByIdArgs the args
 func (args *HeadObjectByIdArgs) Validate() error {
 	if args.ObjectId == "" {
 		return errors.New("empty object id")
