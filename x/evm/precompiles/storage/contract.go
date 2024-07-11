@@ -36,6 +36,8 @@ func (c *Contract) RequiredGas(input []byte) uint64 {
 	switch method.Name {
 	case CreateBucketMethodName:
 		return CreateBucketGas
+	case UpdateBucketInfoMethodName:
+		return UpdateBucketInfoGas
 	case ListBucketsMethodName:
 		return ListBucketsGas
 	case HeadBucketMethodName:
@@ -66,6 +68,10 @@ func (c *Contract) RequiredGas(input []byte) uint64 {
 		return RenewGroupMemberGas
 	case SetTagForGroupMethodName:
 		return SetTagForGroupGas
+	case HeadObjectMethodName:
+		return HeadObjectGas
+	case HeadObjectByIdMethodName:
+		return HeadObjectByIdGas
 	default:
 		return 0
 	}
@@ -84,6 +90,8 @@ func (c *Contract) Run(evm *vm.EVM, contract *vm.Contract, readonly bool) (ret [
 		switch method.Name {
 		case CreateBucketMethodName:
 			ret, err = c.CreateBucket(ctx, evm, contract, readonly)
+		case UpdateBucketInfoMethodName:
+			ret, err = c.UpdateBucketInfo(ctx, evm, contract, readonly)
 		case ListBucketsMethodName:
 			ret, err = c.ListBuckets(ctx, evm, contract, readonly)
 		case HeadBucketMethodName:
@@ -114,6 +122,12 @@ func (c *Contract) Run(evm *vm.EVM, contract *vm.Contract, readonly bool) (ret [
 			ret, err = c.RenewGroupMember(ctx, evm, contract, readonly)
 		case SetTagForGroupMethodName:
 			ret, err = c.SetTagForGroup(ctx, evm, contract, readonly)
+		case HeadObjectMethodName:
+			ret, err = c.HeadObject(ctx, evm, contract, readonly)
+		case HeadObjectByIdMethodName:
+			ret, err = c.HeadObjectById(ctx, evm, contract, readonly)
+		default:
+			ret, err = types.PackRetError("method not handled")
 		}
 	}
 

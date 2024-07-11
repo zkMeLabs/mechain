@@ -2,7 +2,9 @@ package storage
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
+	"math/big"
 
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
@@ -81,6 +83,25 @@ func (args *CreateBucketArgs) Validate() error {
 	return nil
 }
 
+type UpdateBucketInfoArgs struct {
+	BucketName       string         `abi:"bucketName"`
+	ChargedReadQuota *big.Int       `abi:"chargedReadQuota"`
+	PaymentAddress   common.Address `abi:"paymentAddress"`
+	Visibility       uint8          `abi:"visibility"`
+}
+
+// Validate CreateBucketArgs args
+func (args *UpdateBucketInfoArgs) Validate() error {
+	if args.BucketName == "" {
+		return errors.New("empty bucket name")
+	}
+
+	if args.ChargedReadQuota.Int64() != -1 && !args.ChargedReadQuota.IsUint64() {
+		return errors.New("charged read quota is invalid")
+	}
+	return nil
+}
+
 type ListBucketsArgs struct {
 	Pagination PageRequestJson `abi:"pagination"`
 }
@@ -126,7 +147,7 @@ func (args *ListObjectsArgs) Validate() error {
 }
 
 type SealObjectArgs struct {
-	SealAddress                 common.Address `abi:"sealAddress"` // primary sp's operater addr or secondary sp's seal addr
+	SealAddress                 common.Address `abi:"sealAddress"` // primary sp's operator addr or secondary sp's seal addr
 	BucketName                  string         `abi:"bucketName"`
 	ObjectName                  string         `abi:"objectName"`
 	GlobalVirtualGroupId        uint32         `abi:"globalVirtualGroupId"`
@@ -139,7 +160,7 @@ func (args *SealObjectArgs) Validate() error {
 }
 
 type SealObjectV2Args struct {
-	SealAddress                 common.Address `abi:"sealAddress"` // primary sp's operater addr or secondary sp's seal addr
+	SealAddress                 common.Address `abi:"sealAddress"` // primary sp's operator addr or secondary sp's seal addr
 	BucketName                  string         `abi:"bucketName"`
 	ObjectName                  string         `abi:"objectName"`
 	GlobalVirtualGroupId        uint32         `abi:"globalVirtualGroupId"`
@@ -245,5 +266,33 @@ type SetTagForGroupArgs struct {
 
 // Validate SetTagForGroupArgs the args
 func (args *SetTagForGroupArgs) Validate() error {
+	return nil
+}
+
+type HeadObjectArgs struct {
+	BucketName string `abi:"bucketName"`
+	ObjectName string `abi:"objectName"`
+}
+
+// Validate HeadObjectArgs the args
+func (args *HeadObjectArgs) Validate() error {
+	if args.BucketName == "" {
+		return errors.New("empty bucket name")
+	}
+	if args.ObjectName == "" {
+		return errors.New("empty object name")
+	}
+	return nil
+}
+
+type HeadObjectByIdArgs struct {
+	ObjectId string `abi:"objectId"`
+}
+
+// Validate HeadObjectByIdArgs the args
+func (args *HeadObjectByIdArgs) Validate() error {
+	if args.ObjectId == "" {
+		return errors.New("empty object id")
+	}
 	return nil
 }
