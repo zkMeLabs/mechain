@@ -4,11 +4,14 @@ import (
 	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/query"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
 	ethtypes "github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/core/vm"
 	storagekeeper "github.com/evmos/evmos/v12/x/storage/keeper"
+	storagetypes "github.com/evmos/evmos/v12/x/storage/types"
+	vgtypes "github.com/evmos/evmos/v12/x/virtualgroup/types"
 
 	"github.com/evmos/evmos/v12/x/evm/types"
 )
@@ -32,8 +35,9 @@ func NewPrecompiledContract(ctx sdk.Context, storageKeeper storagekeeper.Keeper)
 		gasMeters:     make(map[string]uint64),
 		events:        make(map[string]string),
 	}
-	c.registerQuery()
-	c.registerTx()
+	c.registerBucketMethod()
+	c.registerObjectMethod()
+	c.registerGroupMethod()
 	return c
 }
 
@@ -102,5 +106,38 @@ func (c *Contract) registerMethod(methodName string, gas uint64, handler precomp
 			panic(fmt.Errorf("event %s is not exist", eventName))
 		}
 		c.events[method.Name] = eventName
+	}
+}
+
+func outputsGlobalVirtualGroup(g *vgtypes.GlobalVirtualGroup) *GlobalVirtualGroup {
+	return &GlobalVirtualGroup{
+		Id:                    g.Id,
+		FamilyId:              g.FamilyId,
+		PrimarySpId:           g.PrimarySpId,
+		SecondarySpIds:        g.SecondarySpIds,
+		StoredSize:            g.StoredSize,
+		VirtualPaymentAddress: common.HexToAddress(g.VirtualPaymentAddress),
+		TotalDeposit:          g.TotalDeposit.String(),
+	}
+}
+
+func outputTags(tags *storagetypes.ResourceTags) []Tag {
+	var t []Tag
+	if tags == nil {
+		return t
+	}
+	for _, tag := range tags.Tags {
+		t = append(t, Tag{
+			Key:   tag.Key,
+			Value: tag.Value,
+		})
+	}
+	return t
+}
+
+func outputPageResponse(p *query.PageResponse) *PageResponse {
+	return &PageResponse{
+		NextKey: p.NextKey,
+		Total:   p.Total,
 	}
 }
