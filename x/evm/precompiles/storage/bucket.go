@@ -35,7 +35,6 @@ func (c *Contract) CreateBucket(ctx sdk.Context, evm *vm.EVM, contract *vm.Contr
 	}
 	method := GetAbiMethod(CreateBucketMethodName)
 	var args CreateBucketArgs
-
 	if err := types.ParseMethodArgs(method, &args, contract.Input[4:]); err != nil {
 		return nil, err
 	}
@@ -85,13 +84,14 @@ func (c *Contract) UpdateBucketInfo(ctx sdk.Context, evm *vm.EVM, contract *vm.C
 		return nil, err
 	}
 	msg := &storagetypes.MsgUpdateBucketInfo{
-		Operator:       contract.CallerAddress.String(),
-		BucketName:     args.BucketName,
-		Visibility:     storagetypes.VisibilityType(args.Visibility),
-		PaymentAddress: args.PaymentAddress.String(),
+		Operator:   contract.CallerAddress.String(),
+		BucketName: args.BucketName,
+		Visibility: storagetypes.VisibilityType(args.Visibility),
 	}
 	if args.PaymentAddress == (common.Address{}) {
 		msg.PaymentAddress = ""
+	} else {
+		msg.PaymentAddress = args.PaymentAddress.String()
 	}
 	if args.ChargedReadQuota.Int64() == -1 {
 		msg.ChargedReadQuota = nil

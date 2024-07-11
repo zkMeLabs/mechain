@@ -8,8 +8,10 @@ import (
 )
 
 func Test_group(t *testing.T) {
+	bucketName := "mechain"
+	objectName := "random_file"
 	assert := assert.New(t)
-	conn, err := ethclient.Dial(rpc)
+	conn, err := ethclient.Dial(testRPC)
 	assert.NoErrorf(err, "failed to connect to the rpc server: %v", err)
 	contract, err := NewIStorage(storageAddress, conn)
 	assert.NoErrorf(err, "failed to create a new contract: %v", err)

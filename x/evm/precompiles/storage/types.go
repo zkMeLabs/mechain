@@ -57,6 +57,9 @@ type CreateBucketArgs struct {
 
 // Validate CreateBucketArgs args
 func (args *CreateBucketArgs) Validate() error {
+	if args.BucketName == "" {
+		return errors.New("empty bucket name")
+	}
 	return nil
 }
 

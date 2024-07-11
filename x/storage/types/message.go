@@ -186,6 +186,10 @@ func (msg *MsgCreateBucket) ValidateBasic() error {
 		return errors.Wrapf(ErrInvalidVisibility, "Unspecified visibility is not allowed.")
 	}
 
+	if msg.Visibility > VISIBILITY_TYPE_INHERIT {
+		return ErrInvalidVisibility
+	}
+
 	err = s3util.CheckValidBucketName(msg.BucketName)
 	if err != nil {
 		return err
