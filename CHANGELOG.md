@@ -41,6 +41,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 - (chain) [#9](https://github.com/zkMeLabs/mechain/pull/9) Set prefix to mc and denom to zkme chain name to mechain
 - (precompile) [#101](https://github.com/zkMeLabs/mechain/pull/101) Add storage module precompile skeleton
+- (storage) [#148](https://github.com/zkMeLabs/mechain/pull/148) Add system contract for object NFT
 
 ### Improvement
 
