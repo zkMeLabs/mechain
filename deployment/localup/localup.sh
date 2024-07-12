@@ -314,7 +314,6 @@ for ((i = 0; i < ${size}; i++)); do
     echo "validator_bls${i} bls_priv_key: ${bls_priv_key}"
     echo "relayer${i} relayer_key: ${relayer_key}"
 done
-
 }
 
 function export_sps {
