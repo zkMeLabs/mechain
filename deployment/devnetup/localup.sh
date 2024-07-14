@@ -27,20 +27,20 @@ function init() {
         ${bin} init validator${i} --chain-id ${CHAIN_ID} --default-denom ${STAKING_BOND_DENOM} --home ${workspace}/.local/validator${i}
 
         # create genesis accounts
-	if [ "$i" -eq 0 ]; then
-		${bin} keys import devaccount ${devaccount_prikey} --secp256k1-private-key --keyring-backend test --home ${workspace}/.local/validator0
-		${bin} keys import validator0 ${validator0_prikey} --secp256k1-private-key --keyring-backend test --home ${workspace}/.local/validator0
-		${bin} keys import relayer0 ${relayer0_prikey} --secp256k1-private-key --keyring-backend test --home ${workspace}/.local/relayer0
-		${bin} keys show devaccount --keyring-backend test --home ${workspace}/.local/validator0 > ${workspace}/.local/validator0/devaccount_info 2>&1
-		${bin} keys show validator0 --keyring-backend test --home ${workspace}/.local/validator0 > ${workspace}/.local/validator0/info 2>&1
-		${bin} keys show relayer0 --keyring-backend test --home ${workspace}/.local/relayer0 > ${workspace}/.local/relayer0/relayer_info 2>&1
-	else
-		${bin} keys add validator${i} --keyring-backend test --home ${workspace}/.local/validator${i} > ${workspace}/.local/validator${i}/info 2>&1
-		${bin} keys add relayer${i} --keyring-backend test --home ${workspace}/.local/relayer${i} > ${workspace}/.local/relayer${i}/relayer_info 2>&1
-	fi
-        ${bin} keys add validator_delegator${i} --keyring-backend test --home ${workspace}/.local/validator${i} > ${workspace}/.local/validator${i}/delegator_info 2>&1
-        ${bin} keys add validator_bls${i} --keyring-backend test --home ${workspace}/.local/validator${i} --algo eth_bls > ${workspace}/.local/validator${i}/bls_info 2>&1
-        ${bin} keys add challenger${i} --keyring-backend test --home ${workspace}/.local/challenger${i} > ${workspace}/.local/challenger${i}/challenger_info 2>&1
+        if [ "$i" -eq 0 ]; then
+            ${bin} keys import devaccount ${devaccount_prikey} --secp256k1-private-key --keyring-backend test --home ${workspace}/.local/validator0
+            ${bin} keys import validator0 ${validator0_prikey} --secp256k1-private-key --keyring-backend test --home ${workspace}/.local/validator0
+            ${bin} keys import relayer0 ${relayer0_prikey} --secp256k1-private-key --keyring-backend test --home ${workspace}/.local/relayer0
+            ${bin} keys show devaccount --keyring-backend test --home ${workspace}/.local/validator0 >${workspace}/.local/validator0/devaccount_info 2>&1
+            ${bin} keys show validator0 --keyring-backend test --home ${workspace}/.local/validator0 >${workspace}/.local/validator0/info 2>&1
+            ${bin} keys show relayer0 --keyring-backend test --home ${workspace}/.local/relayer0 >${workspace}/.local/relayer0/relayer_info 2>&1
+        else
+            ${bin} keys add validator${i} --keyring-backend test --home ${workspace}/.local/validator${i} >${workspace}/.local/validator${i}/info 2>&1
+            ${bin} keys add relayer${i} --keyring-backend test --home ${workspace}/.local/relayer${i} >${workspace}/.local/relayer${i}/relayer_info 2>&1
+        fi
+        ${bin} keys add validator_delegator${i} --keyring-backend test --home ${workspace}/.local/validator${i} >${workspace}/.local/validator${i}/delegator_info 2>&1
+        ${bin} keys add validator_bls${i} --keyring-backend test --home ${workspace}/.local/validator${i} --algo eth_bls >${workspace}/.local/validator${i}/bls_info 2>&1
+        ${bin} keys add challenger${i} --keyring-backend test --home ${workspace}/.local/challenger${i} >${workspace}/.local/challenger${i}/challenger_info 2>&1
     done
 
     # add sp account
@@ -52,10 +52,10 @@ function init() {
         #create sp and sp fund account
         mkdir -p ${workspace}/.local/sp${i}
         if [ "$i" -eq 0 ]; then
-		${bin} keys import sp0 ${sp0_prikey} --secp256k1-private-key --keyring-backend test --home ${workspace}/.local/sp${i}
-		${bin} keys show sp0 --keyring-backend test --home ${workspace}/.local/sp${i} > ${workspace}/.local/sp${i}/info 2>&1
+            ${bin} keys import sp0 ${sp0_prikey} --secp256k1-private-key --keyring-backend test --home ${workspace}/.local/sp${i}
+            ${bin} keys show sp0 --keyring-backend test --home ${workspace}/.local/sp${i} >${workspace}/.local/sp${i}/info 2>&1
         else
-		${bin} keys add sp${i} --keyring-backend test --home ${workspace}/.local/sp${i} > ${workspace}/.local/sp${i}/info 2>&1
+            ${bin} keys add sp${i} --keyring-backend test --home ${workspace}/.local/sp${i} >${workspace}/.local/sp${i}/info 2>&1
         fi
         ${bin} keys add sp${i}_fund --keyring-backend test --home ${workspace}/.local/sp${i} >${workspace}/.local/sp${i}/fund_info 2>&1
         ${bin} keys add sp${i}_seal --keyring-backend test --home ${workspace}/.local/sp${i} >${workspace}/.local/sp${i}/seal_info 2>&1
@@ -127,8 +127,8 @@ function generate_genesis() {
             ${bin} add-genesis-account $challenger_addr ${GENESIS_ACCOUNT_BALANCE}${STAKING_BOND_DENOM} --home ${workspace}/.local/validator${i}
         done
 
-	devaccount_addr=$(${bin} keys show devaccount -a --keyring-backend test --home ${workspace}/.local/validator${i})
-	${bin} add-genesis-account ${devaccount_addr} ${GENESIS_ACCOUNT_BALANCE}${STAKING_BOND_DENOM} --home ${workspace}/.local/validator${i}
+        devaccount_addr=$(${bin} keys show devaccount -a --keyring-backend test --home ${workspace}/.local/validator${i})
+        ${bin} add-genesis-account ${devaccount_addr} ${GENESIS_ACCOUNT_BALANCE}${STAKING_BOND_DENOM} --home ${workspace}/.local/validator${i}
         rm -rf ${workspace}/.local/validator${i}/config/gentx/
 
         validatorAddr=${validator_addrs[$i]}
