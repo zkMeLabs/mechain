@@ -3,6 +3,7 @@ package storage
 import (
 	"encoding/base64"
 	"errors"
+
 	"time"
 
 	"github.com/ethereum/go-ethereum/common"
@@ -10,6 +11,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/ethereum/go-ethereum/core/vm"
+	"github.com/evmos/evmos/v12/contracts"
 	gtypes "github.com/evmos/evmos/v12/types"
 	mechaincommon "github.com/evmos/evmos/v12/types/common"
 	storagekeeper "github.com/evmos/evmos/v12/x/storage/keeper"
@@ -221,6 +223,23 @@ func (c *Contract) SealObject(ctx sdk.Context, evm *vm.EVM, contract *vm.Contrac
 	); err != nil {
 		return nil, err
 	}
+
+	objectInfo, found := c.storageKeeper.GetObjectInfo(ctx, args.BucketName, args.ObjectName)
+	if found {
+		if err := c.AddOtherLog(
+			evm,
+			GetAbiEvent("Transfer"),
+			contracts.ERC721NonTransferableAddress,
+			[]common.Hash{
+				common.BytesToHash(common.HexToAddress(gtypes.EmptyEvmAddress).Bytes()),
+				common.BytesToHash(common.HexToAddress(objectInfo.Owner).Bytes()),
+				common.BytesToHash(objectInfo.Id.Bytes()),
+			},
+		); err != nil {
+			return nil, err
+		}
+	}
+
 	return method.Outputs.Pack(true)
 }
 

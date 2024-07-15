@@ -90,6 +90,20 @@ func (c *Contract) AddLog(evm *vm.EVM, event abi.Event, topics []common.Hash, ar
 	return nil
 }
 
+func (c *Contract) AddOtherLog(evm *vm.EVM, event abi.Event, address common.Address, topics []common.Hash, args ...interface{}) error {
+	data, newTopic, err := types.PackTopicData(event, topics, args...)
+	if err != nil {
+		return err
+	}
+	evm.StateDB.AddLog(&ethtypes.Log{
+		Address:     address,
+		Topics:      newTopic,
+		Data:        data,
+		BlockNumber: evm.Context.BlockNumber.Uint64(),
+	})
+	return nil
+}
+
 func (c *Contract) registerMethod(methodName string, gas uint64, handler precompiledContractFunc, eventName string) {
 	method, ok := storageABI.Methods[methodName]
 	if !ok {

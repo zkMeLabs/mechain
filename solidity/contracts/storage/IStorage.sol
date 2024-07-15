@@ -374,6 +374,15 @@ interface IStorage {
     );
 
     /**
+     * @dev Transfer defines an Event emitted when a transfer a object nft
+     */
+    event Transfer(
+        address indexed from,
+        address indexed to,
+        uint256 indexed tokenId
+    );
+
+    /**
      * @dev SealObject defines an Event emitted when a user seal a object
      */
     event SealObject(

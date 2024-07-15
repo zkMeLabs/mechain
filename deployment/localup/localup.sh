@@ -74,7 +74,7 @@ function generate_genesis() {
 		sp_size=$2
 	fi
 
-	declare -a addrs=("0x00000be6819f41400225702d32d3dd23663dd690" "0x1111102dd32160b064f2a512cdef74bfdb6a9f96" "0x2222207b1f7b8d37566d9a2778732451dbfbc5d0")
+  declare -a addrs=("0x1111102dd32160b064f2a512cdef74bfdb6a9f96" "0x2222207b1f7b8d37566d9a2778732451dbfbc5d0")
 
 	declare -a validator_addrs=()
 	for ((i = 0; i < ${size}; i++)); do
@@ -184,6 +184,7 @@ function generate_genesis() {
 		sed -i -e "s/snapshot-interval = 0/snapshot-interval = ${SNAPSHOT_INTERVAL}/g" ${workspace}/.local/validator${i}/config/app.toml
 		sed -i -e "s/snapshot-keep-recent = 2/snapshot-keep-recent = ${SNAPSHOT_KEEP_RECENT}/g" ${workspace}/.local/validator${i}/config/app.toml
 		sed -i -e "s/enabled-unsafe-cors = false/enabled-unsafe-cors = true/g" ${workspace}/.local/validator${i}/config/app.toml
+		sed -i -e "s/eth,net,web3/eth,txpool,personal,net,debug,web3/g" ${workspace}/.local/validator${i}/config/app.toml
 		sed -i -e "s/\"reserve_time\": \"15552000\"/\"reserve_time\": \"60\"/g" ${workspace}/.local/validator${i}/config/genesis.json
 		sed -i -e "s/\"forced_settle_time\": \"86400\"/\"forced_settle_time\": \"30\"/g" ${workspace}/.local/validator${i}/config/genesis.json
 		sed -i -e "s/172800s/${DEPOSIT_VOTE_PERIOD}/g" ${workspace}/.local/validator${i}/config/genesis.json

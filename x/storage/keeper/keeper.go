@@ -1,18 +1,19 @@
 package keeper
 
 import (
-	"encoding/binary"
-	"fmt"
-
 	"cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
+	"encoding/binary"
+	"fmt"
 	"github.com/cometbft/cometbft/libs/log"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/gogoproto/proto"
+	"github.com/evmos/evmos/v12/contracts"
 
+	ecommon "github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/evmos/evmos/v12/internal/sequence"
 	gnfdtypes "github.com/evmos/evmos/v12/types"
@@ -39,7 +40,7 @@ type (
 		permKeeper    types.PermissionKeeper
 		// crossChainKeeper   types.CrossChainKeeper
 		virtualGroupKeeper types.VirtualGroupKeeper
-
+		evmKeeper          types.EVMKeeper
 		// sequence
 		bucketSeq sequence.Sequence[sdkmath.Uint]
 		objectSeq sequence.Sequence[sdkmath.Uint]
@@ -59,6 +60,7 @@ func NewKeeper(
 	permKeeper types.PermissionKeeper,
 	// crossChainKeeper types.CrossChainKeeper,
 	virtualGroupKeeper types.VirtualGroupKeeper,
+	evmKeeper types.EVMKeeper,
 	authority string,
 ) *Keeper {
 	k := Keeper{
@@ -71,6 +73,7 @@ func NewKeeper(
 		permKeeper:    permKeeper,
 		// crossChainKeeper:   crossChainKeeper,
 		virtualGroupKeeper: virtualGroupKeeper,
+		evmKeeper:          evmKeeper,
 		authority:          authority,
 	}
 
@@ -423,7 +426,7 @@ func (k Keeper) UpdateBucketInfo(ctx sdk.Context, operator sdk.AccAddress, bucke
 		// save quota update time
 		k.setQuotaUpdateTime(ctx, bucketInfo.Id, blockTime)
 	}
-	
+
 	if opts.Visibility != types.VISIBILITY_TYPE_UNSPECIFIED {
 		bucketInfo.Visibility = opts.Visibility
 	}
@@ -919,6 +922,22 @@ func (k Keeper) SealObject(
 	}); err != nil {
 		return err
 	}
+
+	// Mint object nft token and send to receiver
+	_, err = k.CallEVM(
+		ctx,
+		contracts.ERC721NonTransferableContract.ABI,
+		contracts.ObjectControlHubAddress,
+		contracts.ERC721NonTransferableAddress,
+		true,
+		"mint",
+		ecommon.HexToAddress(objectInfo.Owner),
+		objectInfo.Id.BigInt(),
+	)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
