@@ -38,6 +38,8 @@ import (
 	cmtypes "github.com/cometbft/cometbft/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/evmos/evmos/v12/encoding"
+	servercfg "github.com/evmos/evmos/v12/server/config"
+	evmostypes "github.com/evmos/evmos/v12/types"
 	"github.com/evmos/evmos/v12/utils"
 )
 
@@ -75,7 +77,7 @@ func EthSetupWithDB(isCheckTx bool, patchGenesis func(*Evmos, simapp.GenesisStat
 		DefaultNodeHome,
 		5,
 		encoding.MakeConfig(ModuleBasics),
-		NewDefaultAppConfig(),
+		servercfg.NewDefaultAppConfig(evmostypes.AttoEvmos),
 		simtestutil.NewAppOptionsWithFlagHome(DefaultNodeHome),
 		baseapp.SetChainID(chainID),
 	)

@@ -373,7 +373,7 @@ func initTestnetFiles(
 			return err
 		}
 
-		customAppTemplate, customAppConfig := config.AppConfig(cmdcfg.BaseDenom)
+		customAppTemplate, customAppConfig := config.NewAppConfig(cmdcfg.BaseDenom)
 		srvconfig.SetConfigTemplate(customAppTemplate)
 		customTMConfig := initTendermintConfig()
 

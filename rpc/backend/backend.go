@@ -149,7 +149,7 @@ type Backend struct {
 	queryClient         *rpctypes.QueryClient // gRPC query client
 	logger              log.Logger
 	chainID             *big.Int
-	cfg                 config.Config
+	cfg                 config.AppConfig
 	allowUnprotectedTxs bool
 	indexer             evmostypes.EVMTxIndexer
 }

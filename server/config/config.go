@@ -84,18 +84,24 @@ const (
 
 	// DefaultMaxOpenConnections represents the amount of open connections (unlimited = 0)
 	DefaultMaxOpenConnections = 0
+
+	DefaultSrcChainId     = 1
+	DefaultDestBscChainId = 2
+	DefaultDestOpChainId  = 3
 )
 
 var evmTracers = []string{"json", "markdown", "struct", "access_list"}
 
 // Config defines the server's top level configuration. It includes the default app config
 // from the SDK as well as the EVM configuration to enable the JSON-RPC APIs.
-type Config struct {
+type AppConfig struct {
 	config.Config
 
-	EVM     EVMConfig     `mapstructure:"evm"`
-	JSONRPC JSONRPCConfig `mapstructure:"json-rpc"`
-	TLS     TLSConfig     `mapstructure:"tls"`
+	EVM          EVMConfig          `mapstructure:"evm"`
+	JSONRPC      JSONRPCConfig      `mapstructure:"json-rpc"`
+	TLS          TLSConfig          `mapstructure:"tls"`
+	CrossChain   CrossChainConfig   `mapstructure:"cross-chain"`
+	PaymentCheck PaymentCheckConfig `mapstructure:"payment-check"`
 }
 
 // EVMConfig defines the application configuration values for the EVM.
@@ -157,9 +163,48 @@ type TLSConfig struct {
 	KeyPath string `mapstructure:"key-path"`
 }
 
+type CrossChainConfig struct {
+	SrcChainId     uint32 `mapstructure:"src-chain-id"`
+	DestBscChainId uint32 `mapstructure:"dest-bsc-chain-id"`
+	DestOpChainId  uint32 `mapstructure:"dest-op-chain-id"`
+}
+
+type PaymentCheckConfig struct {
+	Enabled  bool   `mapstructure:"enabled"`
+	Interval uint32 `mapstructure:"interval"`
+}
+
+func NewDefaultAppConfig(denom string) *AppConfig {
+	srvCfg := config.DefaultConfig()
+	// The SDK's default minimum gas price is set to "" (empty value) inside
+	// app.toml. If left empty by validators, the node will halt on startup.
+	// However, the chain developer can set a default app.toml value for their
+	// validators here.
+	//
+	// In summary:
+	// - if you leave srvCfg.MinGasPrices = "", all validators MUST tweak their
+	//   own app.toml config,
+	// - if you set srvCfg.MinGasPrices non-empty, validators CAN tweak their
+	//   own app.toml to override, or use this default value.
+	//
+	// In simapp, we set the min gas prices to 0.
+	if denom != "" {
+		srvCfg.MinGasPrices = "5000000000" + denom // 5gei
+	}
+
+	return &AppConfig{
+		Config:       *srvCfg,
+		EVM:          *DefaultEVMConfig(),
+		JSONRPC:      *DefaultJSONRPCConfig(),
+		TLS:          *DefaultTLSConfig(),
+		CrossChain:   *DefaultCrossChainConfig(),
+		PaymentCheck: *DefaultPaymentCheckConfig(),
+	}
+}
+
 // AppConfig helps to override default appConfig template and configs.
 // return "", nil if no custom configuration is required for the application.
-func AppConfig(denom string) (string, interface{}) {
+func NewAppConfig(denom string) (string, interface{}) {
 	// Optionally allow the chain developer to overwrite the SDK's default
 	// server config.
 	srvCfg := config.DefaultConfig()
@@ -177,28 +222,32 @@ func AppConfig(denom string) (string, interface{}) {
 	//
 	// In evmos, we set the min gas prices to 0.
 	if denom != "" {
-		srvCfg.MinGasPrices = "0" + denom
+		srvCfg.MinGasPrices = "5000000000" + denom
 	}
 
-	customAppConfig := Config{
-		Config:  *srvCfg,
-		EVM:     *DefaultEVMConfig(),
-		JSONRPC: *DefaultJSONRPCConfig(),
-		TLS:     *DefaultTLSConfig(),
+	customAppConfig := AppConfig{
+		Config:       *srvCfg,
+		EVM:          *DefaultEVMConfig(),
+		JSONRPC:      *DefaultJSONRPCConfig(),
+		TLS:          *DefaultTLSConfig(),
+		CrossChain:   *DefaultCrossChainConfig(),
+		PaymentCheck: *DefaultPaymentCheckConfig(),
 	}
 
-	customAppTemplate := config.DefaultConfigTemplate + DefaultConfigTemplate
+	customAppTemplate := config.DefaultConfigTemplate + DefaultConfigTemplate + DefaultCustomAppTemplate
 
 	return customAppTemplate, customAppConfig
 }
 
 // DefaultConfig returns server's default configuration.
-func DefaultConfig() *Config {
-	return &Config{
-		Config:  *config.DefaultConfig(),
-		EVM:     *DefaultEVMConfig(),
-		JSONRPC: *DefaultJSONRPCConfig(),
-		TLS:     *DefaultTLSConfig(),
+func DefaultConfig() *AppConfig {
+	return &AppConfig{
+		Config:       *config.DefaultConfig(),
+		EVM:          *DefaultEVMConfig(),
+		JSONRPC:      *DefaultJSONRPCConfig(),
+		TLS:          *DefaultTLSConfig(),
+		CrossChain:   *DefaultCrossChainConfig(),
+		PaymentCheck: *DefaultPaymentCheckConfig(),
 	}
 }
 
@@ -329,14 +378,39 @@ func (c TLSConfig) Validate() error {
 	return nil
 }
 
+// DefaultCrossChainConfig returns the default CrossChain configuration
+func DefaultCrossChainConfig() *CrossChainConfig {
+	return &CrossChainConfig{
+		SrcChainId:     DefaultSrcChainId,
+		DestBscChainId: DefaultDestBscChainId,
+		DestOpChainId:  DefaultDestOpChainId,
+	}
+}
+
+func (c CrossChainConfig) Validate() error {
+	return nil
+}
+
+// DefaultPaymentCheckConfig returns the default PaymentCheckConfig configuration
+func DefaultPaymentCheckConfig() *PaymentCheckConfig {
+	return &PaymentCheckConfig{
+		Enabled:  false,
+		Interval: 100,
+	}
+}
+
+func (c PaymentCheckConfig) Validate() error {
+	return nil
+}
+
 // GetConfig returns a fully parsed Config object.
-func GetConfig(v *viper.Viper) (Config, error) {
+func GetConfig(v *viper.Viper) (AppConfig, error) {
 	cfg, err := config.GetConfig(v)
 	if err != nil {
-		return Config{}, err
+		return AppConfig{}, err
 	}
 
-	return Config{
+	return AppConfig{
 		Config: cfg,
 		EVM: EVMConfig{
 			Tracer:         v.GetString("evm.tracer"),
@@ -365,12 +439,21 @@ func GetConfig(v *viper.Viper) (Config, error) {
 			CertificatePath: v.GetString("tls.certificate-path"),
 			KeyPath:         v.GetString("tls.key-path"),
 		},
+		CrossChain: CrossChainConfig{
+			SrcChainId:     v.GetUint32("cross-chain.src-chain-id"),
+			DestBscChainId: v.GetUint32("cross-chain.dest-bsc-chain-id"),
+			DestOpChainId:  v.GetUint32("cross-chain.dest-op-chain-id"),
+		},
+		PaymentCheck: PaymentCheckConfig{
+			Enabled:  v.GetBool("payment-check.enabled"),
+			Interval: v.GetUint32("payment-check.interval"),
+		},
 	}, nil
 }
 
 // ParseConfig retrieves the default environment configuration for the
 // application.
-func ParseConfig(v *viper.Viper) (*Config, error) {
+func ParseConfig(v *viper.Viper) (*AppConfig, error) {
 	conf := DefaultConfig()
 	err := v.Unmarshal(conf)
 
@@ -378,7 +461,7 @@ func ParseConfig(v *viper.Viper) (*Config, error) {
 }
 
 // ValidateBasic returns an error any of the application configuration fields are invalid
-func (c Config) ValidateBasic() error {
+func (c AppConfig) ValidateBasic() error {
 	if err := c.EVM.Validate(); err != nil {
 		return errorsmod.Wrapf(errortypes.ErrAppConfig, "invalid evm config value: %s", err.Error())
 	}
@@ -389,6 +472,14 @@ func (c Config) ValidateBasic() error {
 
 	if err := c.TLS.Validate(); err != nil {
 		return errorsmod.Wrapf(errortypes.ErrAppConfig, "invalid tls config value: %s", err.Error())
+	}
+
+	if err := c.CrossChain.Validate(); err != nil {
+		return errorsmod.Wrapf(errortypes.ErrAppConfig, "invalid crosschain config value: %s", err.Error())
+	}
+
+	if err := c.PaymentCheck.Validate(); err != nil {
+		return errorsmod.Wrapf(errortypes.ErrAppConfig, "invalid paymentcheck config value: %s", err.Error())
 	}
 
 	return c.Config.ValidateBasic()

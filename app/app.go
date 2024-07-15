@@ -145,6 +145,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/crypto/keys/eth/eip712"
 	ethante "github.com/evmos/evmos/v12/app/ante/evm"
 	"github.com/evmos/evmos/v12/encoding"
+	servercfg "github.com/evmos/evmos/v12/server/config"
 	srvflags "github.com/evmos/evmos/v12/server/flags"
 	evmostypes "github.com/evmos/evmos/v12/types"
 	"github.com/evmos/evmos/v12/x/evm"
@@ -375,7 +376,7 @@ type Evmos struct {
 
 	tpsCounter *tpsCounter
 	// app config
-	appConfig *AppConfig
+	appConfig *servercfg.AppConfig
 }
 
 // SimulationManager implements runtime.AppI
@@ -392,7 +393,7 @@ func NewEvmos(
 	homePath string,
 	invCheckPeriod uint,
 	encodingConfig simappparams.EncodingConfig,
-	customAppConfig *AppConfig,
+	customAppConfig *servercfg.AppConfig,
 	appOpts servertypes.AppOptions,
 	baseAppOptions ...func(*baseapp.BaseApp),
 ) *Evmos {

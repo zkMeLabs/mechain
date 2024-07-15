@@ -107,3 +107,25 @@ certificate-path = "{{ .TLS.CertificatePath }}"
 # Key path defines the key.pem file path for the TLS configuration.
 key-path = "{{ .TLS.KeyPath }}"
 `
+
+var DefaultCustomAppTemplate = `
+###############################################################################
+###                           CrossChain Config                             ###
+###############################################################################
+[cross-chain]
+# chain-id for current chain
+src-chain-id = {{ .CrossChain.SrcChainId }}
+# chain-id for bsc destination chain
+dest-bsc-chain-id = {{ .CrossChain.DestBscChainId }}
+# chain-id for op bnb destination chain
+dest-op-chain-id = {{ .CrossChain.DestOpChainId }}
+
+###############################################################################
+###                           PaymentCheck Config                           ###
+###############################################################################
+[payment-check]
+# enabled - the flag to enable/disable payment check
+enabled = {{ .PaymentCheck.Enabled }}
+# interval - the block interval run check payment
+interval = {{ .PaymentCheck.Interval }}
+`
