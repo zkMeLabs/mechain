@@ -5,7 +5,6 @@ import (
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
 	"github.com/evmos/evmos/v12/types/common"
 	"github.com/evmos/evmos/v12/x/storage/types"
@@ -60,11 +59,7 @@ func (app *BucketApp) ExecuteAckPackage(ctx sdk.Context, appCtx *sdk.CrossChainA
 func (app *BucketApp) ExecuteFailAckPackage(ctx sdk.Context, appCtx *sdk.CrossChainAppContext, payload []byte) sdk.ExecuteResult {
 	var pack interface{}
 	var err error
-	if ctx.IsUpgraded(upgradetypes.Pampas) {
-		pack, err = types.DeserializeCrossChainPackageV2(payload, types.BucketChannelId, sdk.FailAckCrossChainPackageType)
-	} else {
-		pack, err = types.DeserializeCrossChainPackage(payload, types.BucketChannelId, sdk.FailAckCrossChainPackageType)
-	}
+	pack, err = types.DeserializeCrossChainPackage(payload, types.BucketChannelId, sdk.FailAckCrossChainPackageType)
 	if err != nil {
 		app.storageKeeper.Logger(ctx).Error("deserialize bucket cross chain package error", "payload", hex.EncodeToString(payload), "error", err.Error())
 		panic("deserialize bucket cross chain package error")
@@ -103,11 +98,7 @@ func (app *BucketApp) ExecuteFailAckPackage(ctx sdk.Context, appCtx *sdk.CrossCh
 func (app *BucketApp) ExecuteSynPackage(ctx sdk.Context, appCtx *sdk.CrossChainAppContext, payload []byte) sdk.ExecuteResult {
 	var pack interface{}
 	var err error
-	if ctx.IsUpgraded(upgradetypes.Pampas) {
-		pack, err = types.DeserializeCrossChainPackageV2(payload, types.BucketChannelId, sdk.FailAckCrossChainPackageType)
-	} else {
-		pack, err = types.DeserializeCrossChainPackage(payload, types.BucketChannelId, sdk.FailAckCrossChainPackageType)
-	}
+	pack, err = types.DeserializeCrossChainPackage(payload, types.BucketChannelId, sdk.FailAckCrossChainPackageType)
 	if err != nil {
 		app.storageKeeper.Logger(ctx).Error("deserialize bucket cross chain package error", "payload", hex.EncodeToString(payload), "error", err.Error())
 		panic("deserialize bucket cross chain package error")

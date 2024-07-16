@@ -222,7 +222,7 @@ func NewAppConfig(denom string) (string, interface{}) {
 	//
 	// In evmos, we set the min gas prices to 0.
 	if denom != "" {
-		srvCfg.MinGasPrices = "5000000000" + denom
+		srvCfg.MinGasPrices = "0" + denom
 	}
 
 	customAppConfig := AppConfig{
