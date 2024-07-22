@@ -75,7 +75,7 @@ const (
 )
 
 var (
-	AppConfig = app.NewDefaultAppConfig()
+	AppConfig = servercfg.NewDefaultAppConfig(cmdcfg.BaseDenom)
 )
 
 func ParseAppConfigInPlace(cmd *cobra.Command) error {
@@ -101,7 +101,7 @@ func ParseAppConfigInPlace(cmd *cobra.Command) error {
 		return err
 	}
 
-	AppConfig = app.NewDefaultAppConfig()
+	AppConfig = servercfg.NewDefaultAppConfig(cmdcfg.BaseDenom)
 	err := newViper.Unmarshal(AppConfig)
 	if err != nil {
 		return err
@@ -283,9 +283,9 @@ func txCommand() *cobra.Command {
 // initAppConfig helps to override default appConfig template and configs.
 // return "", nil if no custom configuration is required for the application.
 func initAppConfig() (string, interface{}) {
-	customAppTemplate, customAppConfig := servercfg.AppConfig(cmdcfg.BaseDenom)
+	customAppTemplate, customAppConfig := servercfg.NewAppConfig(cmdcfg.BaseDenom)
 
-	srvCfg, ok := customAppConfig.(servercfg.Config)
+	srvCfg, ok := customAppConfig.(servercfg.AppConfig)
 	if !ok {
 		panic(fmt.Errorf("unknown app config type %T", customAppConfig))
 	}
@@ -353,7 +353,14 @@ func (a appCreator) newApp(logger log.Logger, db dbm.DB, traceStore io.Writer, c
 		cast.ToString(appOpts.Get(flags.FlagHome)),
 		cast.ToUint(appOpts.Get(sdkserver.FlagInvCheckPeriod)),
 		a.encCfg,
-		&app.AppConfig{Config: *serverCfg},
+		&servercfg.AppConfig{
+			Config:       *serverCfg,
+			EVM:          AppConfig.EVM,
+			JSONRPC:      AppConfig.JSONRPC,
+			TLS:          AppConfig.TLS,
+			CrossChain:   AppConfig.CrossChain,
+			PaymentCheck: AppConfig.PaymentCheck,
+		},
 		appOpts,
 		baseapp.SetPruning(pruningOpts),
 		baseapp.SetEventing(cast.ToString(appOpts.Get(sdkserver.FlagEventing))),

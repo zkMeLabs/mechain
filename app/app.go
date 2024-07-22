@@ -79,6 +79,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/crisis"
 	crisiskeeper "github.com/cosmos/cosmos-sdk/x/crisis/keeper"
 	crisistypes "github.com/cosmos/cosmos-sdk/x/crisis/types"
+	"github.com/cosmos/cosmos-sdk/x/crosschain"
+	crosschainkeeper "github.com/cosmos/cosmos-sdk/x/crosschain/keeper"
+	crosschaintypes "github.com/cosmos/cosmos-sdk/x/crosschain/types"
 	distr "github.com/cosmos/cosmos-sdk/x/distribution"
 	distrkeeper "github.com/cosmos/cosmos-sdk/x/distribution/keeper"
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
@@ -101,6 +104,9 @@ import (
 	govv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 	"github.com/cosmos/cosmos-sdk/x/group"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
+	"github.com/cosmos/cosmos-sdk/x/oracle"
+	oraclekeeper "github.com/cosmos/cosmos-sdk/x/oracle/keeper"
+	oracletypes "github.com/cosmos/cosmos-sdk/x/oracle/types"
 	"github.com/cosmos/cosmos-sdk/x/params"
 	paramsclient "github.com/cosmos/cosmos-sdk/x/params/client"
 	paramskeeper "github.com/cosmos/cosmos-sdk/x/params/keeper"
@@ -116,6 +122,7 @@ import (
 	upgradekeeper "github.com/cosmos/cosmos-sdk/x/upgrade/keeper"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 	ibctestingtypes "github.com/cosmos/ibc-go/v7/testing/types"
+	bridgemodule "github.com/evmos/evmos/v12/x/bridge"
 
 	ibctransfer "github.com/cosmos/ibc-go/v7/modules/apps/transfer"
 	ibctransfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
@@ -138,6 +145,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/crypto/keys/eth/eip712"
 	ethante "github.com/evmos/evmos/v12/app/ante/evm"
 	"github.com/evmos/evmos/v12/encoding"
+	servercfg "github.com/evmos/evmos/v12/server/config"
 	srvflags "github.com/evmos/evmos/v12/server/flags"
 	evmostypes "github.com/evmos/evmos/v12/types"
 	"github.com/evmos/evmos/v12/x/evm"
@@ -173,9 +181,8 @@ import (
 	_ "github.com/ethereum/go-ethereum/eth/tracers/js"
 	_ "github.com/ethereum/go-ethereum/eth/tracers/native"
 
-	// bridgemodule "github.com/evmos/evmos/v12/x/bridge"
-	// bridgemodulekeeper "github.com/evmos/evmos/v12/x/bridge/keeper"
-	// bridgemoduletypes "github.com/evmos/evmos/v12/x/bridge/types"
+	bridgemodulekeeper "github.com/evmos/evmos/v12/x/bridge/keeper"
+	bridgemoduletypes "github.com/evmos/evmos/v12/x/bridge/types"
 	challengemodule "github.com/evmos/evmos/v12/x/challenge"
 	challengemodulekeeper "github.com/evmos/evmos/v12/x/challenge/keeper"
 	challengemoduletypes "github.com/evmos/evmos/v12/x/challenge/types"
@@ -237,6 +244,10 @@ var (
 		ica.AppModuleBasic{},
 		feegrantmodule.AppModuleBasic{},
 		upgrade.AppModuleBasic{},
+		crosschain.AppModuleBasic{},
+		oracle.AppModuleBasic{},
+		bridgemodule.AppModuleBasic{},
+
 		evidence.AppModuleBasic{},
 		transfer.AppModuleBasic{AppModuleBasic: &ibctransfer.AppModuleBasic{}},
 		evm.AppModuleBasic{},
@@ -254,18 +265,19 @@ var (
 
 	// module account permissions
 	maccPerms = map[string][]string{
-		authtypes.FeeCollectorName:       nil,
-		distrtypes.ModuleName:            nil,
-		stakingtypes.BondedPoolName:      {authtypes.Burner, authtypes.Staking},
-		stakingtypes.NotBondedPoolName:   {authtypes.Burner, authtypes.Staking},
-		govtypes.ModuleName:              {authtypes.Burner},
-		ibctransfertypes.ModuleName:      {authtypes.Minter, authtypes.Burner},
-		icatypes.ModuleName:              nil,
-		evmtypes.ModuleName:              {authtypes.Minter, authtypes.Burner}, // used for secure addition and subtraction of balance using module account
-		erc20types.ModuleName:            {authtypes.Minter, authtypes.Burner},
-		paymentmoduletypes.ModuleName:    {authtypes.Burner, authtypes.Staking},
-		permissionmoduletypes.ModuleName: nil,
-		// bridgemoduletypes.ModuleName:       nil,
+		authtypes.FeeCollectorName:         nil,
+		distrtypes.ModuleName:              nil,
+		stakingtypes.BondedPoolName:        {authtypes.Burner, authtypes.Staking},
+		stakingtypes.NotBondedPoolName:     {authtypes.Burner, authtypes.Staking},
+		govtypes.ModuleName:                {authtypes.Burner},
+		ibctransfertypes.ModuleName:        {authtypes.Minter, authtypes.Burner},
+		icatypes.ModuleName:                nil,
+		evmtypes.ModuleName:                {authtypes.Minter, authtypes.Burner}, // used for secure addition and subtraction of balance using module account
+		erc20types.ModuleName:              {authtypes.Minter, authtypes.Burner},
+		paymentmoduletypes.ModuleName:      {authtypes.Burner, authtypes.Staking},
+		crosschaintypes.ModuleName:         {authtypes.Minter},
+		permissionmoduletypes.ModuleName:   nil,
+		bridgemoduletypes.ModuleName:       nil,
 		spmoduletypes.ModuleName:           {authtypes.Staking},
 		virtualgroupmoduletypes.ModuleName: nil,
 	}
@@ -325,6 +337,8 @@ type Evmos struct {
 	UpgradeKeeper         *upgradekeeper.Keeper
 	ParamsKeeper          paramskeeper.Keeper
 	FeeGrantKeeper        feegrantkeeper.Keeper
+	CrossChainKeeper      crosschainkeeper.Keeper
+	OracleKeeper          oraclekeeper.Keeper
 	GashubKeeper          gashubkeeper.Keeper
 	IBCKeeper             *ibckeeper.Keeper // IBC Keeper must be a pointer in the app, so we can SetRouter on it correctly
 	ICAHostKeeper         icahostkeeper.Keeper
@@ -332,7 +346,7 @@ type Evmos struct {
 	TransferKeeper        transferkeeper.Keeper
 	ConsensusParamsKeeper consensusparamkeeper.Keeper
 
-	// BridgeKeeper           bridgemodulekeeper.Keeper
+	BridgeKeeper           bridgemodulekeeper.Keeper
 	SpKeeper               spmodulekeeper.Keeper
 	PaymentKeeper          paymentmodulekeeper.Keeper
 	ChallengeKeeper        challengemodulekeeper.Keeper
@@ -362,12 +376,12 @@ type Evmos struct {
 
 	tpsCounter *tpsCounter
 	// app config
-	appConfig *AppConfig
+	appConfig *servercfg.AppConfig
 }
 
 // SimulationManager implements runtime.AppI
-func (*Evmos) SimulationManager() *module.SimulationManager {
-	panic("unimplemented")
+func (app *Evmos) SimulationManager() *module.SimulationManager {
+	return app.sm
 }
 
 // NewEvmos returns a reference to a new initialized Ethermint application.
@@ -379,7 +393,7 @@ func NewEvmos(
 	homePath string,
 	invCheckPeriod uint,
 	encodingConfig simappparams.EncodingConfig,
-	customAppConfig *AppConfig,
+	customAppConfig *servercfg.AppConfig,
 	appOpts servertypes.AppOptions,
 	baseAppOptions ...func(*baseapp.BaseApp),
 ) *Evmos {
@@ -419,7 +433,9 @@ func NewEvmos(
 		evidencetypes.StoreKey, capabilitytypes.StoreKey, consensusparamtypes.StoreKey,
 		feegrant.StoreKey, crisistypes.StoreKey,
 		group.StoreKey,
-		// bridgemoduletypes.StoreKey,
+		crosschaintypes.StoreKey,
+		oracletypes.StoreKey,
+		bridgemoduletypes.StoreKey,
 		gashubtypes.StoreKey,
 		spmoduletypes.StoreKey,
 		virtualgroupmoduletypes.StoreKey,
@@ -496,12 +512,28 @@ func NewEvmos(
 	app.StakingKeeper = stakingkeeper.NewKeeper(
 		appCodec, keys[stakingtypes.StoreKey], app.AccountKeeper, app.AuthzKeeper, app.BankKeeper, authAddr,
 	)
+	app.CrossChainKeeper = crosschainkeeper.NewKeeper(
+		appCodec,
+		keys[crosschaintypes.StoreKey],
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		app.StakingKeeper,
+		app.BankKeeper,
+	)
 	app.DistrKeeper = distrkeeper.NewKeeper(
 		appCodec, keys[distrtypes.StoreKey], app.AccountKeeper, app.BankKeeper,
 		app.StakingKeeper, authtypes.FeeCollectorName, authAddr,
 	)
 	app.SlashingKeeper = slashingkeeper.NewKeeper(
 		appCodec, app.LegacyAmino(), keys[slashingtypes.StoreKey], app.StakingKeeper, authAddr,
+	)
+	app.OracleKeeper = oraclekeeper.NewKeeper(
+		appCodec,
+		keys[crosschaintypes.StoreKey],
+		authtypes.FeeCollectorName,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		app.CrossChainKeeper,
+		app.BankKeeper,
+		app.StakingKeeper,
 	)
 	app.CrisisKeeper = *crisiskeeper.NewKeeper(
 		appCodec, keys[crisistypes.StoreKey], invCheckPeriod, app.BankKeeper, authtypes.FeeCollectorName, authAddr,
@@ -544,7 +576,7 @@ func NewEvmos(
 	*/
 	govKeeper := govkeeper.NewKeeper(
 		appCodec, keys[govtypes.StoreKey], app.AccountKeeper, app.BankKeeper,
-		app.StakingKeeper, app.MsgServiceRouter(), govConfig, authAddr,
+		app.StakingKeeper, app.CrossChainKeeper, app.MsgServiceRouter(), govConfig, authAddr,
 	)
 
 	// Set legacy router for backwards compatibility with gov v1beta1
@@ -632,6 +664,16 @@ func NewEvmos(
 	app.EvidenceKeeper = *evidenceKeeper
 
 	// greenfield keeper
+	app.BridgeKeeper = *bridgemodulekeeper.NewKeeper(
+		appCodec,
+		keys[bridgemoduletypes.StoreKey],
+		app.BankKeeper,
+		app.StakingKeeper,
+		app.CrossChainKeeper,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+	bridgeModule := bridgemodule.NewAppModule(appCodec, app.BridgeKeeper, app.AccountKeeper, app.BankKeeper)
+
 	app.GashubKeeper = gashubkeeper.NewKeeper(
 		appCodec,
 		keys[gashubtypes.StoreKey],
@@ -685,7 +727,7 @@ func NewEvmos(
 		app.SpKeeper,
 		app.PaymentKeeper,
 		app.PermissionmoduleKeeper,
-		// app.CrossChainKeeper,
+		app.CrossChainKeeper,
 		app.VirtualgroupKeeper,
 		app.EvmKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
@@ -732,12 +774,14 @@ func NewEvmos(
 		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper, app.GetSubspace(slashingtypes.ModuleName)),
 		distr.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper, app.GetSubspace(distrtypes.ModuleName)),
 		staking.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(stakingtypes.ModuleName)),
+		crosschain.NewAppModule(app.CrossChainKeeper, app.BankKeeper, app.StakingKeeper),
+		oracle.NewAppModule(app.OracleKeeper),
 		upgrade.NewAppModule(app.UpgradeKeeper),
 		evidence.NewAppModule(app.EvidenceKeeper),
 		params.NewAppModule(app.ParamsKeeper),
 		consensus.NewAppModule(appCodec, app.ConsensusParamsKeeper),
+		bridgeModule,
 		gashubModule,
-		// bridgeModule,
 		spModule,
 		virtualgroupModule,
 		paymentModule,
@@ -787,9 +831,11 @@ func NewEvmos(
 		genutiltypes.ModuleName,
 		authz.ModuleName,
 		feegrant.ModuleName,
+		crosschaintypes.ModuleName,
+		oracletypes.ModuleName,
 		paramstypes.ModuleName,
 		erc20types.ModuleName,
-		// bridgemoduletypes.ModuleName,
+		bridgemoduletypes.ModuleName,
 		gashubtypes.ModuleName,
 		spmoduletypes.ModuleName,
 		virtualgroupmoduletypes.ModuleName,
@@ -824,10 +870,12 @@ func NewEvmos(
 		authz.ModuleName,
 		feegrant.ModuleName,
 		paramstypes.ModuleName,
+		crosschaintypes.ModuleName,
+		oracletypes.ModuleName,
 		upgradetypes.ModuleName,
 		// Evmos modules
 		erc20types.ModuleName,
-		// bridgemoduletypes.ModuleName,
+		bridgemoduletypes.ModuleName,
 		gashubtypes.ModuleName,
 		spmoduletypes.ModuleName,
 		virtualgroupmoduletypes.ModuleName,
@@ -870,12 +918,14 @@ func NewEvmos(
 		consensusparamtypes.ModuleName,
 		paramstypes.ModuleName,
 		upgradetypes.ModuleName,
+		crosschaintypes.ModuleName,
+		oracletypes.ModuleName,
 		// Evmos modules
 		erc20types.ModuleName,
 		epochstypes.ModuleName,
 		// NOTE: crisis module must go at the end to check for invariants on each module
 		crisistypes.ModuleName,
-		// bridgemoduletypes.ModuleName,
+		bridgemoduletypes.ModuleName,
 		spmoduletypes.ModuleName,
 		virtualgroupmoduletypes.ModuleName,
 		paymentmoduletypes.ModuleName,
@@ -961,6 +1011,7 @@ func NewEvmos(
 		}
 		paymentIavl.EnableDiff()
 	}
+	app.initModules(ctx)
 	// add eth query router
 	ethRouter := app.BaseApp.EthQueryRouter()
 	ethRouter.RegisterConstHandler()
@@ -978,6 +1029,35 @@ func NewEvmos(
 	}()
 
 	return app
+}
+
+func (app *Evmos) initModules(ctx sdk.Context) {
+	app.initCrossChain()
+	app.initBridge()
+	app.initStorage()
+	app.initGov()
+}
+
+func (app *Evmos) initCrossChain() {
+	app.CrossChainKeeper.SetSrcChainID(sdk.ChainID(app.appConfig.CrossChain.SrcChainId))
+	app.CrossChainKeeper.SetDestBscChainID(sdk.ChainID(app.appConfig.CrossChain.DestBscChainId))
+}
+
+func (app *Evmos) initBridge() {
+	bridgemodulekeeper.RegisterCrossApps(app.BridgeKeeper)
+}
+
+func (app *Evmos) initStorage() {
+	storagemodulekeeper.RegisterCrossApps(app.StorageKeeper)
+	storagemodulekeeper.InitPaymentCheck(app.StorageKeeper, app.appConfig.PaymentCheck.Enabled,
+		app.appConfig.PaymentCheck.Interval)
+}
+
+func (app *Evmos) initGov() {
+	err := app.GovKeeper.RegisterCrossChainSyncParamsApp()
+	if err != nil {
+		panic(err)
+	}
 }
 
 // Name returns the name of the App
@@ -1064,6 +1144,14 @@ func (app *Evmos) InitChainer(ctx sdk.Context, req abci.RequestInitChain) abci.R
 	}
 
 	app.UpgradeKeeper.SetModuleVersionMap(ctx, app.mm.GetVersionMap())
+
+	// init cross chain channel permissions
+	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestBscChainId), bridgemoduletypes.TransferOutChannelID, sdk.ChannelAllow)
+	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestBscChainId), bridgemoduletypes.TransferInChannelID, sdk.ChannelAllow)
+	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestBscChainId), bridgemoduletypes.SyncParamsChannelID, sdk.ChannelAllow)
+	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestBscChainId), storagemoduletypes.BucketChannelId, sdk.ChannelAllow)
+	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestBscChainId), storagemoduletypes.ObjectChannelId, sdk.ChannelAllow)
+	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestBscChainId), storagemoduletypes.GroupChannelId, sdk.ChannelAllow)
 
 	return app.mm.InitGenesis(ctx, app.appCodec, genesisState)
 }

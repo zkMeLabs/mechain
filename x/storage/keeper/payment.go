@@ -438,6 +438,10 @@ func (k Keeper) ChargeViaObjectChange(ctx sdk.Context, bucketInfo *storagetypes.
 			shouldApplyFlowRate = false
 		}
 	} else {
+		isRateLimited := k.IsBucketRateLimited(ctx, bucketInfo.BucketName)
+		if isRateLimited {
+			return nil, fmt.Errorf("bucket is rate limited: %s", bucketInfo.BucketName)
+		}
 		// we should only check the flow rate limit when is not forced
 		currentBill, err := k.GetBucketReadStoreBill(ctx, bucketInfo, internalBucketInfo)
 		if err != nil {
@@ -581,6 +585,11 @@ func (k Keeper) ChargeBucketReadStoreFee(ctx sdk.Context, bucketInfo *storagetyp
 	bill, err := k.GetBucketReadStoreBill(ctx, bucketInfo, internalBucketInfo)
 	if err != nil {
 		return fmt.Errorf("get bucket bill failed: %s %s", bucketInfo.BucketName, err.Error())
+	}
+
+	isRateLimited := k.IsBucketRateLimited(ctx, bucketInfo.BucketName)
+	if isRateLimited {
+		return fmt.Errorf("bucket is rate limited: %s", bucketInfo.BucketName)
 	}
 
 	errs := k.isBucketFlowRateUnderLimit(ctx, sdk.MustAccAddressFromHex(bucketInfo.PaymentAddress), sdk.MustAccAddressFromHex(bucketInfo.Owner), bucketInfo.BucketName, bill)

@@ -614,7 +614,7 @@ func openTraceWriter(traceWriterFile string) (w io.Writer, err error) {
 	)
 }
 
-func startTelemetry(cfg config.Config) (*telemetry.Metrics, error) {
+func startTelemetry(cfg config.AppConfig) (*telemetry.Metrics, error) {
 	if !cfg.Telemetry.Enabled {
 		return nil, nil
 	}

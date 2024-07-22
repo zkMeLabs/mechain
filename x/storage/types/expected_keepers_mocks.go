@@ -5,6 +5,8 @@
 package types
 
 import (
+	context "context"
+	big "math/big"
 	reflect "reflect"
 	time "time"
 
@@ -297,6 +299,34 @@ func (m *MockPaymentKeeper) ApplyUserFlowsList(ctx types3.Context, userFlows []t
 func (mr *MockPaymentKeeperMockRecorder) ApplyUserFlowsList(ctx, userFlows interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ApplyUserFlowsList", reflect.TypeOf((*MockPaymentKeeper)(nil).ApplyUserFlowsList), ctx, userFlows)
+}
+
+// GetAllStreamRecord mocks base method.
+func (m *MockPaymentKeeper) GetAllStreamRecord(ctx types3.Context) []types.StreamRecord {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetAllStreamRecord", ctx)
+	ret0, _ := ret[0].([]types.StreamRecord)
+	return ret0
+}
+
+// GetAllStreamRecord indicates an expected call of GetAllStreamRecord.
+func (mr *MockPaymentKeeperMockRecorder) GetAllStreamRecord(ctx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAllStreamRecord", reflect.TypeOf((*MockPaymentKeeper)(nil).GetAllStreamRecord), ctx)
+}
+
+// GetOutFlows mocks base method.
+func (m *MockPaymentKeeper) GetOutFlows(ctx types3.Context, addr types3.AccAddress) []types.OutFlow {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetOutFlows", ctx, addr)
+	ret0, _ := ret[0].([]types.OutFlow)
+	return ret0
+}
+
+// GetOutFlows indicates an expected call of GetOutFlows.
+func (mr *MockPaymentKeeperMockRecorder) GetOutFlows(ctx, addr interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetOutFlows", reflect.TypeOf((*MockPaymentKeeper)(nil).GetOutFlows), ctx, addr)
 }
 
 // GetStreamRecord mocks base method.
@@ -656,99 +686,99 @@ func (mr *MockPermissionKeeperMockRecorder) UpdateGroupMember(ctx, groupID, memb
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateGroupMember", reflect.TypeOf((*MockPermissionKeeper)(nil).UpdateGroupMember), ctx, groupID, member, memberID, expiration)
 }
 
-// // MockCrossChainKeeper is a mock of CrossChainKeeper interface.
-// type MockCrossChainKeeper struct {
-// 	ctrl     *gomock.Controller
-// 	recorder *MockCrossChainKeeperMockRecorder
-// }
+// MockCrossChainKeeper is a mock of CrossChainKeeper interface.
+type MockCrossChainKeeper struct {
+	ctrl     *gomock.Controller
+	recorder *MockCrossChainKeeperMockRecorder
+}
 
-// // MockCrossChainKeeperMockRecorder is the mock recorder for MockCrossChainKeeper.
-// type MockCrossChainKeeperMockRecorder struct {
-// 	mock *MockCrossChainKeeper
-// }
+// MockCrossChainKeeperMockRecorder is the mock recorder for MockCrossChainKeeper.
+type MockCrossChainKeeperMockRecorder struct {
+	mock *MockCrossChainKeeper
+}
 
-// // NewMockCrossChainKeeper creates a new mock instance.
-// func NewMockCrossChainKeeper(ctrl *gomock.Controller) *MockCrossChainKeeper {
-// 	mock := &MockCrossChainKeeper{ctrl: ctrl}
-// 	mock.recorder = &MockCrossChainKeeperMockRecorder{mock}
-// 	return mock
-// }
+// NewMockCrossChainKeeper creates a new mock instance.
+func NewMockCrossChainKeeper(ctrl *gomock.Controller) *MockCrossChainKeeper {
+	mock := &MockCrossChainKeeper{ctrl: ctrl}
+	mock.recorder = &MockCrossChainKeeperMockRecorder{mock}
+	return mock
+}
 
-// // EXPECT returns an object that allows the caller to indicate expected use.
-// func (m *MockCrossChainKeeper) EXPECT() *MockCrossChainKeeperMockRecorder {
-// 	return m.recorder
-// }
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockCrossChainKeeper) EXPECT() *MockCrossChainKeeperMockRecorder {
+	return m.recorder
+}
 
-// // CreateRawIBCPackageWithFee mocks base method.
-// func (m *MockCrossChainKeeper) CreateRawIBCPackageWithFee(ctx types3.Context, chainID types3.ChainID, channelID types3.ChannelID, packageType types3.CrossChainPackageType, packageLoad []byte, relayerFee, ackRelayerFee *big.Int) (uint64, error) {
-// 	m.ctrl.T.Helper()
-// 	ret := m.ctrl.Call(m, "CreateRawIBCPackageWithFee", ctx, chainID, channelID, packageType, packageLoad, relayerFee, ackRelayerFee)
-// 	ret0, _ := ret[0].(uint64)
-// 	ret1, _ := ret[1].(error)
-// 	return ret0, ret1
-// }
+// CreateRawIBCPackageWithFee mocks base method.
+func (m *MockCrossChainKeeper) CreateRawIBCPackageWithFee(ctx types3.Context, chainID types3.ChainID, channelID types3.ChannelID, packageType types3.CrossChainPackageType, packageLoad []byte, relayerFee, ackRelayerFee *big.Int) (uint64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateRawIBCPackageWithFee", ctx, chainID, channelID, packageType, packageLoad, relayerFee, ackRelayerFee)
+	ret0, _ := ret[0].(uint64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
 
-// // CreateRawIBCPackageWithFee indicates an expected call of CreateRawIBCPackageWithFee.
-// func (mr *MockCrossChainKeeperMockRecorder) CreateRawIBCPackageWithFee(ctx, chainID, channelID, packageType, packageLoad, relayerFee, ackRelayerFee interface{}) *gomock.Call {
-// 	mr.mock.ctrl.T.Helper()
-// 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateRawIBCPackageWithFee", reflect.TypeOf((*MockCrossChainKeeper)(nil).CreateRawIBCPackageWithFee), ctx, chainID, channelID, packageType, packageLoad, relayerFee, ackRelayerFee)
-// }
+// CreateRawIBCPackageWithFee indicates an expected call of CreateRawIBCPackageWithFee.
+func (mr *MockCrossChainKeeperMockRecorder) CreateRawIBCPackageWithFee(ctx, chainID, channelID, packageType, packageLoad, relayerFee, ackRelayerFee interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateRawIBCPackageWithFee", reflect.TypeOf((*MockCrossChainKeeper)(nil).CreateRawIBCPackageWithFee), ctx, chainID, channelID, packageType, packageLoad, relayerFee, ackRelayerFee)
+}
 
-// // GetDestBscChainID mocks base method.
-// func (m *MockCrossChainKeeper) GetDestBscChainID() types3.ChainID {
-// 	m.ctrl.T.Helper()
-// 	ret := m.ctrl.Call(m, "GetDestBscChainID")
-// 	ret0, _ := ret[0].(types3.ChainID)
-// 	return ret0
-// }
+// GetDestBscChainID mocks base method.
+func (m *MockCrossChainKeeper) GetDestBscChainID() types3.ChainID {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetDestBscChainID")
+	ret0, _ := ret[0].(types3.ChainID)
+	return ret0
+}
 
-// // GetDestBscChainID indicates an expected call of GetDestBscChainID.
-// func (mr *MockCrossChainKeeperMockRecorder) GetDestBscChainID() *gomock.Call {
-// 	mr.mock.ctrl.T.Helper()
-// 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDestBscChainID", reflect.TypeOf((*MockCrossChainKeeper)(nil).GetDestBscChainID))
-// }
+// GetDestBscChainID indicates an expected call of GetDestBscChainID.
+func (mr *MockCrossChainKeeperMockRecorder) GetDestBscChainID() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDestBscChainID", reflect.TypeOf((*MockCrossChainKeeper)(nil).GetDestBscChainID))
+}
 
-// // GetDestOpChainID mocks base method.
-// func (m *MockCrossChainKeeper) GetDestOpChainID() types3.ChainID {
-// 	m.ctrl.T.Helper()
-// 	ret := m.ctrl.Call(m, "GetDestOpChainID")
-// 	ret0, _ := ret[0].(types3.ChainID)
-// 	return ret0
-// }
+// GetDestOpChainID mocks base method.
+func (m *MockCrossChainKeeper) GetDestOpChainID() types3.ChainID {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetDestOpChainID")
+	ret0, _ := ret[0].(types3.ChainID)
+	return ret0
+}
 
-// // GetDestOpChainID indicates an expected call of GetDestOpChainID.
-// func (mr *MockCrossChainKeeperMockRecorder) GetDestOpChainID() *gomock.Call {
-// 	mr.mock.ctrl.T.Helper()
-// 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDestOpChainID", reflect.TypeOf((*MockCrossChainKeeper)(nil).GetDestOpChainID))
-// }
+// GetDestOpChainID indicates an expected call of GetDestOpChainID.
+func (mr *MockCrossChainKeeperMockRecorder) GetDestOpChainID() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDestOpChainID", reflect.TypeOf((*MockCrossChainKeeper)(nil).GetDestOpChainID))
+}
 
-// // IsDestChainSupported mocks base method.
-// func (m *MockCrossChainKeeper) IsDestChainSupported(chainID types3.ChainID) bool {
-// 	m.ctrl.T.Helper()
-// 	ret := m.ctrl.Call(m, "IsDestChainSupported", chainID)
-// 	ret0, _ := ret[0].(bool)
-// 	return ret0
-// }
+// IsDestChainSupported mocks base method.
+func (m *MockCrossChainKeeper) IsDestChainSupported(chainID types3.ChainID) bool {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "IsDestChainSupported", chainID)
+	ret0, _ := ret[0].(bool)
+	return ret0
+}
 
-// // IsDestChainSupported indicates an expected call of IsDestChainSupported.
-// func (mr *MockCrossChainKeeperMockRecorder) IsDestChainSupported(chainID interface{}) *gomock.Call {
-// 	mr.mock.ctrl.T.Helper()
-// 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsDestChainSupported", reflect.TypeOf((*MockCrossChainKeeper)(nil).IsDestChainSupported), chainID)
-// }
+// IsDestChainSupported indicates an expected call of IsDestChainSupported.
+func (mr *MockCrossChainKeeperMockRecorder) IsDestChainSupported(chainID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsDestChainSupported", reflect.TypeOf((*MockCrossChainKeeper)(nil).IsDestChainSupported), chainID)
+}
 
-// // RegisterChannel mocks base method.
-// func (m *MockCrossChainKeeper) RegisterChannel(name string, id types3.ChannelID, app types3.CrossChainApplication) error {
-// 	m.ctrl.T.Helper()
-// 	ret := m.ctrl.Call(m, "RegisterChannel", name, id, app)
-// 	ret0, _ := ret[0].(error)
-// 	return ret0
-// }
+// RegisterChannel mocks base method.
+func (m *MockCrossChainKeeper) RegisterChannel(name string, id types3.ChannelID, app types3.CrossChainApplication) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RegisterChannel", name, id, app)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
 
-// // RegisterChannel indicates an expected call of RegisterChannel.
-// func (mr *MockCrossChainKeeperMockRecorder) RegisterChannel(name, id, app interface{}) *gomock.Call {
-// 	mr.mock.ctrl.T.Helper()
-// 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RegisterChannel", reflect.TypeOf((*MockCrossChainKeeper)(nil).RegisterChannel), name, id, app)
-// }
+// RegisterChannel indicates an expected call of RegisterChannel.
+func (mr *MockCrossChainKeeperMockRecorder) RegisterChannel(name, id, app interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RegisterChannel", reflect.TypeOf((*MockCrossChainKeeper)(nil).RegisterChannel), name, id, app)
+}
 
 // MockVirtualGroupKeeper is a mock of VirtualGroupKeeper interface.
 type MockVirtualGroupKeeper struct {
@@ -1045,20 +1075,20 @@ func (mr *MockStorageKeeperMockRecorder) GetObjectInfoById(ctx, objectId interfa
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetObjectInfoById", reflect.TypeOf((*MockStorageKeeper)(nil).GetObjectInfoById), ctx, objectId)
 }
 
-// // GetSourceTypeByChainId mocks base method.
-// func (m *MockStorageKeeper) GetSourceTypeByChainId(ctx types3.Context, chainId types3.ChainID) (SourceType, error) {
-// 	m.ctrl.T.Helper()
-// 	ret := m.ctrl.Call(m, "GetSourceTypeByChainId", ctx, chainId)
-// 	ret0, _ := ret[0].(SourceType)
-// 	ret1, _ := ret[1].(error)
-// 	return ret0, ret1
-// }
+// GetSourceTypeByChainId mocks base method.
+func (m *MockStorageKeeper) GetSourceTypeByChainId(ctx types3.Context, chainId types3.ChainID) (SourceType, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetSourceTypeByChainId", ctx, chainId)
+	ret0, _ := ret[0].(SourceType)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
 
-// // GetSourceTypeByChainId indicates an expected call of GetSourceTypeByChainId.
-// func (mr *MockStorageKeeperMockRecorder) GetSourceTypeByChainId(ctx, chainId interface{}) *gomock.Call {
-// 	mr.mock.ctrl.T.Helper()
-// 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSourceTypeByChainId", reflect.TypeOf((*MockStorageKeeper)(nil).GetSourceTypeByChainId), ctx, chainId)
-// }
+// GetSourceTypeByChainId indicates an expected call of GetSourceTypeByChainId.
+func (mr *MockStorageKeeperMockRecorder) GetSourceTypeByChainId(ctx, chainId interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSourceTypeByChainId", reflect.TypeOf((*MockStorageKeeper)(nil).GetSourceTypeByChainId), ctx, chainId)
+}
 
 // Logger mocks base method.
 func (m *MockStorageKeeper) Logger(ctx types3.Context) log.Logger {
@@ -1162,4 +1192,245 @@ func (m *MockStorageKeeper) ValidatePrincipal(ctx types3.Context, resOwner types
 func (mr *MockStorageKeeperMockRecorder) ValidatePrincipal(ctx, resOwner, principal interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ValidatePrincipal", reflect.TypeOf((*MockStorageKeeper)(nil).ValidatePrincipal), ctx, resOwner, principal)
+}
+
+// MockPaymentMsgServer is a mock of PaymentMsgServer interface.
+type MockPaymentMsgServer struct {
+	ctrl     *gomock.Controller
+	recorder *MockPaymentMsgServerMockRecorder
+}
+
+// MockPaymentMsgServerMockRecorder is the mock recorder for MockPaymentMsgServer.
+type MockPaymentMsgServerMockRecorder struct {
+	mock *MockPaymentMsgServer
+}
+
+// NewMockPaymentMsgServer creates a new mock instance.
+func NewMockPaymentMsgServer(ctrl *gomock.Controller) *MockPaymentMsgServer {
+	mock := &MockPaymentMsgServer{ctrl: ctrl}
+	mock.recorder = &MockPaymentMsgServerMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockPaymentMsgServer) EXPECT() *MockPaymentMsgServerMockRecorder {
+	return m.recorder
+}
+
+// CreatePaymentAccount mocks base method.
+func (m *MockPaymentMsgServer) CreatePaymentAccount(arg0 context.Context, arg1 *types.MsgCreatePaymentAccount) (*types.MsgCreatePaymentAccountResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreatePaymentAccount", arg0, arg1)
+	ret0, _ := ret[0].(*types.MsgCreatePaymentAccountResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreatePaymentAccount indicates an expected call of CreatePaymentAccount.
+func (mr *MockPaymentMsgServerMockRecorder) CreatePaymentAccount(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreatePaymentAccount", reflect.TypeOf((*MockPaymentMsgServer)(nil).CreatePaymentAccount), arg0, arg1)
+}
+
+// Deposit mocks base method.
+func (m *MockPaymentMsgServer) Deposit(arg0 context.Context, arg1 *types.MsgDeposit) (*types.MsgDepositResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Deposit", arg0, arg1)
+	ret0, _ := ret[0].(*types.MsgDepositResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Deposit indicates an expected call of Deposit.
+func (mr *MockPaymentMsgServerMockRecorder) Deposit(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Deposit", reflect.TypeOf((*MockPaymentMsgServer)(nil).Deposit), arg0, arg1)
+}
+
+// DisableRefund mocks base method.
+func (m *MockPaymentMsgServer) DisableRefund(arg0 context.Context, arg1 *types.MsgDisableRefund) (*types.MsgDisableRefundResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DisableRefund", arg0, arg1)
+	ret0, _ := ret[0].(*types.MsgDisableRefundResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DisableRefund indicates an expected call of DisableRefund.
+func (mr *MockPaymentMsgServerMockRecorder) DisableRefund(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DisableRefund", reflect.TypeOf((*MockPaymentMsgServer)(nil).DisableRefund), arg0, arg1)
+}
+
+// Withdraw mocks base method.
+func (m *MockPaymentMsgServer) Withdraw(arg0 context.Context, arg1 *types.MsgWithdraw) (*types.MsgWithdrawResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Withdraw", arg0, arg1)
+	ret0, _ := ret[0].(*types.MsgWithdrawResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Withdraw indicates an expected call of Withdraw.
+func (mr *MockPaymentMsgServerMockRecorder) Withdraw(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Withdraw", reflect.TypeOf((*MockPaymentMsgServer)(nil).Withdraw), arg0, arg1)
+}
+
+// MockStorageMsgServer is a mock of StorageMsgServer interface.
+type MockStorageMsgServer struct {
+	ctrl     *gomock.Controller
+	recorder *MockStorageMsgServerMockRecorder
+}
+
+// MockStorageMsgServerMockRecorder is the mock recorder for MockStorageMsgServer.
+type MockStorageMsgServerMockRecorder struct {
+	mock *MockStorageMsgServer
+}
+
+// NewMockStorageMsgServer creates a new mock instance.
+func NewMockStorageMsgServer(ctrl *gomock.Controller) *MockStorageMsgServer {
+	mock := &MockStorageMsgServer{ctrl: ctrl}
+	mock.recorder = &MockStorageMsgServerMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockStorageMsgServer) EXPECT() *MockStorageMsgServerMockRecorder {
+	return m.recorder
+}
+
+// CancelMigrateBucket mocks base method.
+func (m *MockStorageMsgServer) CancelMigrateBucket(arg0 context.Context, arg1 *MsgCancelMigrateBucket) (*MsgCancelMigrateBucketResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CancelMigrateBucket", arg0, arg1)
+	ret0, _ := ret[0].(*MsgCancelMigrateBucketResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CancelMigrateBucket indicates an expected call of CancelMigrateBucket.
+func (mr *MockStorageMsgServerMockRecorder) CancelMigrateBucket(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CancelMigrateBucket", reflect.TypeOf((*MockStorageMsgServer)(nil).CancelMigrateBucket), arg0, arg1)
+}
+
+// CopyObject mocks base method.
+func (m *MockStorageMsgServer) CopyObject(arg0 context.Context, arg1 *MsgCopyObject) (*MsgCopyObjectResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CopyObject", arg0, arg1)
+	ret0, _ := ret[0].(*MsgCopyObjectResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CopyObject indicates an expected call of CopyObject.
+func (mr *MockStorageMsgServerMockRecorder) CopyObject(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CopyObject", reflect.TypeOf((*MockStorageMsgServer)(nil).CopyObject), arg0, arg1)
+}
+
+// MigrateBucket mocks base method.
+func (m *MockStorageMsgServer) MigrateBucket(arg0 context.Context, arg1 *MsgMigrateBucket) (*MsgMigrateBucketResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "MigrateBucket", arg0, arg1)
+	ret0, _ := ret[0].(*MsgMigrateBucketResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// MigrateBucket indicates an expected call of MigrateBucket.
+func (mr *MockStorageMsgServerMockRecorder) MigrateBucket(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MigrateBucket", reflect.TypeOf((*MockStorageMsgServer)(nil).MigrateBucket), arg0, arg1)
+}
+
+// SetBucketFlowRateLimit mocks base method.
+func (m *MockStorageMsgServer) SetBucketFlowRateLimit(arg0 context.Context, arg1 *MsgSetBucketFlowRateLimit) (*MsgSetBucketFlowRateLimitResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SetBucketFlowRateLimit", arg0, arg1)
+	ret0, _ := ret[0].(*MsgSetBucketFlowRateLimitResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// SetBucketFlowRateLimit indicates an expected call of SetBucketFlowRateLimit.
+func (mr *MockStorageMsgServerMockRecorder) SetBucketFlowRateLimit(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetBucketFlowRateLimit", reflect.TypeOf((*MockStorageMsgServer)(nil).SetBucketFlowRateLimit), arg0, arg1)
+}
+
+// SetTag mocks base method.
+func (m *MockStorageMsgServer) SetTag(arg0 context.Context, arg1 *MsgSetTag) (*MsgSetTagResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SetTag", arg0, arg1)
+	ret0, _ := ret[0].(*MsgSetTagResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// SetTag indicates an expected call of SetTag.
+func (mr *MockStorageMsgServerMockRecorder) SetTag(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetTag", reflect.TypeOf((*MockStorageMsgServer)(nil).SetTag), arg0, arg1)
+}
+
+// ToggleSPAsDelegatedAgent mocks base method.
+func (m *MockStorageMsgServer) ToggleSPAsDelegatedAgent(arg0 context.Context, arg1 *MsgToggleSPAsDelegatedAgent) (*MsgToggleSPAsDelegatedAgentResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ToggleSPAsDelegatedAgent", arg0, arg1)
+	ret0, _ := ret[0].(*MsgToggleSPAsDelegatedAgentResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ToggleSPAsDelegatedAgent indicates an expected call of ToggleSPAsDelegatedAgent.
+func (mr *MockStorageMsgServerMockRecorder) ToggleSPAsDelegatedAgent(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ToggleSPAsDelegatedAgent", reflect.TypeOf((*MockStorageMsgServer)(nil).ToggleSPAsDelegatedAgent), arg0, arg1)
+}
+
+// UpdateBucketInfo mocks base method.
+func (m *MockStorageMsgServer) UpdateBucketInfo(arg0 context.Context, arg1 *MsgUpdateBucketInfo) (*MsgUpdateBucketInfoResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateBucketInfo", arg0, arg1)
+	ret0, _ := ret[0].(*MsgUpdateBucketInfoResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpdateBucketInfo indicates an expected call of UpdateBucketInfo.
+func (mr *MockStorageMsgServerMockRecorder) UpdateBucketInfo(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateBucketInfo", reflect.TypeOf((*MockStorageMsgServer)(nil).UpdateBucketInfo), arg0, arg1)
+}
+
+// UpdateGroupExtra mocks base method.
+func (m *MockStorageMsgServer) UpdateGroupExtra(arg0 context.Context, arg1 *MsgUpdateGroupExtra) (*MsgUpdateGroupExtraResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateGroupExtra", arg0, arg1)
+	ret0, _ := ret[0].(*MsgUpdateGroupExtraResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpdateGroupExtra indicates an expected call of UpdateGroupExtra.
+func (mr *MockStorageMsgServerMockRecorder) UpdateGroupExtra(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateGroupExtra", reflect.TypeOf((*MockStorageMsgServer)(nil).UpdateGroupExtra), arg0, arg1)
+}
+
+// UpdateObjectInfo mocks base method.
+func (m *MockStorageMsgServer) UpdateObjectInfo(arg0 context.Context, arg1 *MsgUpdateObjectInfo) (*MsgUpdateObjectInfoResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateObjectInfo", arg0, arg1)
+	ret0, _ := ret[0].(*MsgUpdateObjectInfoResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpdateObjectInfo indicates an expected call of UpdateObjectInfo.
+func (mr *MockStorageMsgServerMockRecorder) UpdateObjectInfo(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateObjectInfo", reflect.TypeOf((*MockStorageMsgServer)(nil).UpdateObjectInfo), arg0, arg1)
 }

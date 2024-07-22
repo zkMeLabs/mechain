@@ -21,6 +21,8 @@ import (
 	"github.com/evmos/evmos/v12/app"
 	"github.com/evmos/evmos/v12/encoding"
 	"github.com/evmos/evmos/v12/sdk/client/test"
+	servercfg "github.com/evmos/evmos/v12/server/config"
+	evmostypes "github.com/evmos/evmos/v12/types"
 )
 
 func NewTestApp(
@@ -59,7 +61,7 @@ func NewTestApp(
 		app.DefaultNodeHome,
 		0,
 		encCfg,
-		app.NewDefaultAppConfig(),
+		servercfg.NewDefaultAppConfig(evmostypes.AttoEvmos),
 		simtestutil.EmptyAppOptions{},
 		options...,
 	)

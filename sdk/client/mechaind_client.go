@@ -16,14 +16,12 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	authztypes "github.com/cosmos/cosmos-sdk/x/authz"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-
-	// crosschaintypes "github.com/cosmos/cosmos-sdk/x/crosschain/types"
+	crosschaintypes "github.com/cosmos/cosmos-sdk/x/crosschain/types"
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	feegranttypes "github.com/cosmos/cosmos-sdk/x/feegrant"
 	gashubtypes "github.com/cosmos/cosmos-sdk/x/gashub/types"
 	govv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
-
-	// oracletypes "github.com/cosmos/cosmos-sdk/x/oracle/types"
+	oracletypes "github.com/cosmos/cosmos-sdk/x/oracle/types"
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
@@ -33,7 +31,7 @@ import (
 	"github.com/evmos/evmos/v12/sdk/keys"
 	"github.com/evmos/evmos/v12/sdk/types"
 
-	// bridgetypes "github.com/evmos/evmos/v12/x/bridge/types"
+	bridgetypes "github.com/evmos/evmos/v12/x/bridge/types"
 	challengetypes "github.com/evmos/evmos/v12/x/challenge/types"
 	paymenttypes "github.com/evmos/evmos/v12/x/payment/types"
 	sptypes "github.com/evmos/evmos/v12/x/sp/types"
@@ -54,7 +52,7 @@ type BankQueryClient = banktypes.QueryClient
 type ChallengeQueryClient = challengetypes.QueryClient
 
 // CrosschainQueryClient is a type to define the crosschain types Query Client
-// type CrosschainQueryClient = crosschaintypes.QueryClient
+type CrosschainQueryClient = crosschaintypes.QueryClient
 
 // DistrQueryClient is a type to define the distribution types Query Client
 type DistrQueryClient = distrtypes.QueryClient
@@ -72,7 +70,7 @@ type PaymentQueryClient = paymenttypes.QueryClient
 type SpQueryClient = sptypes.QueryClient
 
 // BridgeQueryClient is a type to define the bridge types Query Client
-// type BridgeQueryClient = bridgetypes.QueryClient
+type BridgeQueryClient = bridgetypes.QueryClient
 
 // StorageQueryClient is a type to define the storage types Query Client
 type StorageQueryClient = storagetypes.QueryClient
@@ -81,7 +79,7 @@ type StorageQueryClient = storagetypes.QueryClient
 type GovQueryClientV1 = govv1.QueryClient
 
 // OracleQueryClient is a type to define the oracle types Query Client
-// type OracleQueryClient = oracletypes.QueryClient
+type OracleQueryClient = oracletypes.QueryClient
 
 // SlashingQueryClient is a type to define the slashing types Query Client
 type SlashingQueryClient = slashingtypes.QueryClient
@@ -112,7 +110,7 @@ type GreenfieldClient struct {
 	// ChallengeQueryClient holds the bank query client.
 	ChallengeQueryClient
 	// CrosschainQueryClient holds the crosschain query client.
-	// CrosschainQueryClient
+	CrosschainQueryClient
 	// DistrQueryClient holds the distr query client.
 	DistrQueryClient
 	// FeegrantQueryClient holds the feegrant query client.
@@ -124,13 +122,13 @@ type GreenfieldClient struct {
 	// SpQueryClient holds the sp query client.
 	SpQueryClient
 	// BridgeQueryClient holds the bridge query client.
-	// BridgeQueryClient
+	BridgeQueryClient
 	// StorageQueryClient holds the storage query client.
 	StorageQueryClient
 	// GovQueryClientV1 holds the gov query client V1.
 	GovQueryClientV1
 	// OracleQueryClient holds the oracle query client.
-	// OracleQueryClient
+	OracleQueryClient
 	// SlashingQueryClient holds the slashing query client.
 	SlashingQueryClient
 	// StakingQueryClient holds the staking query client.
@@ -220,16 +218,16 @@ func setClientsConn(c *GreenfieldClient, conn grpc1.ClientConn) {
 	c.AuthzQueryClient = authztypes.NewQueryClient(conn)
 	c.BankQueryClient = banktypes.NewQueryClient(conn)
 	c.ChallengeQueryClient = challengetypes.NewQueryClient(conn)
-	// c.CrosschainQueryClient = crosschaintypes.NewQueryClient(conn)
+	c.CrosschainQueryClient = crosschaintypes.NewQueryClient(conn)
 	c.DistrQueryClient = distrtypes.NewQueryClient(conn)
 	c.FeegrantQueryClient = feegranttypes.NewQueryClient(conn)
 	c.GashubQueryClient = gashubtypes.NewQueryClient(conn)
 	c.PaymentQueryClient = paymenttypes.NewQueryClient(conn)
 	c.SpQueryClient = sptypes.NewQueryClient(conn)
-	// c.BridgeQueryClient = bridgetypes.NewQueryClient(conn)
+	c.BridgeQueryClient = bridgetypes.NewQueryClient(conn)
 	c.StorageQueryClient = storagetypes.NewQueryClient(conn)
 	c.GovQueryClientV1 = govv1.NewQueryClient(conn)
-	// c.OracleQueryClient = oracletypes.NewQueryClient(conn)
+	c.OracleQueryClient = oracletypes.NewQueryClient(conn)
 	c.SlashingQueryClient = slashingtypes.NewQueryClient(conn)
 	c.StakingQueryClient = stakingtypes.NewQueryClient(conn)
 	c.UpgradeQueryClient = upgradetypes.NewQueryClient(conn)

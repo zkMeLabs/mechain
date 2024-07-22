@@ -21,6 +21,8 @@ import (
 	tmtypes "github.com/cometbft/cometbft/types"
 
 	"github.com/evmos/evmos/v12/encoding"
+	servercfg "github.com/evmos/evmos/v12/server/config"
+	evmostypes "github.com/evmos/evmos/v12/types"
 	"github.com/evmos/evmos/v12/utils"
 )
 
@@ -49,7 +51,7 @@ func TestEvmosExport(t *testing.T) {
 		db, nil, true,
 		DefaultNodeHome, 0,
 		encoding.MakeConfig(ModuleBasics),
-		NewDefaultAppConfig(),
+		servercfg.NewDefaultAppConfig(evmostypes.AttoEvmos),
 		simtestutil.NewAppOptionsWithFlagHome(DefaultNodeHome),
 		baseapp.SetChainID(chainID),
 	)
@@ -75,7 +77,7 @@ func TestEvmosExport(t *testing.T) {
 		db, nil, true,
 		DefaultNodeHome, 0,
 		encoding.MakeConfig(ModuleBasics),
-		NewDefaultAppConfig(),
+		servercfg.NewDefaultAppConfig(evmostypes.AttoEvmos),
 		simtestutil.NewAppOptionsWithFlagHome(DefaultNodeHome),
 		baseapp.SetChainID(chainID),
 	)

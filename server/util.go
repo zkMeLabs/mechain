@@ -126,7 +126,7 @@ func MountGRPCWebServices(
 
 // Listen starts a net.Listener on the tcp network on the given address.
 // If there is a specified MaxOpenConnections in the config, it will also set the limitListener.
-func Listen(addr string, config *config.Config) (net.Listener, error) {
+func Listen(addr string, config *config.AppConfig) (net.Listener, error) {
 	if addr == "" {
 		addr = ":http"
 	}
