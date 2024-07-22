@@ -150,7 +150,7 @@ func NewAppConstructor(encodingCfg params.EncodingConfig, chainID string) AppCon
 		return app.NewEvmos(
 			val.Ctx.Logger, dbm.NewMemDB(), nil, true, val.Ctx.Config.RootDir, 0,
 			encodingCfg,
-			app.NewDefaultAppConfig(),
+			config.NewDefaultAppConfig(evmostypes.AttoEvmos),
 			simutils.NewAppOptionsWithFlagHome(val.Ctx.Config.RootDir),
 			baseapp.SetPruning(pruningtypes.NewPruningOptionsFromString(val.AppConfig.Pruning)),
 			baseapp.SetMinGasPrices(val.AppConfig.MinGasPrices),
@@ -182,7 +182,7 @@ type (
 	// a client can make RPC and API calls and interact with any client command
 	// or handler.
 	Validator struct {
-		AppConfig     *config.Config
+		AppConfig     *config.AppConfig
 		ClientCtx     client.Context
 		Ctx           *server.Context
 		Dir           string
@@ -503,7 +503,7 @@ func New(l Logger, baseDir string, cfg Config) (*Network, error) {
 			return nil, err
 		}
 
-		customAppTemplate, _ := config.AppConfig(evmostypes.AttoEvmos)
+		customAppTemplate, _ := config.NewAppConfig(evmostypes.AttoEvmos)
 		srvconfig.SetConfigTemplate(customAppTemplate)
 		srvconfig.WriteConfigFile(filepath.Join(nodeDir, "config/app.toml"), appCfg)
 

@@ -2,6 +2,7 @@ package types
 
 import (
 	"context"
+	"math/big"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core"
 	"github.com/ethereum/go-ethereum/core/vm"
@@ -55,6 +56,8 @@ type PaymentKeeper interface {
 	UpdateStreamRecordByAddr(ctx sdk.Context, change *paymenttypes.StreamRecordChange) (ret *paymenttypes.StreamRecord, err error)
 	GetStreamRecord(ctx sdk.Context, account sdk.AccAddress) (ret *paymenttypes.StreamRecord, found bool)
 	MergeOutFlows(flows []paymenttypes.OutFlow) []paymenttypes.OutFlow
+	GetAllStreamRecord(ctx sdk.Context) (list []paymenttypes.StreamRecord)
+	GetOutFlows(ctx sdk.Context, addr sdk.AccAddress) []paymenttypes.OutFlow
 }
 
 type PermissionKeeper interface {
@@ -80,18 +83,18 @@ type PermissionKeeper interface {
 	ExistGroupMemberForGroup(ctx sdk.Context, groupId math.Uint) bool
 }
 
-// type CrossChainKeeper interface {
-// 	GetDestBscChainID() sdk.ChainID
-// 	GetDestOpChainID() sdk.ChainID
+type CrossChainKeeper interface {
+	GetDestBscChainID() sdk.ChainID
+	GetDestOpChainID() sdk.ChainID
 
-// 	CreateRawIBCPackageWithFee(ctx sdk.Context, chainID sdk.ChainID, channelID sdk.ChannelID, packageType sdk.CrossChainPackageType,
-// 		packageLoad []byte, relayerFee *big.Int, ackRelayerFee *big.Int,
-// 	) (uint64, error)
+	CreateRawIBCPackageWithFee(ctx sdk.Context, chainID sdk.ChainID, channelID sdk.ChannelID, packageType sdk.CrossChainPackageType,
+		packageLoad []byte, relayerFee *big.Int, ackRelayerFee *big.Int,
+	) (uint64, error)
 
-// 	IsDestChainSupported(chainID sdk.ChainID) bool
+	IsDestChainSupported(chainID sdk.ChainID) bool
 
-// 	RegisterChannel(name string, id sdk.ChannelID, app sdk.CrossChainApplication) error
-// }
+	RegisterChannel(name string, id sdk.ChannelID, app sdk.CrossChainApplication) error
+}
 
 type VirtualGroupKeeper interface {
 	SetGVGAndEmitUpdateEvent(ctx sdk.Context, gvg *types.GlobalVirtualGroup) error
@@ -126,7 +129,7 @@ type StorageKeeper interface {
 	SetObjectInfo(ctx sdk.Context, objectInfo *ObjectInfo)
 	DeleteObject(
 		ctx sdk.Context, operator sdk.AccAddress, bucketName, objectName string, opts DeleteObjectOptions) error
-	// GetSourceTypeByChainId(ctx sdk.Context, chainId sdk.ChainID) (SourceType, error)
+	GetSourceTypeByChainId(ctx sdk.Context, chainId sdk.ChainID) (SourceType, error)
 
 	NormalizePrincipal(ctx sdk.Context, principal *permtypes.Principal)
 	ValidatePrincipal(ctx sdk.Context, resOwner sdk.AccAddress, principal *permtypes.Principal) error
