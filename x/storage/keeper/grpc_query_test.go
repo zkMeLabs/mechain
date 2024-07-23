@@ -26,20 +26,21 @@ import (
 func makeKeeper(t *testing.T) (*keeper.Keeper, sdk.Context) {
 	encCfg := moduletestutil.MakeTestEncodingConfig(mint.AppModuleBasic{})
 	key := storetypes.NewKVStoreKey(types.StoreKey)
-	tStorekey := storetypes.NewTransientStoreKey(types.TStoreKey)
+	tStoreKey := storetypes.NewTransientStoreKey(types.TStoreKey)
 
 	testCtx := testutil.DefaultContextWithDB(t, key, storetypes.NewTransientStoreKey("transient_test"))
 
 	k := keeper.NewKeeper(
 		encCfg.Codec,
 		key,
-		tStorekey,
+		tStoreKey,
 		&types.MockAccountKeeper{},
 		&types.MockSpKeeper{},
 		&types.MockPaymentKeeper{},
 		&types.MockPermissionKeeper{},
 		// &types.MockCrossChainKeeper{},
 		&types.MockVirtualGroupKeeper{},
+		types.NewMockEVMKeeper(),
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 

@@ -66,7 +66,7 @@ func (s *TestSuite) SetupTest() {
 	// crossChainKeeper := types.NewMockCrossChainKeeper(ctrl)
 	paymentKeeper := types.NewMockPaymentKeeper(ctrl)
 	virtualGroupKeeper := types.NewMockVirtualGroupKeeper(ctrl)
-
+	evmKeeper := types.NewMockEVMKeeper(ctrl)
 	s.storageKeeper = keeper.NewKeeper(
 		encCfg.Codec,
 		key,
@@ -77,6 +77,7 @@ func (s *TestSuite) SetupTest() {
 		permissionKeeper,
 		// crossChainKeeper,
 		virtualGroupKeeper,
+		evmKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
@@ -161,7 +162,7 @@ func (s *TestSuite) TestGetBucketReadBill() {
 	// empty bucket, zero read quota
 	bucketInfo := &types.BucketInfo{
 		Owner:                      "",
-		BucketName:                 "bucketname",
+		BucketName:                 "bucket_name",
 		Id:                         sdk.NewUint(1),
 		PaymentAddress:             sample.RandAccAddress().String(),
 		GlobalVirtualGroupFamilyId: gvgFamily.Id,
@@ -175,7 +176,7 @@ func (s *TestSuite) TestGetBucketReadBill() {
 	// empty bucket
 	bucketInfo = &types.BucketInfo{
 		Owner:                      "",
-		BucketName:                 "bucketname",
+		BucketName:                 "bucket_name",
 		Id:                         sdk.NewUint(1),
 		PaymentAddress:             sample.RandAccAddress().String(),
 		GlobalVirtualGroupFamilyId: gvgFamily.Id,
@@ -223,7 +224,7 @@ func (s *TestSuite) TestGetBucketReadStoreBill() {
 	// none empty bucket
 	bucketInfo := &types.BucketInfo{
 		Owner:                      "",
-		BucketName:                 "bucketname",
+		BucketName:                 "bucket_name",
 		Id:                         sdk.NewUint(1),
 		PaymentAddress:             sample.RandAccAddress().String(),
 		GlobalVirtualGroupFamilyId: gvgFamily.Id,
