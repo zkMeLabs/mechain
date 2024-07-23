@@ -23,7 +23,7 @@ func (c *Contract) TotalSupply(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract
 		return nil, err
 	}
 
-	var balances []Coin
+	balances := make([]Coin, 0, len(res.Supply))
 	for _, balance := range res.Supply {
 		balances = append(balances, Coin{
 			Denom:  balance.Denom,

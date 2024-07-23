@@ -241,7 +241,7 @@ func (app *BucketApp) handleCreateBucketSynPackage(ctx sdk.Context, appCtx *sdk.
 		}
 	}
 
-	bucketId, err := app.storageKeeper.CreateBucket(ctx,
+	bucketID, err := app.storageKeeper.CreateBucket(ctx,
 		createBucketPackage.Creator,
 		createBucketPackage.BucketName,
 		createBucketPackage.PrimarySpAddress,
@@ -271,7 +271,7 @@ func (app *BucketApp) handleCreateBucketSynPackage(ctx sdk.Context, appCtx *sdk.
 	return sdk.ExecuteResult{
 		Payload: types.CreateBucketAckPackage{
 			Status:    types.StatusSuccess,
-			Id:        bucketId.BigInt(),
+			Id:        bucketID.BigInt(),
 			Creator:   createBucketPackage.Creator,
 			ExtraData: createBucketPackage.ExtraData,
 		}.MustSerialize(),

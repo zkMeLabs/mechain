@@ -31,6 +31,11 @@ import (
 	storagetypes "github.com/evmos/evmos/v12/x/storage/types"
 )
 
+const (
+	eventStreamType = "text/event-stream"
+	objectIDStr     = "object_id"
+)
+
 type ChallengeTestSuite struct {
 	core.BaseSuite
 	defaultParams challengetypes.Params
@@ -78,16 +83,7 @@ func (s *ChallengeTestSuite) createObject(sp *core.StorageProvider) (string, str
 	objectName := storagetestutil.GenRandomObjectName()
 	// create test buffer
 	var buffer bytes.Buffer
-	line := `1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,123`
+	line := strings.Repeat(repeatPart, 92) + "123"
 	// Create 1MiB content where each line contains 1024 characters.
 	for i := 0; i < 1024; i++ {
 		buffer.WriteString(fmt.Sprintf("[%05d] %s\n", i, line))
@@ -95,7 +91,7 @@ func (s *ChallengeTestSuite) createObject(sp *core.StorageProvider) (string, str
 	payloadSize := buffer.Len()
 	checksum := crypto.Keccak256(buffer.Bytes())
 	expectChecksum := [][]byte{checksum, checksum, checksum, checksum, checksum, checksum, checksum}
-	contextType := "text/event-stream"
+	contextType := eventStreamType
 	msgCreateObject := storagetypes.NewMsgCreateObject(user.GetAddr(), bucketName, objectName, uint64(payloadSize), storagetypes.VISIBILITY_TYPE_PRIVATE, expectChecksum, contextType, storagetypes.REDUNDANCY_EC_TYPE, math.MaxUint, nil)
 	msgCreateObject.PrimarySpApproval.Sig, err = sp.ApprovalKey.Sign(msgCreateObject.GetApprovalBytes())
 	s.Require().NoError(err)
@@ -117,7 +113,7 @@ func (s *ChallengeTestSuite) createObject(sp *core.StorageProvider) (string, str
 
 	secondarySigs := make([][]byte, 0)
 	secondarySPBlsPubKeys := make([]bls.PublicKey, 0)
-	blsSignHash := storagetypes.NewSecondarySpSealObjectSignDoc(s.GetChainID(), gvgId, queryHeadObjectResponse.ObjectInfo.Id, storagetypes.GenerateHash(queryHeadObjectResponse.ObjectInfo.Checksums[:])).GetBlsSignHash()
+	blsSignHash := storagetypes.NewSecondarySpSealObjectSignDoc(s.GetChainID(), gvgId, queryHeadObjectResponse.ObjectInfo.Id, storagetypes.GenerateHash(queryHeadObjectResponse.ObjectInfo.Checksums)).GetBlsSignHash()
 	// every secondary sp signs the checksums
 	for _, gvgID := range gvg.SecondarySpIds {
 		sig, err := core.BlsSignAndVerify(s.StorageProviders[gvgID], blsSignHash)
@@ -173,7 +169,7 @@ func (s *ChallengeTestSuite) calculateValidatorBitSet(height int64, blsKey strin
 	}
 
 	for idx, val := range valRes.Validators {
-		if strings.EqualFold(blsKey, hex.EncodeToString(val.BlsKey[:])) {
+		if strings.EqualFold(blsKey, hex.EncodeToString(val.BlsKey)) {
 			valBitSet.Set(uint(idx))
 		}
 	}
@@ -480,7 +476,7 @@ func filterChallengeEventFromBlock(blockRes *ctypes.ResultBlockResults) []challe
 			for _, attr := range event.Attributes {
 				if string(attr.Key) == "challenge_id" {
 					challengeIdStr = strings.Trim(string(attr.Value), `"`)
-				} else if string(attr.Key) == "object_id" {
+				} else if string(attr.Key) == objectIdStr {
 					objectIdStr = strings.Trim(string(attr.Value), `"`)
 				} else if string(attr.Key) == "redundancy_index" {
 					redundancyIndexStr = strings.Trim(string(attr.Value), `"`)
@@ -513,7 +509,7 @@ func filterChallengeEventFromTx(txRes *sdk.TxResponse) challengetypes.EventStart
 			for _, attr := range event.Attributes {
 				if attr.Key == "challenge_id" {
 					challengeIdStr = strings.Trim(attr.Value, `"`)
-				} else if attr.Key == "object_id" {
+				} else if attr.Key == objectIDStr {
 					objectIdStr = strings.Trim(attr.Value, `"`)
 				} else if attr.Key == "redundancy_index" {
 					redundancyIndexStr = strings.Trim(attr.Value, `"`)
@@ -568,7 +564,7 @@ func (s *ChallengeTestSuite) TestUpdateChallengerParams() {
 	s.Require().NoError(err)
 	if txResp.Code == 0 && txResp.Height > 0 {
 		for _, event := range txResp.Events {
-			if event.Type == "submit_proposal" {
+			if event.Type == submitProposalEvent {
 				proposalID, err = strconv.Atoi(event.GetAttributes()[0].Value)
 				s.Require().NoError(err)
 			}
@@ -677,9 +673,9 @@ func (s *ChallengeTestSuite) updateParams(params challengetypes.Params) {
 	// 3. query proposal and get proposal ID
 	var proposalId uint64
 	for _, event := range txRes.Logs[0].Events {
-		if event.Type == "submit_proposal" {
+		if event.Type == submitProposalEvent {
 			for _, attr := range event.Attributes {
-				if attr.Key == "proposal_id" {
+				if attr.Key == proposalIDStr {
 					proposalId, err = strconv.ParseUint(attr.Value, 10, 0)
 					s.Require().NoError(err)
 					break

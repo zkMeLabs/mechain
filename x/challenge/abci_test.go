@@ -51,7 +51,7 @@ func (s *TestSuite) SetupTest() {
 	randaoMix = append(randaoMix, crypto.Keccak256([]byte{2})...)
 	header := testCtx.Ctx.BlockHeader()
 	header.RandaoMix = randaoMix
-	upgradeChecker := func(ctx sdk.Context, name string) bool {
+	upgradeChecker := func(_ sdk.Context, name string) bool {
 		return true
 	}
 	testCtx = testutil.TestContext{
@@ -171,24 +171,24 @@ func (s *TestSuite) TestBeginBlocker_RemoveSpSlashAmount() {
 }
 
 func (s *TestSuite) TestEndBlocker_NoRandomChallenge() {
-	preChallengeId := s.challengeKeeper.GetChallengeId(s.ctx)
+	preChallengeID := s.challengeKeeper.GetChallengeId(s.ctx)
 
 	params := s.challengeKeeper.GetParams(s.ctx)
 	params.ChallengeCountPerBlock = 0
 	_ = s.challengeKeeper.SetParams(s.ctx, params)
 
 	challenge.EndBlocker(s.ctx, *s.challengeKeeper)
-	afterChallengeId := s.challengeKeeper.GetChallengeId(s.ctx)
-	s.Require().True(preChallengeId == afterChallengeId)
+	afterChallengeID := s.challengeKeeper.GetChallengeId(s.ctx)
+	s.Require().True(preChallengeID == afterChallengeID)
 }
 
 func (s *TestSuite) TestEndBlocker_ObjectNotExists() {
 	s.storageKeeper.EXPECT().GetObjectInfoCount(gomock.Any()).Return(sdk.NewUint(0))
 
-	preChallengeId := s.challengeKeeper.GetChallengeId(s.ctx)
+	preChallengeID := s.challengeKeeper.GetChallengeId(s.ctx)
 	challenge.EndBlocker(s.ctx, *s.challengeKeeper)
-	afterChallengeId := s.challengeKeeper.GetChallengeId(s.ctx)
-	s.Require().True(preChallengeId == afterChallengeId)
+	afterChallengeID := s.challengeKeeper.GetChallengeId(s.ctx)
+	s.Require().True(preChallengeID == afterChallengeID)
 }
 
 func (s *TestSuite) TestEndBlocker_SuccessRandomChallenge() {
@@ -222,8 +222,8 @@ func (s *TestSuite) TestEndBlocker_SuccessRandomChallenge() {
 	s.spKeeper.EXPECT().GetStorageProvider(gomock.Any(), gomock.Any()).
 		Return(sp, true).AnyTimes()
 
-	preChallengeId := s.challengeKeeper.GetChallengeId(s.ctx)
+	preChallengeID := s.challengeKeeper.GetChallengeId(s.ctx)
 	challenge.EndBlocker(s.ctx, *s.challengeKeeper)
 	afterChallengeId := s.challengeKeeper.GetChallengeId(s.ctx)
-	s.Require().True(preChallengeId == afterChallengeId-1)
+	s.Require().True(preChallengeID == afterChallengeId-1)
 }

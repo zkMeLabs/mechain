@@ -105,21 +105,21 @@ func GetGroupKeyOnlyOwnerPrefix(owner sdk.AccAddress) []byte {
 }
 
 // GetBucketByIDKey return the bucketID store key
-func GetBucketByIDKey(bucketId math.Uint) []byte {
+func GetBucketByIDKey(bucketID math.Uint) []byte {
 	var seq sequence.Sequence[math.Uint]
-	return append(BucketByIDPrefix, seq.EncodeSequence(bucketId)...)
+	return append(BucketByIDPrefix, seq.EncodeSequence(bucketID)...)
 }
 
 // GetObjectByIDKey return the objectId store key
-func GetObjectByIDKey(objectId math.Uint) []byte {
+func GetObjectByIDKey(objectID math.Uint) []byte {
 	var seq sequence.Sequence[math.Uint]
-	return append(ObjectByIDPrefix, seq.EncodeSequence(objectId)...)
+	return append(ObjectByIDPrefix, seq.EncodeSequence(objectID)...)
 }
 
 // GetGroupByIDKey return the groupId store key
-func GetGroupByIDKey(groupId math.Uint) []byte {
+func GetGroupByIDKey(groupID math.Uint) []byte {
 	var seq sequence.Sequence[math.Uint]
-	return append(GroupByIDPrefix, seq.EncodeSequence(groupId)...)
+	return append(GroupByIDPrefix, seq.EncodeSequence(groupID)...)
 }
 
 // GetDiscontinueObjectIdsKey return discontinue object store key

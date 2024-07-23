@@ -269,7 +269,7 @@ func (k Keeper) ChargeObjectStoreFee(ctx sdk.Context, primarySpId uint32, bucket
 		ibi.TotalChargeSize += chargeSize
 		for _, lvg := range ibi.LocalVirtualGroups {
 			if lvg.Id == objectInfo.LocalVirtualGroupId {
-				lvg.TotalChargeSize = lvg.TotalChargeSize + chargeSize
+				lvg.TotalChargeSize += chargeSize
 				break
 			}
 		}
@@ -416,19 +416,19 @@ func (k Keeper) ChargeViaObjectChange(ctx sdk.Context, bucketInfo *storagetypes.
 	preOutFlows := k.calculateLVGStoreBill(ctx, price, versionedParams, gvgFamily, gvg, lvg)
 	var newOutFlows []types.OutFlow
 	if !delete { // seal object
-		internalBucketInfo.TotalChargeSize = internalBucketInfo.TotalChargeSize + chargeSize
-		lvg.TotalChargeSize = lvg.TotalChargeSize + chargeSize
+		internalBucketInfo.TotalChargeSize += chargeSize
+		lvg.TotalChargeSize += chargeSize
 		newOutFlows = k.calculateLVGStoreBill(ctx, price, versionedParams, gvgFamily, gvg, lvg)
 	} else { // delete object
-		internalBucketInfo.TotalChargeSize = internalBucketInfo.TotalChargeSize - chargeSize
-		lvg.TotalChargeSize = lvg.TotalChargeSize - chargeSize
+		internalBucketInfo.TotalChargeSize -= chargeSize
+		lvg.TotalChargeSize -= chargeSize
 		newOutFlows = k.calculateLVGStoreBill(ctx, price, versionedParams, gvgFamily, gvg, lvg)
 	}
 
 	userFlows.Flows = append(userFlows.Flows, getNegFlows(preOutFlows)...)
 	userFlows.Flows = append(userFlows.Flows, newOutFlows...)
 
-	var shouldApplyFlowRate = true
+	shouldApplyFlowRate := true
 	forced, _ := ctx.Value(types.ForceUpdateStreamRecordKey).(bool)
 	if forced {
 		isRateLimited := k.IsBucketRateLimited(ctx, bucketInfo.BucketName)
@@ -646,7 +646,7 @@ func (k Keeper) GetObjectLockFee(ctx sdk.Context, priceTime int64, payloadSize u
 
 	secondarySPNum := int64(k.GetExpectSecondarySPNumForECObject(ctx, priceTime))
 	secondaryRate := price.SecondaryStorePrice.MulInt(sdkmath.NewIntFromUint64(chargeSize)).TruncateInt()
-	secondaryRate = secondaryRate.MulRaw(int64(secondarySPNum))
+	secondaryRate = secondaryRate.MulRaw(secondarySPNum)
 
 	versionedParams, err := k.paymentKeeper.GetVersionedParamsWithTs(ctx, priceTime)
 	if err != nil {
@@ -660,7 +660,7 @@ func (k Keeper) GetObjectLockFee(ctx sdk.Context, priceTime int64, payloadSize u
 }
 
 func (k Keeper) GetObjectChargeSize(ctx sdk.Context, payloadSize uint64, ts int64) (size uint64, err error) {
-	params, err := k.GetVersionedParamsWithTs(ctx, ts)
+	params, err := k.GetVersionedParamsWithTS(ctx, ts)
 	if err != nil {
 		return size, fmt.Errorf("get charge size failed: %d %w", ts, err)
 	}

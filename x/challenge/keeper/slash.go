@@ -47,14 +47,16 @@ func (k Keeper) ExistsSlash(ctx sdk.Context, spId uint32, objectId sdkmath.Uint)
 func getSlashKeyBytes(spId uint32, objectId sdkmath.Uint) []byte {
 	idBytes := make([]byte, 4)
 	binary.BigEndian.PutUint32(idBytes, spId)
-	allBytes := append(idBytes, objectId.Bytes()...)
+	allBytes := make([]byte, 0, len(idBytes)+len(objectId.Bytes()))
+	copy(allBytes, idBytes)
+	allBytes = append(allBytes, objectId.Bytes()...)
 	return crypto.Keccak256(allBytes)
 }
 
-func (k Keeper) SetSpSlashAmount(ctx sdk.Context, spId uint32, amount sdkmath.Int) {
+func (k Keeper) SetSpSlashAmount(ctx sdk.Context, spID uint32, amount sdkmath.Int) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.SlashAmountKeyPrefix)
 	idBz := make([]byte, 4)
-	binary.BigEndian.PutUint32(idBz, spId)
+	binary.BigEndian.PutUint32(idBz, spID)
 	amountBz, err := amount.Marshal()
 	if err != nil {
 		panic("cannot marshal amount")

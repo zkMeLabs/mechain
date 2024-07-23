@@ -112,13 +112,13 @@ var (
 
 // NewMsgCreateBucket creates a new MsgCreateBucket instance.
 func NewMsgCreateBucket(
-	creator sdk.AccAddress, bucketName string, Visibility VisibilityType, primarySPAddress, paymentAddress sdk.AccAddress,
+	creator sdk.AccAddress, bucketName string, visibility VisibilityType, primarySPAddress, paymentAddress sdk.AccAddress,
 	timeoutHeight uint64, sig []byte, chargedReadQuota uint64,
 ) *MsgCreateBucket {
 	return &MsgCreateBucket{
 		Creator:           creator.String(),
 		BucketName:        bucketName,
-		Visibility:        Visibility,
+		Visibility:        visibility,
 		PaymentAddress:    paymentAddress.String(),
 		PrimarySpAddress:  primarySPAddress.String(),
 		PrimarySpApproval: &common.Approval{ExpiredHeight: timeoutHeight, Sig: sig},
@@ -353,7 +353,7 @@ func (msg *MsgToggleSPAsDelegatedAgent) ValidateBasic() error {
 
 // NewMsgCreateObject creates a new MsgCreateObject instance.
 func NewMsgCreateObject(
-	creator sdk.AccAddress, bucketName, objectName string, payloadSize uint64, Visibility VisibilityType,
+	creator sdk.AccAddress, bucketName, objectName string, payloadSize uint64, visibility VisibilityType,
 	expectChecksums [][]byte, contentType string, redundancyType RedundancyType, timeoutHeight uint64, sig []byte,
 ) *MsgCreateObject {
 	return &MsgCreateObject{
@@ -361,7 +361,7 @@ func NewMsgCreateObject(
 		BucketName:        bucketName,
 		ObjectName:        objectName,
 		PayloadSize:       payloadSize,
-		Visibility:        Visibility,
+		Visibility:        visibility,
 		ContentType:       contentType,
 		PrimarySpApproval: &common.Approval{ExpiredHeight: timeoutHeight, Sig: sig},
 		ExpectChecksums:   expectChecksums,
@@ -848,7 +848,7 @@ func (msg *MsgDiscontinueObject) ValidateBasic() error {
 	}
 
 	if len(msg.ObjectIds) == 0 || len(msg.ObjectIds) > MaxDiscontinueObjects {
-		return errors.Wrapf(ErrInvalidObjectIds, "length of ids is %d", len(msg.ObjectIds))
+		return errors.Wrapf(ErrInvalidObjectIDs, "length of ids is %d", len(msg.ObjectIds))
 	}
 
 	if len(msg.Reason) > MaxDiscontinueReasonLen {
@@ -1123,7 +1123,7 @@ func NewMsgUpdateGroupMember(
 	operator, groupOwner sdk.AccAddress, groupName string, membersToAdd []*MsgGroupMember,
 	membersToDelete []sdk.AccAddress,
 ) *MsgUpdateGroupMember {
-	var membersAddrToDelete []string
+	membersAddrToDelete := make([]string, 0, len(membersToDelete))
 	for _, member := range membersToDelete {
 		membersAddrToDelete = append(membersAddrToDelete, member.String())
 	}
@@ -1454,10 +1454,10 @@ func (msg *MsgMirrorBucket) ValidateBasic() error {
 }
 
 // NewMsgMirrorObject creates a new MsgMirrorObject instance
-func NewMsgMirrorObject(operator sdk.AccAddress, destChainId sdk.ChainID, id Uint, bucketName, objectName string) *MsgMirrorObject {
+func NewMsgMirrorObject(operator sdk.AccAddress, destChainID sdk.ChainID, id Uint, bucketName, objectName string) *MsgMirrorObject {
 	return &MsgMirrorObject{
 		Operator:    operator.String(),
-		DestChainId: uint32(destChainId),
+		DestChainId: uint32(destChainID),
 		Id:          id,
 		BucketName:  bucketName,
 		ObjectName:  objectName,
@@ -1857,7 +1857,7 @@ func NewMsgDelegateCreateObject(
 	operator, creator sdk.AccAddress,
 	bucketName, objectName string,
 	payloadSize uint64,
-	Visibility VisibilityType,
+	visibility VisibilityType,
 	expectChecksums [][]byte,
 	contentType string,
 	redundancyType RedundancyType,
@@ -1868,7 +1868,7 @@ func NewMsgDelegateCreateObject(
 		BucketName:      bucketName,
 		ObjectName:      objectName,
 		PayloadSize:     payloadSize,
-		Visibility:      Visibility,
+		Visibility:      visibility,
 		ContentType:     contentType,
 		ExpectChecksums: expectChecksums,
 		RedundancyType:  redundancyType,

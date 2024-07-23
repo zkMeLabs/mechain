@@ -286,7 +286,7 @@ func (k Keeper) SwapAsPrimarySP(ctx sdk.Context, primarySP, successorSP *sptypes
 	srcVGFStat = k.MustGetGVGFamilyStatisticsWithinSP(ctx, primarySP.Id)
 	dstVGFStat = k.GetOrCreateGVGFamilyStatisticsWithinSP(ctx, successorSP.Id)
 
-	var gvgs []*types.GlobalVirtualGroup
+	gvgs := make([]*types.GlobalVirtualGroup, 0)
 	for _, gvgID := range family.GlobalVirtualGroupIds {
 		gvg, found := k.GetGVG(ctx, gvgID)
 		if !found {
@@ -782,7 +782,7 @@ func (k Keeper) SwapIn(ctx sdk.Context, gvgFamilyID uint32, gvgID uint32, succes
 		return k.setSwapInInfo(ctx, types.GetSwapInGVGKey(gvgID), successorSPID, targetSP.Id, expirationTime)
 	}
 
-	// swap into GVG that no SP exiting but not fulfil redundancy requirement. e.g. [1|2,3,4,5,6,1]
+	// swap into GVG that no SP exiting but not fullfil redundancy requirement. e.g. [1|2,3,4,5,6,1]
 	breakRedundancyReqmt := false
 	for _, sspID := range gvg.GetSecondarySpIds() {
 		if sspID == gvg.PrimarySpId {

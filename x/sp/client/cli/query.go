@@ -41,7 +41,7 @@ func CmdStorageProviders() *cobra.Command {
 		Use:   "storage-providers",
 		Short: "Query sp info of all storage providers",
 		Args:  cobra.ExactArgs(0),
-		RunE: func(cmd *cobra.Command, args []string) (err error) {
+		RunE: func(cmd *cobra.Command, _ []string) (err error) {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
 				return err

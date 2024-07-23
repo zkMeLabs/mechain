@@ -26,6 +26,11 @@ import (
 	bridgetypes "github.com/evmos/evmos/v12/x/bridge/types"
 )
 
+const (
+	proposalIDStr       = "proposal_id"
+	submitProposalEvent = "submit_proposal"
+)
+
 type BridgeTestSuite struct {
 	core.BaseSuite
 }
@@ -110,9 +115,9 @@ func (s *BridgeTestSuite) TestGovChannel() {
 	// 3. query proposal and get proposal ID
 	var proposalId uint64
 	for _, event := range txRes.Logs[0].Events {
-		if event.Type == "submit_proposal" {
+		if event.Type == submitProposalEvent {
 			for _, attr := range event.Attributes {
-				if attr.Key == "proposal_id" {
+				if attr.Key == proposalIDStr {
 					proposalId, err = strconv.ParseUint(attr.Value, 10, 0)
 					s.Require().NoError(err)
 					break
@@ -184,9 +189,9 @@ func (s *BridgeTestSuite) TestGovChannel() {
 
 	// 3. query proposal and get proposal ID
 	for _, event := range txRes.Logs[0].Events {
-		if event.Type == "submit_proposal" {
+		if event.Type == submitProposalEvent {
 			for _, attr := range event.Attributes {
-				if attr.Key == "proposal_id" {
+				if attr.Key == proposalIDStr {
 					proposalId, err = strconv.ParseUint(attr.Value, 10, 0)
 					s.Require().NoError(err)
 					break
@@ -245,7 +250,7 @@ func (s *BridgeTestSuite) TestUpdateBridgeParams() {
 	s.Require().NoError(err)
 	if txResp.Code == 0 && txResp.Height > 0 {
 		for _, event := range txResp.Events {
-			if event.Type == "submit_proposal" {
+			if event.Type == submitProposalEvent {
 				proposalID, err = strconv.Atoi(event.GetAttributes()[0].Value)
 				s.Require().NoError(err)
 			}

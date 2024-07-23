@@ -48,7 +48,7 @@ func (k Keeper) GlobalVirtualGroupByFamilyID(goCtx context.Context, req *types.Q
 	if !found {
 		return nil, types.ErrGVGFamilyNotExist
 	}
-	var gvgs []*types.GlobalVirtualGroup
+	gvgs := make([]*types.GlobalVirtualGroup, 0)
 	for _, gvgID := range gvgFamily.GlobalVirtualGroupIds {
 		gvg, found := k.GetGVG(ctx, gvgID)
 		if !found {

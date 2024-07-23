@@ -11,12 +11,11 @@ import (
 )
 
 var (
-	// nolint
 	DefaultRelativePacketTimeoutTimestamp = uint64((time.Duration(10) * time.Minute).Nanoseconds())
 )
 
 const (
-	// nolint
+	//nolint
 	flagPacketTimeoutTimestamp = "packet-timeout-timestamp"
 )
 

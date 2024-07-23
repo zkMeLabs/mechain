@@ -143,7 +143,8 @@ func (k Keeper) updatePolicy(ctx sdk.Context, policy, newPolicy *types.Policy) *
 func (k Keeper) PutPolicy(ctx sdk.Context, policy *types.Policy) (math.Uint, error) {
 	store := ctx.KVStore(k.storeKey)
 	var newPolicy *types.Policy
-	if policy.Principal.Type == types.PRINCIPAL_TYPE_GNFD_ACCOUNT {
+	switch policy.Principal.Type {
+	case types.PRINCIPAL_TYPE_GNFD_ACCOUNT:
 		policyKey := types.GetPolicyForAccountKey(policy.ResourceId, policy.ResourceType,
 			policy.Principal.MustGetAccountAddress(), true)
 		bz := store.Get(policyKey)
@@ -163,7 +164,7 @@ func (k Keeper) PutPolicy(ctx sdk.Context, policy *types.Policy) (math.Uint, err
 				store.Set(types.PolicyPrefixQueue(newPolicy.ExpirationTime, policy.Id.Bytes()), []byte{})
 			}
 		}
-	} else if policy.Principal.Type == types.PRINCIPAL_TYPE_GNFD_GROUP {
+	case types.PRINCIPAL_TYPE_GNFD_GROUP:
 		policyGroupKey := types.GetPolicyForGroupKey(policy.ResourceId, policy.ResourceType)
 		bz := store.Get(policyGroupKey)
 		if bz != nil {
@@ -211,7 +212,7 @@ func (k Keeper) PutPolicy(ctx sdk.Context, policy *types.Policy) (math.Uint, err
 				store.Set(types.PolicyPrefixQueue(newPolicy.ExpirationTime, policy.Id.Bytes()), []byte{})
 			}
 		}
-	} else {
+	default:
 		return math.ZeroUint(), types.ErrInvalidPrincipal.Wrap("Unknown principal type.")
 	}
 
@@ -307,7 +308,9 @@ func (k Keeper) DeletePolicy(ctx sdk.Context, principal *types.Principal, resour
 	store := ctx.KVStore(k.storeKey)
 
 	var policyID math.Uint
-	if principal.Type == types.PRINCIPAL_TYPE_GNFD_ACCOUNT {
+	switch principal.Type {
+
+	case types.PRINCIPAL_TYPE_GNFD_ACCOUNT:
 		accAddr := sdk.MustAccAddressFromHex(principal.Value)
 		policy, found := k.GetPolicyForAccount(ctx, resourceID, resourceType, accAddr)
 		if found {
@@ -318,7 +321,7 @@ func (k Keeper) DeletePolicy(ctx sdk.Context, principal *types.Principal, resour
 			}
 			policyID = policy.Id
 		}
-	} else if principal.Type == types.PRINCIPAL_TYPE_GNFD_GROUP {
+	case types.PRINCIPAL_TYPE_GNFD_GROUP:
 		groupID, err := principal.GetGroupID()
 		if err != nil {
 			return math.ZeroUint(), err
@@ -356,7 +359,7 @@ func (k Keeper) DeletePolicy(ctx sdk.Context, principal *types.Principal, resour
 				}
 			}
 		}
-	} else {
+	default:
 		return math.ZeroUint(), types.ErrInvalidPrincipal.Wrap("Unknown principal type.")
 	}
 	// emit DeletePolicy Event

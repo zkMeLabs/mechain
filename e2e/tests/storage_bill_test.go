@@ -161,7 +161,7 @@ func (s *PaymentTestSuite) TestStorageBill_Smoke() {
 	payloadSize := buffer.Len()
 	checksum := crypto.Keccak256(buffer.Bytes())
 	expectChecksum := [][]byte{checksum, checksum, checksum, checksum, checksum, checksum, checksum}
-	contextType := "text/event-stream"
+	contextType := eventStreamType
 	msgCreateObject := storagetypes.NewMsgCreateObject(user.GetAddr(), bucketName, objectName, uint64(payloadSize), storagetypes.VISIBILITY_TYPE_PRIVATE, expectChecksum, contextType, storagetypes.REDUNDANCY_EC_TYPE, math.MaxUint, nil)
 	msgCreateObject.PrimarySpApproval.Sig, err = sp.ApprovalKey.Sign(msgCreateObject.GetApprovalBytes())
 	s.Require().NoError(err)
@@ -215,7 +215,7 @@ func (s *PaymentTestSuite) TestStorageBill_Smoke() {
 	msgSealObject := storagetypes.NewMsgSealObject(sp.SealKey.GetAddr(), bucketName, objectName, gvg.Id, nil)
 	secondarySigs := make([][]byte, 0)
 	secondarySPBlsPubKeys := make([]bls.PublicKey, 0)
-	blsSignHash := storagetypes.NewSecondarySpSealObjectSignDoc(s.GetChainID(), gvgId, queryHeadObjectResponse.ObjectInfo.Id, storagetypes.GenerateHash(expectChecksum[:])).GetBlsSignHash()
+	blsSignHash := storagetypes.NewSecondarySpSealObjectSignDoc(s.GetChainID(), gvgId, queryHeadObjectResponse.ObjectInfo.Id, storagetypes.GenerateHash(expectChecksum)).GetBlsSignHash()
 	// every secondary sp signs the checksums
 	for _, spID := range gvg.SecondarySpIds {
 		sig, err := core.BlsSignAndVerify(s.StorageProviders[spID], blsSignHash)
@@ -1247,8 +1247,8 @@ func (s *PaymentTestSuite) TestStorageBill_FullLifecycle() {
 
 	// update params
 	params := s.queryParams()
-	params.VersionedParams.ReserveTime = params.VersionedParams.ReserveTime * 3
-	params.ForcedSettleTime = params.ForcedSettleTime * 2
+	params.VersionedParams.ReserveTime *= 3
+	params.ForcedSettleTime *= 2
 	s.updateParams(params)
 
 	_, _, objectName4, objectId4, checksums4, _ := s.createObject(user, bucketName2, false)
@@ -1264,8 +1264,8 @@ func (s *PaymentTestSuite) TestStorageBill_FullLifecycle() {
 
 	// update params
 	params = s.queryParams()
-	params.VersionedParams.ReserveTime = params.VersionedParams.ReserveTime / 2
-	params.ForcedSettleTime = params.ForcedSettleTime / 3
+	params.VersionedParams.ReserveTime /= 2
+	params.ForcedSettleTime /= 3
 	s.updateParams(params)
 
 	_, _, objectName6, objectId6, checksums6, _ := s.createObject(user, bucketName3, false)
@@ -2348,7 +2348,7 @@ func (s *PaymentTestSuite) TestStorageBill_UpdateObject() {
 	payloadSize := uint64(buffer.Len())
 	checksum := crypto.Keccak256(buffer.Bytes())
 	expectChecksum := [][]byte{checksum, checksum, checksum, checksum, checksum, checksum, checksum}
-	contextType := "text/event-stream"
+	contextType := eventStreamType
 	msgCreateObject := storagetypes.NewMsgCreateObject(user.GetAddr(), bucketName, objectName, payloadSize, storagetypes.VISIBILITY_TYPE_PRIVATE, expectChecksum, contextType, storagetypes.REDUNDANCY_EC_TYPE, math.MaxUint, nil)
 	msgCreateObject.PrimarySpApproval.Sig, err = sp.ApprovalKey.Sign(msgCreateObject.GetApprovalBytes())
 	s.Require().NoError(err)
@@ -2371,7 +2371,7 @@ func (s *PaymentTestSuite) TestStorageBill_UpdateObject() {
 	msgSealObject := storagetypes.NewMsgSealObject(sp.SealKey.GetAddr(), bucketName, objectName, gvg.Id, nil)
 	secondarySigs := make([][]byte, 0)
 	secondarySPBlsPubKeys := make([]bls.PublicKey, 0)
-	blsSignHash := storagetypes.NewSecondarySpSealObjectSignDoc(s.GetChainID(), gvgId, queryHeadObjectResponse.ObjectInfo.Id, storagetypes.GenerateHash(queryHeadObjectResponse.ObjectInfo.Checksums[:])).GetBlsSignHash()
+	blsSignHash := storagetypes.NewSecondarySpSealObjectSignDoc(s.GetChainID(), gvgId, queryHeadObjectResponse.ObjectInfo.Id, storagetypes.GenerateHash(queryHeadObjectResponse.ObjectInfo.Checksums)).GetBlsSignHash()
 
 	// every secondary sp signs the checksums
 	for _, spID := range gvg.SecondarySpIds {
@@ -2485,8 +2485,8 @@ func (s *PaymentTestSuite) TestStorageBill_UpdateObject() {
 	s.Require().Equal(sdkmath.ZeroInt(), userStreamAccountAfterCancelUpdateObjTx.LockBalance)
 	// lock fee will be applied to static balance
 	s.Require().True(userStreamAccountAfterUpdateObjTx.NetflowRate.Equal(userStreamAccountAfterCancelUpdateObjTx.NetflowRate))
-	deductStaticBalanceSinceLastCrudTs := sdkmath.NewInt(userStreamAccountAfterCancelUpdateObjTx.CrudTimestamp - userStreamAccountAfterUpdateObjTx.CrudTimestamp).Mul(userStreamAccountAfterCancelUpdateObjTx.NetflowRate)
-	s.Require().Equal(userStreamAccountAfterUpdateObjTx.StaticBalance.Add(deductStaticBalanceSinceLastCrudTs).Add(userStreamAccountAfterUpdateObjTx.LockBalance), userStreamAccountAfterCancelUpdateObjTx.StaticBalance)
+	deductStaticBalanceSinceLastCrudTS := sdkmath.NewInt(userStreamAccountAfterCancelUpdateObjTx.CrudTimestamp - userStreamAccountAfterUpdateObjTx.CrudTimestamp).Mul(userStreamAccountAfterCancelUpdateObjTx.NetflowRate)
+	s.Require().Equal(userStreamAccountAfterUpdateObjTx.StaticBalance.Add(deductStaticBalanceSinceLastCrudTS).Add(userStreamAccountAfterUpdateObjTx.LockBalance), userStreamAccountAfterCancelUpdateObjTx.StaticBalance)
 
 	// 3. update the object again
 	s.SendTxBlock(user, msgUpdateObject)
@@ -2519,8 +2519,8 @@ func (s *PaymentTestSuite) TestStorageBill_UpdateObject() {
 
 	// lock fee will be applied to static balance
 	s.Require().True(userStreamAccountAfterUpdateObjTx.NetflowRate.Equal(userStreamAccountRejectSealObjTx.NetflowRate))
-	deductStaticBalanceSinceLastCrudTs = sdkmath.NewInt(userStreamAccountRejectSealObjTx.CrudTimestamp - userStreamAccountAfterUpdateObjTx.CrudTimestamp).Mul(userStreamAccountRejectSealObjTx.NetflowRate)
-	s.Require().Equal(userStreamAccountAfterUpdateObjTx.StaticBalance.Add(deductStaticBalanceSinceLastCrudTs).Add(userStreamAccountAfterUpdateObjTx.LockBalance),
+	deductStaticBalanceSinceLastCrudTS = sdkmath.NewInt(userStreamAccountRejectSealObjTx.CrudTimestamp - userStreamAccountAfterUpdateObjTx.CrudTimestamp).Mul(userStreamAccountRejectSealObjTx.NetflowRate)
+	s.Require().Equal(userStreamAccountAfterUpdateObjTx.StaticBalance.Add(deductStaticBalanceSinceLastCrudTS).Add(userStreamAccountAfterUpdateObjTx.LockBalance),
 		userStreamAccountRejectSealObjTx.StaticBalance)
 
 	// 5 Update the object again
@@ -2531,7 +2531,7 @@ func (s *PaymentTestSuite) TestStorageBill_UpdateObject() {
 	updatedAt := queryHeadShadowObjectResponse.ObjectInfo.UpdatedAt
 
 	// 6 SP seal the object
-	blsSignHash = storagetypes.NewSecondarySpSealObjectSignDoc(s.GetChainID(), gvgId, queryHeadObjectResponse.ObjectInfo.Id, storagetypes.GenerateHash(queryHeadShadowObjectResponse.ObjectInfo.Checksums[:])).GetBlsSignHash()
+	blsSignHash = storagetypes.NewSecondarySpSealObjectSignDoc(s.GetChainID(), gvgId, queryHeadObjectResponse.ObjectInfo.Id, storagetypes.GenerateHash(queryHeadShadowObjectResponse.ObjectInfo.Checksums)).GetBlsSignHash()
 	msgSealObject = storagetypes.NewMsgSealObject(sp.SealKey.GetAddr(), bucketName, objectName, gvg.Id, nil)
 	secondarySigs = make([][]byte, 0)
 	secondarySPBlsPubKeys = make([]bls.PublicKey, 0)

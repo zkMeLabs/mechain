@@ -16,8 +16,8 @@ import (
 	storagetypes "github.com/evmos/evmos/v12/x/storage/types"
 )
 
-// one_gb_bytes stands for the total bytes in 1gb
-const one_gb_bytes = 1024 * 1024 * 1024
+// oneGBBytes stands for the total bytes in 1gb
+const oneGBBytes = 1024 * 1024 * 1024
 
 // Attest handles user's request for attesting a challenge.
 // The attestation can include a valid challenge or is only for heartbeat purpose.
@@ -148,7 +148,7 @@ func (k msgServer) Attest(goCtx context.Context, msg *types.MsgAttest) (*types.M
 func (k msgServer) calculateSlashAmount(ctx sdk.Context, objectSize uint64) sdkmath.Int {
 	params := k.GetParams(ctx)
 	sizeRate := params.SlashAmountSizeRate
-	objectSizeInGB := sdk.NewDecFromBigInt(new(big.Int).SetUint64(objectSize)).QuoRoundUp(sdk.NewDec(one_gb_bytes))
+	objectSizeInGB := sdk.NewDecFromBigInt(new(big.Int).SetUint64(objectSize)).QuoRoundUp(sdk.NewDec(oneGBBytes))
 	slashAmount := objectSizeInGB.Mul(sizeRate).Mul(sdk.NewDec(1e18)).TruncateInt()
 
 	min := params.SlashAmountMin
@@ -269,7 +269,7 @@ func (k msgServer) calculateHeartbeatRewards(ctx sdk.Context, total sdkmath.Int)
 }
 
 // doHeartbeatAndRewards will transfer the tax to distribution account and rewards to submitter.
-func (k msgServer) doHeartbeatAndRewards(ctx sdk.Context, challengeId uint64, voteResult types.VoteResult,
+func (k msgServer) doHeartbeatAndRewards(ctx sdk.Context, challengeID uint64, voteResult types.VoteResult,
 	spID uint32, submitter, challenger sdk.AccAddress,
 ) error {
 	totalAmount, err := k.paymentKeeper.QueryDynamicBalance(ctx, paymentmoduletypes.ValidatorTaxPoolAddress)
@@ -295,7 +295,7 @@ func (k msgServer) doHeartbeatAndRewards(ctx sdk.Context, challengeId uint64, vo
 		}
 	}
 	return ctx.EventManager().EmitTypedEvents(&types.EventAttestChallenge{
-		ChallengeId:            challengeId,
+		ChallengeId:            challengeID,
 		Result:                 voteResult,
 		SpId:                   spID,
 		SlashAmount:            "",

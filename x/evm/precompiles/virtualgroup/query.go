@@ -2,6 +2,7 @@ package virtualgroup
 
 import (
 	"bytes"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	"github.com/ethereum/go-ethereum/common"
@@ -44,7 +45,7 @@ func (c *Contract) GlobalVirtualGroupFamilies(ctx sdk.Context, _ *vm.EVM, contra
 		return nil, err
 	}
 
-	var gvgFamilies []GlobalVirtualGroupFamily
+	gvgFamilies := make([]GlobalVirtualGroupFamily, 0, len(res.GvgFamilies))
 	for _, gvgFamily := range res.GvgFamilies {
 		gvgFamilies = append(gvgFamilies, GlobalVirtualGroupFamily{
 			Id:                    gvgFamily.Id,

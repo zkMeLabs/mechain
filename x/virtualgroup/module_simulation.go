@@ -24,19 +24,19 @@ var (
 )
 
 const (
-	opWeightMsgStorageProviderExit = "op_weight_msg_storage_provider_exit"
+	opWeightMsgStorageProviderExit = "op_weight_msg_storage_provider_exit" //nolint:gosec
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgStorageProviderExit int = 100
 
-	opWeightMsgCompleteStorageProviderExit = "op_weight_msg_complete_storage_provider_exit"
+	opWeightMsgCompleteStorageProviderExit = "op_weight_msg_complete_storage_provider_exit" //nolint:gosec
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgCompleteStorageProviderExit int = 100
 
-	opWeightMsgCompleteSwapOut = "op_weight_msg_complete_swap_out"
+	opWeightMsgCompleteSwapOut = "op_weight_msg_complete_swap_out" //nolint:gosec
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgCompleteSwapOut int = 100
 
-	opWeightMsgCancelSwapOut = "op_weight_msg_cancel_swap_out"
+	opWeightMsgCancelSwapOut = "op_weight_msg_cancel_swap_out" //nolint:gosec
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgCancelSwapOut int = 100
 )

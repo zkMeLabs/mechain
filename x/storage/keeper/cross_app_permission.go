@@ -196,7 +196,7 @@ func (app *PermissionApp) handleCreatePolicySynPackage(ctx sdk.Context, createPo
 		}
 	}
 
-	PolicyId, err := app.permissionKeeper.PutPolicy(ctx, &policy)
+	PolicyID, err := app.permissionKeeper.PutPolicy(ctx, &policy)
 	if err != nil {
 		return sdk.ExecuteResult{
 			Payload: types.CreatePolicyAckPackage{
@@ -211,7 +211,7 @@ func (app *PermissionApp) handleCreatePolicySynPackage(ctx sdk.Context, createPo
 	return sdk.ExecuteResult{
 		Payload: types.CreatePolicyAckPackage{
 			Status:    types.StatusSuccess,
-			Id:        PolicyId.BigInt(),
+			Id:        PolicyID.BigInt(),
 			Creator:   createPolicyPackage.Operator,
 			ExtraData: createPolicyPackage.ExtraData,
 		}.MustSerialize(),

@@ -261,9 +261,9 @@ func TestMsgCopyObject_ValidateBasic(t *testing.T) {
 
 func TestMsgSealObject_ValidateBasic(t *testing.T) {
 	checksums := [][]byte{sample.Checksum(), sample.Checksum(), sample.Checksum(), sample.Checksum(), sample.Checksum(), sample.Checksum()}
-	blsSignDoc := NewSecondarySpSealObjectSignDoc("mechain_1000000-1", 1, math.NewUint(1), GenerateHash(checksums[:])).GetSignBytes()
+	blsSignDoc := NewSecondarySpSealObjectSignDoc("mechain_1000000-1", 1, math.NewUint(1), GenerateHash(checksums)).GetSignBytes()
 	blsPrivKey, _ := bls.RandKey()
-	aggSig := blsPrivKey.Sign(blsSignDoc[:]).Marshal()
+	aggSig := blsPrivKey.Sign(blsSignDoc).Marshal()
 	tests := []struct {
 		name string
 		msg  MsgSealObject
@@ -531,7 +531,7 @@ func TestMsgDiscontinueObject_ValidateBasic(t *testing.T) {
 				ObjectIds:  nil,
 				Reason:     "valid reason",
 			},
-			err: ErrInvalidObjectIds,
+			err: ErrInvalidObjectIDs,
 		},
 		{
 			name: "invalid object ids",
@@ -541,7 +541,7 @@ func TestMsgDiscontinueObject_ValidateBasic(t *testing.T) {
 				ObjectIds:  invalidObjectIds[:],
 				Reason:     "valid reason",
 			},
-			err: ErrInvalidObjectIds,
+			err: ErrInvalidObjectIDs,
 		},
 		{
 			name: "invalid reason",

@@ -40,7 +40,6 @@ type DeductFeeDecorator struct {
 	bankKeeper         BankKeeper
 	distributionKeeper anteutils.DistributionKeeper
 	feegrantKeeper     authante.FeegrantKeeper
-	stakingKeeper      anteutils.StakingKeeper
 	txFeeChecker       anteutils.TxFeeChecker
 }
 

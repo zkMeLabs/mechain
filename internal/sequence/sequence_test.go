@@ -57,10 +57,10 @@ func TestSequenceIncrementsUint256(t *testing.T) {
 	i := math.ZeroUint()
 	for i.LT(max) {
 		id := seq.NextVal(store)
-		curId := seq.CurVal(store)
+		curID := seq.CurVal(store)
 		i = i.Incr()
 		assert.True(t, i.Equal(id))
-		assert.True(t, i.Equal(curId))
+		assert.True(t, i.Equal(curID))
 	}
 }
 
@@ -72,11 +72,11 @@ func TestSequenceIncrementsU32(t *testing.T) {
 	i := uint32(0)
 	for i < max {
 		id := seq.NextVal(store)
-		curId := seq.CurVal(store)
+		curID := seq.CurVal(store)
 		i++
 		assert.Equal(t, i, id)
-		assert.Equal(t, i, curId)
-		fmt.Print("i= ", i, "id=", id, "curID", curId)
+		assert.Equal(t, i, curID)
+		fmt.Print("i= ", i, "id=", id, "curID", curID)
 	}
 }
 

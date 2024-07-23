@@ -12,8 +12,8 @@ import (
 )
 
 func SimulateMsgStorageProviderExit(
-	ak types.AccountKeeper,
-	bk types.BankKeeper,
+	_ types.AccountKeeper,
+	_ types.BankKeeper,
 	k keeper.Keeper,
 ) simtypes.Operation {
 	return func(r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context, accs []simtypes.Account, chainID string,

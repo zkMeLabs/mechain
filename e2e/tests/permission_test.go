@@ -25,6 +25,11 @@ import (
 	storagetypes "github.com/evmos/evmos/v12/x/storage/types"
 )
 
+const (
+	testGroupName = "testGroup"
+	repeatPart    = "1234567890,"
+)
+
 func (s *StorageTestSuite) TestDeleteBucketPermission() {
 	var err error
 	user := s.GenAndChargeAccounts(2, 1000000)
@@ -292,16 +297,7 @@ func (s *StorageTestSuite) TestCreateObjectByOthers() {
 	objectName := storageutil.GenRandomObjectName()
 	// create test buffer
 	var buffer bytes.Buffer
-	line := `1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,123`
+	line := strings.Repeat(repeatPart, 92) + "123"
 	// Create 1MiB content where each line contains 1024 characters.
 	for i := 0; i < 1024; i++ {
 		buffer.WriteString(fmt.Sprintf("[%05d] %s\n", i, line))
@@ -309,7 +305,7 @@ func (s *StorageTestSuite) TestCreateObjectByOthers() {
 	payloadSize := buffer.Len()
 	checksum := crypto.Keccak256(buffer.Bytes())
 	expectChecksum := [][]byte{checksum, checksum, checksum, checksum, checksum, checksum, checksum}
-	contextType := "text/event-stream"
+	contextType := eventStreamType
 	msgCreateObject := storagetypes.NewMsgCreateObject(user[1].GetAddr(), bucketName, objectName, uint64(payloadSize),
 		storagetypes.VISIBILITY_TYPE_PUBLIC_READ, expectChecksum, contextType, storagetypes.REDUNDANCY_EC_TYPE, math.MaxUint, nil)
 	msgCreateObject.PrimarySpApproval.Sig, err = sp.ApprovalKey.Sign(msgCreateObject.GetApprovalBytes())
@@ -477,16 +473,7 @@ func (s *StorageTestSuite) TestCreateObjectByOthersExpiration() {
 	objectName := storageutil.GenRandomObjectName()
 	// create test buffer
 	var buffer bytes.Buffer
-	line := `1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,123`
+	line := strings.Repeat(repeatPart, 92) + "123"
 	// Create 1MiB content where each line contains 1024 characters.
 	for i := 0; i < 1024; i++ {
 		buffer.WriteString(fmt.Sprintf("[%05d] %s\n", i, line))
@@ -494,7 +481,7 @@ func (s *StorageTestSuite) TestCreateObjectByOthersExpiration() {
 	payloadSize := buffer.Len()
 	checksum := crypto.Keccak256(buffer.Bytes())
 	expectChecksum := [][]byte{checksum, checksum, checksum, checksum, checksum, checksum, checksum}
-	contextType := "text/event-stream"
+	contextType := eventStreamType
 	msgCreateObject := storagetypes.NewMsgCreateObject(user[1].GetAddr(), bucketName, objectName, uint64(payloadSize), storagetypes.VISIBILITY_TYPE_PUBLIC_READ, expectChecksum, contextType, storagetypes.REDUNDANCY_EC_TYPE, math.MaxUint, nil)
 	msgCreateObject.PrimarySpApproval.Sig, err = sp.ApprovalKey.Sign(msgCreateObject.GetApprovalBytes())
 	s.Require().NoError(err)
@@ -599,16 +586,7 @@ func (s *StorageTestSuite) TestCreateObjectByOthersLimitSize() {
 	objectName := storageutil.GenRandomObjectName()
 	// create test buffer
 	var buffer bytes.Buffer
-	line := `1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,123`
+	line := strings.Repeat(repeatPart, 92) + "123"
 	// Create 1MiB content where each line contains 1024 characters.
 	for i := 0; i < 1024; i++ {
 		buffer.WriteString(fmt.Sprintf("[%05d] %s\n", i, line))
@@ -616,7 +594,7 @@ func (s *StorageTestSuite) TestCreateObjectByOthersLimitSize() {
 	payloadSize := buffer.Len()
 	checksum := crypto.Keccak256(buffer.Bytes())
 	expectChecksum := [][]byte{checksum, checksum, checksum, checksum, checksum, checksum, checksum}
-	contextType := "text/event-stream"
+	contextType := eventStreamType
 	msgCreateObject := storagetypes.NewMsgCreateObject(user[1].GetAddr(), bucketName, objectName, uint64(payloadSize), storagetypes.VISIBILITY_TYPE_PUBLIC_READ, expectChecksum, contextType, storagetypes.REDUNDANCY_EC_TYPE, math.MaxUint, nil)
 	msgCreateObject.PrimarySpApproval.Sig, err = sp.ApprovalKey.Sign(msgCreateObject.GetApprovalBytes())
 	s.Require().NoError(err)
@@ -689,7 +667,6 @@ func (s *StorageTestSuite) TestGrantsPermissionToGroup() {
 	s.T().Logf("resp: %s, rep %s", verifyPermReq.String(), verifyPermResp.String())
 
 	// Create Group
-	testGroupName := "testGroup"
 	msgCreateGroup := storagetypes.NewMsgCreateGroup(user[0].GetAddr(), testGroupName, "")
 	s.SendTxBlock(user[0], msgCreateGroup)
 
@@ -855,23 +832,14 @@ func (s *StorageTestSuite) TestVisibilityPermission() {
 	}
 
 	var buffer bytes.Buffer
-	line := `1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,123`
+	line := strings.Repeat(repeatPart, 92) + "123"
 
 	// Create content contains 1024 characters.
 	buffer.WriteString(line)
 	payloadSize := buffer.Len()
 	checksum := crypto.Keccak256(buffer.Bytes())
 	expectChecksum := [][]byte{checksum, checksum, checksum, checksum, checksum, checksum, checksum}
-	contextType := "text/event-stream"
+	contextType := eventStreamType
 
 	ctx := context.Background()
 
@@ -1019,23 +987,14 @@ func (s *StorageTestSuite) TestEmptyPermission() {
 	}
 
 	var buffer bytes.Buffer
-	line := `1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,123`
+	line := strings.Repeat(repeatPart, 92) + "123"
 
 	// Create content contains 1024 characters.
 	buffer.WriteString(line)
 	payloadSize := buffer.Len()
 	checksum := crypto.Keccak256(buffer.Bytes())
 	expectChecksum := [][]byte{checksum, checksum, checksum, checksum, checksum, checksum, checksum}
-	contextType := "text/event-stream"
+	contextType := eventStreamType
 
 	for _, object := range objects {
 		msgCreateObject0 := storagetypes.NewMsgCreateObject(user[0].GetAddr(), object.BucketName, object.ObjectName, uint64(payloadSize), object.PublicType, expectChecksum, contextType, storagetypes.REDUNDANCY_EC_TYPE, math.MaxUint, nil)
@@ -1202,7 +1161,6 @@ func (s *StorageTestSuite) TestDeleteGroupPolicy() {
 	_ = s.BaseSuite.PickStorageProvider()
 
 	// Create Group
-	testGroupName := "testGroup"
 	msgCreateGroup := storagetypes.NewMsgCreateGroup(owner.GetAddr(), testGroupName, "")
 	s.SendTxBlock(owner, msgCreateGroup)
 	membersToAdd := []*storagetypes.MsgGroupMember{
@@ -1260,7 +1218,6 @@ func (s *StorageTestSuite) TestStalePermissionForGroupGC() {
 	_, owner, bucketName, bucketId, objectName, objectId := s.createObjectWithVisibility(storagetypes.VISIBILITY_TYPE_PUBLIC_READ)
 
 	// Create Group
-	testGroupName := "testGroup"
 	msgCreateGroup := storagetypes.NewMsgCreateGroup(owner.GetAddr(), testGroupName, "")
 	s.SendTxBlock(owner, msgCreateGroup)
 	membersToAdd := []*storagetypes.MsgGroupMember{
@@ -1368,7 +1325,6 @@ func (s *StorageTestSuite) TestGroupMembersAndPolicyGC() {
 	_ = s.BaseSuite.PickStorageProvider()
 
 	// Create Group
-	testGroupName := "testGroup"
 	msgCreateGroup := storagetypes.NewMsgCreateGroup(owner.GetAddr(), testGroupName, "")
 	s.SendTxBlock(owner, msgCreateGroup)
 	membersToAdd := []*storagetypes.MsgGroupMember{
@@ -1549,7 +1505,6 @@ func (s *StorageTestSuite) TestUpdateGroupExtraWithPermission() {
 	owner := user[0]
 
 	// Create Group
-	testGroupName := "testGroup"
 	msgCreateGroup := storagetypes.NewMsgCreateGroup(owner.GetAddr(), testGroupName, "")
 	s.SendTxBlock(owner, msgCreateGroup)
 	membersToAdd := []*storagetypes.MsgGroupMember{
@@ -1633,16 +1588,7 @@ func (s *StorageTestSuite) TestPutPolicy_ObjectWithSlash() {
 	objectName := "test/" + storageutil.GenRandomObjectName()
 	// create test buffer
 	var buffer bytes.Buffer
-	line := `1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,123`
+	line := strings.Repeat(repeatPart, 92) + "123"
 	// Create 1MiB content where each line contains 1024 characters.
 	for i := 0; i < 1024; i++ {
 		buffer.WriteString(fmt.Sprintf("[%05d] %s\n", i, line))
@@ -1650,7 +1596,7 @@ func (s *StorageTestSuite) TestPutPolicy_ObjectWithSlash() {
 	payloadSize := buffer.Len()
 	checksum := crypto.Keccak256(buffer.Bytes())
 	expectChecksum := [][]byte{checksum, checksum, checksum, checksum, checksum, checksum, checksum}
-	contextType := "text/event-stream"
+	contextType := eventStreamType
 	msgCreateObject := storagetypes.NewMsgCreateObject(user[0].GetAddr(), bucketName, objectName, uint64(payloadSize), storagetypes.VISIBILITY_TYPE_PUBLIC_READ, expectChecksum, contextType, storagetypes.REDUNDANCY_EC_TYPE, math.MaxUint, nil)
 	msgCreateObject.PrimarySpApproval.Sig, err = sp.ApprovalKey.Sign(msgCreateObject.GetApprovalBytes())
 	s.Require().NoError(err)
@@ -1692,7 +1638,7 @@ func (s *StorageTestSuite) TestVerifyStaleGroupPermission() {
 	_, owner, bucketName, bucketId, objectName, objectId := s.createObjectWithVisibility(storagetypes.VISIBILITY_TYPE_PUBLIC_READ)
 
 	// Create Group with 3 group member
-	testGroupName := "testGroup"
+
 	msgCreateGroup := storagetypes.NewMsgCreateGroup(owner.GetAddr(), testGroupName, "")
 	msgUpdateGroupMember := storagetypes.NewMsgUpdateGroupMember(owner.GetAddr(), owner.GetAddr(), testGroupName,
 		[]*storagetypes.MsgGroupMember{
@@ -1847,9 +1793,9 @@ func (s *StorageTestSuite) UpdateParams(newParams *storagetypes.Params) {
 	// 3. query proposal and get proposal ID
 	var proposalId uint64
 	for _, event := range txRes.Logs[0].Events {
-		if event.Type == "submit_proposal" {
+		if event.Type == submitProposalEvent {
 			for _, attr := range event.Attributes {
-				if attr.Key == "proposal_id" {
+				if attr.Key == proposalIDStr {
 					proposalId, err = strconv.ParseUint(attr.Value, 10, 0)
 					s.Require().NoError(err)
 					break
@@ -1973,7 +1919,7 @@ func (s *StorageTestSuite) TestExpiredGroupPolicyGCAndRePut() {
 	_, owner, bucketName, bucketId, _, _ := s.createObjectWithVisibility(storagetypes.VISIBILITY_TYPE_PUBLIC_READ)
 
 	// Create Group
-	testGroupName := "testGroup"
+
 	msgCreateGroup := storagetypes.NewMsgCreateGroup(owner.GetAddr(), testGroupName, "")
 	s.SendTxBlock(owner, msgCreateGroup)
 	membersToAdd := []*storagetypes.MsgGroupMember{
@@ -2090,7 +2036,7 @@ func (s *StorageTestSuite) TestSetResourceTagWithPermission() {
 	payloadSize := buffer.Len()
 	checksum := crypto.Keccak256(buffer.Bytes())
 	expectChecksum := [][]byte{checksum, checksum, checksum, checksum, checksum, checksum, checksum}
-	contextType := "text/event-stream"
+	contextType := eventStreamType
 	msgCreateObject := storagetypes.NewMsgCreateObject(owner.GetAddr(), bucketName, objectName, uint64(payloadSize), storagetypes.VISIBILITY_TYPE_PRIVATE, expectChecksum, contextType, storagetypes.REDUNDANCY_EC_TYPE, math.MaxUint, nil)
 	msgCreateObject.PrimarySpApproval.Sig, err = sp.ApprovalKey.Sign(msgCreateObject.GetApprovalBytes())
 	s.Require().NoError(err)

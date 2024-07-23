@@ -12,7 +12,7 @@ import (
 )
 
 func SimulateMsgCancelMigrateBucket(
-	ak types.AccountKeeper,
+	_ types.AccountKeeper,
 	bk types.BankKeeper,
 	k keeper.Keeper,
 ) simtypes.Operation {

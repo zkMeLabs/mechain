@@ -31,7 +31,7 @@ func (k Keeper) SetParams(ctx sdk.Context, params types.Params) error {
 	store.Set(types.ParamsKey, bz)
 
 	// store versioned params
-	err := k.SetVersionedParamsWithTs(ctx, params.VersionedParams)
+	err := k.SetVersionedParamsWithTS(ctx, params.VersionedParams)
 	if err != nil {
 		return err
 	}
@@ -39,7 +39,7 @@ func (k Keeper) SetParams(ctx sdk.Context, params types.Params) error {
 	return nil
 }
 
-func (k Keeper) SetVersionedParamsWithTs(ctx sdk.Context, verParams types.VersionedParams) error {
+func (k Keeper) SetVersionedParamsWithTS(ctx sdk.Context, verParams types.VersionedParams) error {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.VersionedParamsKeyPrefix)
 	key := types.VersionedParamsKey(ctx.BlockTime().Unix())
 

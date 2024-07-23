@@ -26,7 +26,7 @@ func (k Keeper) MergeStreamRecordChanges(changes []types.StreamRecordChange) []t
 		currentChange.LockBalanceChange = currentChange.LockBalanceChange.Add(change.LockBalanceChange)
 		changeMap[change.Addr.String()] = currentChange
 	}
-	var result []types.StreamRecordChange
+	result := make([]types.StreamRecordChange, 0, len(changeMap))
 	for _, change := range changeMap {
 		result = append(result, *change)
 	}
@@ -75,7 +75,7 @@ func (k Keeper) ApplyUserFlowsList(ctx sdk.Context, userFlowsList []types.UserFl
 }
 
 func (k Keeper) applyActiveUserFlows(ctx sdk.Context, userFlows types.UserFlows, from sdk.AccAddress, streamRecord *types.StreamRecord) error {
-	var rateChanges []types.StreamRecordChange
+	rateChanges := make([]types.StreamRecordChange, 0, len(userFlows.Flows))
 	totalRate := sdk.ZeroInt()
 	for _, flowChange := range userFlows.Flows {
 		rateChanges = append(rateChanges, *types.NewDefaultStreamRecordChangeWithAddr(sdk.MustAccAddressFromHex(flowChange.ToAddress)).WithRateChange(flowChange.Rate))
@@ -165,10 +165,12 @@ func (k Keeper) MergeUserFlows(userFlowsList []types.UserFlows) []types.UserFlow
 	}
 	userFlowsMap := make(map[string][]types.OutFlow)
 	for _, userFlows := range userFlowsList {
-		flows := append(userFlowsMap[userFlows.From.String()], userFlows.Flows...)
+		flows := make([]types.OutFlow, 0, len(userFlows.Flows))
+		copy(flows, userFlowsMap[userFlows.From.String()])
+		flows = append(flows, userFlows.Flows...)
 		userFlowsMap[userFlows.From.String()] = flows
 	}
-	var newUserFlowsList []types.UserFlows
+	newUserFlowsList := make([]types.UserFlows, 0, len(userFlowsMap))
 	for from, userFlows := range userFlowsMap {
 		newUserFlowsList = append(newUserFlowsList, types.UserFlows{
 			From:  sdk.MustAccAddressFromHex(from),
@@ -195,7 +197,7 @@ func (k Keeper) MergeOutFlows(flows []types.OutFlow) []types.OutFlow {
 			flowMap[flow.ToAddress] = flow.Rate
 		}
 	}
-	var newFlows []types.OutFlow
+	newFlows := make([]types.OutFlow, 0, len(flowMap))
 	for addr, rate := range flowMap {
 		if rate.IsZero() {
 			continue

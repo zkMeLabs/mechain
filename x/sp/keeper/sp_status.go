@@ -39,7 +39,7 @@ func (k Keeper) UpdateToInMaintenance(ctx sdk.Context, sp *types.StorageProvider
 				return errors.Wrapf(types.ErrStorageProviderStatusUpdateNotAllow, "wait after block height %d", threshHold)
 			}
 		}
-		totalUsedTime = totalUsedTime + record.GetActualDuration()
+		totalUsedTime += record.GetActualDuration()
 	}
 	if totalUsedTime+requestDuration > params.GetMaintenanceDurationQuota() {
 		return errors.Wrapf(types.ErrStorageProviderStatusUpdateNotAllow, "not enough quota, quota=%d is less than requested=%d", params.GetMaintenanceDurationQuota()-totalUsedTime, requestDuration)

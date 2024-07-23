@@ -116,8 +116,8 @@ func (k Keeper) RebindingVirtualGroup(ctx sdk.Context, bucketInfo *types.BucketI
 
 func (k Keeper) VerifyGVGSecondarySPsBlsSignature(ctx sdk.Context, gvg *vgtypes.GlobalVirtualGroup, signHash [32]byte, signature []byte) error {
 	secondarySpBlsPubKeys := make([]bls.PublicKey, 0, len(gvg.SecondarySpIds))
-	for _, spId := range gvg.GetSecondarySpIds() {
-		secondarySp, found := k.spKeeper.GetStorageProvider(ctx, spId)
+	for _, spID := range gvg.GetSecondarySpIds() {
+		secondarySp, found := k.spKeeper.GetStorageProvider(ctx, spID)
 		if !found {
 			panic("should not happen")
 		}

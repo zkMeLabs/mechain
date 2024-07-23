@@ -89,7 +89,7 @@ Where create_storagep_provider.json contains:
   "metadata": "4pIMOgIGx1vZGU=",
   "deposit": "1000000000000000000BNB"
 }
-modify the related configrations as you need. Example:
+modify the related configurations as you need. Example:
 1) read_price = $0.09/1024/1024/1024/300(bnb price)*10^18/30/24/60/60 = 0.108 wei/bytes/s
 2) store_price = $0.023*(1-6*0.07)/1024/1024/1024/300(bnb price)*10^18/30/24/60/60 = 0.016 wei/bytes/s. (0.07 division for each secondary SP)
 3) free_read_quota defines free read quota for each bucket, uint bytes.

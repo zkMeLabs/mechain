@@ -45,8 +45,6 @@ func EndBlocker(ctx sdk.Context, keeper Keeper) {
 		doDeleteBucket = false
 	}
 
-	doDeleteBucket = true
-
 	if doDeleteBucket {
 		_, err = keeper.DeleteDiscontinueBucketsUntil(ctx, blockTime, deletionMax-deleted)
 		if err != nil {

@@ -56,9 +56,9 @@ func (s *GashubTestSuite) TestUpdateParams() {
 	// 2. query proposal
 	var proposalId uint64
 	for _, event := range txRes.Logs[0].Events {
-		if event.Type == "submit_proposal" {
+		if event.Type == submitProposalEvent {
 			for _, attr := range event.Attributes {
-				if attr.Key == "proposal_id" {
+				if attr.Key == proposalIDStr {
 					proposalId, err = strconv.ParseUint(attr.Value, 10, 0)
 					s.Require().NoError(err)
 					break
@@ -126,7 +126,7 @@ func (s *GashubTestSuite) TestUpdateGasHubParams() {
 	s.Require().NoError(err)
 	if txResp.Code == 0 && txResp.Height > 0 {
 		for _, event := range txResp.Events {
-			if event.Type == "submit_proposal" {
+			if event.Type == submitProposalEvent {
 				proposalID, err = strconv.Atoi(event.GetAttributes()[0].Value)
 				s.Require().NoError(err)
 			}

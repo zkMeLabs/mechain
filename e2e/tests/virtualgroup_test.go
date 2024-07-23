@@ -412,7 +412,7 @@ func (s *VirtualGroupTestSuite) createObject() (string, string, *core.StoragePro
 	payloadSize := buffer.Len()
 	checksum := crypto.Keccak256(buffer.Bytes())
 	expectChecksum := [][]byte{checksum, checksum, checksum, checksum, checksum, checksum, checksum}
-	contextType := "text/event-stream"
+	contextType := eventStreamType
 	msgCreateObject := storagetypes.NewMsgCreateObject(user.GetAddr(), bucketName, objectName, uint64(payloadSize), storagetypes.VISIBILITY_TYPE_PRIVATE, expectChecksum, contextType, storagetypes.REDUNDANCY_EC_TYPE, math.MaxUint, nil)
 	msgCreateObject.PrimarySpApproval.Sig, err = sp.ApprovalKey.Sign(msgCreateObject.GetApprovalBytes())
 	s.Require().NoError(err)
@@ -434,7 +434,7 @@ func (s *VirtualGroupTestSuite) createObject() (string, string, *core.StoragePro
 
 	secondarySigs := make([][]byte, 0)
 	secondarySPBlsPubKeys := make([]bls.PublicKey, 0)
-	blsSignHash := storagetypes.NewSecondarySpSealObjectSignDoc(s.GetChainID(), gvgId, queryHeadObjectResponse.ObjectInfo.Id, storagetypes.GenerateHash(queryHeadObjectResponse.ObjectInfo.Checksums[:])).GetBlsSignHash()
+	blsSignHash := storagetypes.NewSecondarySpSealObjectSignDoc(s.GetChainID(), gvgId, queryHeadObjectResponse.ObjectInfo.Id, storagetypes.GenerateHash(queryHeadObjectResponse.ObjectInfo.Checksums)).GetBlsSignHash()
 	// every secondary sp signs the checksums
 	for _, spID := range gvg.SecondarySpIds {
 		sig, err := core.BlsSignAndVerify(s.StorageProviders[spID], blsSignHash)
@@ -686,7 +686,7 @@ func (s *VirtualGroupTestSuite) TestUpdateVirtualGroupParams() {
 	s.Require().NoError(err)
 	if txResp.Code == 0 && txResp.Height > 0 {
 		for _, event := range txResp.Events {
-			if event.Type == "submit_proposal" {
+			if event.Type == submitProposalEvent {
 				proposalID, err = strconv.Atoi(event.GetAttributes()[0].Value)
 				s.Require().NoError(err)
 			}
@@ -1107,7 +1107,7 @@ func (s *VirtualGroupTestSuite) TestSPForcedExit() {
 	s.Require().NoError(err)
 	if txResp.Code == 0 && txResp.Height > 0 {
 		for _, event := range txResp.Events {
-			if event.Type == "submit_proposal" {
+			if event.Type == submitProposalEvent {
 				proposalID, err = strconv.Atoi(event.GetAttributes()[0].Value)
 				s.Require().NoError(err)
 			}
@@ -1225,7 +1225,7 @@ func (s *VirtualGroupTestSuite) updateParams(params virtualgroupmoduletypes.Para
 	s.Require().NoError(err)
 	if txResp.Code == 0 && txResp.Height > 0 {
 		for _, event := range txResp.Events {
-			if event.Type == "submit_proposal" {
+			if event.Type == submitProposalEvent {
 				proposalID, err = strconv.Atoi(event.GetAttributes()[0].Value)
 				s.Require().NoError(err)
 			}

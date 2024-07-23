@@ -56,12 +56,12 @@ func CmdAttest() *cobra.Command {
 			for _, split := range splits {
 				val, err := strconv.ParseUint(split, 10, 64)
 				if err != nil {
-					return fmt.Errorf("vote-validator-set %s not a valid comma seperated uint array, please input a valid vote-validator-set", args[5])
+					return fmt.Errorf("vote-validator-set %s not a valid comma separated uint array, please input a valid vote-validator-set", args[5])
 				}
 				argVoteValidatorSet = append(argVoteValidatorSet, val)
 			}
 			if len(argVoteValidatorSet) == 0 {
-				return fmt.Errorf("vote-validator-set %s not a valid comma seperated uint array, please input a valid vote-validator-set", args[5])
+				return fmt.Errorf("vote-validator-set %s not a valid comma separated uint array, please input a valid vote-validator-set", args[5])
 			}
 
 			argVoteAggSignature, err := hex.DecodeString(args[6])

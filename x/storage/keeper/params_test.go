@@ -23,7 +23,7 @@ func TestGetParams(t *testing.T) {
 }
 
 func GetVersionedParamsWithTimestamp(k *keeper.Keeper, ctx sdk.Context, ts int64) (val types.VersionedParams) {
-	params, err := k.GetVersionedParamsWithTs(ctx, ts)
+	params, err := k.GetVersionedParamsWithTS(ctx, ts)
 	if err != nil {
 		fmt.Printf("GetParamsWithTimestamp err %s\n", err)
 	}

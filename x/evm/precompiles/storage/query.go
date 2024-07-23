@@ -59,7 +59,7 @@ func (c *Contract) ListBuckets(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract
 	if err != nil {
 		return nil, err
 	}
-	var bucketInfos []BucketInfo
+	bucketInfos := make([]BucketInfo, 0, len(res.BucketInfos))
 	for _, bucketInfo := range res.BucketInfos {
 		bucketInfos = append(bucketInfos, BucketInfo{
 			Owner:                      common.HexToAddress(bucketInfo.Owner),
@@ -103,7 +103,7 @@ func (c *Contract) ListObjects(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract
 	if err != nil {
 		return nil, err
 	}
-	var objectInfos []ObjectInfo
+	objectInfos := make([]ObjectInfo, 0, len(res.ObjectInfos))
 	for _, objectInfo := range res.ObjectInfos {
 		objectInfos = append(objectInfos, *outputObjectInfo(objectInfo))
 	}
@@ -134,7 +134,7 @@ func (c *Contract) ListGroups(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract,
 	if err != nil {
 		return nil, err
 	}
-	var groupInfos []GroupInfo
+	groupInfos := make([]GroupInfo, 0, len(res.GroupInfos))
 	for _, groupInfo := range res.GroupInfos {
 		groupInfos = append(groupInfos, GroupInfo{
 			Owner:      common.HexToAddress(groupInfo.Owner),
@@ -317,7 +317,7 @@ func outputsGlobalVirtualGroup(g *vgtypes.GlobalVirtualGroup) *GlobalVirtualGrou
 }
 
 func outputTags(tags *storagetypes.ResourceTags) []Tag {
-	var t []Tag
+	t := make([]Tag, 0)
 	if tags == nil {
 		return t
 	}

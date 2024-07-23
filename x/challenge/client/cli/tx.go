@@ -10,12 +10,10 @@ import (
 	"github.com/evmos/evmos/v12/x/challenge/types"
 )
 
-var (
-	DefaultRelativePacketTimeoutTimestamp = uint64((time.Duration(10) * time.Minute).Nanoseconds())
-)
+var DefaultRelativePacketTimeoutTimestamp = uint64((time.Duration(10) * time.Minute).Nanoseconds())
 
 const (
-	// nolint
+	//nolint
 	flagPacketTimeoutTimestamp = "packet-timeout-timestamp"
 )
 

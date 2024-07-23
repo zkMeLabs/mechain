@@ -792,7 +792,7 @@ func (p DeleteBucketSynPackage) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress
 	}
 	if p.Id == nil || p.Id.Cmp(big.NewInt(0)) < 0 {
-		return ErrInvalidId
+		return ErrInvalidID
 	}
 	return nil
 }
@@ -977,7 +977,7 @@ func (p DeleteObjectSynPackage) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress
 	}
 	if p.Id == nil || p.Id.Cmp(big.NewInt(0)) < 0 {
-		return ErrInvalidId
+		return ErrInvalidID
 	}
 	return nil
 }
@@ -1045,7 +1045,7 @@ func (p DeleteGroupSynPackage) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress
 	}
 	if p.Id == nil || p.Id.Cmp(big.NewInt(0)) < 0 {
-		return ErrInvalidId
+		return ErrInvalidID
 	}
 	return nil
 }
@@ -1113,7 +1113,7 @@ func (p DeletePolicySynPackage) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress
 	}
 	if p.Id == nil || p.Id.Cmp(big.NewInt(0)) < 0 {
-		return ErrInvalidId
+		return ErrInvalidID
 	}
 	return nil
 }
@@ -1260,7 +1260,7 @@ func (p UpdateGroupMemberSynPackage) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress
 	}
 	if p.GroupId == nil || p.GroupId.Cmp(big.NewInt(0)) < 0 {
-		return ErrInvalidId
+		return ErrInvalidID
 	}
 
 	for _, member := range p.Members {

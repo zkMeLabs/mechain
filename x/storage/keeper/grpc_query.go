@@ -44,7 +44,7 @@ func (k Keeper) QueryParamsByTimestamp(c context.Context, req *types.QueryParams
 	}
 
 	params := k.GetParams(ctx)
-	versionedParams, err := k.GetVersionedParamsWithTs(ctx, ts)
+	versionedParams, err := k.GetVersionedParamsWithTS(ctx, ts)
 	params.VersionedParams = versionedParams
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())

@@ -16,7 +16,7 @@ func (k Keeper) MaxBucketsPerAccount(ctx sdk.Context) (res uint32) {
 }
 
 func (k Keeper) GetExpectSecondarySPNumForECObject(ctx sdk.Context, createTime int64) (res uint32) {
-	versionParams, err := k.GetVersionedParamsWithTs(ctx, createTime)
+	versionParams, err := k.GetVersionedParamsWithTS(ctx, createTime)
 	if err != nil {
 		panic(fmt.Sprintf("get expect secondary sp num error, msg: %s", err))
 	}
@@ -32,11 +32,12 @@ func (k Keeper) MirrorBucketRelayerFee(ctx sdk.Context, destChainId sdk.ChainID)
 	params := k.GetParams(ctx)
 
 	var relayerFeeParam string
-	if k.crossChainKeeper.GetDestBscChainID() == destChainId {
+	switch {
+	case k.crossChainKeeper.GetDestBscChainID() == destChainId:
 		relayerFeeParam = params.BscMirrorBucketRelayerFee
-	} else if k.crossChainKeeper.GetDestOpChainID() == destChainId {
+	case k.crossChainKeeper.GetDestOpChainID() == destChainId:
 		relayerFeeParam = params.OpMirrorBucketRelayerFee
-	} else {
+	default:
 		panic(fmt.Sprintf("chain id(%d) is not supported", destChainId))
 	}
 
@@ -52,11 +53,12 @@ func (k Keeper) MirrorBucketAckRelayerFee(ctx sdk.Context, destChainId sdk.Chain
 	params := k.GetParams(ctx)
 
 	var relayerFeeParam string
-	if k.crossChainKeeper.GetDestBscChainID() == destChainId {
+	switch {
+	case k.crossChainKeeper.GetDestBscChainID() == destChainId:
 		relayerFeeParam = params.BscMirrorBucketAckRelayerFee
-	} else if k.crossChainKeeper.GetDestOpChainID() == destChainId {
+	case k.crossChainKeeper.GetDestOpChainID() == destChainId:
 		relayerFeeParam = params.OpMirrorBucketAckRelayerFee
-	} else {
+	default:
 		panic(fmt.Sprintf("chain id(%d) is not supported", destChainId))
 	}
 
@@ -92,14 +94,15 @@ func (k Keeper) MirrorObjectAckRelayerFee(ctx sdk.Context, destChainId sdk.Chain
 	params := k.GetParams(ctx)
 
 	var relayerFeeParam string
-	if k.crossChainKeeper.GetDestBscChainID() == destChainId {
+	switch {
+	case k.crossChainKeeper.GetDestBscChainID() == destChainId:
 		relayerFeeParam = params.BscMirrorObjectAckRelayerFee
-	} else if k.crossChainKeeper.GetDestOpChainID() == destChainId {
+	case k.crossChainKeeper.GetDestOpChainID() == destChainId:
 		relayerFeeParam = params.OpMirrorObjectAckRelayerFee
-	} else {
+	default:
 		panic(fmt.Sprintf("chain id(%d) is not supported", destChainId))
-	}
 
+	}
 	relayerFee, valid := big.NewInt(0).SetString(relayerFeeParam, 10)
 	if !valid {
 		panic(fmt.Sprintf("invalid relayer fee: %s", relayerFeeParam))
@@ -173,7 +176,7 @@ func (k Keeper) DiscontinueDeletionMax(ctx sdk.Context) (res uint64) {
 }
 
 func (k Keeper) MaxSegmentSize(ctx sdk.Context, timestamp int64) (res uint64, err error) {
-	params, err := k.GetVersionedParamsWithTs(ctx, timestamp)
+	params, err := k.GetVersionedParamsWithTS(ctx, timestamp)
 	if err != nil {
 		return 0, err
 	}
@@ -226,7 +229,7 @@ func (k Keeper) SetParams(ctx sdk.Context, params types.Params) error {
 	store.Set(types.ParamsKey, bz)
 
 	// store another kv with timestamp
-	err := k.SetVersionedParamsWithTs(ctx, params.VersionedParams)
+	err := k.SetVersionedParamsWithTS(ctx, params.VersionedParams)
 	if err != nil {
 		return err
 	}
@@ -234,8 +237,8 @@ func (k Keeper) SetParams(ctx sdk.Context, params types.Params) error {
 	return nil
 }
 
-// SetVersionedParamsWithTs set a specific params in the store from its index
-func (k Keeper) SetVersionedParamsWithTs(ctx sdk.Context, verParams types.VersionedParams) error {
+// SetVersionedParamsWithTS set a specific params in the store from its index
+func (k Keeper) SetVersionedParamsWithTS(ctx sdk.Context, verParams types.VersionedParams) error {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.VersionedParamsKeyPrefix)
 	key := types.GetParamsKeyWithTimestamp(ctx.BlockTime().Unix())
 
@@ -245,8 +248,8 @@ func (k Keeper) SetVersionedParamsWithTs(ctx sdk.Context, verParams types.Versio
 	return nil
 }
 
-// GetVersionedParamsWithTs find the latest params before and equal than the specific timestamp
-func (k Keeper) GetVersionedParamsWithTs(ctx sdk.Context, ts int64) (verParams types.VersionedParams, err error) {
+// GetVersionedParamsWithTS find the latest params before and equal than the specific timestamp
+func (k Keeper) GetVersionedParamsWithTS(ctx sdk.Context, ts int64) (verParams types.VersionedParams, err error) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.VersionedParamsKeyPrefix)
 
 	// params are updated in the endblock, so we do not need to make the ts to be included

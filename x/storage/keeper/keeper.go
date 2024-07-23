@@ -887,7 +887,7 @@ func (k Keeper) SealObject(
 			expectSecondarySPNum, len(gvg.SecondarySpIds))
 	}
 	// validate seal object bls aggregated sig from secondary sps
-	secondarySpsSealObjectBlsSignHash := storagetypes.NewSecondarySpSealObjectSignDoc(ctx.ChainID(), gvg.Id, objectInfo.Id, storagetypes.GenerateHash(objectInfo.Checksums[:])).GetBlsSignHash()
+	secondarySpsSealObjectBlsSignHash := storagetypes.NewSecondarySpSealObjectSignDoc(ctx.ChainID(), gvg.Id, objectInfo.Id, storagetypes.GenerateHash(objectInfo.Checksums)).GetBlsSignHash()
 	err := k.VerifyGVGSecondarySPsBlsSignature(ctx, gvg, secondarySpsSealObjectBlsSignHash, opts.SecondarySpBlsSignatures)
 	if err != nil {
 		return err
@@ -1033,7 +1033,7 @@ func (k Keeper) DeleteObject(
 	}
 
 	if objectInfo.ObjectStatus == storagetypes.OBJECT_STATUS_DISCONTINUED {
-		return storagetypes.ErrInvalidObjectStatus.Wrapf("The object %s is discontined, will be deleted automatically",
+		return storagetypes.ErrInvalidObjectStatus.Wrapf("The object %s is discontinued, will be deleted automatically",
 			objectInfo.ObjectName)
 	}
 
@@ -1362,13 +1362,13 @@ func (k Keeper) DiscontinueObject(ctx sdk.Context, operator sdk.AccAddress, buck
 	for _, objectId := range objectIds {
 		object, found := k.GetObjectInfoById(ctx, objectId)
 		if !found {
-			return storagetypes.ErrInvalidObjectIds.Wrapf("object not found, id: %s", objectId)
+			return storagetypes.ErrInvalidObjectIDs.Wrapf("object not found, id: %s", objectId)
 		}
 		if object.BucketName != bucketName {
-			return storagetypes.ErrInvalidObjectIds.Wrapf("object %s should in bucket: %s", objectId, bucketName)
+			return storagetypes.ErrInvalidObjectIDs.Wrapf("object %s should in bucket: %s", objectId, bucketName)
 		}
 		if object.ObjectStatus != storagetypes.OBJECT_STATUS_SEALED && object.ObjectStatus != storagetypes.OBJECT_STATUS_CREATED {
-			return storagetypes.ErrInvalidObjectIds.Wrapf("object %s should in created or sealed status", objectId)
+			return storagetypes.ErrInvalidObjectIDs.Wrapf("object %s should in created or sealed status", objectId)
 		}
 
 		// remember object status
@@ -1901,7 +1901,7 @@ func (k Keeper) DeleteDiscontinueBucketsUntil(ctx sdk.Context, timestamp int64, 
 				ctx.Logger().Error("force delete bucket error", "err", err, "id", id, "height", ctx.BlockHeight())
 				return deleted, err
 			}
-			deleted = deleted + objectDeleted
+			deleted += objectDeleted
 
 			if !bucketDeleted {
 				left = append(left, id)
@@ -2415,7 +2415,7 @@ func (k Keeper) GetSourceTypeByChainId(ctx sdk.Context, chainId sdk.ChainID) (st
 	return 0, storagetypes.ErrChainNotSupported
 }
 
-func (k Keeper) SetTag(ctx sdk.Context, operator sdk.AccAddress,grn types.GRN, tags *storagetypes.ResourceTags) error {
+func (k Keeper) SetTag(ctx sdk.Context, operator sdk.AccAddress, grn types.GRN, tags *storagetypes.ResourceTags) error {
 	store := ctx.KVStore(k.storeKey)
 
 	switch grn.ResourceType() {

@@ -338,7 +338,7 @@ func (s *StorageProviderTestSuite) TestUpdateStorageProviderParams() {
 	s.Require().NoError(err)
 	if txResp.Code == 0 && txResp.Height > 0 {
 		for _, event := range txResp.Events {
-			if event.Type == "submit_proposal" {
+			if event.Type == submitProposalEvent {
 				proposalID, err = strconv.Atoi(event.GetAttributes()[0].Value)
 				s.Require().NoError(err)
 			}
@@ -493,9 +493,9 @@ func (s *StorageProviderTestSuite) updateParams(params sptypes.Params) {
 	// 3. query proposal and get proposal ID
 	var proposalId uint64
 	for _, event := range txRes.Logs[0].Events {
-		if event.Type == "submit_proposal" {
+		if event.Type == submitProposalEvent {
 			for _, attr := range event.Attributes {
-				if attr.Key == "proposal_id" {
+				if attr.Key == proposalIDStr {
 					proposalId, err = strconv.ParseUint(attr.Value, 10, 0)
 					s.Require().NoError(err)
 					break

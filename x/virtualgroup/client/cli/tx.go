@@ -32,7 +32,7 @@ func CmdSettle() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "settle [gvg family id] [gvg ids]",
 		Short: "Broadcast message settle",
-		Long: `Settle will do the settlement of a GVG family or several GVGs (by specifying comma seperated ids). 
+		Long: `Settle will do the settlement of a GVG family or several GVGs (by specifying comma separated ids). 
 If zero is provided for GVG family, then the provided GVGs will be settled.
 If none zero is provided for GVG family, then the provided GVG family will be settled and the provided GVGs will be ignored.`,
 		Args: cobra.ExactArgs(2),

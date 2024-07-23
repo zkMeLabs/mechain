@@ -237,7 +237,7 @@ func (app *GroupApp) handleCreateGroupSynPackage(ctx sdk.Context, appCtx *sdk.Cr
 		}
 	}
 
-	groupId, err := app.storageKeeper.CreateGroup(ctx,
+	groupID, err := app.storageKeeper.CreateGroup(ctx,
 		createGroupPackage.Creator,
 		createGroupPackage.GroupName,
 		types.CreateGroupOptions{
@@ -258,7 +258,7 @@ func (app *GroupApp) handleCreateGroupSynPackage(ctx sdk.Context, appCtx *sdk.Cr
 	return sdk.ExecuteResult{
 		Payload: types.CreateGroupAckPackage{
 			Status:    types.StatusSuccess,
-			Id:        groupId.BigInt(),
+			Id:        groupID.BigInt(),
 			Creator:   createGroupPackage.Creator,
 			ExtraData: createGroupPackage.ExtraData,
 		}.MustSerialize(),
@@ -326,7 +326,7 @@ func (app *GroupApp) handleMirrorGroupFailAckPackage(ctx sdk.Context, appCtx *sd
 	return sdk.ExecuteResult{}
 }
 
-func (app *GroupApp) handleMirrorGroupSynPackage(ctx sdk.Context, header *sdk.CrossChainAppContext, synPackage *types.MirrorGroupSynPackage) sdk.ExecuteResult {
+func (app *GroupApp) handleMirrorGroupSynPackage(ctx sdk.Context, _ *sdk.CrossChainAppContext, synPackage *types.MirrorGroupSynPackage) sdk.ExecuteResult {
 	app.storageKeeper.Logger(ctx).Error("received mirror group syn ack package ")
 
 	return sdk.ExecuteResult{}

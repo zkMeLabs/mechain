@@ -66,22 +66,22 @@ func getNFTAttributes(m interface{}) []Trait {
 }
 
 func (di *DeleteInfo) IsEmpty() bool {
-	isBucketIdsEmpty := false
-	isObjectIdsEmpty := false
-	isGroupIdsEmpty := false
+	isBucketIDsEmpty := false
+	isObjectIDsEmpty := false
+	isGroupIDsEmpty := false
 	if di == nil {
 		return true
 	}
 	if di.BucketIds == nil || len(di.BucketIds.Id) == 0 {
-		isBucketIdsEmpty = true
+		isBucketIDsEmpty = true
 	}
 	if di.ObjectIds == nil || len(di.ObjectIds.Id) == 0 {
-		isObjectIdsEmpty = true
+		isObjectIDsEmpty = true
 	}
 	if di.GroupIds == nil || len(di.GroupIds.Id) == 0 {
-		isGroupIdsEmpty = true
+		isGroupIDsEmpty = true
 	}
-	return isBucketIdsEmpty && isObjectIdsEmpty && isGroupIdsEmpty
+	return isBucketIDsEmpty && isObjectIDsEmpty && isGroupIDsEmpty
 }
 
 func (b *InternalBucketInfo) GetLVGByGVGID(gvgID uint32) (*LocalVirtualGroup, bool) {

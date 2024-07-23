@@ -16,7 +16,9 @@
 
 package upgrade
 
-import "github.com/ory/dockertest/v3"
+import (
+	dockertest "github.com/ory/dockertest/v3"
+)
 
 const jrpcPort = "8545"
 

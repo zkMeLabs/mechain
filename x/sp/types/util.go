@@ -9,7 +9,7 @@ import (
 // Verify if input endpoint URL is valid.
 func ValidateEndpointURL(endpointURL string) error {
 	if endpointURL == "" {
-		return errors.Wrap(ErrInvalidEndpointURL, "Endpoint url cannot be empty.")
+		return errors.Wrap(ErrInvalidEndpointURL, "endpoint url cannot be empty.")
 	}
 	url, err := url.Parse(endpointURL)
 	if err != nil {

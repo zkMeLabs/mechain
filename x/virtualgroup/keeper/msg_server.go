@@ -65,8 +65,6 @@ func (k msgServer) CreateGlobalVirtualGroup(goCtx context.Context, req *types.Ms
 		spIdSet[spId] = struct{}{}
 	}
 
-	var gvgStatisticsWithinSPs []*types.GVGStatisticsWithinSP
-
 	spOperatorAddr := sdk.MustAccAddressFromHex(req.StorageProvider)
 
 	sp, found := k.spKeeper.GetStorageProviderByOperatorAddr(ctx, spOperatorAddr)
@@ -77,12 +75,12 @@ func (k msgServer) CreateGlobalVirtualGroup(goCtx context.Context, req *types.Ms
 	if !sp.IsInService() && !sp.IsInMaintenance() {
 		return nil, sptypes.ErrStorageProviderNotInService.Wrapf("sp is not in service or in maintenance, status: %s", sp.Status.String())
 	}
-
+	gvgStatisticsWithinSPs := make([]*types.GVGStatisticsWithinSP, 0, 1+len(req.SecondarySpIds))
 	stat := k.GetOrCreateGVGStatisticsWithinSP(ctx, sp.Id)
 	stat.PrimaryCount++
 	gvgStatisticsWithinSPs = append(gvgStatisticsWithinSPs, stat)
 
-	var secondarySpIds []uint32
+	secondarySpIds := make([]uint32, 0, len(req.SecondarySpIds))
 	for _, id := range req.SecondarySpIds {
 		ssp, found := k.spKeeper.GetStorageProvider(ctx, id)
 		if !found {

@@ -126,7 +126,7 @@ func (app *Evmos) reconPaymentChanges(ctx sdk.Context, paymentIavl *iavl.Store) 
 					ctx.Logger().Error("fail to unmarshal stream record", "err", err.Error())
 				} else {
 					flowCurrent = flowCurrent.Add(sr.NetflowRate)
-					//TODO: impact performance, remove it later
+					// TODO: impact performance, remove it later
 					j, _ := json.Marshal(sr)
 					ctx.Logger().Debug("stream_record_current", "stream record", j, "addr", parseAddressFromStreamRecordKey(kBz))
 				}
@@ -144,7 +144,7 @@ func (app *Evmos) reconPaymentChanges(ctx sdk.Context, paymentIavl *iavl.Store) 
 					ctx.Logger().Error("fail to unmarshal stream record", "err", err.Error())
 				} else {
 					flowPre = flowPre.Add(sr.NetflowRate)
-					//TODO: impact performance, remove it later
+					// TODO: impact performance, remove it later
 					j, _ := json.Marshal(sr)
 					ctx.Logger().Debug("stream_record_previous", "stream record", j, "addr", parseAddressFromStreamRecordKey(kBz))
 				}
@@ -160,7 +160,7 @@ func (app *Evmos) reconPaymentChanges(ctx sdk.Context, paymentIavl *iavl.Store) 
 func (app *Evmos) saveUnbalancedBlockHeight(ctx sdk.Context) {
 	reconStore := app.CommitMultiStore().GetCommitStore(sdk.NewKVStoreKey(reconStoreKey)).(*iavl.Store)
 	bz := make([]byte, 8)
-	binary.BigEndian.PutUint64(bz[:], uint64(ctx.BlockHeight()))
+	binary.BigEndian.PutUint64(bz, uint64(ctx.BlockHeight()))
 	reconStore.Set(unbalancedBlockHeightKey, bz)
 }
 

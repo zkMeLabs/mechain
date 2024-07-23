@@ -96,14 +96,14 @@ func MustMarshalStorageProvider(cdc codec.BinaryCodec, sp *StorageProvider) []by
 	return cdc.MustMarshal(sp)
 }
 
-func SpStoragePriceKey(spId uint32) []byte {
+func SpStoragePriceKey(spID uint32) []byte {
 	idBytes := make([]byte, 4)
-	binary.BigEndian.PutUint32(idBytes, spId)
+	binary.BigEndian.PutUint32(idBytes, spID)
 	return idBytes
 }
 
-func ParseSpStoragePriceKey(key []byte) (spId uint32) {
-	spId = binary.BigEndian.Uint32(key)
+func ParseSpStoragePriceKey(key []byte) (spID uint32) {
+	spID = binary.BigEndian.Uint32(key)
 	return
 }
 

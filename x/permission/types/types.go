@@ -216,7 +216,7 @@ func (s *Statement) ValidateBasic(resType resource.ResourceType) error {
 	return nil
 }
 
-func (s *Statement) ValidateRuntime(ctx sdk.Context, resType resource.ResourceType) error {
+func (s *Statement) ValidateRuntime(_ sdk.Context, resType resource.ResourceType) error {
 	switch resType {
 	case resource.RESOURCE_TYPE_BUCKET:
 		for _, r := range s.Resources {

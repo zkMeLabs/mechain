@@ -9,6 +9,7 @@ import (
 	"math/big"
 	"reflect"
 	"strconv"
+	"strings"
 	"testing"
 	"time"
 
@@ -1170,7 +1171,7 @@ func (s *PaymentTestSuite) TestVirtualGroup_Settle() {
 	s.Require().Equal(streamRecordsAfter.Tax.NetflowRate.Sub(streamRecordsBefore.Tax.NetflowRate).Int64(), int64(0))
 }
 
-//func (s *PaymentTestSuite) TestVirtualGroup_SwapOut() {
+//  func (s *PaymentTestSuite) TestVirtualGroup_SwapOut() {
 //	ctx := context.Background()
 //	user := s.GenAndChargeAccounts(1, 1000000)[0]
 //	successorSp := s.PickStorageProvider()
@@ -2394,9 +2395,9 @@ func (s *PaymentTestSuite) updateParams(params paymenttypes.Params) {
 	// 3. query proposal and get proposal ID
 	var proposalId uint64
 	for _, event := range txRes.Logs[0].Events {
-		if event.Type == "submit_proposal" {
+		if event.Type == submitProposalEvent {
 			for _, attr := range event.Attributes {
-				if attr.Key == "proposal_id" {
+				if attr.Key == proposalIDStr {
 					proposalId, err = strconv.ParseUint(attr.Value, 10, 0)
 					s.Require().NoError(err)
 					break
@@ -2458,16 +2459,7 @@ func (s *PaymentTestSuite) createBucketAndObject(sp *core.StorageProvider, gvg *
 	objectName := storagetestutils.GenRandomObjectName()
 	// create test buffer
 	var buffer bytes.Buffer
-	line := `1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,123`
+	line := strings.Repeat(repeatPart, 92) + "123"
 	// Create 1MiB content where each line contains 1024 characters.
 	for i := 0; i < 1024; i++ {
 		buffer.WriteString(fmt.Sprintf("[%05d] %s\n", i, line))
@@ -2475,7 +2467,7 @@ func (s *PaymentTestSuite) createBucketAndObject(sp *core.StorageProvider, gvg *
 	payloadSize := buffer.Len()
 	checksum := crypto.Keccak256(buffer.Bytes())
 	expectChecksum := [][]byte{checksum, checksum, checksum, checksum, checksum, checksum, checksum}
-	contextType := "text/event-stream"
+	contextType := eventStreamType
 	msgCreateObject := storagetypes.NewMsgCreateObject(user.GetAddr(), bucketName, objectName, uint64(payloadSize),
 		storagetypes.VISIBILITY_TYPE_PRIVATE, expectChecksum, contextType,
 		storagetypes.REDUNDANCY_EC_TYPE, math.MaxUint, nil)
@@ -2525,16 +2517,7 @@ func (s *PaymentTestSuite) createObject(user keys.KeyManager, bucketName string,
 	objectName := storagetestutils.GenRandomObjectName()
 	// create test buffer
 	var buffer bytes.Buffer
-	line := `1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,123`
+	line := strings.Repeat(repeatPart, 92) + "123"
 	// Create 1MiB content where each line contains 1024 characters.
 	if !empty {
 		for i := 0; i < 1024; i++ {
@@ -2544,7 +2527,7 @@ func (s *PaymentTestSuite) createObject(user keys.KeyManager, bucketName string,
 	payloadSize := uint64(buffer.Len())
 	checksum := crypto.Keccak256(buffer.Bytes())
 	expectChecksum := [][]byte{checksum, checksum, checksum, checksum, checksum, checksum, checksum}
-	contextType := "text/event-stream"
+	contextType := eventStreamType
 	msgCreateObject := storagetypes.NewMsgCreateObject(user.GetAddr(), bucketName, objectName, payloadSize,
 		storagetypes.VISIBILITY_TYPE_PRIVATE, expectChecksum, contextType,
 		storagetypes.REDUNDANCY_EC_TYPE, math.MaxUint, nil)
@@ -2584,7 +2567,7 @@ func (s *PaymentTestSuite) sealObject(sp *core.StorageProvider, gvg *virtualgrou
 	msgSealObject := storagetypes.NewMsgSealObject(sp.SealKey.GetAddr(), bucketName, objectName, gvg.Id, nil)
 	secondarySigs := make([][]byte, 0)
 	secondarySPBlsPubKeys := make([]bls.PublicKey, 0)
-	blsSignHash := storagetypes.NewSecondarySpSealObjectSignDoc(s.GetChainID(), gvgId, objectId, storagetypes.GenerateHash(checksums[:])).GetBlsSignHash()
+	blsSignHash := storagetypes.NewSecondarySpSealObjectSignDoc(s.GetChainID(), gvgId, objectId, storagetypes.GenerateHash(checksums)).GetBlsSignHash()
 	// every secondary sp signs the checksums
 	for _, spID := range gvg.SecondarySpIds {
 		sig, err := core.BlsSignAndVerify(s.StorageProviders[spID], blsSignHash)
@@ -2678,7 +2661,7 @@ func (s *PaymentTestSuite) TestUpdatePaymentParams() {
 	s.Require().NoError(err)
 	if txResp.Code == 0 && txResp.Height > 0 {
 		for _, event := range txResp.Events {
-			if event.Type == "submit_proposal" {
+			if event.Type == submitProposalEvent {
 				proposalID, err = strconv.Atoi(event.GetAttributes()[0].Value)
 				s.Require().NoError(err)
 			}

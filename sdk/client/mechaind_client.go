@@ -156,13 +156,13 @@ type GreenfieldClient struct {
 }
 
 // NewGreenfieldClient is used to create a new GreenfieldClient structure.
-func NewGreenfieldClient(rpcAddr, chainId string, opts ...GreenfieldClientOption) (*GreenfieldClient, error) {
+func NewGreenfieldClient(rpcAddr, chainID string, opts ...GreenfieldClientOption) (*GreenfieldClient, error) {
 	rpcClient, err := sdkclient.NewClientFromNode(rpcAddr)
 	if err != nil {
 		return nil, err
 	}
 
-	return newGreenfieldClient(rpcAddr, chainId, rpcClient, opts...)
+	return newGreenfieldClient(rpcAddr, chainID, rpcClient, opts...)
 }
 
 // NewCustomGreenfieldClient is used to create a new GreenfieldClient structure, allows for setting a custom http client

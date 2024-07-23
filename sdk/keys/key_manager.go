@@ -61,7 +61,7 @@ func (km *keyManager) recoveryFromPrivateKey(privateKey string) error {
 	}
 
 	if len(priBytes) != 32 {
-		return fmt.Errorf("Len of Keybytes is not equal to 32 ")
+		return fmt.Errorf("len of Keybytes is not equal to 32 ")
 	}
 	var keyBytesArray [32]byte
 	copy(keyBytesArray[:], priBytes[:32])
@@ -86,7 +86,7 @@ func (km *keyManager) recoveryFromMnemonic(mnemonic, keyPath string) error {
 	if err != nil {
 		return err
 	}
-	priKey := hd.EthSecp256k1.Generate()(derivedPriv[:]).(*ethsecp256k1.PrivKey)
+	priKey := hd.EthSecp256k1.Generate()(derivedPriv).(*ethsecp256k1.PrivKey)
 	km.privKey = priKey
 	km.mnemonic = mnemonic
 	km.addr = types.AccAddress(km.privKey.PubKey().Address())
@@ -100,7 +100,7 @@ func (km *keyManager) recoveryFromBlsPrivateKey(privateKey string) error {
 	}
 
 	if len(priBytes) != 32 {
-		return fmt.Errorf("Len of Keybytes is not equal to 32 ")
+		return fmt.Errorf("len of Keybytes is not equal to 32 ")
 	}
 	var keyBytesArray [32]byte
 	copy(keyBytesArray[:], priBytes[:32])

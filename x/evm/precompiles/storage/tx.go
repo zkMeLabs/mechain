@@ -3,7 +3,6 @@ package storage
 import (
 	"encoding/base64"
 	"errors"
-
 	"time"
 
 	"github.com/ethereum/go-ethereum/common"
@@ -144,7 +143,7 @@ func (c *Contract) CreateObject(ctx sdk.Context, evm *vm.EVM, contract *vm.Contr
 	if err := types.ParseMethodArgs(method, &args, contract.Input[4:]); err != nil {
 		return nil, err
 	}
-	var expectChecksums [][]byte
+	expectChecksums := make([][]byte, 0)
 	for _, checksum := range args.ExpectChecksums {
 		checksumBytes, err := base64.StdEncoding.DecodeString(checksum)
 		if err != nil {
@@ -256,7 +255,7 @@ func (c *Contract) SealObjectV2(ctx sdk.Context, evm *vm.EVM, contract *vm.Contr
 	if err != nil {
 		return nil, err
 	}
-	var expectChecksums [][]byte
+	expectChecksums := make([][]byte, 0)
 	for _, checksum := range args.ExpectChecksums {
 		checksumBytes, err := base64.StdEncoding.DecodeString(checksum)
 		if err != nil {

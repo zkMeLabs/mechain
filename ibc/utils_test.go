@@ -1,8 +1,9 @@
 package ibc
 
 import (
-	"github.com/evmos/evmos/v12/utils"
 	"testing"
+
+	"github.com/evmos/evmos/v12/utils"
 
 	"github.com/stretchr/testify/require"
 
@@ -133,6 +134,7 @@ func TestGetTransferSenderRecipient(t *testing.T) {
 		} else {
 			require.NoError(t, err, tc.name)
 			expSender, err := utils.GetEvmosAddressFromBech32(tc.expSender)
+			require.NoError(t, err, tc.name)
 			expRecipient, err := utils.GetEvmosAddressFromBech32(tc.expRecipient)
 			require.NoError(t, err, tc.name)
 
