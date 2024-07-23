@@ -5,12 +5,6 @@ import (
 	"math/big"
 	time "time"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/core"
-	"github.com/ethereum/go-ethereum/core/vm"
-	"github.com/evmos/evmos/v12/x/evm/statedb"
-	evmtypes "github.com/evmos/evmos/v12/x/evm/types"
-
 	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
 	"github.com/cometbft/cometbft/libs/log"
@@ -61,8 +55,8 @@ type PaymentKeeper interface {
 	UpdateStreamRecordByAddr(ctx sdktypes.Context, change *paymenttypes.StreamRecordChange) (ret *paymenttypes.StreamRecord, err error)
 	GetStreamRecord(ctx sdktypes.Context, account sdktypes.AccAddress) (ret *paymenttypes.StreamRecord, found bool)
 	MergeOutFlows(flows []paymenttypes.OutFlow) []paymenttypes.OutFlow
-	GetAllStreamRecord(ctx sdk.Context) (list []paymenttypes.StreamRecord)
-	GetOutFlows(ctx sdk.Context, addr sdk.AccAddress) []paymenttypes.OutFlow
+	GetAllStreamRecord(ctx sdktypes.Context) (list []paymenttypes.StreamRecord)
+	GetOutFlows(ctx sdktypes.Context, addr sdktypes.AccAddress) []paymenttypes.OutFlow
 }
 
 type PermissionKeeper interface {
@@ -89,16 +83,16 @@ type PermissionKeeper interface {
 }
 
 type CrossChainKeeper interface {
-	GetDestBscChainID() sdk.ChainID
-	GetDestOpChainID() sdk.ChainID
+	GetDestBscChainID() sdktypes.ChainID
+	GetDestOpChainID() sdktypes.ChainID
 
-	CreateRawIBCPackageWithFee(ctx sdk.Context, chainID sdk.ChainID, channelID sdk.ChannelID, packageType sdk.CrossChainPackageType,
+	CreateRawIBCPackageWithFee(ctx sdktypes.Context, chainID sdktypes.ChainID, channelID sdktypes.ChannelID, packageType sdktypes.CrossChainPackageType,
 		packageLoad []byte, relayerFee *big.Int, ackRelayerFee *big.Int,
 	) (uint64, error)
 
-	IsDestChainSupported(chainID sdk.ChainID) bool
+	IsDestChainSupported(chainID sdktypes.ChainID) bool
 
-	RegisterChannel(name string, id sdk.ChannelID, app sdk.CrossChainApplication) error
+	RegisterChannel(name string, id sdktypes.ChannelID, app sdktypes.CrossChainApplication) error
 }
 
 type VirtualGroupKeeper interface {
@@ -133,8 +127,8 @@ type StorageKeeper interface {
 	GetObjectInfoById(ctx sdktypes.Context, objectId sdkmath.Uint) (*ObjectInfo, bool)
 	SetObjectInfo(ctx sdktypes.Context, objectInfo *ObjectInfo)
 	DeleteObject(
-		ctx sdk.Context, operator sdk.AccAddress, bucketName, objectName string, opts DeleteObjectOptions) error
-	GetSourceTypeByChainId(ctx sdk.Context, chainId sdk.ChainID) (SourceType, error)
+		ctx sdktypes.Context, operator sdktypes.AccAddress, bucketName, objectName string, opts DeleteObjectOptions) error
+	GetSourceTypeByChainId(ctx sdktypes.Context, chainId sdktypes.ChainID) (SourceType, error)
 
 	NormalizePrincipal(ctx sdktypes.Context, principal *permtypes.Principal)
 	ValidatePrincipal(ctx sdktypes.Context, resOwner sdktypes.AccAddress, principal *permtypes.Principal) error

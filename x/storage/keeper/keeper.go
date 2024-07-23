@@ -12,12 +12,11 @@ import (
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/gogoproto/proto"
-	"github.com/evmos/evmos/v12/contracts"
-	"github.com/evmos/evmos/v12/types"
-
 	ecommon "github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/evmos/evmos/v12/contracts"
 	"github.com/evmos/evmos/v12/internal/sequence"
+	"github.com/evmos/evmos/v12/types"
 	"github.com/evmos/evmos/v12/types/common"
 	gnfderrors "github.com/evmos/evmos/v12/types/errors"
 	"github.com/evmos/evmos/v12/types/resource"
@@ -33,13 +32,13 @@ type (
 		cdc                codec.BinaryCodec
 		storeKey           storetypes.StoreKey
 		tStoreKey          storetypes.StoreKey
-		spKeeper           types.SpKeeper
-		paymentKeeper      types.PaymentKeeper
-		accountKeeper      types.AccountKeeper
-		permKeeper         types.PermissionKeeper
-		crossChainKeeper   types.CrossChainKeeper
-		virtualGroupKeeper types.VirtualGroupKeeper
-		evmKeeper          types.EVMKeeper
+		spKeeper           storagetypes.SpKeeper
+		paymentKeeper      storagetypes.PaymentKeeper
+		accountKeeper      storagetypes.AccountKeeper
+		permKeeper         storagetypes.PermissionKeeper
+		crossChainKeeper   storagetypes.CrossChainKeeper
+		virtualGroupKeeper storagetypes.VirtualGroupKeeper
+		evmKeeper          storagetypes.EVMKeeper
 		// sequence
 		bucketSeq sequence.Sequence[sdkmath.Uint]
 		objectSeq sequence.Sequence[sdkmath.Uint]
@@ -61,13 +60,13 @@ func NewKeeper(
 	cdc codec.BinaryCodec,
 	storeKey storetypes.StoreKey,
 	tStoreKey storetypes.StoreKey,
-	accountKeeper types.AccountKeeper,
-	spKeeper types.SpKeeper,
-	paymentKeeper types.PaymentKeeper,
-	permKeeper types.PermissionKeeper,
-	crossChainKeeper types.CrossChainKeeper,
-	virtualGroupKeeper types.VirtualGroupKeeper,
-	evmKeeper types.EVMKeeper,
+	accountKeeper storagetypes.AccountKeeper,
+	spKeeper storagetypes.SpKeeper,
+	paymentKeeper storagetypes.PaymentKeeper,
+	permKeeper storagetypes.PermissionKeeper,
+	crossChainKeeper storagetypes.CrossChainKeeper,
+	virtualGroupKeeper storagetypes.VirtualGroupKeeper,
+	evmKeeper storagetypes.EVMKeeper,
 	authority string,
 ) *Keeper {
 	k := Keeper{
@@ -2090,8 +2089,8 @@ func (k Keeper) MigrateBucket(ctx sdk.Context, operator sdk.AccAddress, bucketNa
 		return storagetypes.ErrInvalidBucketStatus.Wrapf("The bucket already been migrating")
 	}
 
-	if bucketInfo.BucketStatus == types.BUCKET_STATUS_DISCONTINUED {
-		return types.ErrInvalidBucketStatus.Wrapf("The discontinued bucket cannot be migrated")
+	if bucketInfo.BucketStatus == storagetypes.BUCKET_STATUS_DISCONTINUED {
+		return storagetypes.ErrInvalidBucketStatus.Wrapf("The discontinued bucket cannot be migrated")
 	}
 
 	srcSP := k.MustGetPrimarySPForBucket(ctx, bucketInfo)
@@ -2129,7 +2128,7 @@ func (k Keeper) MigrateBucket(ctx sdk.Context, operator sdk.AccAddress, bucketNa
 		return fmt.Errorf("bucket is rate limited: %s", bucketInfo.BucketName)
 	}
 
-	key := types.GetMigrationBucketKey(bucketInfo.Id)
+	key := storagetypes.GetMigrationBucketKey(bucketInfo.Id)
 	if store.Has(key) {
 		panic("migration bucket key is existed.")
 	}
@@ -2400,23 +2399,23 @@ func (k Keeper) hasGroup(ctx sdk.Context, groupID sdkmath.Uint) bool {
 	return store.Has(storagetypes.GetGroupByIDKey(groupID))
 }
 
-func (k Keeper) GetSourceTypeByChainId(ctx sdk.Context, chainId sdk.ChainID) (types.SourceType, error) {
+func (k Keeper) GetSourceTypeByChainId(ctx sdk.Context, chainId sdk.ChainID) (storagetypes.SourceType, error) {
 	if chainId == 0 {
-		return 0, types.ErrChainNotSupported
+		return 0, storagetypes.ErrChainNotSupported
 	}
 
 	if chainId == k.crossChainKeeper.GetDestBscChainID() {
-		return types.SOURCE_TYPE_BSC_CROSS_CHAIN, nil
+		return storagetypes.SOURCE_TYPE_BSC_CROSS_CHAIN, nil
 	}
 
 	if chainId == k.crossChainKeeper.GetDestOpChainID() {
-		return types.SOURCE_TYPE_OP_CROSS_CHAIN, nil
+		return storagetypes.SOURCE_TYPE_OP_CROSS_CHAIN, nil
 	}
 
-	return 0, types.ErrChainNotSupported
+	return 0, storagetypes.ErrChainNotSupported
 }
 
-func (k Keeper) SetTag(ctx sdk.Context, operator sdk.AccAddress, grn types.GRN, tags *storagetypes.ResourceTags) error {
+func (k Keeper) SetTag(ctx sdk.Context, operator sdk.AccAddress,grn types.GRN, tags *storagetypes.ResourceTags) error {
 	store := ctx.KVStore(k.storeKey)
 
 	switch grn.ResourceType() {

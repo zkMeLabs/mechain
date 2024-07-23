@@ -12,9 +12,6 @@ import (
 	moduletestutil "github.com/cosmos/cosmos-sdk/types/module/testutil"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	"github.com/golang/mock/gomock"
-	"github.com/stretchr/testify/suite"
-
 	"github.com/evmos/evmos/v12/testutil/sample"
 	"github.com/evmos/evmos/v12/x/challenge"
 	paymenttypes "github.com/evmos/evmos/v12/x/payment/types"
@@ -22,6 +19,8 @@ import (
 	"github.com/evmos/evmos/v12/x/storage/keeper"
 	"github.com/evmos/evmos/v12/x/storage/types"
 	virtualgroupmoduletypes "github.com/evmos/evmos/v12/x/virtualgroup/types"
+	"github.com/stretchr/testify/suite"
+	"go.uber.org/mock/gomock"
 )
 
 type TestSuite struct {
