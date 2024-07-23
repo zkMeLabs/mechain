@@ -43,6 +43,8 @@ import (
 	feemarkettypes "github.com/evmos/evmos/v12/x/feemarket/types"
 
 	"github.com/evmos/evmos/v12/cmd/config"
+	servercfg "github.com/evmos/evmos/v12/server/config"
+	evmostypes "github.com/evmos/evmos/v12/types"
 	"github.com/evmos/evmos/v12/utils"
 )
 
@@ -108,7 +110,7 @@ func Setup(
 		db, nil, true,
 		DefaultNodeHome, 5,
 		encoding.MakeConfig(ModuleBasics),
-		NewDefaultAppConfig(),
+		servercfg.NewDefaultAppConfig(evmostypes.AttoEvmos),
 		simtestutil.NewAppOptionsWithFlagHome(DefaultNodeHome),
 		baseapp.SetChainID(chainID),
 	)
@@ -219,7 +221,7 @@ func SetupTestingApp(chainID string) func() (ibctesting.TestingApp, map[string]j
 			log.NewNopLogger(),
 			db, nil, true,
 			DefaultNodeHome, 5, cfg,
-			NewDefaultAppConfig(),
+			servercfg.NewDefaultAppConfig(evmostypes.AttoEvmos),
 			simtestutil.NewAppOptionsWithFlagHome(DefaultNodeHome),
 			baseapp.SetChainID(chainID),
 		)

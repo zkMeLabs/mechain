@@ -375,7 +375,7 @@ func initTestnetFiles(
 			return err
 		}
 
-		customAppTemplate, customAppConfig := config.AppConfig(evmostypes.AttoEvmos)
+		customAppTemplate, customAppConfig := config.NewAppConfig(evmostypes.AttoEvmos)
 		srvconfig.SetConfigTemplate(customAppTemplate)
 		if err := sdkserver.InterceptConfigsPreRunHandler(cmd, customAppTemplate, customAppConfig, tmconfig.DefaultConfig()); err != nil {
 			return err

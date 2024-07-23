@@ -16,6 +16,7 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	servercfg "github.com/evmos/evmos/v12/server/config"
 
 	"github.com/ethereum/go-ethereum/common"
 	ethtypes "github.com/ethereum/go-ethereum/core/types"
@@ -161,7 +162,7 @@ func setupChain(localMinGasPricesStr string, chainID string) {
 		app.DefaultNodeHome,
 		5,
 		encoding.MakeConfig(app.ModuleBasics),
-		app.NewDefaultAppConfig(),
+		servercfg.NewDefaultAppConfig(evmostypes.AttoEvmos),
 		simutils.NewAppOptionsWithFlagHome(app.DefaultNodeHome),
 		baseapp.SetChainID(chainID),
 		baseapp.SetMinGasPrices(localMinGasPricesStr),

@@ -2,7 +2,14 @@ package types
 
 import (
 	"context"
-	"time"
+	"math/big"
+	time "time"
+
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/core"
+	"github.com/ethereum/go-ethereum/core/vm"
+	"github.com/evmos/evmos/v12/x/evm/statedb"
+	evmtypes "github.com/evmos/evmos/v12/x/evm/types"
 
 	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
@@ -54,6 +61,8 @@ type PaymentKeeper interface {
 	UpdateStreamRecordByAddr(ctx sdktypes.Context, change *paymenttypes.StreamRecordChange) (ret *paymenttypes.StreamRecord, err error)
 	GetStreamRecord(ctx sdktypes.Context, account sdktypes.AccAddress) (ret *paymenttypes.StreamRecord, found bool)
 	MergeOutFlows(flows []paymenttypes.OutFlow) []paymenttypes.OutFlow
+	GetAllStreamRecord(ctx sdk.Context) (list []paymenttypes.StreamRecord)
+	GetOutFlows(ctx sdk.Context, addr sdk.AccAddress) []paymenttypes.OutFlow
 }
 
 type PermissionKeeper interface {
@@ -79,18 +88,18 @@ type PermissionKeeper interface {
 	ExistGroupMemberForGroup(ctx sdktypes.Context, groupId math.Uint) bool
 }
 
-// type CrossChainKeeper interface {
-// 	GetDestBscChainID() sdk.ChainID
-// 	GetDestOpChainID() sdk.ChainID
+type CrossChainKeeper interface {
+	GetDestBscChainID() sdk.ChainID
+	GetDestOpChainID() sdk.ChainID
 
-// 	CreateRawIBCPackageWithFee(ctx sdk.Context, chainID sdk.ChainID, channelID sdk.ChannelID, packageType sdk.CrossChainPackageType,
-// 		packageLoad []byte, relayerFee *big.Int, ackRelayerFee *big.Int,
-// 	) (uint64, error)
+	CreateRawIBCPackageWithFee(ctx sdk.Context, chainID sdk.ChainID, channelID sdk.ChannelID, packageType sdk.CrossChainPackageType,
+		packageLoad []byte, relayerFee *big.Int, ackRelayerFee *big.Int,
+	) (uint64, error)
 
-// 	IsDestChainSupported(chainID sdk.ChainID) bool
+	IsDestChainSupported(chainID sdk.ChainID) bool
 
-// 	RegisterChannel(name string, id sdk.ChannelID, app sdk.CrossChainApplication) error
-// }
+	RegisterChannel(name string, id sdk.ChannelID, app sdk.CrossChainApplication) error
+}
 
 type VirtualGroupKeeper interface {
 	SetGVGAndEmitUpdateEvent(ctx sdktypes.Context, gvg *vgtypes.GlobalVirtualGroup) error
@@ -124,8 +133,8 @@ type StorageKeeper interface {
 	GetObjectInfoById(ctx sdktypes.Context, objectId sdkmath.Uint) (*ObjectInfo, bool)
 	SetObjectInfo(ctx sdktypes.Context, objectInfo *ObjectInfo)
 	DeleteObject(
-		ctx sdktypes.Context, operator sdktypes.AccAddress, bucketName, objectName string, opts DeleteObjectOptions) error
-	// GetSourceTypeByChainId(ctx sdk.Context, chainId sdk.ChainID) (SourceType, error)
+		ctx sdk.Context, operator sdk.AccAddress, bucketName, objectName string, opts DeleteObjectOptions) error
+	GetSourceTypeByChainId(ctx sdk.Context, chainId sdk.ChainID) (SourceType, error)
 
 	NormalizePrincipal(ctx sdktypes.Context, principal *permtypes.Principal)
 	ValidatePrincipal(ctx sdktypes.Context, resOwner sdktypes.AccAddress, principal *permtypes.Principal) error

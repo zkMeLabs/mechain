@@ -74,7 +74,7 @@ function generate_genesis() {
 		sp_size=$2
 	fi
 
-  declare -a addrs=("0x1111102dd32160b064f2a512cdef74bfdb6a9f96" "0x2222207b1f7b8d37566d9a2778732451dbfbc5d0")
+	declare -a addrs=("0x1111102dd32160b064f2a512cdef74bfdb6a9f96" "0x2222207b1f7b8d37566d9a2778732451dbfbc5d0")
 
 	declare -a validator_addrs=()
 	for ((i = 0; i < ${size}; i++)); do
@@ -182,6 +182,9 @@ function generate_genesis() {
 		sed -i -e "s/addr_book_strict = true/addr_book_strict = false/g" ${workspace}/.local/validator${i}/config/config.toml
 		sed -i -e "s/allow_duplicate_ip = false/allow_duplicate_ip = true/g" ${workspace}/.local/validator${i}/config/config.toml
 		sed -i -e "s/snapshot-interval = 0/snapshot-interval = ${SNAPSHOT_INTERVAL}/g" ${workspace}/.local/validator${i}/config/app.toml
+		sed -i -e "s/src-chain-id = 1/src-chain-id = ${SRC_CHAIN_ID}/g" ${workspace}/.local/validator${i}/config/app.toml
+		sed -i -e "s/dest-bsc-chain-id = 2/dest-bsc-chain-id = ${DEST_CHAIN_ID}/g" ${workspace}/.local/validator${i}/config/app.toml
+		sed -i -e "s/dest-op-chain-id = 3/dest-op-chain-id = ${DEST_OP_CHAIN_ID}/g" ${workspace}/.local/validator${i}/config/app.toml
 		sed -i -e "s/snapshot-keep-recent = 2/snapshot-keep-recent = ${SNAPSHOT_KEEP_RECENT}/g" ${workspace}/.local/validator${i}/config/app.toml
 		sed -i -e "s/enabled-unsafe-cors = false/enabled-unsafe-cors = true/g" ${workspace}/.local/validator${i}/config/app.toml
 		sed -i -e "s/eth,net,web3/eth,txpool,personal,net,debug,web3/g" ${workspace}/.local/validator${i}/config/app.toml
@@ -196,11 +199,12 @@ function generate_genesis() {
 		sed -i -e "s/\"attestation_inturn_interval\": \"120\"/\"attestation_inturn_interval\": \"10\"/g" ${workspace}/.local/validator${i}/config/genesis.json
 		sed -i -e "s/\"discontinue_confirm_period\": \"604800\"/\"discontinue_confirm_period\": \"5\"/g" ${workspace}/.local/validator${i}/config/genesis.json
 		sed -i -e "s/\"discontinue_deletion_max\": \"100\"/\"discontinue_deletion_max\": \"2\"/g" ${workspace}/.local/validator${i}/config/genesis.json
-		sed -i -e "s/\"voting_period\": \"30s\"/\"voting_period\": \"5s\"/g" ${workspace}/.local/validator${i}/config/genesis.json
+		#sed -i -e "s/\"voting_period\": \"30s\"/\"voting_period\": \"5s\"/g" ${workspace}/.local/validator${i}/config/genesis.json
 		sed -i -e "s/\"update_global_price_interval\": \"0\"/\"update_global_price_interval\": \"1\"/g" ${workspace}/.local/validator${i}/config/genesis.json
 		sed -i -e "s/\"update_price_disallowed_days\": 2/\"update_price_disallowed_days\": 0/g" ${workspace}/.local/validator${i}/config/genesis.json
 		#sed -i -e "s/\"community_tax\": \"0.020000000000000000\"/\"community_tax\": \"0\"/g" ${workspace}/.local/validator${i}/config/genesis.json
 		sed -i -e "s/log_level = \"info\"/\log_level= \"debug\"/g" ${workspace}/.local/validator${i}/config/config.toml
+		#echo -e '[payment-check]\nenabled = true\ninterval = 1' >> ${workspace}/.local/validator${i}/config/app.toml
 		sed -i -e "s/cors_allowed_origins = \[\]/cors_allowed_origins = \[\"*\"\]/g" ${workspace}/.local/validator${i}/config/config.toml
 		sed -i -e "s#node = \"tcp://localhost:26657\"#node = \"tcp://localhost:$((${VALIDATOR_RPC_PORT_START} + ${i}))\"#g" ${workspace}/.local/validator${i}/config/client.toml
 		sed -i -e "/Address defines the gRPC server address to bind to/{N;s/address = \"localhost:9090\"/address = \"localhost:$((${VALIDATOR_GRPC_PORT_START} + ${i}))\"/;}" ${workspace}/.local/validator${i}/config/app.toml

@@ -6,12 +6,11 @@ import (
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	feegranttypes "github.com/cosmos/cosmos-sdk/x/feegrant"
 	govv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
-
-	// oracletypes "github.com/cosmos/cosmos-sdk/x/oracle/types"
+	oracletypes "github.com/cosmos/cosmos-sdk/x/oracle/types"
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	// bridgetypes "github.com/evmos/evmos/v12/x/bridge/types"
+	bridgetypes "github.com/evmos/evmos/v12/x/bridge/types"
 	challengetypes "github.com/evmos/evmos/v12/x/challenge/types"
 	paymenttypes "github.com/evmos/evmos/v12/x/payment/types"
 	sptypes "github.com/evmos/evmos/v12/x/sp/types"
@@ -48,9 +47,9 @@ type (
 	MsgGrantAllowance  = feegranttypes.MsgGrantAllowance
 	MsgRevokeAllowance = feegranttypes.MsgRevokeAllowance
 
-	// MsgClaim = oracletypes.MsgClaim
+	MsgClaim = oracletypes.MsgClaim
 
-	// MsgTransferOut = bridgetypes.MsgTransferOut
+	MsgTransferOut = bridgetypes.MsgTransferOut
 
 	MsgCreatePaymentAccount = paymenttypes.MsgCreatePaymentAccount
 	MsgPaymentDeposit       = paymenttypes.MsgDeposit

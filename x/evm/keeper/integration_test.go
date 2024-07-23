@@ -15,8 +15,10 @@ import (
 	ethtypes "github.com/ethereum/go-ethereum/core/types"
 	"github.com/evmos/evmos/v12/app"
 	"github.com/evmos/evmos/v12/encoding"
+	servercfg "github.com/evmos/evmos/v12/server/config"
 	"github.com/evmos/evmos/v12/testutil"
 	utiltx "github.com/evmos/evmos/v12/testutil/tx"
+	evmostypes "github.com/evmos/evmos/v12/types"
 	"github.com/evmos/evmos/v12/utils"
 	"github.com/evmos/evmos/v12/x/feemarket/types"
 
@@ -183,7 +185,7 @@ func setupChain(localMinGasPricesStr string) {
 		app.DefaultNodeHome,
 		5,
 		encoding.MakeConfig(app.ModuleBasics),
-		app.NewDefaultAppConfig(),
+		servercfg.NewDefaultAppConfig(evmostypes.AttoEvmos),
 		simutils.NewAppOptionsWithFlagHome(app.DefaultNodeHome),
 		baseapp.SetChainID(chainID),
 		baseapp.SetMinGasPrices(localMinGasPricesStr),

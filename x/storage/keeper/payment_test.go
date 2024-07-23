@@ -30,10 +30,10 @@ type TestSuite struct {
 	cdc           codec.Codec
 	storageKeeper *keeper.Keeper
 
-	accountKeeper    *types.MockAccountKeeper
-	spKeeper         *types.MockSpKeeper
-	permissionKeeper *types.MockPermissionKeeper
-	// crossChainKeeper   *types.MockCrossChainKeeper
+	accountKeeper      *types.MockAccountKeeper
+	spKeeper           *types.MockSpKeeper
+	permissionKeeper   *types.MockPermissionKeeper
+	crossChainKeeper   *types.MockCrossChainKeeper
 	paymentKeeper      *types.MockPaymentKeeper
 	virtualGroupKeeper *types.MockVirtualGroupKeeper
 
@@ -63,7 +63,7 @@ func (s *TestSuite) SetupTest() {
 	accountKeeper := types.NewMockAccountKeeper(ctrl)
 	spKeeper := types.NewMockSpKeeper(ctrl)
 	permissionKeeper := types.NewMockPermissionKeeper(ctrl)
-	// crossChainKeeper := types.NewMockCrossChainKeeper(ctrl)
+	crossChainKeeper := types.NewMockCrossChainKeeper(ctrl)
 	paymentKeeper := types.NewMockPaymentKeeper(ctrl)
 	virtualGroupKeeper := types.NewMockVirtualGroupKeeper(ctrl)
 	evmKeeper := types.NewMockEVMKeeper(ctrl)
@@ -75,7 +75,7 @@ func (s *TestSuite) SetupTest() {
 		spKeeper,
 		paymentKeeper,
 		permissionKeeper,
-		// crossChainKeeper,
+		crossChainKeeper,
 		virtualGroupKeeper,
 		evmKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
@@ -85,7 +85,7 @@ func (s *TestSuite) SetupTest() {
 	s.accountKeeper = accountKeeper
 	s.spKeeper = spKeeper
 	s.permissionKeeper = permissionKeeper
-	// s.crossChainKeeper = crossChainKeeper
+	s.crossChainKeeper = crossChainKeeper
 	s.paymentKeeper = paymentKeeper
 	s.virtualGroupKeeper = virtualGroupKeeper
 

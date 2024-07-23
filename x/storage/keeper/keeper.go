@@ -30,50 +30,59 @@ import (
 
 type (
 	Keeper struct {
-		cdc           codec.BinaryCodec
-		storeKey      storetypes.StoreKey
-		tStoreKey     storetypes.StoreKey
-		spKeeper      storagetypes.SpKeeper
-		paymentKeeper storagetypes.PaymentKeeper
-		accountKeeper storagetypes.AccountKeeper
-		permKeeper    storagetypes.PermissionKeeper
-		// crossChainKeeper   storagetypes.CrossChainKeeper
-		virtualGroupKeeper storagetypes.VirtualGroupKeeper
-		evmKeeper          storagetypes.EVMKeeper
+		cdc                codec.BinaryCodec
+		storeKey           storetypes.StoreKey
+		tStoreKey          storetypes.StoreKey
+		spKeeper           types.SpKeeper
+		paymentKeeper      types.PaymentKeeper
+		accountKeeper      types.AccountKeeper
+		permKeeper         types.PermissionKeeper
+		crossChainKeeper   types.CrossChainKeeper
+		virtualGroupKeeper types.VirtualGroupKeeper
+		evmKeeper          types.EVMKeeper
 		// sequence
 		bucketSeq sequence.Sequence[sdkmath.Uint]
 		objectSeq sequence.Sequence[sdkmath.Uint]
 		groupSeq  sequence.Sequence[sdkmath.Uint]
 
 		authority string
+
+		// payment check config
+		cfg *paymentCheckConfig
 	}
 )
+
+type paymentCheckConfig struct {
+	Enabled  bool
+	Interval uint32
+}
 
 func NewKeeper(
 	cdc codec.BinaryCodec,
 	storeKey storetypes.StoreKey,
 	tStoreKey storetypes.StoreKey,
-	accountKeeper storagetypes.AccountKeeper,
-	spKeeper storagetypes.SpKeeper,
-	paymentKeeper storagetypes.PaymentKeeper,
-	permKeeper storagetypes.PermissionKeeper,
-	// crossChainKeeper storagetypes.CrossChainKeeper,
-	virtualGroupKeeper storagetypes.VirtualGroupKeeper,
-	evmKeeper storagetypes.EVMKeeper,
+	accountKeeper types.AccountKeeper,
+	spKeeper types.SpKeeper,
+	paymentKeeper types.PaymentKeeper,
+	permKeeper types.PermissionKeeper,
+	crossChainKeeper types.CrossChainKeeper,
+	virtualGroupKeeper types.VirtualGroupKeeper,
+	evmKeeper types.EVMKeeper,
 	authority string,
 ) *Keeper {
 	k := Keeper{
-		cdc:           cdc,
-		storeKey:      storeKey,
-		tStoreKey:     tStoreKey,
-		accountKeeper: accountKeeper,
-		spKeeper:      spKeeper,
-		paymentKeeper: paymentKeeper,
-		permKeeper:    permKeeper,
-		// crossChainKeeper:   crossChainKeeper,
+		cdc:                cdc,
+		storeKey:           storeKey,
+		tStoreKey:          tStoreKey,
+		accountKeeper:      accountKeeper,
+		spKeeper:           spKeeper,
+		paymentKeeper:      paymentKeeper,
+		permKeeper:         permKeeper,
+		crossChainKeeper:   crossChainKeeper,
 		virtualGroupKeeper: virtualGroupKeeper,
 		evmKeeper:          evmKeeper,
 		authority:          authority,
+		cfg:                &paymentCheckConfig{Enabled: false, Interval: 0},
 	}
 
 	k.bucketSeq = sequence.NewSequence[sdkmath.Uint](storagetypes.BucketSequencePrefix)
@@ -84,6 +93,14 @@ func NewKeeper(
 
 func (k Keeper) GetAuthority() string {
 	return k.authority
+}
+
+func (k Keeper) IsPaymentCheckEnabled() bool {
+	return k.cfg.Enabled
+}
+
+func (k Keeper) GetPaymentCheckInterval() uint32 {
+	return k.cfg.Interval
 }
 
 func (k Keeper) Logger(ctx sdk.Context) log.Logger {
@@ -2073,6 +2090,10 @@ func (k Keeper) MigrateBucket(ctx sdk.Context, operator sdk.AccAddress, bucketNa
 		return storagetypes.ErrInvalidBucketStatus.Wrapf("The bucket already been migrating")
 	}
 
+	if bucketInfo.BucketStatus == types.BUCKET_STATUS_DISCONTINUED {
+		return types.ErrInvalidBucketStatus.Wrapf("The discontinued bucket cannot be migrated")
+	}
+
 	srcSP := k.MustGetPrimarySPForBucket(ctx, bucketInfo)
 
 	dstSP, found := k.spKeeper.GetStorageProvider(ctx, dstPrimarySPID)
@@ -2103,7 +2124,12 @@ func (k Keeper) MigrateBucket(ctx sdk.Context, operator sdk.AccAddress, bucketNa
 		return err
 	}
 
-	key := storagetypes.GetMigrationBucketKey(bucketInfo.Id)
+	isRateLimited := k.IsBucketRateLimited(ctx, bucketInfo.BucketName)
+	if isRateLimited {
+		return fmt.Errorf("bucket is rate limited: %s", bucketInfo.BucketName)
+	}
+
+	key := types.GetMigrationBucketKey(bucketInfo.Id)
 	if store.Has(key) {
 		panic("migration bucket key is existed.")
 	}
@@ -2126,6 +2152,7 @@ func (k Keeper) MigrateBucket(ctx sdk.Context, operator sdk.AccAddress, bucketNa
 		BucketName:     bucketName,
 		BucketId:       bucketInfo.Id,
 		DstPrimarySpId: dstSP.Id,
+		Status:         bucketInfo.BucketStatus,
 	}); err != nil {
 		return err
 	}
@@ -2208,6 +2235,7 @@ func (k Keeper) CompleteMigrateBucket(ctx sdk.Context, operator sdk.AccAddress, 
 		BucketId:                   bucketInfo.Id,
 		GlobalVirtualGroupFamilyId: gvgFamilyID,
 		SrcPrimarySpId:             srcGvgFamily.PrimarySpId,
+		Status:                     bucketInfo.BucketStatus,
 	}); err != nil {
 		return err
 	}
@@ -2254,6 +2282,7 @@ func (k Keeper) CancelBucketMigration(ctx sdk.Context, operator sdk.AccAddress, 
 		Operator:   operator.String(),
 		BucketName: bucketName,
 		BucketId:   bucketInfo.Id,
+		Status:     bucketInfo.BucketStatus,
 	}); err != nil {
 		return err
 	}
@@ -2288,6 +2317,7 @@ func (k Keeper) RejectBucketMigration(ctx sdk.Context, operator sdk.AccAddress, 
 		Operator:   operator.String(),
 		BucketName: bucketName,
 		BucketId:   bucketInfo.Id,
+		Status:     bucketInfo.BucketStatus,
 	}); err != nil {
 		return err
 	}
@@ -2370,21 +2400,21 @@ func (k Keeper) hasGroup(ctx sdk.Context, groupID sdkmath.Uint) bool {
 	return store.Has(storagetypes.GetGroupByIDKey(groupID))
 }
 
-// func (k Keeper) GetSourceTypeByChainId(ctx sdk.Context, chainId sdk.ChainID) (storagetypes.SourceType, error) {
-// 	if chainId == 0 {
-// 		return 0, storagetypes.ErrChainNotSupported
-// 	}
+func (k Keeper) GetSourceTypeByChainId(ctx sdk.Context, chainId sdk.ChainID) (types.SourceType, error) {
+	if chainId == 0 {
+		return 0, types.ErrChainNotSupported
+	}
 
-// 	// if chainId == k.crossChainKeeper.GetDestBscChainID() {
-// 	// 	return storagetypes.SOURCE_TYPE_BSC_CROSS_CHAIN, nil
-// 	// }
+	if chainId == k.crossChainKeeper.GetDestBscChainID() {
+		return types.SOURCE_TYPE_BSC_CROSS_CHAIN, nil
+	}
 
-// 	// if chainId == k.crossChainKeeper.GetDestOpChainID() {
-// 	// 	return storagetypes.SOURCE_TYPE_OP_CROSS_CHAIN, nil
-// 	// }
+	if chainId == k.crossChainKeeper.GetDestOpChainID() {
+		return types.SOURCE_TYPE_OP_CROSS_CHAIN, nil
+	}
 
-// 	return 0, storagetypes.ErrChainNotSupported
-// }
+	return 0, types.ErrChainNotSupported
+}
 
 func (k Keeper) SetTag(ctx sdk.Context, operator sdk.AccAddress, grn types.GRN, tags *storagetypes.ResourceTags) error {
 	store := ctx.KVStore(k.storeKey)

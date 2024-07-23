@@ -38,7 +38,7 @@ func StartJSONRPC(ctx *server.Context,
 	clientCtx client.Context,
 	tmRPCAddr,
 	tmEndpoint string,
-	config *config.Config,
+	config *config.AppConfig,
 	indexer evmostypes.EVMTxIndexer,
 ) (*http.Server, chan struct{}, error) {
 	tmWsClient := ConnectTmWS(tmRPCAddr, tmEndpoint, ctx.Logger)
