@@ -24,16 +24,16 @@ func NewPermissionApp(keeper types.StorageKeeper, permissionKeeper types.Permiss
 	}
 }
 
-func (app *PermissionApp) ExecuteAckPackage(ctx sdk.Context, appCtx *sdk.CrossChainAppContext, payload []byte) sdk.ExecuteResult {
+func (app *PermissionApp) ExecuteAckPackage(_ sdk.Context, _ *sdk.CrossChainAppContext, _ []byte) sdk.ExecuteResult {
 	panic("invalid cross chain ack package")
 }
 
-func (app *PermissionApp) ExecuteFailAckPackage(ctx sdk.Context, appCtx *sdk.CrossChainAppContext, payload []byte) sdk.ExecuteResult {
+func (app *PermissionApp) ExecuteFailAckPackage(_ sdk.Context, _ *sdk.CrossChainAppContext, _ []byte) sdk.ExecuteResult {
 	panic("invalid cross chain fail ack package")
 }
 
-func (app *PermissionApp) ExecuteSynPackage(ctx sdk.Context, appCtx *sdk.CrossChainAppContext, payload []byte) sdk.ExecuteResult {
-	pack, err := types.DeserializeCrossChainPackage(payload, types.PermissionChannelId, sdk.SynCrossChainPackageType)
+func (app *PermissionApp) ExecuteSynPackage(ctx sdk.Context, _ *sdk.CrossChainAppContext, payload []byte) sdk.ExecuteResult {
+	pack, err := types.DeserializeCrossChainPackage(payload, types.PermissionChannelID, sdk.SynCrossChainPackageType)
 	if err != nil {
 		panic("deserialize Policy cross chain package error")
 	}

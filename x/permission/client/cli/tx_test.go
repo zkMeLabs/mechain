@@ -45,7 +45,7 @@ func (s *CLITestSuite) SetupSuite() {
 		WithClient(clitestutil.MockTendermintRPC{Client: rpcclientmock.Client{}}).
 		WithAccountRetriever(client.MockAccountRetriever{}).
 		WithOutput(io.Discard).
-		WithChainID(test.TEST_CHAIN_ID)
+		WithChainID(test.TestChainID)
 
 	accounts := testutil.CreateKeyringAccounts(s.T(), s.kr, 1)
 	s.baseCtx = s.baseCtx.WithFrom(accounts[0].Address.String())

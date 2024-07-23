@@ -183,7 +183,7 @@ func (msg *MsgCreateBucket) ValidateBasic() error {
 	}
 
 	if msg.Visibility == VISIBILITY_TYPE_UNSPECIFIED {
-		return errors.Wrapf(ErrInvalidVisibility, "Unspecified visibility is not allowed.")
+		return errors.Wrapf(ErrInvalidVisibility, "unspecified visibility is not allowed.")
 	}
 
 	err = s3util.CheckValidBucketName(msg.BucketName)
@@ -402,7 +402,7 @@ func (msg *MsgCreateObject) ValidateBasic() error {
 	}
 
 	if msg.PrimarySpApproval == nil {
-		return errors.Wrapf(ErrInvalidApproval, "Empty approvals are not allowed.")
+		return errors.Wrapf(ErrInvalidApproval, "empty approvals are not allowed.")
 	}
 
 	err = s3util.CheckValidBucketName(msg.BucketName)
@@ -801,11 +801,11 @@ func (msg *MsgRejectSealObject) ValidateBasic() error {
 	return nil
 }
 
-func NewMsgDiscontinueObject(operator sdk.AccAddress, bucketName string, objectIds []Uint, reason string) *MsgDiscontinueObject {
+func NewMsgDiscontinueObject(operator sdk.AccAddress, bucketName string, objectIDs []Uint, reason string) *MsgDiscontinueObject {
 	return &MsgDiscontinueObject{
 		Operator:   operator.String(),
 		BucketName: bucketName,
-		ObjectIds:  objectIds,
+		ObjectIds:  objectIDs,
 		Reason:     strings.TrimSpace(reason),
 	}
 }
@@ -1389,7 +1389,7 @@ func (msg *MsgDeletePolicy) ValidateBasic() error {
 	return nil
 }
 
-func (msg *MsgDeletePolicy) ValidateRuntime(ctx sdk.Context) error {
+func (msg *MsgDeletePolicy) ValidateRuntime(_ sdk.Context) error {
 	if err := msg.Principal.ValidateBasic(); err != nil {
 		return err
 	}
@@ -1397,12 +1397,12 @@ func (msg *MsgDeletePolicy) ValidateRuntime(ctx sdk.Context) error {
 }
 
 // NewMsgMirrorBucket creates a new MsgMirrorBucket instance
-func NewMsgMirrorBucket(operator sdk.AccAddress, destChainId sdk.ChainID, id Uint, bucketName string) *MsgMirrorBucket {
+func NewMsgMirrorBucket(operator sdk.AccAddress, destChainID sdk.ChainID, id Uint, bucketName string) *MsgMirrorBucket {
 	return &MsgMirrorBucket{
 		Operator:    operator.String(),
 		Id:          id,
 		BucketName:  bucketName,
-		DestChainId: uint32(destChainId),
+		DestChainId: uint32(destChainID),
 	}
 }
 
@@ -1520,10 +1520,10 @@ func (msg *MsgMirrorObject) ValidateBasic() error {
 }
 
 // NewMsgMirrorGroup creates a new MsgMirrorGroup instance
-func NewMsgMirrorGroup(operator sdk.AccAddress, destChainId sdk.ChainID, id Uint, groupName string) *MsgMirrorGroup {
+func NewMsgMirrorGroup(operator sdk.AccAddress, destChainID sdk.ChainID, id Uint, groupName string) *MsgMirrorGroup {
 	return &MsgMirrorGroup{
 		Operator:    operator.String(),
-		DestChainId: uint32(destChainId),
+		DestChainId: uint32(destChainID),
 		Id:          id,
 		GroupName:   groupName,
 	}

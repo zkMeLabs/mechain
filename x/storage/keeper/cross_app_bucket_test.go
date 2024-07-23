@@ -100,7 +100,7 @@ func (s *TestSuite) TestSynMirrorBucket() {
 	app := keeper.NewBucketApp(storageKeeper)
 	synPackage := storagetypes.MirrorBucketSynPackage{
 		Owner: sample.RandAccAddress(),
-		Id:    big.NewInt(10),
+		ID:    big.NewInt(10),
 	}
 
 	serializedSynPack, err := synPackage.Serialize()
@@ -197,7 +197,7 @@ func (s *TestSuite) TestFailAckMirrorBucket() {
 
 	app := keeper.NewBucketApp(storageKeeper)
 	ackPackage := storagetypes.MirrorBucketSynPackage{
-		Id:    big.NewInt(10),
+		ID:    big.NewInt(10),
 		Owner: sample.RandAccAddress(),
 	}
 

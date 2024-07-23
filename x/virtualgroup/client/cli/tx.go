@@ -37,18 +37,18 @@ If zero is provided for GVG family, then the provided GVGs will be settled.
 If none zero is provided for GVG family, then the provided GVG family will be settled and the provided GVGs will be ignored.`,
 		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			gvgFamilyId, err := strconv.ParseInt(args[0], 10, 32)
-			if err != nil || gvgFamilyId < 0 {
+			gvgFamilyID, err := strconv.ParseInt(args[0], 10, 32)
+			if err != nil || gvgFamilyID < 0 {
 				return fmt.Errorf("invalid GVG family id %s", args[0])
 			}
-			gvgIds := make([]uint32, 0)
+			gvgIDs := make([]uint32, 0)
 			splits := strings.Split(args[1], ",")
 			for _, split := range splits {
-				gvgId, err := strconv.ParseInt(split, 10, 32)
-				if err != nil || gvgId < 0 {
+				gvgID, err := strconv.ParseInt(split, 10, 32)
+				if err != nil || gvgID < 0 {
 					return fmt.Errorf("invalid GVG id %s", args[1])
 				}
-				gvgIds = append(gvgIds, uint32(gvgId))
+				gvgIDs = append(gvgIDs, uint32(gvgID))
 			}
 
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -58,8 +58,8 @@ If none zero is provided for GVG family, then the provided GVG family will be se
 
 			msg := types.NewMsgSettle(
 				clientCtx.GetFromAddress(),
-				uint32(gvgFamilyId),
-				gvgIds,
+				uint32(gvgFamilyID),
+				gvgIDs,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err

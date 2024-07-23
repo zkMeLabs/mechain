@@ -23,7 +23,7 @@ func NewBucketApp(keeper types.StorageKeeper) *BucketApp {
 }
 
 func (app *BucketApp) ExecuteAckPackage(ctx sdk.Context, appCtx *sdk.CrossChainAppContext, payload []byte) sdk.ExecuteResult {
-	pack, err := types.DeserializeCrossChainPackage(payload, types.BucketChannelId, sdk.AckCrossChainPackageType)
+	pack, err := types.DeserializeCrossChainPackage(payload, types.BucketChannelID, sdk.AckCrossChainPackageType)
 	if err != nil {
 		app.storageKeeper.Logger(ctx).Error("deserialize bucket cross chain package error", "payload", hex.EncodeToString(payload), "error", err.Error())
 		panic("deserialize bucket cross chain package error")
@@ -59,7 +59,7 @@ func (app *BucketApp) ExecuteAckPackage(ctx sdk.Context, appCtx *sdk.CrossChainA
 func (app *BucketApp) ExecuteFailAckPackage(ctx sdk.Context, appCtx *sdk.CrossChainAppContext, payload []byte) sdk.ExecuteResult {
 	var pack interface{}
 	var err error
-	pack, err = types.DeserializeCrossChainPackage(payload, types.BucketChannelId, sdk.FailAckCrossChainPackageType)
+	pack, err = types.DeserializeCrossChainPackage(payload, types.BucketChannelID, sdk.FailAckCrossChainPackageType)
 	if err != nil {
 		app.storageKeeper.Logger(ctx).Error("deserialize bucket cross chain package error", "payload", hex.EncodeToString(payload), "error", err.Error())
 		panic("deserialize bucket cross chain package error")
@@ -98,7 +98,7 @@ func (app *BucketApp) ExecuteFailAckPackage(ctx sdk.Context, appCtx *sdk.CrossCh
 func (app *BucketApp) ExecuteSynPackage(ctx sdk.Context, appCtx *sdk.CrossChainAppContext, payload []byte) sdk.ExecuteResult {
 	var pack interface{}
 	var err error
-	pack, err = types.DeserializeCrossChainPackage(payload, types.BucketChannelId, sdk.FailAckCrossChainPackageType)
+	pack, err = types.DeserializeCrossChainPackage(payload, types.BucketChannelID, sdk.FailAckCrossChainPackageType)
 	if err != nil {
 		app.storageKeeper.Logger(ctx).Error("deserialize bucket cross chain package error", "payload", hex.EncodeToString(payload), "error", err.Error())
 		panic("deserialize bucket cross chain package error")
@@ -171,9 +171,9 @@ func (app *BucketApp) handleMirrorBucketAckPackage(ctx sdk.Context, appCtx *sdk.
 }
 
 func (app *BucketApp) handleMirrorBucketFailAckPackage(ctx sdk.Context, appCtx *sdk.CrossChainAppContext, mirrorBucketPackage *types.MirrorBucketSynPackage) sdk.ExecuteResult {
-	bucketInfo, found := app.storageKeeper.GetBucketInfoById(ctx, math.NewUintFromBigInt(mirrorBucketPackage.Id))
+	bucketInfo, found := app.storageKeeper.GetBucketInfoById(ctx, math.NewUintFromBigInt(mirrorBucketPackage.ID))
 	if !found {
-		app.storageKeeper.Logger(ctx).Error("bucket does not exist", "bucket id", mirrorBucketPackage.Id.String())
+		app.storageKeeper.Logger(ctx).Error("bucket does not exist", "bucket id", mirrorBucketPackage.ID.String())
 		return sdk.ExecuteResult{
 			Err: types.ErrNoSuchBucket,
 		}
@@ -196,13 +196,13 @@ func (app *BucketApp) handleMirrorBucketFailAckPackage(ctx sdk.Context, appCtx *
 	return sdk.ExecuteResult{}
 }
 
-func (app *BucketApp) handleMirrorBucketSynPackage(ctx sdk.Context, header *sdk.CrossChainAppContext, synPackage *types.MirrorBucketSynPackage) sdk.ExecuteResult {
+func (app *BucketApp) handleMirrorBucketSynPackage(ctx sdk.Context, _ *sdk.CrossChainAppContext, _ *types.MirrorBucketSynPackage) sdk.ExecuteResult {
 	app.storageKeeper.Logger(ctx).Error("received mirror bucket syn package ")
 
 	return sdk.ExecuteResult{}
 }
 
-func (app *BucketApp) handleCreateBucketAckPackage(ctx sdk.Context, appCtx *sdk.CrossChainAppContext, ackPackage *types.CreateBucketAckPackage) sdk.ExecuteResult {
+func (app *BucketApp) handleCreateBucketAckPackage(ctx sdk.Context, appCtx *sdk.CrossChainAppContext, _ *types.CreateBucketAckPackage) sdk.ExecuteResult {
 	app.storageKeeper.Logger(ctx).Error("received create bucket ack package ")
 
 	return sdk.ExecuteResult{}

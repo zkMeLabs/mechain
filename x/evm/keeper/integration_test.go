@@ -60,7 +60,7 @@ var _ = Describe("Feemarket", func() {
 				privKey, _ = setupTestWithContext("1", sdk.NewDec(minGasPrices), sdk.NewInt(baseFee))
 			})
 
-			//nolint:all
+			//nolint
 			Context("during CheckTx", func() {
 				DescribeTable("should accept transactions with gas Limit > 0",
 					func(malleate getprices) {

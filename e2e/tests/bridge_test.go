@@ -8,7 +8,6 @@ import (
 	"time"
 
 	sdkmath "cosmossdk.io/math"
-	"github.com/cosmos/cosmos-sdk/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/tx"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -16,14 +15,11 @@ import (
 	crosschaintypes "github.com/cosmos/cosmos-sdk/x/crosschain/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	govtypesv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
-	v1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
-	_ "github.com/ghodss/yaml"
-	"github.com/stretchr/testify/suite"
-
 	"github.com/evmos/evmos/v12/e2e/core"
 	gnfdtypes "github.com/evmos/evmos/v12/sdk/types"
-	types2 "github.com/evmos/evmos/v12/sdk/types"
 	bridgetypes "github.com/evmos/evmos/v12/x/bridge/types"
+	_ "github.com/ghodss/yaml"
+	"github.com/stretchr/testify/suite"
 )
 
 const (
@@ -52,7 +48,7 @@ func (s *BridgeTestSuite) TestTransferOut() {
 	msgTransferOut := &bridgetypes.MsgTransferOut{
 		From:   from.GetAddr().String(),
 		To:     to.GetAddr().String(),
-		Amount: &types.Coin{Denom: types2.Denom, Amount: transferAmount},
+		Amount: &sdk.Coin{Denom: gnfdtypes.Denom, Amount: transferAmount},
 	}
 
 	params, err := s.Client.BridgeQueryClient.Params(ctx, &bridgetypes.QueryParamsRequest{})
@@ -60,7 +56,7 @@ func (s *BridgeTestSuite) TestTransferOut() {
 
 	totalTransferOutRelayerFee := params.Params.BscTransferOutRelayerFee.Add(params.Params.BscTransferOutAckRelayerFee)
 
-	moduleAccount := types.MustAccAddressFromHex("0xB73C0Aac4C1E606C6E495d848196355e6CB30381")
+	moduleAccount := sdk.MustAccAddressFromHex("0xB73C0Aac4C1E606C6E495d848196355e6CB30381")
 	// query balance before
 	moduleBalanceBefore, err := s.Client.Balance(ctx, &banktypes.QueryBalanceRequest{
 		Address: moduleAccount.String(),
@@ -103,7 +99,7 @@ func (s *BridgeTestSuite) TestGovChannel() {
 
 	msgProposal, err := govtypesv1.NewMsgSubmitProposal(
 		[]sdk.Msg{msgUpdatePermissions},
-		sdk.Coins{sdk.NewCoin(s.BaseSuite.Config.Denom, types2.NewIntFromInt64WithDecimal(100, types2.DecimalBNB))},
+		sdk.Coins{sdk.NewCoin(s.BaseSuite.Config.Denom, gnfdtypes.NewIntFromInt64WithDecimal(100, gnfdtypes.DecimalBNB))},
 		validator.String(),
 		"test", "test", "test",
 	)
@@ -158,7 +154,7 @@ func (s *BridgeTestSuite) TestGovChannel() {
 	msgTransferOut := &bridgetypes.MsgTransferOut{
 		From:   from.GetAddr().String(),
 		To:     to.GetAddr().String(),
-		Amount: &types.Coin{Denom: types2.Denom, Amount: transferAmount},
+		Amount: &sdk.Coin{Denom: gnfdtypes.Denom, Amount: transferAmount},
 	}
 
 	s.Require().NoError(err)
@@ -178,7 +174,7 @@ func (s *BridgeTestSuite) TestGovChannel() {
 
 	msgProposal, err = govtypesv1.NewMsgSubmitProposal(
 		[]sdk.Msg{msgUpdatePermissions},
-		sdk.Coins{sdk.NewCoin(s.BaseSuite.Config.Denom, types2.NewIntFromInt64WithDecimal(100, types2.DecimalBNB))},
+		sdk.Coins{sdk.NewCoin(s.BaseSuite.Config.Denom, gnfdtypes.NewIntFromInt64WithDecimal(100, gnfdtypes.DecimalBNB))},
 		validator.String(),
 		"test", "test", "test",
 	)
@@ -237,7 +233,7 @@ func (s *BridgeTestSuite) TestUpdateBridgeParams() {
 		Params:    updatedParams,
 	}
 
-	proposal, err := v1.NewMsgSubmitProposal([]sdk.Msg{msgUpdateParams}, sdk.NewCoins(sdk.NewCoin("BNB", sdk.NewInt(1000000000000000000))),
+	proposal, err := govtypesv1.NewMsgSubmitProposal([]sdk.Msg{msgUpdateParams}, sdk.NewCoins(sdk.NewCoin("BNB", sdk.NewInt(1000000000000000000))),
 		s.Validator.GetAddr().String(), "", "update Bridge params", "Test update Bridge params")
 	s.Require().NoError(err)
 	txBroadCastResp, err := s.SendTxBlockWithoutCheck(proposal, s.Validator)
@@ -269,7 +265,7 @@ func (s *BridgeTestSuite) TestUpdateBridgeParams() {
 		Memo:      "",
 		FeeAmount: sdk.NewCoins(sdk.NewCoin("BNB", sdk.NewInt(1000000000000000000))),
 	}
-	voteBroadCastResp, err := s.SendTxBlockWithoutCheckWithTxOpt(v1.NewMsgVote(s.Validator.GetAddr(), uint64(proposalID), v1.OptionYes, ""),
+	voteBroadCastResp, err := s.SendTxBlockWithoutCheckWithTxOpt(govtypesv1.NewMsgVote(s.Validator.GetAddr(), uint64(proposalID), govtypesv1.OptionYes, ""),
 		s.Validator, txOpt)
 	s.Require().NoError(err)
 	voteResp, err := s.WaitForTx(voteBroadCastResp.TxResponse.TxHash)
@@ -283,20 +279,20 @@ func (s *BridgeTestSuite) TestUpdateBridgeParams() {
 	// 3. query proposal until it is end voting period
 CheckProposalStatus:
 	for {
-		queryProposalResp, err := s.Client.Proposal(context.Background(), &v1.QueryProposalRequest{ProposalId: uint64(proposalID)})
+		queryProposalResp, err := s.Client.Proposal(context.Background(), &govtypesv1.QueryProposalRequest{ProposalId: uint64(proposalID)})
 		s.Require().NoError(err)
-		if queryProposalResp.Proposal.Status != v1.StatusVotingPeriod {
+		if queryProposalResp.Proposal.Status != govtypesv1.StatusVotingPeriod {
 			switch queryProposalResp.Proposal.Status {
-			case v1.StatusDepositPeriod:
+			case govtypesv1.StatusDepositPeriod:
 				s.T().Errorf("proposal deposit period")
 				return
-			case v1.StatusRejected:
+			case govtypesv1.StatusRejected:
 				s.T().Errorf("proposal rejected")
 				return
-			case v1.StatusPassed:
+			case govtypesv1.StatusPassed:
 				s.T().Logf("proposal passed")
 				break CheckProposalStatus
-			case v1.StatusFailed:
+			case govtypesv1.StatusFailed:
 				s.T().Errorf("proposal failed, reason %s", queryProposalResp.Proposal.FailedReason)
 				return
 			}

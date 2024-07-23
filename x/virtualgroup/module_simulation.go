@@ -118,7 +118,7 @@ func (am AppModule) ProposalMsgs(simState module.SimulationState) []simtypes.Wei
 		simulation.NewWeightedProposalMsg(
 			opWeightMsgStorageProviderExit,
 			defaultWeightMsgStorageProviderExit,
-			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
+			func(_ *rand.Rand, _ sdk.Context, accs []simtypes.Account) sdk.Msg {
 				virtualgroupsimulation.SimulateMsgStorageProviderExit(am.accountKeeper, am.bankKeeper, am.keeper)
 				return nil
 			},
@@ -126,7 +126,7 @@ func (am AppModule) ProposalMsgs(simState module.SimulationState) []simtypes.Wei
 		simulation.NewWeightedProposalMsg(
 			opWeightMsgCompleteStorageProviderExit,
 			defaultWeightMsgCompleteStorageProviderExit,
-			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
+			func(_ *rand.Rand, _ sdk.Context, accs []simtypes.Account) sdk.Msg {
 				virtualgroupsimulation.SimulateMsgCompleteStorageProviderExit(am.accountKeeper, am.bankKeeper, am.keeper)
 				return nil
 			},
@@ -134,7 +134,7 @@ func (am AppModule) ProposalMsgs(simState module.SimulationState) []simtypes.Wei
 		simulation.NewWeightedProposalMsg(
 			opWeightMsgCompleteSwapOut,
 			defaultWeightMsgCompleteSwapOut,
-			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
+			func(_ *rand.Rand, _ sdk.Context, accs []simtypes.Account) sdk.Msg {
 				virtualgroupsimulation.SimulateMsgCompleteSwapOut(am.accountKeeper, am.bankKeeper, am.keeper)
 				return nil
 			},
@@ -142,7 +142,7 @@ func (am AppModule) ProposalMsgs(simState module.SimulationState) []simtypes.Wei
 		simulation.NewWeightedProposalMsg(
 			opWeightMsgCancelSwapOut,
 			defaultWeightMsgCancelSwapOut,
-			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
+			func(_ *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
 				virtualgroupsimulation.SimulateMsgCancelSwapOut(am.accountKeeper, am.bankKeeper, am.keeper)
 				return nil
 			},

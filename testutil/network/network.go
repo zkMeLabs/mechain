@@ -450,16 +450,16 @@ func New(l Logger, baseDir string, cfg Config) (*Network, error) {
 		blsProofBuf := blsSecretKey.Sign(tmhash.Sum(blsSecretKey.PublicKey().Marshal()))
 		blsProof := hex.EncodeToString(blsProofBuf.Marshal())
 		createValMsg, err := stakingtypes.NewMsgCreateValidator(
-			sdk.AccAddress(addr),
+			addr,
 			valPubKeys[i],
 			sdk.NewCoin(cfg.BondDenom, cfg.BondedTokens),
 			stakingtypes.NewDescription(nodeDirName, "", "", "", ""),
 			stakingtypes.NewCommissionRates(commission, sdk.OneDec(), sdk.OneDec()),
 			sdk.OneInt(),
-			sdk.AccAddress(addr),
-			sdk.AccAddress(addr),
-			sdk.AccAddress(addr),
-			sdk.AccAddress(addr),
+			addr,
+			addr,
+			addr,
+			addr,
 			blsPk,
 			blsProof,
 		)
@@ -537,7 +537,7 @@ func New(l Logger, baseDir string, cfg Config) (*Network, error) {
 			P2PAddress: tmCfg.P2P.ListenAddress,
 			APIAddress: apiAddr,
 			Address:    addr,
-			ValAddress: sdk.AccAddress(addr),
+			ValAddress: addr,
 		}
 	}
 

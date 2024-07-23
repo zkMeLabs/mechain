@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	ctypes "github.com/cometbft/cometbft/rpc/core/types"
-	"github.com/cosmos/cosmos-sdk/client"
 	sdkclient "github.com/cosmos/cosmos-sdk/client"
 	clitx "github.com/cosmos/cosmos-sdk/client/tx"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -124,7 +123,7 @@ func (c *GreenfieldClient) SignTx(ctx context.Context, msgs []sdk.Msg, txOpt *ty
 	return c.signTx(ctx, txConfig, txBuilder, txOpt)
 }
 
-func (c *GreenfieldClient) signTx(ctx context.Context, txConfig client.TxConfig, txBuilder client.TxBuilder, txOpt *types.TxOption) ([]byte, error) {
+func (c *GreenfieldClient) signTx(ctx context.Context, txConfig sdkclient.TxConfig, txBuilder sdkclient.TxBuilder, txOpt *types.TxOption) ([]byte, error) {
 	var km keys.KeyManager
 	var err error
 
@@ -174,7 +173,7 @@ func (c *GreenfieldClient) signTx(ctx context.Context, txConfig client.TxConfig,
 }
 
 // setSingerInfo gathers the signer info by doing "empty signature" hack, and inject it into txBuilder
-func (c *GreenfieldClient) setSingerInfo(ctx context.Context, txBuilder client.TxBuilder, txOpt *types.TxOption) error {
+func (c *GreenfieldClient) setSingerInfo(ctx context.Context, txBuilder sdkclient.TxBuilder, txOpt *types.TxOption) error {
 	var km keys.KeyManager
 	var err error
 	if txOpt != nil && txOpt.OverrideKeyManager != nil {
@@ -206,7 +205,7 @@ func (c *GreenfieldClient) setSingerInfo(ctx context.Context, txBuilder client.T
 	return nil
 }
 
-func (c *GreenfieldClient) constructTx(ctx context.Context, msgs []sdk.Msg, txOpt *types.TxOption, txBuilder client.TxBuilder) error {
+func (c *GreenfieldClient) constructTx(ctx context.Context, msgs []sdk.Msg, txOpt *types.TxOption, txBuilder sdkclient.TxBuilder) error {
 	for _, m := range msgs {
 		if err := m.ValidateBasic(); err != nil {
 			return err
@@ -234,7 +233,7 @@ func (c *GreenfieldClient) constructTx(ctx context.Context, msgs []sdk.Msg, txOp
 	return c.setSingerInfo(ctx, txBuilder, txOpt)
 }
 
-func (c *GreenfieldClient) constructTxWithGasInfo(ctx context.Context, msgs []sdk.Msg, txOpt *types.TxOption, txConfig client.TxConfig, txBuilder client.TxBuilder) error {
+func (c *GreenfieldClient) constructTxWithGasInfo(ctx context.Context, msgs []sdk.Msg, txOpt *types.TxOption, txConfig sdkclient.TxConfig, txBuilder sdkclient.TxBuilder) error {
 	// construct a tx with txOpt excluding GasLimit and
 	if err := c.constructTx(ctx, msgs, txOpt, txBuilder); err != nil {
 		return err

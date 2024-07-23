@@ -20,11 +20,11 @@ const (
 	PermissionChannel = "permission"
 	ExecutorChannel   = "executor"
 
-	BucketChannelId     sdk.ChannelID = 4
-	ObjectChannelId     sdk.ChannelID = 5
-	GroupChannelId      sdk.ChannelID = 6
-	PermissionChannelId sdk.ChannelID = 7
-	ExecutorChannelId   sdk.ChannelID = 9
+	BucketChannelID     sdk.ChannelID = 4
+	ObjectChannelID     sdk.ChannelID = 5
+	GroupChannelID      sdk.ChannelID = 6
+	PermissionChannelID sdk.ChannelID = 7
+	ExecutorChannelID   sdk.ChannelID = 9
 
 	// bucket operation types
 
@@ -78,7 +78,7 @@ type DeserializeFunc func(serializedPackage []byte) (interface{}, error)
 
 var (
 	DeserializeFuncMap = map[sdk.ChannelID]map[uint8][4]DeserializeFunc{
-		BucketChannelId: {
+		BucketChannelID: {
 			OperationMirrorBucket: {
 				DeserializeMirrorBucketSynPackage,
 				DeserializeMirrorBucketAckPackage,
@@ -95,7 +95,7 @@ var (
 				DeserializeDeleteBucketSynPackage,
 			},
 		},
-		ObjectChannelId: {
+		ObjectChannelID: {
 			OperationMirrorObject: {
 				DeserializeMirrorObjectSynPackage,
 				DeserializeMirrorObjectAckPackage,
@@ -107,7 +107,7 @@ var (
 				DeserializeDeleteObjectSynPackage,
 			},
 		},
-		GroupChannelId: {
+		GroupChannelID: {
 			OperationMirrorGroup: {
 				DeserializeMirrorGroupSynPackage,
 				DeserializeMirrorGroupAckPackage,
@@ -129,7 +129,7 @@ var (
 				DeserializeUpdateGroupMemberSynPackage,
 			},
 		},
-		PermissionChannelId: {
+		PermissionChannelID: {
 			OperationCreatePolicy: {
 				DeserializeCreatePolicySynPackage,
 				DeserializeCreatePolicyAckPackage,
@@ -145,7 +145,7 @@ var (
 
 	// DeserializeFuncMapV2 used after Pampas upgrade
 	DeserializeFuncMapV2 = map[sdk.ChannelID]map[uint8][4]DeserializeFunc{
-		BucketChannelId: {
+		BucketChannelID: {
 			OperationMirrorBucket: {
 				DeserializeMirrorBucketSynPackage,
 				DeserializeMirrorBucketAckPackage,
@@ -162,7 +162,7 @@ var (
 				DeserializeDeleteBucketSynPackage,
 			},
 		},
-		ObjectChannelId: {
+		ObjectChannelID: {
 			OperationMirrorObject: {
 				DeserializeMirrorObjectSynPackage,
 				DeserializeMirrorObjectAckPackage,
@@ -174,7 +174,7 @@ var (
 				DeserializeDeleteObjectSynPackage,
 			},
 		},
-		GroupChannelId: {
+		GroupChannelID: {
 			OperationMirrorGroup: {
 				DeserializeMirrorGroupSynPackage,
 				DeserializeMirrorGroupAckPackage,
@@ -196,7 +196,7 @@ var (
 				DeserializeUpdateGroupMemberSynPackage,
 			},
 		},
-		PermissionChannelId: {
+		PermissionChannelID: {
 			OperationCreatePolicy: {
 				DeserializeCreatePolicySynPackage,
 				DeserializeCreatePolicyAckPackage,
@@ -211,7 +211,7 @@ var (
 	}
 )
 
-func DeserializeCrossChainPackage(rawPack []byte, channelId sdk.ChannelID, packageType sdk.CrossChainPackageType) (interface{}, error) {
+func DeserializeCrossChainPackage(rawPack []byte, channelID sdk.ChannelID, packageType sdk.CrossChainPackageType) (interface{}, error) {
 	if packageType >= 3 {
 		return nil, ErrInvalidCrossChainPackage
 	}
@@ -221,7 +221,7 @@ func DeserializeCrossChainPackage(rawPack []byte, channelId sdk.ChannelID, packa
 		return nil, err
 	}
 
-	operationMap, ok := DeserializeFuncMap[channelId][pack.OperationType]
+	operationMap, ok := DeserializeFuncMap[channelID][pack.OperationType]
 	if !ok {
 		return nil, ErrInvalidCrossChainPackage
 	}
@@ -229,7 +229,7 @@ func DeserializeCrossChainPackage(rawPack []byte, channelId sdk.ChannelID, packa
 	return operationMap[packageType](pack.Package)
 }
 
-func DeserializeCrossChainPackageV2(rawPack []byte, channelId sdk.ChannelID, packageType sdk.CrossChainPackageType) (interface{}, error) {
+func DeserializeCrossChainPackageV2(rawPack []byte, channelID sdk.ChannelID, packageType sdk.CrossChainPackageType) (interface{}, error) {
 	if packageType >= 3 {
 		return nil, ErrInvalidCrossChainPackage
 	}
@@ -239,7 +239,7 @@ func DeserializeCrossChainPackageV2(rawPack []byte, channelId sdk.ChannelID, pac
 		return nil, err
 	}
 
-	operationMap, ok := DeserializeFuncMapV2[channelId][pack.OperationType]
+	operationMap, ok := DeserializeFuncMapV2[channelID][pack.OperationType]
 	if !ok {
 		return nil, ErrInvalidCrossChainPackage
 	}
@@ -253,7 +253,7 @@ const (
 )
 
 type MirrorBucketSynPackage struct {
-	Id    *big.Int
+	ID    *big.Int
 	Owner sdk.AccAddress
 }
 
@@ -289,7 +289,7 @@ var (
 
 func (pkg *MirrorBucketSynPackage) Serialize() ([]byte, error) {
 	return generalMirrorSynPackageArgs.Pack(&GeneralMirrorSynPackageStruct{
-		SafeBigInt(pkg.Id),
+		SafeBigInt(pkg.ID),
 		common.BytesToAddress(pkg.Owner),
 	})
 }
@@ -344,7 +344,7 @@ func DeserializeMirrorBucketAckPackage(serializedPackage []byte) (interface{}, e
 }
 
 type MirrorObjectSynPackage struct {
-	Id    *big.Int
+	ID    *big.Int
 	Owner sdk.AccAddress
 }
 
@@ -355,7 +355,7 @@ type MirrorObjectAckPackage struct {
 
 func (pkg *MirrorObjectSynPackage) Serialize() ([]byte, error) {
 	return generalMirrorSynPackageArgs.Pack(&GeneralMirrorSynPackageStruct{
-		SafeBigInt(pkg.Id),
+		SafeBigInt(pkg.ID),
 		common.BytesToAddress(pkg.Owner),
 	})
 }
@@ -1178,7 +1178,7 @@ const (
 
 type UpdateGroupMemberSynPackage struct {
 	Operator         sdk.AccAddress
-	GroupId          *big.Int
+	GroupID          *big.Int
 	OperationType    uint8
 	Members          []sdk.AccAddress
 	ExtraData        []byte
@@ -1239,7 +1239,7 @@ func (p UpdateGroupMemberSynPackage) MustSerialize() []byte {
 
 	encodedBytes, err := updateGroupMemberSynPackageArgs.Pack(&UpdateGroupMemberSynPackageStruct{
 		common.BytesToAddress(p.Operator),
-		SafeBigInt(p.GroupId),
+		SafeBigInt(p.GroupID),
 		p.OperationType,
 		members,
 		p.ExtraData,
@@ -1259,7 +1259,7 @@ func (p UpdateGroupMemberSynPackage) ValidateBasic() error {
 	if p.Operator.Empty() {
 		return sdkerrors.ErrInvalidAddress
 	}
-	if p.GroupId == nil || p.GroupId.Cmp(big.NewInt(0)) < 0 {
+	if p.GroupID == nil || p.GroupID.Cmp(big.NewInt(0)) < 0 {
 		return ErrInvalidID
 	}
 

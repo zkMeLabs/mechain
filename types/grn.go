@@ -148,7 +148,8 @@ func (r *GRN) ParseFromString(res string, wildcards bool) error {
 	abbr := result[0][1]
 	acc := result[0][2]
 	name := result[0][3]
-	if abbr == BucketTypeAbbr {
+	switch {
+	case abbr == BucketTypeAbbr:
 		if acc != "" {
 			return gnfderrors.ErrInvalidGRN.Wrapf("Not allowed acc non-empty in bucket resource name")
 		}
@@ -163,7 +164,7 @@ func (r *GRN) ParseFromString(res string, wildcards bool) error {
 				return gnfderrors.ErrInvalidGRN.Wrapf("invalid bucketName: %s, err: %s", r.name, err)
 			}
 		}
-	} else if abbr == ObjectTypeAbbr {
+	case abbr == ObjectTypeAbbr:
 		if acc != "" {
 			return gnfderrors.ErrInvalidGRN.Wrapf("Not allowed acc non-empty in bucket resource name")
 		}
@@ -173,7 +174,7 @@ func (r *GRN) ParseFromString(res string, wildcards bool) error {
 		if err != nil {
 			return gnfderrors.ErrInvalidGRN.Wrapf("invalid name, err : %s", err)
 		}
-	} else if abbr == GroupTypeAbbr {
+	case abbr == GroupTypeAbbr:
 		r.resType = resource.RESOURCE_TYPE_GROUP
 		r.groupOwner, err = sdk.AccAddressFromHexUnsafe(acc)
 		if err != nil {
@@ -187,7 +188,6 @@ func (r *GRN) ParseFromString(res string, wildcards bool) error {
 		}
 		r.name = name
 	}
-
 	return nil
 }
 

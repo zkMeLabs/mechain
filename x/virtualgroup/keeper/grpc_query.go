@@ -86,7 +86,7 @@ func (k Keeper) GlobalVirtualGroupFamilies(goCtx context.Context, req *types.Que
 	store := ctx.KVStore(k.storeKey)
 	gvgFamilyStore := prefix.NewStore(store, types.GVGFamilyKey)
 
-	pageRes, err := query.Paginate(gvgFamilyStore, req.Pagination, func(key []byte, value []byte) error {
+	pageRes, err := query.Paginate(gvgFamilyStore, req.Pagination, func(_ []byte, value []byte) error {
 		var gvgFamily types.GlobalVirtualGroupFamily
 		k.cdc.MustUnmarshal(value, &gvgFamily)
 		gvgFamilies = append(gvgFamilies, &gvgFamily)
@@ -103,7 +103,7 @@ func (k Keeper) AvailableGlobalVirtualGroupFamilies(goCtx context.Context, req *
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	availableFamilyIds := make([]uint32, 0)
+	availableFamilyIDs := make([]uint32, 0)
 	for _, gvgfID := range req.GlobalVirtualGroupFamilyIds {
 		gvgFamily, found := k.GetGVGFamily(ctx, gvgfID)
 		if !found {
@@ -114,10 +114,10 @@ func (k Keeper) AvailableGlobalVirtualGroupFamilies(goCtx context.Context, req *
 			return nil, err
 		}
 		if float64(stored) < math.Min(float64(totalStakingSize), float64(k.MaxStoreSizePerFamily(ctx))) && uint32(len(gvgFamily.GlobalVirtualGroupIds)) < k.MaxGlobalVirtualGroupNumPerFamily(ctx) {
-			availableFamilyIds = append(availableFamilyIds, gvgfID)
+			availableFamilyIDs = append(availableFamilyIDs, gvgfID)
 		}
 	}
-	return &types.AvailableGlobalVirtualGroupFamiliesResponse{GlobalVirtualGroupFamilyIds: availableFamilyIds}, nil
+	return &types.AvailableGlobalVirtualGroupFamiliesResponse{GlobalVirtualGroupFamilyIds: availableFamilyIDs}, nil
 }
 
 func (k Keeper) SwapInInfo(goCtx context.Context, req *types.QuerySwapInInfoRequest) (*types.QuerySwapInInfoResponse, error) {
@@ -134,13 +134,13 @@ func (k Keeper) SwapInInfo(goCtx context.Context, req *types.QuerySwapInInfoRequ
 	}, nil
 }
 
-func (k Keeper) GetSwapInInfo(ctx sdk.Context, globalVirtualGroupFamilyId, globalVirtualGroupId uint32) (*types.SwapInInfo, bool) {
+func (k Keeper) GetSwapInInfo(ctx sdk.Context, globalVirtualGroupFamilyID, globalVirtualGroupID uint32) (*types.SwapInInfo, bool) {
 	store := ctx.KVStore(k.storeKey)
 	var key []byte
-	if globalVirtualGroupFamilyId != types.NoSpecifiedFamilyId {
-		key = types.GetSwapInFamilyKey(globalVirtualGroupFamilyId)
+	if globalVirtualGroupFamilyID != types.NoSpecifiedFamilyID {
+		key = types.GetSwapInFamilyKey(globalVirtualGroupFamilyID)
 	} else {
-		key = types.GetSwapInGVGKey(globalVirtualGroupId)
+		key = types.GetSwapInGVGKey(globalVirtualGroupID)
 	}
 	bz := store.Get(key)
 	if bz == nil {
@@ -177,7 +177,7 @@ func (k Keeper) QuerySpAvailableGlobalVirtualGroupFamilies(goCtx context.Context
 		return nil, types.ErrGVGFamilyStatisticsNotExist
 	}
 
-	availableFamilyIds := make([]uint32, 0)
+	availableFamilyIDs := make([]uint32, 0)
 	for _, gvgfID := range stats.GlobalVirtualGroupFamilyIds {
 		gvgFamily, found := k.GetGVGFamily(ctx, gvgfID)
 		if !found {
@@ -188,12 +188,12 @@ func (k Keeper) QuerySpAvailableGlobalVirtualGroupFamilies(goCtx context.Context
 			return nil, err
 		}
 		if float64(stored) < math.Min(float64(totalStakingSize), float64(k.MaxStoreSizePerFamily(ctx))) && uint32(len(gvgFamily.GlobalVirtualGroupIds)) < k.MaxGlobalVirtualGroupNumPerFamily(ctx) {
-			availableFamilyIds = append(availableFamilyIds, gvgfID)
+			availableFamilyIDs = append(availableFamilyIDs, gvgfID)
 		}
 	}
 
 	return &types.QuerySPAvailableGlobalVirtualGroupFamiliesResponse{
-		GlobalVirtualGroupFamilyIds: availableFamilyIds,
+		GlobalVirtualGroupFamilyIds: availableFamilyIDs,
 	}, nil
 }
 

@@ -12,32 +12,32 @@ import (
 
 func (s *KeeperTestSuite) TestGetSpStoragePriceByTime() {
 	ctx := s.ctx.WithBlockTime(time.Unix(100, 0))
-	spId := uint32(10)
+	spID := uint32(10)
 
-	_, found := s.spKeeper.GetSpStoragePrice(ctx, spId)
+	_, found := s.spKeeper.GetSpStoragePrice(ctx, spID)
 	s.Require().True(!found)
 
 	spStoragePrice := types.SpStoragePrice{
-		SpId:          spId,
+		SpId:          spID,
 		UpdateTimeSec: 1,
 		ReadPrice:     sdk.NewDec(100),
 		StorePrice:    sdk.NewDec(100),
 	}
 	s.spKeeper.SetSpStoragePrice(ctx, spStoragePrice)
 
-	price, found := s.spKeeper.GetSpStoragePrice(ctx, spId)
+	price, found := s.spKeeper.GetSpStoragePrice(ctx, spID)
 	s.Require().True(found)
 	s.Require().True(reflect.DeepEqual(price, spStoragePrice))
 
 	spStoragePrice2 := types.SpStoragePrice{
-		SpId:          spId,
+		SpId:          spID,
 		UpdateTimeSec: 100,
 		ReadPrice:     sdk.NewDec(200),
 		StorePrice:    sdk.NewDec(200),
 	}
 	s.spKeeper.SetSpStoragePrice(ctx, spStoragePrice2)
 
-	price, found = s.spKeeper.GetSpStoragePrice(ctx, spId)
+	price, found = s.spKeeper.GetSpStoragePrice(ctx, spID)
 	s.Require().True(found)
 	s.Require().True(reflect.DeepEqual(price, spStoragePrice2))
 }

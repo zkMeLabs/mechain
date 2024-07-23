@@ -35,10 +35,10 @@ var (
 	_ sdk.Msg = &MsgCompleteSwapIn{}
 )
 
-func NewMsgCreateGlobalVirtualGroup(primarySpAddress sdk.AccAddress, globalVirtualFamilyId uint32, secondarySpIds []uint32, deposit sdk.Coin) *MsgCreateGlobalVirtualGroup {
+func NewMsgCreateGlobalVirtualGroup(primarySpAddress sdk.AccAddress, globalVirtualFamilyID uint32, secondarySpIds []uint32, deposit sdk.Coin) *MsgCreateGlobalVirtualGroup {
 	return &MsgCreateGlobalVirtualGroup{
 		StorageProvider: primarySpAddress.String(),
-		FamilyId:        globalVirtualFamilyId,
+		FamilyId:        globalVirtualFamilyID,
 		SecondarySpIds:  secondarySpIds,
 		Deposit:         deposit,
 	}
@@ -244,7 +244,7 @@ func (msg *MsgSwapOut) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid storage provider address (%s)", err)
 	}
 
-	if msg.GlobalVirtualGroupFamilyId == NoSpecifiedFamilyId {
+	if msg.GlobalVirtualGroupFamilyId == NoSpecifiedFamilyID {
 		if len(msg.GlobalVirtualGroupIds) == 0 {
 			return gnfderrors.ErrInvalidMessage.Wrap("The gvgs are not allowed to be empty when familyID is not specified.")
 		}
@@ -323,7 +323,7 @@ func (msg *MsgSettle) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid submitter address (%s)", err)
 	}
 
-	if msg.GlobalVirtualGroupFamilyId == NoSpecifiedFamilyId {
+	if msg.GlobalVirtualGroupFamilyId == NoSpecifiedFamilyID {
 		if len(msg.GlobalVirtualGroupIds) == 0 || len(msg.GlobalVirtualGroupIds) > 10 {
 			return ErrInvalidGVGCount
 		}
@@ -354,7 +354,7 @@ func (msg *MsgReserveSwapIn) ValidateBasic() error {
 	if err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid creator address (%s)", err)
 	}
-	if msg.GlobalVirtualGroupFamilyId == NoSpecifiedFamilyId {
+	if msg.GlobalVirtualGroupFamilyId == NoSpecifiedFamilyID {
 		if msg.GlobalVirtualGroupId == NoSpecifiedGVGId {
 			return gnfderrors.ErrInvalidMessage.Wrap("The gvg id need to be specified when familyID is not specified.")
 		}
@@ -411,7 +411,7 @@ func (msg *MsgCancelSwapIn) ValidateBasic() error {
 	if err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid creator address (%s)", err)
 	}
-	if msg.GlobalVirtualGroupFamilyId == NoSpecifiedFamilyId {
+	if msg.GlobalVirtualGroupFamilyId == NoSpecifiedFamilyID {
 		if msg.GlobalVirtualGroupId == NoSpecifiedGVGId {
 			return gnfderrors.ErrInvalidMessage.Wrap("The gvg id need to be specified when familyID is not specified.")
 		}
@@ -457,7 +457,7 @@ func (msg *MsgCompleteSwapIn) ValidateBasic() error {
 	if err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid creator address (%s)", err)
 	}
-	if msg.GlobalVirtualGroupFamilyId == NoSpecifiedFamilyId {
+	if msg.GlobalVirtualGroupFamilyId == NoSpecifiedFamilyID {
 		if msg.GlobalVirtualGroupId == NoSpecifiedGVGId {
 			return gnfderrors.ErrInvalidMessage.Wrap("The gvg id need to be specified when familyID is not specified.")
 		}

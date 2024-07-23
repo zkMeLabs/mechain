@@ -14,7 +14,7 @@ import (
 func TestExportAppStateAndValidators(t *testing.T) {
 	logger := log.NewNopLogger()
 	db := dbm.NewMemDB()
-	app, _, _ := testutil.NewTestApp(logger, db, nil, true, test.TEST_CHAIN_ID)
+	app, _, _ := testutil.NewTestApp(logger, db, nil, true, test.TestChainID)
 
 	_, err := app.ExportAppStateAndValidators(false, nil, []string{banktypes.ModuleName})
 	if err != nil {

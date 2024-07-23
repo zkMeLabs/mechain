@@ -12,7 +12,7 @@ import (
 )
 
 func TestCrosschainParams(t *testing.T) {
-	client, err := gnfdclient.NewGreenfieldClient(test.TEST_RPC_ADDR, test.TEST_CHAIN_ID)
+	client, err := gnfdclient.NewGreenfieldClient(test.TestRPCAddr, test.TestChainID)
 	assert.NoError(t, err)
 
 	query := crosschaintypes.QueryParamsRequest{}
@@ -23,7 +23,7 @@ func TestCrosschainParams(t *testing.T) {
 }
 
 func TestCrosschainPackageRequest(t *testing.T) {
-	client, err := gnfdclient.NewGreenfieldClient(test.TEST_RPC_ADDR, test.TEST_CHAIN_ID)
+	client, err := gnfdclient.NewGreenfieldClient(test.TestRPCAddr, test.TestChainID)
 	assert.NoError(t, err)
 
 	query := crosschaintypes.QueryCrossChainPackageRequest{}
@@ -34,7 +34,7 @@ func TestCrosschainPackageRequest(t *testing.T) {
 }
 
 func TestCrosschainReceiveSequence(t *testing.T) {
-	client, err := gnfdclient.NewGreenfieldClient(test.TEST_RPC_ADDR, test.TEST_CHAIN_ID)
+	client, err := gnfdclient.NewGreenfieldClient(test.TestRPCAddr, test.TestChainID)
 	assert.NoError(t, err)
 
 	query := crosschaintypes.QueryReceiveSequenceRequest{}
@@ -45,7 +45,7 @@ func TestCrosschainReceiveSequence(t *testing.T) {
 }
 
 func TestCrosschainSendSequence(t *testing.T) {
-	client, err := gnfdclient.NewGreenfieldClient(test.TEST_RPC_ADDR, test.TEST_CHAIN_ID)
+	client, err := gnfdclient.NewGreenfieldClient(test.TestRPCAddr, test.TestChainID)
 	assert.NoError(t, err)
 
 	query := crosschaintypes.QuerySendSequenceRequest{}

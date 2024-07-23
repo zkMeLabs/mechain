@@ -18,6 +18,7 @@ package evm
 import (
 	"bytes"
 	"fmt"
+
 	"github.com/evmos/evmos/v12/contracts"
 
 	abci "github.com/cometbft/cometbft/abci/types"

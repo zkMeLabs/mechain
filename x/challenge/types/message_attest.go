@@ -13,15 +13,15 @@ const TypeMsgAttest = "attest"
 
 var _ sdk.Msg = &MsgAttest{}
 
-func NewMsgAttest(submitter sdk.AccAddress, challengeId uint64, objectId Uint, spOperatorAddress string,
+func NewMsgAttest(submitter sdk.AccAddress, challengeID uint64, objectID Uint, spOperatorAddress string,
 	voteResult VoteResult, challenger string, voteValidatorSet []uint64, voteAggSignature []byte,
 ) *MsgAttest {
 	return &MsgAttest{
 		Submitter:         submitter.String(),
-		ChallengeId:       challengeId,
-		ObjectId:          objectId,
+		ChallengeId:       challengeID,
+		ObjectId:          objectID,
 		SpOperatorAddress: spOperatorAddress,
-		VoteResult:        VoteResult(voteResult),
+		VoteResult:        voteResult,
 		ChallengerAddress: challenger,
 		VoteValidatorSet:  voteValidatorSet,
 		VoteAggSignature:  voteAggSignature,
@@ -82,10 +82,10 @@ func (msg *MsgAttest) ValidateBasic() error {
 	return nil
 }
 
-func (msg *MsgAttest) GetBlsSignBytes(chainId string) [32]byte {
-	challengeIdBz := make([]byte, 8)
-	binary.BigEndian.PutUint64(challengeIdBz, msg.ChallengeId)
-	objectIdBz := msg.ObjectId.Bytes()
+func (msg *MsgAttest) GetBlsSignBytes(chainID string) [32]byte {
+	challengeIDBz := make([]byte, 8)
+	binary.BigEndian.PutUint64(challengeIDBz, msg.ChallengeId)
+	objectIDBz := msg.ObjectId.Bytes()
 	resultBz := make([]byte, 8)
 	binary.BigEndian.PutUint64(resultBz, uint64(msg.VoteResult))
 
@@ -96,9 +96,9 @@ func (msg *MsgAttest) GetBlsSignBytes(chainId string) [32]byte {
 	}
 
 	bs := make([]byte, 0)
-	bs = append(bs, []byte(chainId)...)
-	bs = append(bs, challengeIdBz...)
-	bs = append(bs, objectIdBz...)
+	bs = append(bs, []byte(chainID)...)
+	bs = append(bs, challengeIDBz...)
+	bs = append(bs, objectIDBz...)
 	bs = append(bs, resultBz...)
 	bs = append(bs, spOperatorBz...)
 	bs = append(bs, challengerBz...)

@@ -40,7 +40,7 @@ func (k msgServer) Attest(goCtx context.Context, msg *types.MsgAttest) (*types.M
 	}
 
 	if !k.ExistsChallenge(ctx, msg.ChallengeId) {
-		return nil, errors.Wrapf(types.ErrInvalidChallengeId, "challenge %d cannot be found, it could be expired", msg.ChallengeId)
+		return nil, errors.Wrapf(types.ErrInvalidChallengeID, "challenge %d cannot be found, it could be expired", msg.ChallengeId)
 	}
 
 	historicalInfo, ok := k.stakingKeeper.GetHistoricalInfo(ctx, ctx.BlockHeight())
@@ -127,7 +127,7 @@ func (k msgServer) Attest(goCtx context.Context, msg *types.MsgAttest) (*types.M
 		// check whether it is a heartbeat attest
 		heartbeatInterval := k.GetParams(ctx).HeartbeatInterval
 		if msg.ChallengeId%heartbeatInterval != 0 {
-			return nil, errors.Wrapf(types.ErrInvalidChallengeId, "heartbeat attestation should be submitted at interval %d", heartbeatInterval)
+			return nil, errors.Wrapf(types.ErrInvalidChallengeID, "heartbeat attestation should be submitted at interval %d", heartbeatInterval)
 		}
 
 		// reward validators & tx submitter
@@ -195,7 +195,7 @@ func (k msgServer) calculateSlashRewards(ctx sdk.Context, total sdkmath.Int, cha
 }
 
 // doSlashAndRewards will execute the slash, transfer the rewards and emit events.
-func (k msgServer) doSlashAndRewards(ctx sdk.Context, challengeId uint64, voteResult types.VoteResult, slashAmount sdkmath.Int,
+func (k msgServer) doSlashAndRewards(ctx sdk.Context, challengeID uint64, voteResult types.VoteResult, slashAmount sdkmath.Int,
 	spID uint32, submitter, challenger sdk.AccAddress, validators []string,
 ) error {
 	challengerReward, eachValidatorReward, submitterReward := sdkmath.ZeroInt(), sdkmath.ZeroInt(), sdkmath.ZeroInt()
@@ -243,7 +243,7 @@ func (k msgServer) doSlashAndRewards(ctx sdk.Context, challengeId uint64, voteRe
 	}
 
 	event := types.EventAttestChallenge{
-		ChallengeId:            challengeId,
+		ChallengeId:            challengeID,
 		Result:                 voteResult,
 		SpId:                   spID,
 		SlashAmount:            slashAmount.String(),

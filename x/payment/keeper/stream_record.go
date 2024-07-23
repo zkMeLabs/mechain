@@ -442,7 +442,7 @@ func (k Keeper) AutoResume(ctx sdk.Context) {
 	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 	defer iterator.Close()
 
-	var count uint64 = 0
+	var count uint64
 	max := k.GetParams(ctx).MaxAutoResumeFlowCount
 	for ; iterator.Valid(); iterator.Next() {
 		record := types.ParseAutoResumeRecordKey(iterator.Key())

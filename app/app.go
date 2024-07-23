@@ -1149,9 +1149,9 @@ func (app *Evmos) InitChainer(ctx sdk.Context, req abci.RequestInitChain) abci.R
 	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestBscChainID), bridgemoduletypes.TransferOutChannelID, sdk.ChannelAllow)
 	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestBscChainID), bridgemoduletypes.TransferInChannelID, sdk.ChannelAllow)
 	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestBscChainID), bridgemoduletypes.SyncParamsChannelID, sdk.ChannelAllow)
-	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestBscChainID), storagemoduletypes.BucketChannelId, sdk.ChannelAllow)
-	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestBscChainID), storagemoduletypes.ObjectChannelId, sdk.ChannelAllow)
-	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestBscChainID), storagemoduletypes.GroupChannelId, sdk.ChannelAllow)
+	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestBscChainID), storagemoduletypes.BucketChannelID, sdk.ChannelAllow)
+	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestBscChainID), storagemoduletypes.ObjectChannelID, sdk.ChannelAllow)
+	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestBscChainID), storagemoduletypes.GroupChannelID, sdk.ChannelAllow)
 
 	return app.mm.InitGenesis(ctx, app.appCodec, genesisState)
 }

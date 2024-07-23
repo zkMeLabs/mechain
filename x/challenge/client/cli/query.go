@@ -35,7 +35,7 @@ func CmdQueryParams() *cobra.Command {
 		Use:   "params",
 		Short: "Shows the parameters of the module",
 		Args:  cobra.NoArgs,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(cmd *cobra.Command, _ []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
 			queryClient := types.NewQueryClient(clientCtx)
@@ -60,7 +60,7 @@ func CmdAttestedChallenge() *cobra.Command {
 		Short: "Query result for an attested challenge",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			argChallengeId, err := strconv.ParseUint(args[0], 10, 64)
+			argChallengeID, err := strconv.ParseUint(args[0], 10, 64)
 			if err != nil {
 				return fmt.Errorf("challenge-id %s not a valid uint, please input a valid challenge-id", args[0])
 			}
@@ -73,7 +73,7 @@ func CmdAttestedChallenge() *cobra.Command {
 			queryClient := types.NewQueryClient(clientCtx)
 
 			req := &types.QueryAttestedChallengeRequest{
-				ChallengeId: argChallengeId,
+				ChallengeId: argChallengeID,
 			}
 
 			res, err := queryClient.AttestedChallenge(cmd.Context(), req)
@@ -95,7 +95,7 @@ func CmdLatestAttestedChallenges() *cobra.Command {
 		Use:   "latest-attested-challenges",
 		Short: "Query latest attested challenges",
 		Args:  cobra.ExactArgs(0),
-		RunE: func(cmd *cobra.Command, args []string) (err error) {
+		RunE: func(cmd *cobra.Command, _ []string) (err error) {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
 				return err
@@ -124,7 +124,7 @@ func CmdInturnChallenger() *cobra.Command {
 		Use:   "inturn-attestation-submitter",
 		Short: "Query the inturn attestation submitter",
 		Args:  cobra.NoArgs,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(cmd *cobra.Command, _ []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
 				return err

@@ -1747,7 +1747,7 @@ func (s *PaymentTestSuite) TestStorageBill_UpdatePaymentAddress() {
 	s.SendTxBlockWithExpectErrorString(msgUpdateBucketInfo, user, "apply user flows list failed")
 }
 
-//func (s *PaymentTestSuite) TestStorageBill_MigrateBucket() {
+// func (s *PaymentTestSuite) TestStorageBill_MigrateBucket() {
 //	var err error
 //	ctx := context.Background()
 //	primarySP := s.PickStorageProvider()
@@ -1912,7 +1912,7 @@ func (s *PaymentTestSuite) TestStorageBill_UpdatePaymentAddress() {
 //	s.Require().Equal(streamRecordsAfter.User.NetflowRate.Neg(), userTotalRate.Abs())
 //}
 
-//func (s *PaymentTestSuite) TestStorageBill_MigrateBucket_LockedFee_ThenDiscontinueBucket() {
+// func (s *PaymentTestSuite) TestStorageBill_MigrateBucket_LockedFee_ThenDiscontinueBucket() {
 //	var err error
 //	ctx := context.Background()
 //	primarySP := s.PickStorageProvider()
@@ -2059,7 +2059,7 @@ func (s *PaymentTestSuite) TestStorageBill_UpdatePaymentAddress() {
 //	s.Require().ErrorContains(err, "No such bucket")
 //}
 
-//func (s *PaymentTestSuite) TestStorageBill_MigrateBucket_FrozenAccount_NotAllowed() {
+// func (s *PaymentTestSuite) TestStorageBill_MigrateBucket_FrozenAccount_NotAllowed() {
 //	var err error
 //	ctx := context.Background()
 //	primarySP := s.PickStorageProvider()
@@ -2297,7 +2297,7 @@ func (s *PaymentTestSuite) reduceBNBBalance(user, to keys.KeyManager, leftBalanc
 	s.T().Logf("balance: %v", queryBalanceResponse.Balance.Amount)
 }
 
-//func (s *PaymentTestSuite) transferBNB(from, to keys.KeyManager, amount sdkmath.Int) {
+// func (s *PaymentTestSuite) transferBNB(from, to keys.KeyManager, amount sdkmath.Int) {
 //	msgSend := banktypes.NewMsgSend(from.GetAddr(), to.GetAddr(), sdk.NewCoins(
 //		sdk.NewCoin(s.Config.Denom, amount),
 //	))

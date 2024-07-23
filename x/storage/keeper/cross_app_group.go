@@ -22,7 +22,7 @@ func NewGroupApp(keeper types.StorageKeeper) *GroupApp {
 }
 
 func (app *GroupApp) ExecuteAckPackage(ctx sdk.Context, appCtx *sdk.CrossChainAppContext, payload []byte) sdk.ExecuteResult {
-	pack, err := types.DeserializeCrossChainPackage(payload, types.GroupChannelId, sdk.AckCrossChainPackageType)
+	pack, err := types.DeserializeCrossChainPackage(payload, types.GroupChannelID, sdk.AckCrossChainPackageType)
 	if err != nil {
 		app.storageKeeper.Logger(ctx).Error("deserialize group cross chain package error", "payload", hex.EncodeToString(payload), "error", err.Error())
 		panic("deserialize group cross chain package error")
@@ -59,7 +59,7 @@ func (app *GroupApp) ExecuteAckPackage(ctx sdk.Context, appCtx *sdk.CrossChainAp
 }
 
 func (app *GroupApp) ExecuteFailAckPackage(ctx sdk.Context, appCtx *sdk.CrossChainAppContext, payload []byte) sdk.ExecuteResult {
-	pack, err := types.DeserializeCrossChainPackage(payload, types.GroupChannelId, sdk.FailAckCrossChainPackageType)
+	pack, err := types.DeserializeCrossChainPackage(payload, types.GroupChannelID, sdk.FailAckCrossChainPackageType)
 	if err != nil {
 		app.storageKeeper.Logger(ctx).Error("deserialize group cross chain package error", "payload", hex.EncodeToString(payload), "error", err.Error())
 		panic("deserialize group cross chain package error")
@@ -96,7 +96,7 @@ func (app *GroupApp) ExecuteFailAckPackage(ctx sdk.Context, appCtx *sdk.CrossCha
 }
 
 func (app *GroupApp) ExecuteSynPackage(ctx sdk.Context, appCtx *sdk.CrossChainAppContext, payload []byte) sdk.ExecuteResult {
-	pack, err := types.DeserializeCrossChainPackage(payload, types.GroupChannelId, sdk.SynCrossChainPackageType)
+	pack, err := types.DeserializeCrossChainPackage(payload, types.GroupChannelID, sdk.SynCrossChainPackageType)
 	if err != nil {
 		app.storageKeeper.Logger(ctx).Error("deserialize group cross chain package error", "payload", hex.EncodeToString(payload), "error", err.Error())
 		panic("deserialize group cross chain package error")
@@ -134,7 +134,7 @@ func (app *GroupApp) ExecuteSynPackage(ctx sdk.Context, appCtx *sdk.CrossChainAp
 	return result
 }
 
-func (app *GroupApp) handleDeleteGroupAckPackage(ctx sdk.Context, appCtx *sdk.CrossChainAppContext, ackPackage *types.DeleteGroupAckPackage) sdk.ExecuteResult {
+func (app *GroupApp) handleDeleteGroupAckPackage(ctx sdk.Context, _ *sdk.CrossChainAppContext, _ *types.DeleteGroupAckPackage) sdk.ExecuteResult {
 	app.storageKeeper.Logger(ctx).Error("received delete group ack package ")
 
 	return sdk.ExecuteResult{}
@@ -345,7 +345,7 @@ func (app *GroupApp) handleUpdateGroupMemberSynPackage(ctx sdk.Context, appCtx *
 		}
 	}
 
-	groupInfo, found := app.storageKeeper.GetGroupInfoById(ctx, math.NewUintFromBigInt(updateGroupPackage.GroupId))
+	groupInfo, found := app.storageKeeper.GetGroupInfoById(ctx, math.NewUintFromBigInt(updateGroupPackage.GroupID))
 	if !found {
 		return sdk.ExecuteResult{
 			Payload: types.UpdateGroupMemberAckPackage{

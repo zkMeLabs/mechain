@@ -230,7 +230,7 @@ func (k Keeper) GetOrCreateEmptyGVGFamily(ctx sdk.Context, familyID uint32, prim
 	store := ctx.KVStore(k.storeKey)
 	var gvgFamily types.GlobalVirtualGroupFamily
 	// If familyID is not specified, a new family needs to be created
-	if familyID == types.NoSpecifiedFamilyId {
+	if familyID == types.NoSpecifiedFamilyID {
 		id := k.GenNextGVGFamilyID(ctx)
 		gvgFamily = types.GlobalVirtualGroupFamily{
 			Id:                    id,
@@ -243,15 +243,14 @@ func (k Keeper) GetOrCreateEmptyGVGFamily(ctx sdk.Context, familyID uint32, prim
 		k.SetGVGFamilyStatisticsWithinSP(ctx, gvgFamilyStatistics)
 
 		return &gvgFamily, nil
-	} else {
-		bz := store.Get(types.GetGVGFamilyKey(familyID))
-		if bz == nil {
-			return nil, types.ErrGVGFamilyNotExist
-		}
-		k.cdc.MustUnmarshal(bz, &gvgFamily)
-
-		return &gvgFamily, nil
 	}
+	bz := store.Get(types.GetGVGFamilyKey(familyID))
+	if bz == nil {
+		return nil, types.ErrGVGFamilyNotExist
+	}
+	k.cdc.MustUnmarshal(bz, &gvgFamily)
+
+	return &gvgFamily, nil
 }
 
 func (k Keeper) DeriveVirtualPaymentAccount(groupType string, id uint32) sdk.AccAddress {
@@ -610,7 +609,7 @@ func (k Keeper) GetGlobalVirtualGroupIfAvailable(ctx sdk.Context, gvgID uint32, 
 func (k Keeper) SetSwapOutInfo(ctx sdk.Context, gvgFamilyID uint32, gvgIDs []uint32, spID uint32, successorSPID uint32) error {
 	store := ctx.KVStore(k.storeKey)
 
-	if gvgFamilyID != types.NoSpecifiedFamilyId {
+	if gvgFamilyID != types.NoSpecifiedFamilyID {
 		key := types.GetSwapOutFamilyKey(gvgFamilyID)
 		found := store.Has(key)
 		if found {
@@ -645,7 +644,7 @@ func (k Keeper) DeleteSwapOutInfo(ctx sdk.Context, gvgFamilyID uint32, gvgIDs []
 	store := ctx.KVStore(k.storeKey)
 
 	swapOutInfo := types.SwapOutInfo{}
-	if gvgFamilyID != types.NoSpecifiedFamilyId {
+	if gvgFamilyID != types.NoSpecifiedFamilyID {
 		key := types.GetSwapOutFamilyKey(gvgFamilyID)
 		bz := store.Get(key)
 		k.cdc.MustUnmarshal(bz, &swapOutInfo)
@@ -684,7 +683,7 @@ func (k Keeper) CompleteSwapOut(ctx sdk.Context, gvgFamilyID uint32, gvgIDs []ui
 	store := ctx.KVStore(k.storeKey)
 
 	swapOutInfo := types.SwapOutInfo{}
-	if gvgFamilyID != types.NoSpecifiedFamilyId {
+	if gvgFamilyID != types.NoSpecifiedFamilyID {
 		key := types.GetSwapOutFamilyKey(gvgFamilyID)
 		bz := store.Get(key)
 		if bz == nil {
@@ -744,7 +743,7 @@ func (k Keeper) CompleteSwapOut(ctx sdk.Context, gvgFamilyID uint32, gvgIDs []ui
 
 func (k Keeper) SwapIn(ctx sdk.Context, gvgFamilyID uint32, gvgID uint32, successorSPID uint32, targetSP *sptypes.StorageProvider, expirationTime int64) error {
 	// when swapIn a family as primary SP., the target sp needs to be exiting status.
-	if gvgFamilyID != types.NoSpecifiedFamilyId {
+	if gvgFamilyID != types.NoSpecifiedFamilyID {
 		if targetSP.Status != sptypes.STATUS_GRACEFUL_EXITING && targetSP.Status != sptypes.STATUS_FORCED_EXITING {
 			return sptypes.ErrStorageProviderWrongStatus.Wrapf("The target sp is not exiting, can not be swapped")
 		}
@@ -838,7 +837,7 @@ func (k Keeper) DeleteSwapInInfo(ctx sdk.Context, gvgFamilyID, gvgID uint32, suc
 		return nil
 	}
 
-	if gvgFamilyID != types.NoSpecifiedFamilyId {
+	if gvgFamilyID != types.NoSpecifiedFamilyID {
 		if err := deleteSwapInfo(types.GetSwapInFamilyKey(gvgFamilyID)); err != nil {
 			return err
 		}
@@ -863,7 +862,7 @@ func (k Keeper) CompleteSwapIn(ctx sdk.Context, gvgFamilyID uint32, gvgID uint32
 	store := ctx.KVStore(k.storeKey)
 	swapInInfo := types.SwapInInfo{}
 	// swapIn family
-	if gvgFamilyID != types.NoSpecifiedFamilyId {
+	if gvgFamilyID != types.NoSpecifiedFamilyID {
 		key := types.GetSwapInFamilyKey(gvgFamilyID)
 		bz := store.Get(key)
 		if bz == nil {

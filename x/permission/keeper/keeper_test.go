@@ -29,21 +29,21 @@ func (s *TestSuite) TestPruneAccountPolicies() {
 		Statements:     nil,
 		ExpirationTime: nil,
 	}
-	policyId, err := s.permissionKeeper.PutPolicy(s.ctx, &policy)
+	policyID, err := s.permissionKeeper.PutPolicy(s.ctx, &policy)
 	s.NoError(err)
-	policyIds[0] = policyId
+	policyIds[0] = policyID
 
 	policy.ResourceId = resourceIds[2]
-	policyId, err = s.permissionKeeper.PutPolicy(s.ctx, &policy)
+	policyID, err = s.permissionKeeper.PutPolicy(s.ctx, &policy)
 	s.NoError(err)
-	policyIds[2] = policyId
+	policyIds[2] = policyID
 
 	// policy with expiry
 	policy.ResourceId = resourceIds[1]
 	policy.ExpirationTime = &oneDayAfter
-	policyId, err = s.permissionKeeper.PutPolicy(s.ctx, &policy)
+	policyID, err = s.permissionKeeper.PutPolicy(s.ctx, &policy)
 	s.NoError(err)
-	policyIds[1] = policyId
+	policyIds[1] = policyID
 
 	testCases := []struct {
 		name       string
@@ -98,9 +98,9 @@ func (s *TestSuite) TestPruneAccountPolicies() {
 				oldPolicy, found := s.permissionKeeper.GetPolicyByID(s.ctx, policyIds[2])
 				s.True(found)
 				oldPolicy.ExpirationTime = nil
-				newId, err := s.permissionKeeper.PutPolicy(s.ctx, oldPolicy)
+				newID, err := s.permissionKeeper.PutPolicy(s.ctx, oldPolicy)
 				s.NoError(err)
-				s.Equal(policyIds[2], newId)
+				s.Equal(policyIds[2], newID)
 			},
 		},
 	}
@@ -141,21 +141,21 @@ func (s *TestSuite) TestPruneGroupPolicies() {
 		Statements:     nil,
 		ExpirationTime: nil,
 	}
-	policyId, err := s.permissionKeeper.PutPolicy(s.ctx, &policy)
+	policyID, err := s.permissionKeeper.PutPolicy(s.ctx, &policy)
 	s.NoError(err)
-	policyIds[0] = policyId
+	policyIds[0] = policyID
 
 	policy.ResourceId = resourceIds[2]
-	policyId, err = s.permissionKeeper.PutPolicy(s.ctx, &policy)
+	policyID, err = s.permissionKeeper.PutPolicy(s.ctx, &policy)
 	s.NoError(err)
-	policyIds[2] = policyId
+	policyIds[2] = policyID
 
 	// member with expiry
 	policy.ResourceId = resourceIds[1]
 	policy.ExpirationTime = &oneDayAfter
-	policyId, err = s.permissionKeeper.PutPolicy(s.ctx, &policy)
+	policyID, err = s.permissionKeeper.PutPolicy(s.ctx, &policy)
 	s.NoError(err)
-	policyIds[1] = policyId
+	policyIds[1] = policyID
 
 	testCases := []struct {
 		name       string

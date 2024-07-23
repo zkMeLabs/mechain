@@ -12,19 +12,19 @@ import (
 )
 
 func TestStakingValidator(t *testing.T) {
-	client, err := gnfdclient.NewGreenfieldClient(test.TEST_RPC_ADDR, test.TEST_CHAIN_ID)
+	client, err := gnfdclient.NewGreenfieldClient(test.TestRPCAddr, test.TestChainID)
 	assert.NoError(t, err)
 
 	query := stakingtypes.QueryValidatorRequest{
-		ValidatorAddr: test.TEST_VAL_ADDR,
+		ValidatorAddr: test.TestValAddr,
 	}
 	res, err := client.StakingQueryClient.Validator(context.Background(), &query)
 	assert.NoError(t, err)
-	assert.Equal(t, res.Validator.SelfDelAddress, test.TEST_VAL_ADDR)
+	assert.Equal(t, res.Validator.SelfDelAddress, test.TestValAddr)
 }
 
 func TestStakingValidators(t *testing.T) {
-	client, err := gnfdclient.NewGreenfieldClient(test.TEST_RPC_ADDR, test.TEST_CHAIN_ID)
+	client, err := gnfdclient.NewGreenfieldClient(test.TestRPCAddr, test.TestChainID)
 	assert.NoError(t, err)
 
 	query := stakingtypes.QueryValidatorsRequest{
@@ -36,25 +36,25 @@ func TestStakingValidators(t *testing.T) {
 }
 
 func TestStakingDelagatorValidator(t *testing.T) {
-	client, err := gnfdclient.NewGreenfieldClient(test.TEST_RPC_ADDR, test.TEST_CHAIN_ID)
+	client, err := gnfdclient.NewGreenfieldClient(test.TestRPCAddr, test.TestChainID)
 	assert.NoError(t, err)
 
 	query := stakingtypes.QueryDelegatorValidatorRequest{
-		DelegatorAddr: test.TEST_ADDR,
-		ValidatorAddr: test.TEST_VAL_ADDR,
+		DelegatorAddr: test.TestAddr,
+		ValidatorAddr: test.TestValAddr,
 	}
 	res, err := client.StakingQueryClient.DelegatorValidator(context.Background(), &query)
 	assert.NoError(t, err)
 
-	assert.Equal(t, res.Validator.SelfDelAddress, test.TEST_VAL_ADDR)
+	assert.Equal(t, res.Validator.SelfDelAddress, test.TestValAddr)
 }
 
 func TestStakingDelagatorValidators(t *testing.T) {
-	client, err := gnfdclient.NewGreenfieldClient(test.TEST_RPC_ADDR, test.TEST_CHAIN_ID)
+	client, err := gnfdclient.NewGreenfieldClient(test.TestRPCAddr, test.TestChainID)
 	assert.NoError(t, err)
 
 	query := stakingtypes.QueryDelegatorValidatorsRequest{
-		DelegatorAddr: test.TEST_ADDR,
+		DelegatorAddr: test.TestAddr,
 	}
 	res, err := client.StakingQueryClient.DelegatorValidators(context.Background(), &query)
 	assert.NoError(t, err)
@@ -63,25 +63,25 @@ func TestStakingDelagatorValidators(t *testing.T) {
 }
 
 func TestStakingUnbondingDelagation(t *testing.T) {
-	client, err := gnfdclient.NewGreenfieldClient(test.TEST_RPC_ADDR, test.TEST_CHAIN_ID)
+	client, err := gnfdclient.NewGreenfieldClient(test.TestRPCAddr, test.TestChainID)
 	assert.NoError(t, err)
 
 	query := stakingtypes.QueryUnbondingDelegationRequest{
-		DelegatorAddr: test.TEST_ADDR,
-		ValidatorAddr: test.TEST_VAL_ADDR,
+		DelegatorAddr: test.TestAddr,
+		ValidatorAddr: test.TestValAddr,
 	}
 	res, err := client.StakingQueryClient.UnbondingDelegation(context.Background(), &query)
 	assert.NoError(t, err)
 
-	assert.Equal(t, res.Unbond.DelegatorAddress, test.TEST_ADDR)
+	assert.Equal(t, res.Unbond.DelegatorAddress, test.TestAddr)
 }
 
 func TestStakingDelagatorDelegations(t *testing.T) {
-	client, err := gnfdclient.NewGreenfieldClient(test.TEST_RPC_ADDR, test.TEST_CHAIN_ID)
+	client, err := gnfdclient.NewGreenfieldClient(test.TestRPCAddr, test.TestChainID)
 	assert.NoError(t, err)
 
 	query := stakingtypes.QueryDelegatorDelegationsRequest{
-		DelegatorAddr: test.TEST_VAL_ADDR,
+		DelegatorAddr: test.TestValAddr,
 	}
 	res, err := client.StakingQueryClient.DelegatorDelegations(context.Background(), &query)
 	assert.NoError(t, err)
@@ -90,11 +90,11 @@ func TestStakingDelagatorDelegations(t *testing.T) {
 }
 
 func TestStakingValidatorDelegations(t *testing.T) {
-	client, err := gnfdclient.NewGreenfieldClient(test.TEST_RPC_ADDR, test.TEST_CHAIN_ID)
+	client, err := gnfdclient.NewGreenfieldClient(test.TestRPCAddr, test.TestChainID)
 	assert.NoError(t, err)
 
 	query := stakingtypes.QueryValidatorDelegationsRequest{
-		ValidatorAddr: test.TEST_VAL_ADDR,
+		ValidatorAddr: test.TestValAddr,
 	}
 	res, err := client.StakingQueryClient.ValidatorDelegations(context.Background(), &query)
 	assert.NoError(t, err)
@@ -103,11 +103,11 @@ func TestStakingValidatorDelegations(t *testing.T) {
 }
 
 func TestStakingDelegatorUnbondingDelagation(t *testing.T) {
-	client, err := gnfdclient.NewGreenfieldClient(test.TEST_RPC_ADDR, test.TEST_CHAIN_ID)
+	client, err := gnfdclient.NewGreenfieldClient(test.TestRPCAddr, test.TestChainID)
 	assert.NoError(t, err)
 
 	query := stakingtypes.QueryDelegatorUnbondingDelegationsRequest{
-		DelegatorAddr: test.TEST_VAL_ADDR,
+		DelegatorAddr: test.TestValAddr,
 	}
 	res, err := client.StakingQueryClient.DelegatorUnbondingDelegations(context.Background(), &query)
 	assert.NoError(t, err)
@@ -116,11 +116,11 @@ func TestStakingDelegatorUnbondingDelagation(t *testing.T) {
 }
 
 func TestStaking(t *testing.T) {
-	client, err := gnfdclient.NewGreenfieldClient(test.TEST_RPC_ADDR, test.TEST_CHAIN_ID)
+	client, err := gnfdclient.NewGreenfieldClient(test.TestRPCAddr, test.TestChainID)
 	assert.NoError(t, err)
 
 	query := stakingtypes.QueryRedelegationsRequest{
-		DelegatorAddr: test.TEST_VAL_ADDR,
+		DelegatorAddr: test.TestValAddr,
 	}
 	res, err := client.StakingQueryClient.Redelegations(context.Background(), &query)
 	assert.NoError(t, err)
@@ -129,7 +129,7 @@ func TestStaking(t *testing.T) {
 }
 
 func TestStakingParams(t *testing.T) {
-	client, err := gnfdclient.NewGreenfieldClient(test.TEST_RPC_ADDR, test.TEST_CHAIN_ID)
+	client, err := gnfdclient.NewGreenfieldClient(test.TestRPCAddr, test.TestChainID)
 	assert.NoError(t, err)
 
 	query := stakingtypes.QueryParamsRequest{}
@@ -140,7 +140,7 @@ func TestStakingParams(t *testing.T) {
 }
 
 func TestStakingPool(t *testing.T) {
-	client, err := gnfdclient.NewGreenfieldClient(test.TEST_RPC_ADDR, test.TEST_CHAIN_ID)
+	client, err := gnfdclient.NewGreenfieldClient(test.TestRPCAddr, test.TestChainID)
 	assert.NoError(t, err)
 
 	query := stakingtypes.QueryPoolRequest{}
@@ -151,7 +151,7 @@ func TestStakingPool(t *testing.T) {
 }
 
 func TestStakingHistoricalInfo(t *testing.T) {
-	client, err := gnfdclient.NewGreenfieldClient(test.TEST_RPC_ADDR, test.TEST_CHAIN_ID)
+	client, err := gnfdclient.NewGreenfieldClient(test.TestRPCAddr, test.TestChainID)
 	assert.NoError(t, err)
 
 	query := stakingtypes.QueryHistoricalInfoRequest{

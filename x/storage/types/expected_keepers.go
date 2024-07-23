@@ -6,7 +6,6 @@ import (
 	time "time"
 
 	"cosmossdk.io/math"
-	sdkmath "cosmossdk.io/math"
 	"github.com/cometbft/cometbft/libs/log"
 	sdktypes "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -76,10 +75,10 @@ type PermissionKeeper interface {
 	GetGroupMemberByID(ctx sdktypes.Context, groupMemberID math.Uint) (*permtypes.GroupMember, bool)
 	ForceDeleteAccountPolicyForResource(ctx sdktypes.Context, maxDelete, deletedCount uint64, resourceType resource.ResourceType, resourceID math.Uint) (uint64, bool)
 	ForceDeleteGroupPolicyForResource(ctx sdktypes.Context, maxDelete, deletedCount uint64, resourceType resource.ResourceType, resourceID math.Uint) (uint64, bool)
-	ForceDeleteGroupMembers(ctx sdktypes.Context, maxDelete, deletedTotal uint64, groupId math.Uint) (uint64, bool)
+	ForceDeleteGroupMembers(ctx sdktypes.Context, maxDelete, deletedTotal uint64, groupID math.Uint) (uint64, bool)
 	ExistAccountPolicyForResource(ctx sdktypes.Context, resourceType resource.ResourceType, resourceID math.Uint) bool
 	ExistGroupPolicyForResource(ctx sdktypes.Context, resourceType resource.ResourceType, resourceID math.Uint) bool
-	ExistGroupMemberForGroup(ctx sdktypes.Context, groupId math.Uint) bool
+	ExistGroupMemberForGroup(ctx sdktypes.Context, groupID math.Uint) bool
 }
 
 type CrossChainKeeper interface {
@@ -109,26 +108,26 @@ type VirtualGroupKeeper interface {
 // StorageKeeper used by the cross-chain applications
 type StorageKeeper interface {
 	Logger(ctx sdktypes.Context) log.Logger
-	GetBucketInfoById(ctx sdktypes.Context, bucketId sdkmath.Uint) (*BucketInfo, bool)
+	GetBucketInfoById(ctx sdktypes.Context, bucketID math.Uint) (*BucketInfo, bool)
 	SetBucketInfo(ctx sdktypes.Context, bucketInfo *BucketInfo)
 	CreateBucket(
 		ctx sdktypes.Context, ownerAcc sdktypes.AccAddress, bucketName string,
-		primarySpAcc sdktypes.AccAddress, opts *CreateBucketOptions) (sdkmath.Uint, error)
+		primarySpAcc sdktypes.AccAddress, opts *CreateBucketOptions) (math.Uint, error)
 	DeleteBucket(ctx sdktypes.Context, operator sdktypes.AccAddress, bucketName string, opts DeleteBucketOptions) error
-	GetGroupInfoById(ctx sdktypes.Context, groupId sdkmath.Uint) (*GroupInfo, bool)
+	GetGroupInfoById(ctx sdktypes.Context, groupID math.Uint) (*GroupInfo, bool)
 	GetGroupInfo(ctx sdktypes.Context, ownerAddr sdktypes.AccAddress, groupName string) (*GroupInfo, bool)
 	DeleteGroup(ctx sdktypes.Context, operator sdktypes.AccAddress, groupName string, opts DeleteGroupOptions) error
 	CreateGroup(
 		ctx sdktypes.Context, owner sdktypes.AccAddress,
-		groupName string, opts CreateGroupOptions) (sdkmath.Uint, error)
+		groupName string, opts CreateGroupOptions) (math.Uint, error)
 	SetGroupInfo(ctx sdktypes.Context, groupInfo *GroupInfo)
 	UpdateGroupMember(ctx sdktypes.Context, operator sdktypes.AccAddress, groupInfo *GroupInfo, opts UpdateGroupMemberOptions) error
 	RenewGroupMember(ctx sdktypes.Context, operator sdktypes.AccAddress, groupInfo *GroupInfo, opts RenewGroupMemberOptions) error
-	GetObjectInfoById(ctx sdktypes.Context, objectId sdkmath.Uint) (*ObjectInfo, bool)
+	GetObjectInfoById(ctx sdktypes.Context, objectID math.Uint) (*ObjectInfo, bool)
 	SetObjectInfo(ctx sdktypes.Context, objectInfo *ObjectInfo)
 	DeleteObject(
 		ctx sdktypes.Context, operator sdktypes.AccAddress, bucketName, objectName string, opts DeleteObjectOptions) error
-	GetSourceTypeByChainId(ctx sdktypes.Context, chainId sdktypes.ChainID) (SourceType, error)
+	GetSourceTypeByChainId(ctx sdktypes.Context, chainID sdktypes.ChainID) (SourceType, error)
 
 	NormalizePrincipal(ctx sdktypes.Context, principal *permtypes.Principal)
 	ValidatePrincipal(ctx sdktypes.Context, resOwner sdktypes.AccAddress, principal *permtypes.Principal) error

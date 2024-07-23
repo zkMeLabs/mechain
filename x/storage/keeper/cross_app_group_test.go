@@ -169,7 +169,7 @@ func (s *TestSuite) TestFailAckUpdateGroupMember() {
 	app := keeper.NewGroupApp(storageKeeper)
 	ackPackage := types.UpdateGroupMemberSynPackage{
 		Operator:  sample.RandAccAddress(),
-		GroupId:   big.NewInt(10),
+		GroupID:   big.NewInt(10),
 		ExtraData: []byte("extra data"),
 	}
 
@@ -288,7 +288,7 @@ func (s *TestSuite) TestSynUpdateGroupMember() {
 	app := keeper.NewGroupApp(storageKeeper)
 	synPackage := types.UpdateGroupMemberSynPackage{
 		Operator:  sample.RandAccAddress(),
-		GroupId:   big.NewInt(10),
+		GroupID:   big.NewInt(10),
 		ExtraData: []byte("extra data"),
 	}
 

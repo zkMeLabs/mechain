@@ -63,7 +63,7 @@ func (s *TestSuite) TestAttest_Invalid() {
 				Submitter:         sample.RandAccAddressHex(),
 				SpOperatorAddress: sample.RandAccAddressHex(),
 			},
-			err: types.ErrInvalidChallengeId,
+			err: types.ErrInvalidChallengeID,
 		},
 		{
 			name: "not valid submitter",
@@ -113,9 +113,9 @@ func (s *TestSuite) TestAttest_Invalid() {
 
 func (s *TestSuite) TestAttest_Heartbeat() {
 	// prepare challenge
-	challengeId := s.challengeKeeper.GetParams(s.ctx).HeartbeatInterval
+	challengeID := s.challengeKeeper.GetParams(s.ctx).HeartbeatInterval
 	s.challengeKeeper.SaveChallenge(s.ctx, types.Challenge{
-		Id: challengeId,
+		Id: challengeID,
 	})
 
 	validSubmitter := sample.RandAccAddress()
@@ -170,7 +170,7 @@ func (s *TestSuite) TestAttest_Heartbeat() {
 
 	attestMsg := &types.MsgAttest{
 		Submitter:         validSubmitter.String(),
-		ChallengeId:       challengeId,
+		ChallengeId:       challengeID,
 		ObjectId:          math.NewUint(10),
 		SpOperatorAddress: sp.OperatorAddress,
 		VoteResult:        types.CHALLENGE_FAILED,
@@ -188,7 +188,7 @@ func (s *TestSuite) TestAttest_Heartbeat() {
 	attestedChallenges := s.challengeKeeper.GetAttestedChallenges(s.ctx)
 	found := false
 	for _, c := range attestedChallenges {
-		if c.Id == challengeId {
+		if c.Id == challengeID {
 			found = true
 		}
 	}

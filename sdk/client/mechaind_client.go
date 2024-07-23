@@ -175,10 +175,10 @@ func NewCustomGreenfieldClient(rpcAddr, chainId string, customDialer func(string
 	return newGreenfieldClient(rpcAddr, chainId, rpcClient, opts...)
 }
 
-func newGreenfieldClient(rpcAddr, chainId string, rpcClient *rpchttp.HTTP, opts ...GreenfieldClientOption) (*GreenfieldClient, error) {
+func newGreenfieldClient(rpcAddr, chainID string, rpcClient *rpchttp.HTTP, opts ...GreenfieldClientOption) (*GreenfieldClient, error) {
 	cdc := types.Codec()
 	client := &GreenfieldClient{
-		chainId: chainId,
+		chainId: chainID,
 		codec:   cdc,
 	}
 	client.tendermintClient = rpcClient

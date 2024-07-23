@@ -191,7 +191,7 @@ func (k Keeper) ListBuckets(goCtx context.Context, req *types.QueryListBucketsRe
 	store := ctx.KVStore(k.storeKey)
 	bucketStore := prefix.NewStore(store, types.BucketByIDPrefix)
 
-	pageRes, err := query.Paginate(bucketStore, req.Pagination, func(key, value []byte) error {
+	pageRes, err := query.Paginate(bucketStore, req.Pagination, func(_, value []byte) error {
 		var bucketInfo types.BucketInfo
 		k.cdc.MustUnmarshal(value, &bucketInfo)
 		bucketInfos = append(bucketInfos, &bucketInfo)
@@ -224,7 +224,7 @@ func (k Keeper) ListObjects(goCtx context.Context, req *types.QueryListObjectsRe
 	store := ctx.KVStore(k.storeKey)
 	objectPrefixStore := prefix.NewStore(store, types.GetObjectKeyOnlyBucketPrefix(req.BucketName))
 
-	pageRes, err := query.Paginate(objectPrefixStore, req.Pagination, func(key, value []byte) error {
+	pageRes, err := query.Paginate(objectPrefixStore, req.Pagination, func(_, value []byte) error {
 		objectInfo, found := k.GetObjectInfoById(ctx, k.objectSeq.DecodeSequence(value))
 		if found {
 			objectInfos = append(objectInfos, objectInfo)
@@ -262,7 +262,7 @@ func (k Keeper) ListObjectsByBucketId(goCtx context.Context, req *types.QueryLis
 	}
 	objectPrefixStore := prefix.NewStore(store, types.GetObjectKeyOnlyBucketPrefix(bucketInfo.BucketName))
 
-	pageRes, err := query.Paginate(objectPrefixStore, req.Pagination, func(key, value []byte) error {
+	pageRes, err := query.Paginate(objectPrefixStore, req.Pagination, func(_, value []byte) error {
 		u256Seq := sequence.Sequence[math.Uint]{}
 		objectInfo, found := k.GetObjectInfoById(ctx, u256Seq.DecodeSequence(value))
 		if found {

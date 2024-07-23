@@ -425,9 +425,9 @@ func (k msgServer) MirrorObject(goCtx context.Context, msg *types.MsgMirrorObjec
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	operator := sdk.MustAccAddressFromHex(msg.Operator)
-	destChainId := sdk.ChainID(msg.DestChainId)
+	destChainID := sdk.ChainID(msg.DestChainId)
 
-	if !k.crossChainKeeper.IsDestChainSupported(destChainId) {
+	if !k.crossChainKeeper.IsDestChainSupported(destChainID) {
 		return nil, errorsmod.Wrapf(types.ErrChainNotSupported, "dest chain id (%d) is not supported", msg.DestChainId)
 	}
 
@@ -457,7 +457,7 @@ func (k msgServer) MirrorObject(goCtx context.Context, msg *types.MsgMirrorObjec
 	owner := sdk.MustAccAddressFromHex(objectInfo.Owner)
 
 	mirrorPackage := types.MirrorObjectSynPackage{
-		Id:    objectInfo.Id.BigInt(),
+		ID:    objectInfo.Id.BigInt(),
 		Owner: owner,
 	}
 
@@ -472,11 +472,11 @@ func (k msgServer) MirrorObject(goCtx context.Context, msg *types.MsgMirrorObjec
 	}
 	encodedWrapPackage := wrapPackage.MustSerialize()
 
-	relayerFee := k.Keeper.MirrorObjectRelayerFee(ctx, destChainId)
-	ackRelayerFee := k.Keeper.MirrorObjectAckRelayerFee(ctx, destChainId)
+	relayerFee := k.Keeper.MirrorObjectRelayerFee(ctx, destChainID)
+	ackRelayerFee := k.Keeper.MirrorObjectAckRelayerFee(ctx, destChainID)
 
-	_, err = k.crossChainKeeper.CreateRawIBCPackageWithFee(ctx, destChainId,
-		types.ObjectChannelId, sdk.SynCrossChainPackageType, encodedWrapPackage, relayerFee, ackRelayerFee)
+	_, err = k.crossChainKeeper.CreateRawIBCPackageWithFee(ctx, destChainID,
+		types.ObjectChannelID, sdk.SynCrossChainPackageType, encodedWrapPackage, relayerFee, ackRelayerFee)
 	if err != nil {
 		return nil, err
 	}
@@ -490,7 +490,7 @@ func (k msgServer) MirrorObject(goCtx context.Context, msg *types.MsgMirrorObjec
 		BucketName:  objectInfo.BucketName,
 		ObjectName:  objectInfo.ObjectName,
 		ObjectId:    objectInfo.Id,
-		DestChainId: uint32(destChainId),
+		DestChainId: uint32(destChainID),
 	}); err != nil {
 		return nil, err
 	}
@@ -501,9 +501,9 @@ func (k msgServer) MirrorBucket(goCtx context.Context, msg *types.MsgMirrorBucke
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	operator := sdk.MustAccAddressFromHex(msg.Operator)
-	destChainId := sdk.ChainID(msg.DestChainId)
+	destChainID := sdk.ChainID(msg.DestChainId)
 
-	if !k.crossChainKeeper.IsDestChainSupported(destChainId) {
+	if !k.crossChainKeeper.IsDestChainSupported(destChainID) {
 		return nil, errorsmod.Wrapf(types.ErrChainNotSupported, "dest chain id (%d) is not supported", msg.DestChainId)
 	}
 
@@ -532,7 +532,7 @@ func (k msgServer) MirrorBucket(goCtx context.Context, msg *types.MsgMirrorBucke
 	}
 
 	mirrorPackage := types.MirrorBucketSynPackage{
-		Id:    bucketInfo.Id.BigInt(),
+		ID:    bucketInfo.Id.BigInt(),
 		Owner: owner,
 	}
 
@@ -547,11 +547,11 @@ func (k msgServer) MirrorBucket(goCtx context.Context, msg *types.MsgMirrorBucke
 	}
 	encodedWrapPackage := wrapPackage.MustSerialize()
 
-	relayerFee := k.Keeper.MirrorBucketRelayerFee(ctx, destChainId)
-	ackRelayerFee := k.Keeper.MirrorBucketAckRelayerFee(ctx, destChainId)
+	relayerFee := k.Keeper.MirrorBucketRelayerFee(ctx, destChainID)
+	ackRelayerFee := k.Keeper.MirrorBucketAckRelayerFee(ctx, destChainID)
 
-	_, err = k.crossChainKeeper.CreateRawIBCPackageWithFee(ctx, destChainId,
-		types.BucketChannelId, sdk.SynCrossChainPackageType, encodedWrapPackage, relayerFee, ackRelayerFee)
+	_, err = k.crossChainKeeper.CreateRawIBCPackageWithFee(ctx, destChainID,
+		types.BucketChannelID, sdk.SynCrossChainPackageType, encodedWrapPackage, relayerFee, ackRelayerFee)
 	if err != nil {
 		return nil, err
 	}
@@ -564,7 +564,7 @@ func (k msgServer) MirrorBucket(goCtx context.Context, msg *types.MsgMirrorBucke
 		Operator:    bucketInfo.Owner,
 		BucketName:  bucketInfo.BucketName,
 		BucketId:    bucketInfo.Id,
-		DestChainId: uint32(destChainId),
+		DestChainId: uint32(destChainID),
 	}); err != nil {
 		return nil, err
 	}
@@ -621,7 +621,7 @@ func (k msgServer) MirrorGroup(goCtx context.Context, msg *types.MsgMirrorGroup)
 	ackRelayerFee := k.Keeper.MirrorGroupAckRelayerFee(ctx, destChainId)
 
 	_, err = k.crossChainKeeper.CreateRawIBCPackageWithFee(ctx, destChainId,
-		types.GroupChannelId, sdk.SynCrossChainPackageType, encodedWrapPackage, relayerFee, ackRelayerFee)
+		types.GroupChannelID, sdk.SynCrossChainPackageType, encodedWrapPackage, relayerFee, ackRelayerFee)
 	if err != nil {
 		return nil, err
 	}

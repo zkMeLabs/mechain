@@ -5,7 +5,6 @@ run:
 
 linters:
   enable:
-    - depguard
     - dogsled
     # - dupl
     - errcheck
@@ -33,6 +32,8 @@ linters:
     - exportloopref
     - gofumpt
     - gomodguard
+  disable:
+    - depguard
 
 linters-settings:
   dogsled:
@@ -54,5 +55,6 @@ linters-settings:
             reason: "CVE-2020-26160" # Reason why the version constraint exists. (Optional)
 
 issues:
-  exclude:
-    - '.*\.pb\.go$'
+  exclude-files:
+    - ".*\\.pb\\.go$"
+    - ".*\\.pb\\.gw\\.go$"

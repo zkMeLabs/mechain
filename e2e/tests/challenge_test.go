@@ -361,7 +361,7 @@ func (s *ChallengeTestSuite) TestFailedAttest_ChallengeExpired() {
 	}
 	msgAttest.VoteAggSignature = voteAggSignature
 
-	s.SendTxBlockWithExpectErrorString(msgAttest, user, challengetypes.ErrInvalidChallengeId.Error())
+	s.SendTxBlockWithExpectErrorString(msgAttest, user, challengetypes.ErrInvalidChallengeID.Error())
 }
 
 func (s *ChallengeTestSuite) TestFailedAttest_ExceedMaxSlashAmount() {
@@ -474,16 +474,16 @@ func filterChallengeEventFromBlock(blockRes *ctypes.ResultBlockResults) []challe
 
 			challengeIdStr, objectIdStr, redundancyIndexStr, segmentIndexStr, spOpAddress := "", "", "", "", ""
 			for _, attr := range event.Attributes {
-				if string(attr.Key) == "challenge_id" {
+				if attr.Key == "challenge_id" {
 					challengeIdStr = strings.Trim(string(attr.Value), `"`)
-				} else if string(attr.Key) == objectIdStr {
-					objectIdStr = strings.Trim(string(attr.Value), `"`)
-				} else if string(attr.Key) == "redundancy_index" {
-					redundancyIndexStr = strings.Trim(string(attr.Value), `"`)
-				} else if string(attr.Key) == "segment_index" {
-					segmentIndexStr = strings.Trim(string(attr.Value), `"`)
-				} else if string(attr.Key) == "sp_operator_address" {
-					spOpAddress = strings.Trim(string(attr.Value), `"`)
+				} else if attr.Key == objectIdStr {
+					objectIdStr = strings.Trim(attr.Value, `"`)
+				} else if attr.Key == "redundancy_index" {
+					redundancyIndexStr = strings.Trim(attr.Value, `"`)
+				} else if attr.Key == "segment_index" {
+					segmentIndexStr = strings.Trim(attr.Value, `"`)
+				} else if attr.Key == "sp_operator_address" {
+					spOpAddress = strings.Trim(attr.Value, `"`)
 				}
 			}
 			challengeId, _ := strconv.ParseInt(challengeIdStr, 10, 64)

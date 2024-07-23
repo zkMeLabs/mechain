@@ -14,13 +14,13 @@ import (
 )
 
 func TestTmClient(t *testing.T) {
-	km, err := keys.NewPrivateKeyManager(test.TEST_PRIVATE_KEY)
+	km, err := keys.NewPrivateKeyManager(test.TestPrivateKey)
 	assert.NoError(t, err)
-	gnfdCli, err := NewGreenfieldClient(test.TEST_RPC_ADDR, test.TEST_CHAIN_ID, WithKeyManager(km), WithWebSocketClient())
+	gnfdCli, err := NewGreenfieldClient(test.TestRPCAddr, test.TestChainID, WithKeyManager(km), WithWebSocketClient())
 	assert.NoError(t, err)
-	to, err := sdk.AccAddressFromHexUnsafe(test.TEST_ADDR)
+	to, err := sdk.AccAddressFromHexUnsafe(test.TestAddr)
 	assert.NoError(t, err)
-	transfer := banktypes.NewMsgSend(km.GetAddr(), to, sdk.NewCoins(sdk.NewInt64Coin(test.TEST_TOKEN_NAME, 12)))
+	transfer := banktypes.NewMsgSend(km.GetAddr(), to, sdk.NewCoins(sdk.NewInt64Coin(test.TestTokenName, 12)))
 	response, err := gnfdCli.BroadcastTx(context.Background(), []sdk.Msg{transfer}, nil)
 	assert.NoError(t, err)
 	time.Sleep(2 * time.Second)

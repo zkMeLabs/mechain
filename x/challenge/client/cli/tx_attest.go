@@ -24,12 +24,12 @@ func CmdAttest() *cobra.Command {
 		Short: "Broadcast message attest",
 		Args:  cobra.ExactArgs(7),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			argChallengeId, err := strconv.ParseUint(args[0], 10, 64)
+			argChallengeID, err := strconv.ParseUint(args[0], 10, 64)
 			if err != nil {
 				return fmt.Errorf("challenge-id %s not a valid uint, please input a valid challenge-id", args[0])
 			}
 
-			argObjectId := sdkmath.NewUintFromString(args[1])
+			argObjectID := sdkmath.NewUintFromString(args[1])
 
 			argSpOperatorAddress := args[2]
 			_, err = sdk.AccAddressFromHexUnsafe(argSpOperatorAddress)
@@ -76,8 +76,8 @@ func CmdAttest() *cobra.Command {
 
 			msg := types.NewMsgAttest(
 				clientCtx.GetFromAddress(),
-				argChallengeId,
-				argObjectId,
+				argChallengeID,
+				argObjectID,
 				argSpOperatorAddress,
 				types.VoteResult(argVoteResult),
 				argChallengerAddress,

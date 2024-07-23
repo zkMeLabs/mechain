@@ -114,7 +114,7 @@ func (c *Contract) UpdateBucketInfo(ctx sdk.Context, evm *vm.EVM, contract *vm.C
 	if args.ChargedReadQuota.Int64() == -1 {
 		msg.ChargedReadQuota = nil
 	} else {
-		msg.ChargedReadQuota = &mechaincommon.UInt64Value{Value: uint64(args.ChargedReadQuota.Uint64())}
+		msg.ChargedReadQuota = &mechaincommon.UInt64Value{Value: args.ChargedReadQuota.Uint64()}
 	}
 	if err := msg.ValidateBasic(); err != nil {
 		return nil, err

@@ -14,7 +14,7 @@ func CmdListAutoSettleRecord() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "list-auto-settle-record",
 		Short: "list all auto-settle-record",
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(cmd *cobra.Command, _ []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
 			pageReq, err := client.ReadPageRequest(cmd.Flags())

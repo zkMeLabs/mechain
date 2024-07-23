@@ -37,16 +37,16 @@ func (k Keeper) RemoveSlashUntil(ctx sdk.Context, height uint64) {
 }
 
 // ExistsSlash check whether there exists recent slash for a pair of sp and object info or not
-func (k Keeper) ExistsSlash(ctx sdk.Context, spId uint32, objectId sdkmath.Uint) bool {
+func (k Keeper) ExistsSlash(ctx sdk.Context, spID uint32, objectID sdkmath.Uint) bool {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.SlashKeyPrefix)
 
-	return store.Has(getSlashKeyBytes(spId, objectId))
+	return store.Has(getSlashKeyBytes(spID, objectID))
 }
 
 // getSlashKeyBytes returns the byte representation of Slash key
-func getSlashKeyBytes(spId uint32, objectId sdkmath.Uint) []byte {
+func getSlashKeyBytes(spID uint32, objectId sdkmath.Uint) []byte {
 	idBytes := make([]byte, 4)
-	binary.BigEndian.PutUint32(idBytes, spId)
+	binary.BigEndian.PutUint32(idBytes, spID)
 	allBytes := make([]byte, 0, len(idBytes)+len(objectId.Bytes()))
 	copy(allBytes, idBytes)
 	allBytes = append(allBytes, objectId.Bytes()...)
@@ -64,12 +64,12 @@ func (k Keeper) SetSpSlashAmount(ctx sdk.Context, spID uint32, amount sdkmath.In
 	store.Set(idBz, amountBz)
 }
 
-func (k Keeper) GetSpSlashAmount(ctx sdk.Context, spId uint32) sdkmath.Int {
+func (k Keeper) GetSpSlashAmount(ctx sdk.Context, spID uint32) sdkmath.Int {
 	amount := sdkmath.ZeroInt()
 
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.SlashAmountKeyPrefix)
 	idBz := make([]byte, 4)
-	binary.BigEndian.PutUint32(idBz, spId)
+	binary.BigEndian.PutUint32(idBz, spID)
 	amountBz := store.Get(idBz)
 	if amountBz == nil {
 		return amount

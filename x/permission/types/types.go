@@ -237,9 +237,7 @@ func (s *Statement) ValidateRuntime(_ sdk.Context, resType resource.ResourceType
 		return ErrInvalidStatement.Wrap("unknown resource type.")
 	}
 
-	var bucketAllowedActions map[ActionType]bool
-
-	bucketAllowedActions = BucketAllowedActionsAfterPampas
+	bucketAllowedActions := BucketAllowedActionsAfterPampas
 
 	if resType == resource.RESOURCE_TYPE_BUCKET {
 		containsCreateObject := false

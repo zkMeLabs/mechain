@@ -13,7 +13,7 @@ var (
 	ErrNotStoredOnSp           = errors.Register(ModuleName, 5, "the object is not stored on the storage provider")
 	ErrExistsRecentSlash       = errors.Register(ModuleName, 6, "the storage provider and object info had been slashed recently")
 	ErrInvalidSegmentIndex     = errors.Register(ModuleName, 7, "the segment/piece index is invalid")
-	ErrInvalidChallengeId      = errors.Register(ModuleName, 8, "invalid challenge id")
+	ErrInvalidChallengeID      = errors.Register(ModuleName, 8, "invalid challenge id")
 	ErrInvalidVoteResult       = errors.Register(ModuleName, 9, "invalid vote result")
 	ErrInvalidVoteValidatorSet = errors.Register(ModuleName, 10, "invalid validator set")
 	ErrInvalidVoteAggSignature = errors.Register(ModuleName, 11, "invalid bls signature")

@@ -104,7 +104,6 @@ func (app *TransferOutApp) ExecuteFailAckPackage(ctx sdk.Context, appCtx *sdk.Cr
 			},
 		},
 	)
-
 	if err != nil {
 		app.bridgeKeeper.Logger(ctx).Error("send coins error", "err", err.Error())
 		return sdk.ExecuteResult{
@@ -129,7 +128,7 @@ func (app *TransferOutApp) ExecuteFailAckPackage(ctx sdk.Context, appCtx *sdk.Cr
 	return sdk.ExecuteResult{}
 }
 
-func (app *TransferOutApp) ExecuteSynPackage(ctx sdk.Context, header *sdk.CrossChainAppContext, payload []byte) sdk.ExecuteResult {
+func (app *TransferOutApp) ExecuteSynPackage(ctx sdk.Context, _ *sdk.CrossChainAppContext, _ []byte) sdk.ExecuteResult {
 	app.bridgeKeeper.Logger(ctx).Error("received transfer out syn package ")
 	return sdk.ExecuteResult{}
 }
@@ -146,12 +145,12 @@ func NewTransferInApp(bridgeKeeper Keeper) *TransferInApp {
 	}
 }
 
-func (app *TransferInApp) ExecuteAckPackage(ctx sdk.Context, header *sdk.CrossChainAppContext, payload []byte) sdk.ExecuteResult {
+func (app *TransferInApp) ExecuteAckPackage(ctx sdk.Context, _ *sdk.CrossChainAppContext, payload []byte) sdk.ExecuteResult {
 	app.bridgeKeeper.Logger(ctx).Error("received transfer in ack package", "payload", hex.EncodeToString(payload))
 	return sdk.ExecuteResult{}
 }
 
-func (app *TransferInApp) ExecuteFailAckPackage(ctx sdk.Context, header *sdk.CrossChainAppContext, payload []byte) sdk.ExecuteResult {
+func (app *TransferInApp) ExecuteFailAckPackage(ctx sdk.Context, _ *sdk.CrossChainAppContext, payload []byte) sdk.ExecuteResult {
 	app.bridgeKeeper.Logger(ctx).Error("received transfer in fail ack package", "payload", hex.EncodeToString(payload))
 	return sdk.ExecuteResult{}
 }

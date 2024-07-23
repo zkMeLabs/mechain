@@ -1796,7 +1796,7 @@ func (k Keeper) AppendDiscontinueObjectIds(ctx sdk.Context, timestamp int64, obj
 func (k Keeper) DeleteDiscontinueObjectsUntil(ctx sdk.Context, timestamp int64, maxObjectsToDelete uint64) (deleted uint64, err error) {
 	store := ctx.KVStore(k.storeKey)
 	key := storagetypes.GetDiscontinueObjectIdsKey(timestamp)
-	iterator := store.Iterator(storagetypes.DiscontinueObjectIdsPrefix, storetypes.InclusiveEndBytes(key))
+	iterator := store.Iterator(storagetypes.DiscontinueObjectIDsPrefix, storetypes.InclusiveEndBytes(key))
 	defer iterator.Close()
 
 	deleted = uint64(0)
@@ -1863,7 +1863,7 @@ func (k Keeper) ClearDiscontinueBucketCount(ctx sdk.Context) {
 
 func (k Keeper) appendDiscontinueBucketIds(ctx sdk.Context, timestamp int64, bucketIds []storagetypes.Uint) {
 	store := ctx.KVStore(k.storeKey)
-	key := storagetypes.GetDiscontinueBucketIdsKey(timestamp)
+	key := storagetypes.GetDiscontinueBucketIDsKey(timestamp)
 
 	bz := store.Get(key)
 	if bz != nil {
@@ -1877,8 +1877,8 @@ func (k Keeper) appendDiscontinueBucketIds(ctx sdk.Context, timestamp int64, buc
 
 func (k Keeper) DeleteDiscontinueBucketsUntil(ctx sdk.Context, timestamp int64, maxToDelete uint64) (uint64, error) {
 	store := ctx.KVStore(k.storeKey)
-	key := storagetypes.GetDiscontinueBucketIdsKey(timestamp)
-	iterator := store.Iterator(storagetypes.DiscontinueBucketIdsPrefix, storetypes.InclusiveEndBytes(key))
+	key := storagetypes.GetDiscontinueBucketIDsKey(timestamp)
+	iterator := store.Iterator(storagetypes.DiscontinueBucketIDsPrefix, storetypes.InclusiveEndBytes(key))
 	defer iterator.Close()
 
 	deleted := uint64(0)

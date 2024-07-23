@@ -74,9 +74,7 @@ const (
 	EnvPrefix = "EVMOS"
 )
 
-var (
-	AppConfig = servercfg.NewDefaultAppConfig(cmdcfg.BaseDenom)
-)
+var AppConfig = servercfg.NewDefaultAppConfig(cmdcfg.BaseDenom)
 
 func ParseAppConfigInPlace(cmd *cobra.Command) error {
 	newViper := viper.New()

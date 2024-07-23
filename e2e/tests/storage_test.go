@@ -18,7 +18,6 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	govtypesv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
-	v1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 	"github.com/prysmaticlabs/prysm/crypto/bls"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
@@ -743,12 +742,12 @@ func (s *StorageTestSuite) TestDiscontinueObject_Normal() {
 	// DiscontinueObject
 	msgDiscontinueObject := storagetypes.NewMsgDiscontinueObject(sp1.GcKey.GetAddr(), bucketName1, []sdkmath.Uint{objectId1}, "test")
 	txRes1 := s.SendTxBlock(sp1.GcKey, msgDiscontinueObject)
-	deleteAt1 := int64(filterDiscontinueObjectEventFromTx(txRes1).DeleteAt)
+	deleteAt1 := filterDiscontinueObjectEventFromTx(txRes1).DeleteAt
 
 	time.Sleep(3 * time.Second)
 	msgDiscontinueObject2 := storagetypes.NewMsgDiscontinueObject(sp2.GcKey.GetAddr(), bucketName2, []sdkmath.Uint{objectId2}, "test")
 	txRes2 := s.SendTxBlock(sp2.GcKey, msgDiscontinueObject2)
-	deleteAt2 := int64(filterDiscontinueObjectEventFromTx(txRes2).DeleteAt)
+	deleteAt2 := filterDiscontinueObjectEventFromTx(txRes2).DeleteAt
 
 	// Wait after the delete timestamp for first discontinue request
 	heightBefore := txRes1.Height
@@ -1148,8 +1147,8 @@ func filterDeleteObjectEventFromBlock(blockRes *ctypes.ResultBlockResults) []sto
 		if event.Type == "greenfield.storage.EventDeleteObject" {
 			objectIdStr := ""
 			for _, attr := range event.Attributes {
-				if string(attr.Key) == objectIDStr {
-					objectIdStr = strings.Trim(string(attr.Value), `"`)
+				if attr.Key == objectIDStr {
+					objectIdStr = strings.Trim(attr.Value, `"`)
 				}
 			}
 			objectId := sdkmath.NewUintFromString(objectIdStr)
@@ -1185,7 +1184,7 @@ func filterDeleteBucketEventFromBlock(blockRes *ctypes.ResultBlockResults) []sto
 		if event.Type == "greenfield.storage.EventDeleteBucket" {
 			bucketIdStr := ""
 			for _, attr := range event.Attributes {
-				if string(attr.Key) == "bucket_id" {
+				if attr.Key == "bucket_id" {
 					bucketIdStr = strings.Trim(string(attr.Value), `"`)
 				}
 			}
@@ -1203,7 +1202,7 @@ func filterDeleteBucketEventFromTx(txRes *sdk.TxResponse) storagetypes.EventDele
 	for _, event := range txRes.Events {
 		if event.Type == "greenfield.storage.EventDeleteBucket" {
 			for _, attr := range event.Attributes {
-				if string(attr.Key) == "bucket_id" {
+				if attr.Key == "bucket_id" {
 					bucketIdStr = strings.Trim(string(attr.Value), `"`)
 				}
 			}
@@ -1620,7 +1619,7 @@ func (s *StorageTestSuite) TestRejectSealObject() {
 	s.Require().True(strings.Contains(err.Error(), storagetypes.ErrNoSuchObject.Error()))
 }
 
-//func (s *StorageTestSuite) TestMigrationBucket() {
+// func (s *StorageTestSuite) TestMigrationBucket() {
 //	// construct bucket and object
 //	primarySP := s.BaseSuite.PickStorageProvider()
 //	gvg, found := primarySP.GetFirstGlobalVirtualGroup()
@@ -1714,7 +1713,7 @@ func (s *StorageTestSuite) TestUpdateStorageParams() {
 		Params:    updatedParams,
 	}
 
-	proposal, err := v1.NewMsgSubmitProposal([]sdk.Msg{msgUpdateParams}, sdk.NewCoins(sdk.NewCoin("azkme", sdk.NewInt(1000000000000000000))),
+	proposal, err := govtypesv1.NewMsgSubmitProposal([]sdk.Msg{msgUpdateParams}, sdk.NewCoins(sdk.NewCoin("azkme", sdk.NewInt(1000000000000000000))),
 		s.Validator.GetAddr().String(), "", "update storage params", "Test update storage params")
 	s.Require().NoError(err)
 	txBroadCastResp, err := s.SendTxBlockWithoutCheck(proposal, s.Validator)
@@ -1746,7 +1745,7 @@ func (s *StorageTestSuite) TestUpdateStorageParams() {
 		Memo:      "",
 		FeeAmount: sdk.NewCoins(sdk.NewCoin("azkme", sdk.NewInt(1000000000000000000))),
 	}
-	voteBroadCastResp, err := s.SendTxBlockWithoutCheckWithTxOpt(v1.NewMsgVote(s.Validator.GetAddr(), uint64(proposalID), v1.OptionYes, ""),
+	voteBroadCastResp, err := s.SendTxBlockWithoutCheckWithTxOpt(govtypesv1.NewMsgVote(s.Validator.GetAddr(), uint64(proposalID), govtypesv1.OptionYes, ""),
 		s.Validator, txOpt)
 	s.Require().NoError(err)
 	voteResp, err := s.WaitForTx(voteBroadCastResp.TxResponse.TxHash)
@@ -1760,20 +1759,20 @@ func (s *StorageTestSuite) TestUpdateStorageParams() {
 	// 3. query proposal until it is end voting period
 CheckProposalStatus:
 	for {
-		queryProposalResp, err := s.Client.Proposal(context.Background(), &v1.QueryProposalRequest{ProposalId: uint64(proposalID)})
+		queryProposalResp, err := s.Client.Proposal(context.Background(), &govtypesv1.QueryProposalRequest{ProposalId: uint64(proposalID)})
 		s.Require().NoError(err)
-		if queryProposalResp.Proposal.Status != v1.StatusVotingPeriod {
+		if queryProposalResp.Proposal.Status != govtypesv1.StatusVotingPeriod {
 			switch queryProposalResp.Proposal.Status {
-			case v1.StatusDepositPeriod:
+			case govtypesv1.StatusDepositPeriod:
 				s.T().Errorf("proposal deposit period")
 				return
-			case v1.StatusRejected:
+			case govtypesv1.StatusRejected:
 				s.T().Errorf("proposal rejected")
 				return
-			case v1.StatusPassed:
+			case govtypesv1.StatusPassed:
 				s.T().Logf("proposal passed")
 				break CheckProposalStatus
-			case v1.StatusFailed:
+			case govtypesv1.StatusFailed:
 				s.T().Errorf("proposal failed, reason %s", queryProposalResp.Proposal.FailedReason)
 				return
 			}
@@ -1965,7 +1964,7 @@ func (s *StorageTestSuite) TestMaintenanceSPCreateBucketAndObject() {
 	s.Require().Equal(sptypes.STATUS_IN_SERVICE, spResp.StorageProvider.Status)
 }
 
-//func (s *StorageTestSuite) TestRejectMigrateBucket() {
+// func (s *StorageTestSuite) TestRejectMigrateBucket() {
 //	// construct bucket and object
 //	primarySP := s.BaseSuite.PickStorageProvider()
 //	gvg, found := primarySP.GetFirstGlobalVirtualGroup()

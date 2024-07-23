@@ -42,8 +42,8 @@ func GetAbiEvent(name string) abi.Event {
 }
 
 type (
-	ApprovalJson    = Approval
-	PageRequestJson = PageRequest
+	ApprovalJSON    = Approval
+	PageRequestJSON = PageRequest
 )
 
 type CreateBucketArgs struct {
@@ -51,7 +51,7 @@ type CreateBucketArgs struct {
 	Visibility        uint8          `abi:"visibility"`
 	PaymentAddress    common.Address `abi:"paymentAddress"`
 	PrimarySpAddress  common.Address `abi:"primarySpAddress"`
-	PrimarySpApproval ApprovalJson   `abi:"primarySpApproval"`
+	PrimarySpApproval ApprovalJSON   `abi:"primarySpApproval"`
 	ChargedReadQuota  uint64         `abi:"chargedReadQuota"`
 }
 
@@ -80,7 +80,7 @@ func (args *UpdateBucketInfoArgs) Validate() error {
 }
 
 type ListBucketsArgs struct {
-	Pagination PageRequestJson `abi:"pagination"`
+	Pagination PageRequestJSON `abi:"pagination"`
 }
 
 // Validate ListBucketsArgs the args
@@ -103,7 +103,7 @@ type CreateObjectArgs struct {
 	PayloadSize       uint64       `abi:"payloadSize"`
 	Visibility        uint8        `abi:"visibility"`
 	ContentType       string       `abi:"contentType"`
-	PrimarySpApproval ApprovalJson `abi:"primarySpApproval"`
+	PrimarySpApproval ApprovalJSON `abi:"primarySpApproval"`
 	ExpectChecksums   []string     `abi:"expectChecksums"`
 	RedundancyType    uint8        `abi:"redundancyType"`
 }
@@ -114,7 +114,7 @@ func (args *CreateObjectArgs) Validate() error {
 }
 
 type ListObjectsArgs struct {
-	Pagination PageRequestJson `abi:"pagination"`
+	Pagination PageRequestJSON `abi:"pagination"`
 	BucketName string          `abi:"bucketName"`
 }
 
@@ -172,7 +172,7 @@ func (args *CreateGroupArgs) Validate() error {
 }
 
 type ListGroupsArgs struct {
-	Pagination PageRequestJson `abi:"pagination"`
+	Pagination PageRequestJSON `abi:"pagination"`
 	GroupOwner common.Address  `abi:"groupOwner"`
 }
 
@@ -278,12 +278,12 @@ func (args *HeadObjectArgs) Validate() error {
 }
 
 type HeadObjectByIdArgs struct {
-	ObjectId string `abi:"objectId"`
+	ObjectID string `abi:"objectId"`
 }
 
 // Validate HeadObjectByIdArgs the args
 func (args *HeadObjectByIdArgs) Validate() error {
-	if args.ObjectId == "" {
+	if args.ObjectID == "" {
 		return errors.New("empty object id")
 	}
 	return nil

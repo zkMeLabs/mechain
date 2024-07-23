@@ -303,7 +303,7 @@ func (suite *GenTxTestSuite) TestDeliverGenTxs() {
 				suite.Require().NoError(err)
 				genTxs[0] = genTx
 			},
-			func(tx abci.RequestDeliverTx) abci.ResponseDeliverTx {
+			func(_ abci.RequestDeliverTx) abci.ResponseDeliverTx {
 				return abci.ResponseDeliverTx{
 					Code:      sdkerrors.ErrUnauthorized.ABCICode(),
 					GasWanted: int64(10000000),

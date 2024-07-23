@@ -23,11 +23,11 @@ var (
 )
 
 const (
-	opWeightMsgSubmit = "op_weight_msg_submit" //no-lint:gosec
+	opWeightMsgSubmit = "op_weight_msg_submit" //nolint:gosec
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgSubmit int = 100
 
-	opWeightMsgAttest = "op_weight_msg_attest" //no-lint:gosec
+	opWeightMsgAttest = "op_weight_msg_attest" //nolint:gosec
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgAttest int = 100
 )

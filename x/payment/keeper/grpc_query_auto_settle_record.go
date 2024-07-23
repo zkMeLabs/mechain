@@ -26,7 +26,7 @@ func (k Keeper) AutoSettleRecords(c context.Context, req *types.QueryAutoSettleR
 	store := ctx.KVStore(k.storeKey)
 	autoSettleRecordStore := prefix.NewStore(store, types.AutoSettleRecordKeyPrefix)
 
-	pageRes, err := query.Paginate(autoSettleRecordStore, req.Pagination, func(key []byte, value []byte) error {
+	pageRes, err := query.Paginate(autoSettleRecordStore, req.Pagination, func(key []byte, _ []byte) error {
 		autoSettleRecord := types.ParseAutoSettleRecordKey(key)
 		autoSettleRecords = append(autoSettleRecords, autoSettleRecord)
 		return nil

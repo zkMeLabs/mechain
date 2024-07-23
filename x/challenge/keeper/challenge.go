@@ -13,7 +13,7 @@ import (
 // GetChallengeId gets the challenge id
 func (k Keeper) GetChallengeId(ctx sdk.Context) uint64 {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), []byte{})
-	bz := store.Get(types.ChallengeIdKey)
+	bz := store.Get(types.ChallengeIDKey)
 
 	if bz == nil {
 		return 0
@@ -27,7 +27,7 @@ func (k Keeper) setChallengeID(ctx sdk.Context, challengeId uint64) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), []byte{})
 	bz := make([]byte, 8)
 	binary.BigEndian.PutUint64(bz, challengeId)
-	store.Set(types.ChallengeIdKey, bz)
+	store.Set(types.ChallengeIDKey, bz)
 }
 
 // SaveChallenge set a specific challenge in the store
@@ -64,9 +64,9 @@ func (k Keeper) ExistsChallenge(ctx sdk.Context, challengeID uint64) bool {
 }
 
 // getChallengeKeyBytes returns the byte representation of challenge key
-func getChallengeKeyBytes(challengeId uint64) []byte {
+func getChallengeKeyBytes(challengeID uint64) []byte {
 	bz := make([]byte, 8)
-	binary.BigEndian.PutUint64(bz, challengeId)
+	binary.BigEndian.PutUint64(bz, challengeID)
 	return bz
 }
 
@@ -167,10 +167,10 @@ func (k Keeper) GetChallengeCountCurrentBlock(ctx sdk.Context) uint64 {
 }
 
 // setGetChallengeCountCurrentBlock sets the new count of challenge to the store
-func (k Keeper) setGetChallengeCountCurrentBlock(ctx sdk.Context, challengeId uint64) {
+func (k Keeper) setGetChallengeCountCurrentBlock(ctx sdk.Context, challengeID uint64) {
 	store := ctx.TransientStore(k.tKey)
 	bz := make([]byte, 8)
-	binary.BigEndian.PutUint64(bz, challengeId)
+	binary.BigEndian.PutUint64(bz, challengeID)
 	store.Set(types.CurrentBlockChallengeCountKey, bz)
 }
 

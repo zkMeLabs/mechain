@@ -220,7 +220,7 @@ func (s *VirtualGroupTestSuite) TestBasic() {
 	secondarySPIDs = append(secondarySPIDs, secondarySPIDs[0])
 	msgCreateGVG := virtualgroupmoduletypes.MsgCreateGlobalVirtualGroup{
 		StorageProvider: primarySP.OperatorKey.GetAddr().String(),
-		FamilyId:        virtualgroupmoduletypes.NoSpecifiedFamilyId,
+		FamilyId:        virtualgroupmoduletypes.NoSpecifiedFamilyID,
 		SecondarySpIds:  secondarySPIDs,
 		Deposit: sdk.Coin{
 			Denom:  s.Config.Denom,
@@ -239,7 +239,7 @@ func (s *VirtualGroupTestSuite) TestBasic() {
 	secondarySPIDs[len(secondarySPIDs)-1] = secondarySPIDs[0]
 	msgCreateGVG = virtualgroupmoduletypes.MsgCreateGlobalVirtualGroup{
 		StorageProvider: primarySP.OperatorKey.GetAddr().String(),
-		FamilyId:        virtualgroupmoduletypes.NoSpecifiedFamilyId,
+		FamilyId:        virtualgroupmoduletypes.NoSpecifiedFamilyID,
 		SecondarySpIds:  secondarySPIDs,
 		Deposit: sdk.Coin{
 			Denom:  s.Config.Denom,
@@ -461,7 +461,7 @@ func (s *VirtualGroupTestSuite) createObject() (string, string, *core.StoragePro
 	return bucketName, objectName, sp, secondarySps, gvg.FamilyId, gvg.Id
 }
 
-//func (s *VirtualGroupTestSuite) TestSPExit() {
+// func (s *VirtualGroupTestSuite) TestSPExit() {
 //	user := s.GenAndChargeAccounts(1, 1000000)[0]
 //	// 1, create a new storage provider
 //	sp := s.BaseSuite.CreateNewStorageProvider()
@@ -604,7 +604,7 @@ func (s *VirtualGroupTestSuite) createObject() (string, string, *core.StoragePro
 //	)
 //}
 
-//func (s *VirtualGroupTestSuite) TestSPExit_CreateAndDeleteBucket() {
+// func (s *VirtualGroupTestSuite) TestSPExit_CreateAndDeleteBucket() {
 //	user := s.GenAndChargeAccounts(1, 1000000)[0]
 //	bucketName := storagetestutil.GenRandomBucketName()
 //	objectName := storagetestutil.GenRandomObjectName()

@@ -116,7 +116,7 @@ func CmdListBuckets() *cobra.Command {
 		Use:   "list-buckets",
 		Short: "Query all list buckets",
 		Args:  cobra.ExactArgs(0),
-		RunE: func(cmd *cobra.Command, args []string) (err error) {
+		RunE: func(cmd *cobra.Command, _ []string) (err error) {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 			pageReq, err := client.ReadPageRequest(cmd.Flags())
 			if err != nil {

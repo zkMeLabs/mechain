@@ -21,7 +21,7 @@ const (
 	HeadGroupMethodName       = "headGroup"
 	HeadGroupMemberMethodName = "headGroupMember"
 	HeadObjectMethodName      = "headObject"
-	HeadObjectByIdMethodName  = "headObjectById"
+	HeadObjectByIDMethodName  = "headObjectById"
 )
 
 func (c *Contract) registerQuery() {
@@ -32,7 +32,7 @@ func (c *Contract) registerQuery() {
 	c.registerMethod(HeadGroupMethodName, 50_000, c.HeadGroup, "")
 	c.registerMethod(HeadGroupMemberMethodName, 50_000, c.HeadGroupMember, "")
 	c.registerMethod(HeadObjectMethodName, 50_000, c.HeadObject, "")
-	c.registerMethod(HeadObjectByIdMethodName, 50_000, c.HeadObjectById, "")
+	c.registerMethod(HeadObjectByIDMethodName, 50_000, c.HeadObjectById, "")
 }
 
 // ListBuckets queries the total buckets.
@@ -259,13 +259,13 @@ func (c *Contract) HeadObject(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract,
 
 // HeadObjectById queries the object's info.
 func (c *Contract) HeadObjectById(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract, _ bool) ([]byte, error) {
-	method := GetAbiMethod(HeadObjectByIdMethodName)
+	method := GetAbiMethod(HeadObjectByIDMethodName)
 	var args HeadObjectByIdArgs
 	if err := types.ParseMethodArgs(method, &args, contract.Input[4:]); err != nil {
 		return nil, err
 	}
 	msg := &storagetypes.QueryHeadObjectByIdRequest{
-		ObjectId: args.ObjectId,
+		ObjectId: args.ObjectID,
 	}
 	res, err := c.storageKeeper.HeadObjectById(ctx, msg)
 	if err != nil {

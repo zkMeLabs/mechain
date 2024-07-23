@@ -488,7 +488,7 @@ func TestMsgMirrorObject_ValidateBasic(t *testing.T) {
 }
 
 func TestMsgDiscontinueObject_ValidateBasic(t *testing.T) {
-	invalidObjectIds := [MaxDiscontinueObjects + 1]Uint{}
+	invalidObjectIDs := [MaxDiscontinueObjects + 1]Uint{}
 	tests := []struct {
 		name string
 		msg  MsgDiscontinueObject
@@ -538,7 +538,7 @@ func TestMsgDiscontinueObject_ValidateBasic(t *testing.T) {
 			msg: MsgDiscontinueObject{
 				Operator:   sample.RandAccAddressHex(),
 				BucketName: testBucketName,
-				ObjectIds:  invalidObjectIds[:],
+				ObjectIds:  invalidObjectIDs[:],
 				Reason:     "valid reason",
 			},
 			err: ErrInvalidObjectIDs,

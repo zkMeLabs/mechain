@@ -37,8 +37,8 @@ func (c *Contract) CreateGlobalVirtualGroup(ctx sdk.Context, evm *vm.EVM, contra
 
 	msg := &virtualgrouptypes.MsgCreateGlobalVirtualGroup{
 		StorageProvider: contract.Caller().String(),
-		FamilyId:        args.FamilyId,
-		SecondarySpIds:  args.SecondarySpIds,
+		FamilyId:        args.FamilyID,
+		SecondarySpIds:  args.SecondarySpIDs,
 		Deposit: sdk.Coin{
 			Denom:  args.Deposit.Denom,
 			Amount: sdk.NewIntFromBigInt(args.Deposit.Amount),
@@ -60,7 +60,7 @@ func (c *Contract) CreateGlobalVirtualGroup(ctx sdk.Context, evm *vm.EVM, contra
 		evm,
 		MustEvent(CreateGlobalVirtualGroupEventName),
 		[]common.Hash{common.BytesToHash(contract.Caller().Bytes())},
-		big.NewInt(int64(args.FamilyId)),
+		big.NewInt(int64(args.FamilyID)),
 	); err != nil {
 		return nil, err
 	}

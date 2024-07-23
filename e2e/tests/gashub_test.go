@@ -12,10 +12,8 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	gashubtypes "github.com/cosmos/cosmos-sdk/x/gashub/types"
-	gov "github.com/cosmos/cosmos-sdk/x/gov/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	govtypesv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
-	v1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 	"github.com/stretchr/testify/suite"
 
 	"github.com/evmos/evmos/v12/e2e/core"
@@ -39,7 +37,7 @@ func (s *GashubTestSuite) TestUpdateParams() {
 	// 1. submit MsgUpdateMsgGasParams
 	typeUrl := sdk.MsgTypeURL(&banktypes.MsgSend{})
 	msgSendGasParams := gashubtypes.NewMsgGasParamsWithFixedGas(typeUrl, 1e6)
-	msgUpdateGasParams := gashubtypes.NewMsgSetMsgGasParams(authtypes.NewModuleAddress(gov.ModuleName).String(), []*gashubtypes.MsgGasParams{msgSendGasParams}, nil)
+	msgUpdateGasParams := gashubtypes.NewMsgSetMsgGasParams(authtypes.NewModuleAddress(govtypes.ModuleName).String(), []*gashubtypes.MsgGasParams{msgSendGasParams}, nil)
 	msgProposal, err := govtypesv1.NewMsgSubmitProposal(
 		[]sdk.Msg{msgUpdateGasParams},
 		sdk.Coins{sdk.NewCoin(s.BaseSuite.Config.Denom, types.NewIntFromInt64WithDecimal(100, types.DecimalBNB))},
@@ -113,7 +111,7 @@ func (s *GashubTestSuite) TestUpdateGasHubParams() {
 		Params:    updatedParams,
 	}
 
-	proposal, err := v1.NewMsgSubmitProposal([]sdk.Msg{msgUpdateParams}, sdk.NewCoins(sdk.NewCoin("azkme", sdk.NewInt(1000000000000000000))),
+	proposal, err := govtypesv1.NewMsgSubmitProposal([]sdk.Msg{msgUpdateParams}, sdk.NewCoins(sdk.NewCoin("azkme", sdk.NewInt(1000000000000000000))),
 		s.Validator.GetAddr().String(), "", "update GasHub params", "Test update GasHub params")
 	s.Require().NoError(err)
 	txBroadCastResp, err := s.SendTxBlockWithoutCheck(proposal, s.Validator)
@@ -145,7 +143,7 @@ func (s *GashubTestSuite) TestUpdateGasHubParams() {
 		Memo:      "",
 		FeeAmount: sdk.NewCoins(sdk.NewCoin("azkme", sdk.NewInt(1000000000000000000))),
 	}
-	voteBroadCastResp, err := s.SendTxBlockWithoutCheckWithTxOpt(v1.NewMsgVote(s.Validator.GetAddr(), uint64(proposalID), v1.OptionYes, ""),
+	voteBroadCastResp, err := s.SendTxBlockWithoutCheckWithTxOpt(govtypesv1.NewMsgVote(s.Validator.GetAddr(), uint64(proposalID), govtypesv1.OptionYes, ""),
 		s.Validator, txOpt)
 	s.Require().NoError(err)
 	voteResp, err := s.WaitForTx(voteBroadCastResp.TxResponse.TxHash)
@@ -159,20 +157,20 @@ func (s *GashubTestSuite) TestUpdateGasHubParams() {
 	// 3. query proposal until it is end voting period
 CheckProposalStatus:
 	for {
-		queryProposalResp, err := s.Client.Proposal(context.Background(), &v1.QueryProposalRequest{ProposalId: uint64(proposalID)})
+		queryProposalResp, err := s.Client.Proposal(context.Background(), &govtypesv1.QueryProposalRequest{ProposalId: uint64(proposalID)})
 		s.Require().NoError(err)
-		if queryProposalResp.Proposal.Status != v1.StatusVotingPeriod {
+		if queryProposalResp.Proposal.Status != govtypesv1.StatusVotingPeriod {
 			switch queryProposalResp.Proposal.Status {
-			case v1.StatusDepositPeriod:
+			case govtypesv1.StatusDepositPeriod:
 				s.T().Errorf("proposal deposit period")
 				return
-			case v1.StatusRejected:
+			case govtypesv1.StatusRejected:
 				s.T().Errorf("proposal rejected")
 				return
-			case v1.StatusPassed:
+			case govtypesv1.StatusPassed:
 				s.T().Logf("proposal passed")
 				break CheckProposalStatus
-			case v1.StatusFailed:
+			case govtypesv1.StatusFailed:
 				s.T().Errorf("proposal failed, reason %s", queryProposalResp.Proposal.FailedReason)
 				return
 			}

@@ -702,7 +702,7 @@ Examples:
 			case types.STATUS_IN_MAINTENANCE.String():
 				msg = types.NewMsgUpdateStorageProviderStatus(spAddress, types.STATUS_IN_MAINTENANCE, duration)
 			default:
-				return fmt.Errorf("status %s is not expected\n", newStatus)
+				return fmt.Errorf("status %s is not expected", newStatus)
 			}
 			if err := msg.ValidateBasic(); err != nil {
 				return err

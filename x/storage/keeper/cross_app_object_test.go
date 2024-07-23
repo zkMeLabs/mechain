@@ -71,7 +71,7 @@ func (s *TestSuite) TestFailAckMirrorObject() {
 	app := keeper.NewObjectApp(storageKeeper)
 	ackPackage := types.MirrorObjectSynPackage{
 		Owner: sample.RandAccAddress(),
-		Id:    big.NewInt(10),
+		ID:    big.NewInt(10),
 	}
 
 	serializedAckPackage, err := ackPackage.Serialize()
@@ -122,7 +122,7 @@ func (s *TestSuite) TestSynMirrorObject() {
 	app := keeper.NewObjectApp(storageKeeper)
 	synPackage := types.MirrorObjectSynPackage{
 		Owner: sample.RandAccAddress(),
-		Id:    big.NewInt(10),
+		ID:    big.NewInt(10),
 	}
 
 	serializedSynPackage, err := synPackage.Serialize()

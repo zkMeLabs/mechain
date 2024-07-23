@@ -55,7 +55,7 @@ func EndBlocker(ctx sdk.Context, keeper k.Keeper) {
 		seed := k.SeedFromRandaoMix(ctx.BlockHeader().RandaoMix, iteration)
 
 		// random object info
-		objectId := k.RandomObjectId(seed, objectCount)
+		objectId := k.RandomObjectID(seed, objectCount)
 		objectInfo, found := keeper.StorageKeeper.GetObjectInfoById(ctx, objectId)
 		if !found || objectInfo.ObjectStatus != storagetypes.OBJECT_STATUS_SEALED {
 			continue
@@ -67,7 +67,7 @@ func EndBlocker(ctx sdk.Context, keeper k.Keeper) {
 		}
 
 		// random redundancy index (sp address)
-		var spOperatorId uint32
+		var spOperatorID uint32
 
 		bucket, found := keeper.StorageKeeper.GetBucketInfo(ctx, objectInfo.BucketName)
 		if !found {
@@ -79,12 +79,12 @@ func EndBlocker(ctx sdk.Context, keeper k.Keeper) {
 		}
 		redundancyIndex := k.RandomRedundancyIndex(seed, uint64(len(gvg.SecondarySpIds)+1))
 		if redundancyIndex == types.RedundancyIndexPrimary { // primary sp
-			spOperatorId = gvg.PrimarySpId
+			spOperatorID = gvg.PrimarySpId
 		} else {
-			spOperatorId = gvg.SecondarySpIds[redundancyIndex]
+			spOperatorID = gvg.SecondarySpIds[redundancyIndex]
 		}
 
-		sp, found := keeper.SpKeeper.GetStorageProvider(ctx, spOperatorId)
+		sp, found := keeper.SpKeeper.GetStorageProvider(ctx, spOperatorID)
 		if !found {
 			continue
 		}
@@ -92,7 +92,7 @@ func EndBlocker(ctx sdk.Context, keeper k.Keeper) {
 			continue
 		}
 
-		mapKey := fmt.Sprintf("%d-%s", spOperatorId, objectInfo.Id.String())
+		mapKey := fmt.Sprintf("%d-%s", spOperatorID, objectInfo.Id.String())
 		if _, ok := objectMap[mapKey]; ok { // already generated for this pair
 			continue
 		}
@@ -114,13 +114,13 @@ func EndBlocker(ctx sdk.Context, keeper k.Keeper) {
 
 		objectMap[mapKey] = struct{}{}
 
-		challengeId := keeper.GetChallengeId(ctx) + 1
+		challengeID := keeper.GetChallengeId(ctx) + 1
 		keeper.SaveChallenge(ctx, types.Challenge{
-			Id:            challengeId,
+			Id:            challengeID,
 			ExpiredHeight: expiredHeight,
 		})
 		events = append(events, &types.EventStartChallenge{
-			ChallengeId:       challengeId,
+			ChallengeId:       challengeID,
 			ObjectId:          objectInfo.Id,
 			SegmentIndex:      segmentIndex,
 			SpId:              sp.Id,
