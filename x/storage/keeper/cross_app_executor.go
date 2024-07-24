@@ -74,7 +74,7 @@ func (app *ExecutorApp) ExecuteAckPackage(ctx sdk.Context, _ *sdk.CrossChainAppC
 	return sdk.ExecuteResult{}
 }
 
-func (app *ExecutorApp) ExecuteFailAckPackage(ctx sdk.Context, _ *sdk.CrossChainAppContext, payload []byte) sdk.ExecuteResult {
+func (app *ExecutorApp) ExecuteFailAckPackage(ctx sdk.Context, _ *sdk.CrossChainAppContext, _ []byte) sdk.ExecuteResult {
 	app.sKeeper.Logger(ctx).Error("received execute fail ack package ")
 	return sdk.ExecuteResult{}
 }

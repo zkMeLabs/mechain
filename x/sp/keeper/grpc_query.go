@@ -23,7 +23,7 @@ func (k Keeper) StorageProviders(goCtx context.Context, req *types.QueryStorageP
 	store := ctx.KVStore(k.storeKey)
 	spStore := prefix.NewStore(store, types.StorageProviderKey)
 
-	sps, pageRes, err := query.GenericFilteredPaginate(k.cdc, spStore, req.Pagination, func(key []byte, val *types.StorageProvider) (*types.StorageProvider, error) {
+	sps, pageRes, err := query.GenericFilteredPaginate(k.cdc, spStore, req.Pagination, func(_ []byte, val *types.StorageProvider) (*types.StorageProvider, error) {
 		return val, nil
 	}, func() *types.StorageProvider {
 		return &types.StorageProvider{}

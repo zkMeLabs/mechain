@@ -123,7 +123,7 @@ func GetGroupByIDKey(groupID math.Uint) []byte {
 }
 
 // GetDiscontinueObjectIdsKey return discontinue object store key
-func GetDiscontinueObjectIdsKey(timestamp int64) []byte {
+func GetDiscontinueObjectIdsKey(timestamp int64) []byte { //nolint: revive
 	bz := make([]byte, 8)
 	binary.BigEndian.PutUint64(bz, uint64(timestamp))
 	return append(DiscontinueObjectIDsPrefix, bz...)

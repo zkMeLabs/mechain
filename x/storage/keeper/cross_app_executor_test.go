@@ -17,7 +17,7 @@ import (
 func TestDecodeMsg(t *testing.T) {
 	operator := sample.RandAccAddress()
 	bucketName := string(sample.RandStr(10))
-	msg := types.NewMsgMigrateBucket(operator, bucketName, rand.Uint32())
+	msg := types.NewMsgMigrateBucket(operator, bucketName, rand.Uint32()) //nolint: gosec
 	msgBz, err := proto.Marshal(msg)
 	if err != nil {
 		t.Fatal(err)

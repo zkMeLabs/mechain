@@ -15,8 +15,8 @@ func (s *TestSuite) TestPruneAccountPolicies() {
 	now := s.ctx.BlockTime()
 	oneDayAfter := now.AddDate(0, 0, 1)
 
-	resourceIds := []math.Uint{math.NewUint(rand.Uint64()), math.NewUint(rand.Uint64()), math.NewUint(rand.Uint64())}
-	policyIds := make([]math.Uint, 3)
+	resourceIDs := []math.Uint{math.NewUint(rand.Uint64()), math.NewUint(rand.Uint64()), math.NewUint(rand.Uint64())} //nolint: gosec
+	policyIDs := make([]math.Uint, 3)
 
 	// policy without expiry
 	policy := types.Policy{
@@ -25,30 +25,30 @@ func (s *TestSuite) TestPruneAccountPolicies() {
 			Value: sample.RandAccAddressHex(),
 		},
 		ResourceType:   1,
-		ResourceId:     resourceIds[0],
+		ResourceId:     resourceIDs[0],
 		Statements:     nil,
 		ExpirationTime: nil,
 	}
 	policyID, err := s.permissionKeeper.PutPolicy(s.ctx, &policy)
 	s.NoError(err)
-	policyIds[0] = policyID
+	policyIDs[0] = policyID
 
-	policy.ResourceId = resourceIds[2]
+	policy.ResourceId = resourceIDs[2]
 	policyID, err = s.permissionKeeper.PutPolicy(s.ctx, &policy)
 	s.NoError(err)
-	policyIds[2] = policyID
+	policyIDs[2] = policyID
 
 	// policy with expiry
-	policy.ResourceId = resourceIds[1]
+	policy.ResourceId = resourceIDs[1]
 	policy.ExpirationTime = &oneDayAfter
 	policyID, err = s.permissionKeeper.PutPolicy(s.ctx, &policy)
 	s.NoError(err)
-	policyIds[1] = policyID
+	policyIDs[1] = policyID
 
 	testCases := []struct {
 		name       string
 		ctx        sdk.Context
-		resourceId math.Uint
+		resourceID math.Uint
 		policyId   math.Uint
 		found      bool
 		preRun     func()
@@ -57,50 +57,50 @@ func (s *TestSuite) TestPruneAccountPolicies() {
 		{
 			name:       "no expiry and no prune",
 			ctx:        s.ctx.WithBlockTime(oneDayAfter),
-			resourceId: resourceIds[0],
-			policyId:   policyIds[0],
+			resourceID: resourceIDs[0],
+			policyId:   policyIDs[0],
 			found:      true,
 		},
 		{
 			name:       "expiry and no prune",
 			ctx:        s.ctx.WithBlockTime(oneDayAfter),
-			resourceId: resourceIds[1],
-			policyId:   policyIds[1],
+			resourceID: resourceIDs[1],
+			policyId:   policyIDs[1],
 			found:      true,
 		},
 		{
 			name:       "expiry and prune",
 			ctx:        s.ctx.WithBlockTime(oneDayAfter.Add(time.Second)),
-			resourceId: resourceIds[1],
-			policyId:   policyIds[1],
+			resourceID: resourceIDs[1],
+			policyId:   policyIDs[1],
 		},
 		{
 			name:       "update from no expiry to expiry and prune",
 			ctx:        s.ctx.WithBlockTime(oneDayAfter.Add(time.Second)),
-			resourceId: resourceIds[0],
-			policyId:   policyIds[0],
+			resourceID: resourceIDs[0],
+			policyId:   policyIDs[0],
 			preRun: func() {
-				oldPolicy, found := s.permissionKeeper.GetPolicyByID(s.ctx, policyIds[0])
+				oldPolicy, found := s.permissionKeeper.GetPolicyByID(s.ctx, policyIDs[0])
 				s.True(found)
 				oldPolicy.ExpirationTime = &oneDayAfter
-				newId, err := s.permissionKeeper.PutPolicy(s.ctx, oldPolicy)
+				newID, err := s.permissionKeeper.PutPolicy(s.ctx, oldPolicy)
 				s.NoError(err)
-				s.Equal(policyIds[0], newId)
+				s.Equal(policyIDs[0], newID)
 			},
 		},
 		{
 			name:       "update from expiry to no expiry and no prune",
 			ctx:        s.ctx.WithBlockTime(oneDayAfter.Add(time.Second)),
-			resourceId: resourceIds[2],
-			policyId:   policyIds[2],
+			resourceID: resourceIDs[2],
+			policyId:   policyIDs[2],
 			found:      true,
 			preRun: func() {
-				oldPolicy, found := s.permissionKeeper.GetPolicyByID(s.ctx, policyIds[2])
+				oldPolicy, found := s.permissionKeeper.GetPolicyByID(s.ctx, policyIDs[2])
 				s.True(found)
 				oldPolicy.ExpirationTime = nil
 				newID, err := s.permissionKeeper.PutPolicy(s.ctx, oldPolicy)
 				s.NoError(err)
-				s.Equal(policyIds[2], newID)
+				s.Equal(policyIDs[2], newID)
 			},
 		},
 	}
@@ -127,8 +127,8 @@ func (s *TestSuite) TestPruneGroupPolicies() {
 	now := s.ctx.BlockTime()
 	oneDayAfter := now.AddDate(0, 0, 1)
 
-	resourceIds := []math.Uint{math.NewUint(rand.Uint64()), math.NewUint(rand.Uint64()), math.NewUint(rand.Uint64())}
-	policyIds := make([]math.Uint, 3)
+	resourceIDs := []math.Uint{math.NewUint(rand.Uint64()), math.NewUint(rand.Uint64()), math.NewUint(rand.Uint64())} //nolint: gosec
+	policyIDs := make([]math.Uint, 3)
 
 	// member without expiry
 	policy := types.Policy{
@@ -137,31 +137,31 @@ func (s *TestSuite) TestPruneGroupPolicies() {
 			Value: sample.RandAccAddressHex(),
 		},
 		ResourceType:   1,
-		ResourceId:     resourceIds[0],
+		ResourceId:     resourceIDs[0],
 		Statements:     nil,
 		ExpirationTime: nil,
 	}
 	policyID, err := s.permissionKeeper.PutPolicy(s.ctx, &policy)
 	s.NoError(err)
-	policyIds[0] = policyID
+	policyIDs[0] = policyID
 
-	policy.ResourceId = resourceIds[2]
+	policy.ResourceId = resourceIDs[2]
 	policyID, err = s.permissionKeeper.PutPolicy(s.ctx, &policy)
 	s.NoError(err)
-	policyIds[2] = policyID
+	policyIDs[2] = policyID
 
 	// member with expiry
-	policy.ResourceId = resourceIds[1]
+	policy.ResourceId = resourceIDs[1]
 	policy.ExpirationTime = &oneDayAfter
 	policyID, err = s.permissionKeeper.PutPolicy(s.ctx, &policy)
 	s.NoError(err)
-	policyIds[1] = policyID
+	policyIDs[1] = policyID
 
 	testCases := []struct {
 		name       string
 		ctx        sdk.Context
-		resourceId math.Uint
-		policyId   math.Uint
+		resourceID math.Uint
+		policyID   math.Uint
 		found      bool
 		preRun     func()
 		postRun    func()
@@ -169,50 +169,50 @@ func (s *TestSuite) TestPruneGroupPolicies() {
 		{
 			name:       "no expiry and no prune",
 			ctx:        s.ctx.WithBlockTime(oneDayAfter),
-			resourceId: resourceIds[0],
-			policyId:   policyIds[0],
+			resourceID: resourceIDs[0],
+			policyID:   policyIDs[0],
 			found:      true,
 		},
 		{
 			name:       "expiry and no prune",
 			ctx:        s.ctx.WithBlockTime(oneDayAfter),
-			resourceId: resourceIds[1],
-			policyId:   policyIds[1],
+			resourceID: resourceIDs[1],
+			policyID:   policyIDs[1],
 			found:      true,
 		},
 		{
 			name:       "expiry and prune",
 			ctx:        s.ctx.WithBlockTime(oneDayAfter.Add(time.Second)),
-			resourceId: resourceIds[1],
-			policyId:   policyIds[1],
+			resourceID: resourceIDs[1],
+			policyID:   policyIDs[1],
 		},
 		{
 			name:       "update from no expiry to expiry and prune",
 			ctx:        s.ctx.WithBlockTime(oneDayAfter.Add(time.Second)),
-			resourceId: resourceIds[0],
-			policyId:   policyIds[0],
+			resourceID: resourceIDs[0],
+			policyID:   policyIDs[0],
 			preRun: func() {
-				oldPolicy, found := s.permissionKeeper.GetPolicyByID(s.ctx, policyIds[0])
+				oldPolicy, found := s.permissionKeeper.GetPolicyByID(s.ctx, policyIDs[0])
 				s.True(found)
 				oldPolicy.ExpirationTime = &oneDayAfter
-				newId, err := s.permissionKeeper.PutPolicy(s.ctx, oldPolicy)
+				newID, err := s.permissionKeeper.PutPolicy(s.ctx, oldPolicy)
 				s.NoError(err)
-				s.Equal(policyIds[0], newId)
+				s.Equal(policyIDs[0], newID)
 			},
 		},
 		{
 			name:       "update from expiry to no expiry and no prune",
 			ctx:        s.ctx.WithBlockTime(oneDayAfter.Add(time.Second)),
-			resourceId: resourceIds[2],
-			policyId:   policyIds[2],
+			resourceID: resourceIDs[2],
+			policyID:   policyIDs[2],
 			found:      true,
 			preRun: func() {
-				oldPolicy, found := s.permissionKeeper.GetPolicyByID(s.ctx, policyIds[2])
+				oldPolicy, found := s.permissionKeeper.GetPolicyByID(s.ctx, policyIDs[2])
 				s.True(found)
 				oldPolicy.ExpirationTime = nil
-				newId, err := s.permissionKeeper.PutPolicy(s.ctx, oldPolicy)
+				newID, err := s.permissionKeeper.PutPolicy(s.ctx, oldPolicy)
 				s.NoError(err)
-				s.Equal(policyIds[2], newId)
+				s.Equal(policyIDs[2], newID)
 			},
 		},
 	}
@@ -223,10 +223,10 @@ func (s *TestSuite) TestPruneGroupPolicies() {
 			if tc.preRun != nil {
 				tc.preRun()
 			}
-			_, found := s.permissionKeeper.GetPolicyByID(tc.ctx, tc.policyId)
+			_, found := s.permissionKeeper.GetPolicyByID(tc.ctx, tc.policyID)
 			s.True(found)
 			s.permissionKeeper.RemoveExpiredPolicies(tc.ctx)
-			_, found = s.permissionKeeper.GetPolicyByID(tc.ctx, tc.policyId)
+			_, found = s.permissionKeeper.GetPolicyByID(tc.ctx, tc.policyID)
 			s.Equal(tc.found, found)
 			if tc.postRun != nil {
 				tc.postRun()

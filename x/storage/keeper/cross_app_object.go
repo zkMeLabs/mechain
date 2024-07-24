@@ -119,9 +119,9 @@ func (app *ObjectApp) ExecuteSynPackage(ctx sdk.Context, appCtx *sdk.CrossChainA
 func (app *ObjectApp) handleMirrorObjectAckPackage(ctx sdk.Context, appCtx *sdk.CrossChainAppContext, ackPackage *types.MirrorObjectAckPackage) sdk.ExecuteResult {
 	app.storageKeeper.Logger(ctx).Error("received mirror object ack package ")
 
-	objectInfo, found := app.storageKeeper.GetObjectInfoById(ctx, math.NewUintFromBigInt(ackPackage.Id))
+	objectInfo, found := app.storageKeeper.GetObjectInfoById(ctx, math.NewUintFromBigInt(ackPackage.ID))
 	if !found {
-		app.storageKeeper.Logger(ctx).Error("object does not exist", "object id", ackPackage.Id.String())
+		app.storageKeeper.Logger(ctx).Error("object does not exist", "object id", ackPackage.ID.String())
 		return sdk.ExecuteResult{
 			Err: types.ErrNoSuchObject,
 		}
@@ -185,7 +185,7 @@ func (app *ObjectApp) handleMirrorObjectFailAckPackage(ctx sdk.Context, appCtx *
 	return sdk.ExecuteResult{}
 }
 
-func (app *ObjectApp) handleMirrorObjectSynPackage(ctx sdk.Context, header *sdk.CrossChainAppContext, synPackage *types.MirrorObjectSynPackage) sdk.ExecuteResult {
+func (app *ObjectApp) handleMirrorObjectSynPackage(_ sdk.Context, _ *sdk.CrossChainAppContext, _ *types.MirrorObjectSynPackage) sdk.ExecuteResult {
 	return sdk.ExecuteResult{}
 }
 
@@ -248,14 +248,14 @@ func (app *ObjectApp) handleDeleteObjectSynPackage(ctx sdk.Context, appCtx *sdk.
 	}
 }
 
-func (app *ObjectApp) handleDeleteObjectAckPackage(ctx sdk.Context, appCtx *sdk.CrossChainAppContext, ackPackage *types.DeleteObjectAckPackage) sdk.ExecuteResult {
+func (app *ObjectApp) handleDeleteObjectAckPackage(ctx sdk.Context, _ *sdk.CrossChainAppContext, _ *types.DeleteObjectAckPackage) sdk.ExecuteResult {
 	app.storageKeeper.Logger(ctx).Error("received delete object ack package ")
 
-	return sdk.ExecuteResult{}
+	return sdk.ExecuteResult{} //nolint
 }
 
-func (app *ObjectApp) handleDeleteObjectFailAckPackage(ctx sdk.Context, appCtx *sdk.CrossChainAppContext, ackPackage *types.DeleteObjectSynPackage) sdk.ExecuteResult {
+func (app *ObjectApp) handleDeleteObjectFailAckPackage(ctx sdk.Context, _ *sdk.CrossChainAppContext, _ *types.DeleteObjectSynPackage) sdk.ExecuteResult {
 	app.storageKeeper.Logger(ctx).Error("received delete object fail ack package ")
 
-	return sdk.ExecuteResult{}
+	return sdk.ExecuteResult{} //nolint
 }

@@ -183,7 +183,7 @@ func (msg *MsgCreateBucket) ValidateBasic() error {
 	}
 
 	if msg.Visibility == VISIBILITY_TYPE_UNSPECIFIED {
-		return errors.Wrapf(ErrInvalidVisibility, "unspecified visibility is not allowed.")
+		return errors.Wrapf(ErrInvalidVisibility, "unspecified visibility is not allowed")
 	}
 
 	err = s3util.CheckValidBucketName(msg.BucketName)
@@ -402,7 +402,7 @@ func (msg *MsgCreateObject) ValidateBasic() error {
 	}
 
 	if msg.PrimarySpApproval == nil {
-		return errors.Wrapf(ErrInvalidApproval, "empty approvals are not allowed.")
+		return errors.Wrapf(ErrInvalidApproval, "empty approvals are not allowed")
 	}
 
 	err = s3util.CheckValidBucketName(msg.BucketName)
@@ -426,7 +426,7 @@ func (msg *MsgCreateObject) ValidateBasic() error {
 	}
 
 	if msg.Visibility == VISIBILITY_TYPE_UNSPECIFIED {
-		return errors.Wrapf(ErrInvalidVisibility, "Unspecified visibility is not allowed.")
+		return errors.Wrapf(ErrInvalidVisibility, "unspecified visibility is not allowed")
 	}
 	return nil
 }
@@ -724,7 +724,7 @@ func (msg *MsgCopyObject) ValidateBasic() error {
 	}
 
 	if msg.DstPrimarySpApproval == nil {
-		return errors.Wrapf(ErrInvalidApproval, "Empty approvals are not allowed.")
+		return errors.Wrapf(ErrInvalidApproval, "empty approvals are not allowed")
 	}
 
 	err = s3util.CheckValidBucketName(msg.SrcBucketName)
@@ -964,7 +964,7 @@ func (msg *MsgUpdateObjectInfo) ValidateBasic() error {
 	}
 
 	if msg.Visibility == VISIBILITY_TYPE_UNSPECIFIED {
-		return errors.Wrapf(ErrInvalidVisibility, "Unspecified visibility is not allowed.")
+		return errors.Wrapf(ErrInvalidVisibility, "unspecified visibility is not allowed")
 	}
 
 	return nil
@@ -1928,7 +1928,7 @@ func (msg *MsgDelegateCreateObject) ValidateBasic() error {
 		return err
 	}
 	if msg.Visibility == VISIBILITY_TYPE_UNSPECIFIED {
-		return errors.Wrapf(ErrInvalidVisibility, "Unspecified visibility is not allowed.")
+		return errors.Wrapf(ErrInvalidVisibility, "unspecified visibility is not allowed")
 	}
 	return nil
 }

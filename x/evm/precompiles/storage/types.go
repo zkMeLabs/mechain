@@ -127,7 +127,7 @@ type SealObjectArgs struct {
 	SealAddress                 common.Address `abi:"sealAddress"` // primary sp's operator addr or secondary sp's seal addr
 	BucketName                  string         `abi:"bucketName"`
 	ObjectName                  string         `abi:"objectName"`
-	GlobalVirtualGroupId        uint32         `abi:"globalVirtualGroupId"`
+	GlobalVirtualGroupID        uint32         `abi:"globalVirtualGroupId"`
 	SecondarySpBlsAggSignatures string         `abi:"secondarySpBlsAggSignatures"`
 }
 

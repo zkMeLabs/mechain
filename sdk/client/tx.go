@@ -146,7 +146,7 @@ func (c *GreenfieldClient) signTx(ctx context.Context, txConfig sdkclient.TxConf
 	}
 
 	signerData := xauthsigning.SignerData{
-		ChainID:       c.chainId,
+		ChainID:       c.chainID,
 		AccountNumber: account.GetAccountNumber(),
 		Sequence:      nonce,
 	}
@@ -249,7 +249,7 @@ func (c *GreenfieldClient) constructTxWithGasInfo(ctx context.Context, msgs []sd
 			return err
 		}
 		if txOpt.GasLimit == 0 || isFeeAmtZero {
-			return types.GasInfoNotProvidedError
+			return types.ErrGasInfoNotProvided
 		}
 		txBuilder.SetGasLimit(txOpt.GasLimit)
 		txBuilder.SetFeeAmount(txOpt.FeeAmount)
@@ -266,7 +266,7 @@ func (c *GreenfieldClient) constructTxWithGasInfo(ctx context.Context, msgs []sd
 		return err
 	}
 	if gasPrice.IsNil() || gasPrice.IsZero() {
-		return types.SimulatedGasPriceError
+		return types.ErrSimulatedGasPrice
 	}
 	feeAmount := sdk.NewCoins(
 		sdk.NewCoin(gasPrice.Denom, gasPrice.Amount.Mul(sdk.NewInt(int64(gasLimit)))), // gasPrice * gasLimit
@@ -313,10 +313,10 @@ func isFeeAmountZero(feeAmount sdk.Coins) (bool, error) {
 		return true, nil
 	}
 	if len(feeAmount) != 1 {
-		return false, types.FeeAmountNotValidError
+		return false, types.ErrFeeAmountNotValid
 	}
 	if feeAmount[0].Amount.IsNil() {
-		return false, types.FeeAmountNotValidError
+		return false, types.ErrFeeAmountNotValid
 	}
 	return feeAmount[0].IsZero(), nil
 }

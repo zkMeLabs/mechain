@@ -44,12 +44,12 @@ func (k Keeper) ExistsSlash(ctx sdk.Context, spID uint32, objectID sdkmath.Uint)
 }
 
 // getSlashKeyBytes returns the byte representation of Slash key
-func getSlashKeyBytes(spID uint32, objectId sdkmath.Uint) []byte {
+func getSlashKeyBytes(spID uint32, objectID sdkmath.Uint) []byte {
 	idBytes := make([]byte, 4)
 	binary.BigEndian.PutUint32(idBytes, spID)
-	allBytes := make([]byte, 0, len(idBytes)+len(objectId.Bytes()))
+	allBytes := make([]byte, 0, len(idBytes)+len(objectID.Bytes()))
 	copy(allBytes, idBytes)
-	allBytes = append(allBytes, objectId.Bytes()...)
+	allBytes = append(allBytes, objectID.Bytes()...)
 	return crypto.Keccak256(allBytes)
 }
 

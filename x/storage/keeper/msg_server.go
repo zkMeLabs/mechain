@@ -169,7 +169,7 @@ func (k msgServer) SealObject(goCtx context.Context, msg *types.MsgSealObject) (
 	spSealAcc := sdk.MustAccAddressFromHex(msg.Operator)
 
 	err := k.Keeper.SealObject(ctx, spSealAcc, msg.BucketName, msg.ObjectName, SealObjectOptions{
-		GlobalVirtualGroupId:     msg.GlobalVirtualGroupId,
+		GlobalVirtualGroupID:     msg.GlobalVirtualGroupId,
 		SecondarySpBlsSignatures: msg.SecondarySpBlsAggSignatures,
 	})
 	if err != nil {
@@ -576,9 +576,9 @@ func (k msgServer) MirrorGroup(goCtx context.Context, msg *types.MsgMirrorGroup)
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	operator := sdk.MustAccAddressFromHex(msg.Operator)
-	destChainId := sdk.ChainID(msg.DestChainId)
+	destChainID := sdk.ChainID(msg.DestChainId)
 
-	if !k.crossChainKeeper.IsDestChainSupported(destChainId) {
+	if !k.crossChainKeeper.IsDestChainSupported(destChainID) {
 		return nil, errorsmod.Wrapf(types.ErrChainNotSupported, "dest chain id (%d) is not supported", msg.DestChainId)
 	}
 
@@ -602,7 +602,7 @@ func (k msgServer) MirrorGroup(goCtx context.Context, msg *types.MsgMirrorGroup)
 	}
 
 	mirrorPackage := types.MirrorGroupSynPackage{
-		Id:    groupInfo.Id.BigInt(),
+		ID:    groupInfo.Id.BigInt(),
 		Owner: operator,
 	}
 
@@ -617,10 +617,10 @@ func (k msgServer) MirrorGroup(goCtx context.Context, msg *types.MsgMirrorGroup)
 	}
 	encodedWrapPackage := wrapPackage.MustSerialize()
 
-	relayerFee := k.Keeper.MirrorGroupRelayerFee(ctx, destChainId)
-	ackRelayerFee := k.Keeper.MirrorGroupAckRelayerFee(ctx, destChainId)
+	relayerFee := k.Keeper.MirrorGroupRelayerFee(ctx, destChainID)
+	ackRelayerFee := k.Keeper.MirrorGroupAckRelayerFee(ctx, destChainID)
 
-	_, err = k.crossChainKeeper.CreateRawIBCPackageWithFee(ctx, destChainId,
+	_, err = k.crossChainKeeper.CreateRawIBCPackageWithFee(ctx, destChainID,
 		types.GroupChannelID, sdk.SynCrossChainPackageType, encodedWrapPackage, relayerFee, ackRelayerFee)
 	if err != nil {
 		return nil, err
@@ -634,7 +634,7 @@ func (k msgServer) MirrorGroup(goCtx context.Context, msg *types.MsgMirrorGroup)
 		Owner:       groupInfo.Owner,
 		GroupName:   groupInfo.GroupName,
 		GroupId:     groupInfo.Id,
-		DestChainId: uint32(destChainId),
+		DestChainId: uint32(destChainID),
 	}); err != nil {
 		return nil, err
 	}
@@ -799,7 +799,7 @@ func (k msgServer) SealObjectV2(goCtx context.Context, msg *types.MsgSealObjectV
 	spSealAcc := sdk.MustAccAddressFromHex(msg.Operator)
 
 	err := k.Keeper.SealObject(ctx, spSealAcc, msg.BucketName, msg.ObjectName, SealObjectOptions{
-		GlobalVirtualGroupId:     msg.GlobalVirtualGroupId,
+		GlobalVirtualGroupID:     msg.GlobalVirtualGroupId,
 		SecondarySpBlsSignatures: msg.SecondarySpBlsAggSignatures,
 		Checksums:                msg.ExpectChecksums,
 	})

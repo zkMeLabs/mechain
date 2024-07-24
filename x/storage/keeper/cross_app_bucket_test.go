@@ -122,7 +122,7 @@ func (s *TestSuite) TestAckMirrorBucket() {
 	app := keeper.NewBucketApp(storageKeeper)
 	ackPackage := storagetypes.MirrorBucketAckPackage{
 		Status: storagetypes.StatusSuccess,
-		Id:     big.NewInt(10),
+		ID:     big.NewInt(10),
 	}
 
 	serializedAckPack, err := ackPackage.Serialize()

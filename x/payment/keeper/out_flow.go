@@ -76,7 +76,8 @@ func (k Keeper) MergeFrozenOutFlows(ctx sdk.Context, addr sdk.AccAddress, outFlo
 func (k Keeper) mergeOutFlows(ctx sdk.Context, addr sdk.AccAddress, status types.OutFlowStatus, outFlows []types.OutFlow) int {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.OutFlowKeyPrefix)
 	deltaCount := 0
-	for _, outFlow := range outFlows {
+	for _, o := range outFlows {
+		outFlow := o
 		outFlow.Status = status
 		key := types.OutFlowKey(addr, outFlow.Status, sdk.MustAccAddressFromHex(outFlow.ToAddress))
 		value := store.Get(key)

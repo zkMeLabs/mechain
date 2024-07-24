@@ -135,9 +135,9 @@ func (app *BucketApp) ExecuteSynPackage(ctx sdk.Context, appCtx *sdk.CrossChainA
 }
 
 func (app *BucketApp) handleMirrorBucketAckPackage(ctx sdk.Context, appCtx *sdk.CrossChainAppContext, ackPackage *types.MirrorBucketAckPackage) sdk.ExecuteResult {
-	bucketInfo, found := app.storageKeeper.GetBucketInfoById(ctx, math.NewUintFromBigInt(ackPackage.Id))
+	bucketInfo, found := app.storageKeeper.GetBucketInfoById(ctx, math.NewUintFromBigInt(ackPackage.ID))
 	if !found {
-		app.storageKeeper.Logger(ctx).Error("bucket does not exist", "bucket id", ackPackage.Id.String())
+		app.storageKeeper.Logger(ctx).Error("bucket does not exist", "bucket id", ackPackage.ID.String())
 		return sdk.ExecuteResult{
 			Err: types.ErrNoSuchBucket,
 		}
@@ -199,25 +199,25 @@ func (app *BucketApp) handleMirrorBucketFailAckPackage(ctx sdk.Context, appCtx *
 func (app *BucketApp) handleMirrorBucketSynPackage(ctx sdk.Context, _ *sdk.CrossChainAppContext, _ *types.MirrorBucketSynPackage) sdk.ExecuteResult {
 	app.storageKeeper.Logger(ctx).Error("received mirror bucket syn package ")
 
-	return sdk.ExecuteResult{}
+	return sdk.ExecuteResult{} //nolint
 }
 
-func (app *BucketApp) handleCreateBucketAckPackage(ctx sdk.Context, appCtx *sdk.CrossChainAppContext, _ *types.CreateBucketAckPackage) sdk.ExecuteResult {
+func (app *BucketApp) handleCreateBucketAckPackage(ctx sdk.Context, _ *sdk.CrossChainAppContext, _ *types.CreateBucketAckPackage) sdk.ExecuteResult {
 	app.storageKeeper.Logger(ctx).Error("received create bucket ack package ")
 
-	return sdk.ExecuteResult{}
+	return sdk.ExecuteResult{} //nolint
 }
 
-func (app *BucketApp) handleCreateBucketFailAckPackage(ctx sdk.Context, appCtx *sdk.CrossChainAppContext, synPackage *types.CreateBucketSynPackage) sdk.ExecuteResult {
+func (app *BucketApp) handleCreateBucketFailAckPackage(ctx sdk.Context, _ *sdk.CrossChainAppContext, _ *types.CreateBucketSynPackage) sdk.ExecuteResult {
 	app.storageKeeper.Logger(ctx).Error("received create bucket fail ack package ")
 
-	return sdk.ExecuteResult{}
+	return sdk.ExecuteResult{} //nolint
 }
 
-func (app *BucketApp) handleCreateBucketFailAckPackageV2(ctx sdk.Context, appCtx *sdk.CrossChainAppContext, synPackage *types.CreateBucketSynPackageV2) sdk.ExecuteResult {
+func (app *BucketApp) handleCreateBucketFailAckPackageV2(ctx sdk.Context, _ *sdk.CrossChainAppContext, _ *types.CreateBucketSynPackageV2) sdk.ExecuteResult {
 	app.storageKeeper.Logger(ctx).Error("received create bucket fail ack package ")
 
-	return sdk.ExecuteResult{}
+	return sdk.ExecuteResult{} //nolint
 }
 
 func (app *BucketApp) handleCreateBucketSynPackage(ctx sdk.Context, appCtx *sdk.CrossChainAppContext, createBucketPackage *types.CreateBucketSynPackage) sdk.ExecuteResult {
@@ -299,7 +299,7 @@ func (app *BucketApp) handleCreateBucketSynPackageV2(ctx sdk.Context, appCtx *sd
 		}
 	}
 
-	bucketId, err := app.storageKeeper.CreateBucket(ctx,
+	bucketID, err := app.storageKeeper.CreateBucket(ctx,
 		createBucketPackageV2.Creator,
 		createBucketPackageV2.BucketName,
 		createBucketPackageV2.PrimarySpAddress,
@@ -310,7 +310,7 @@ func (app *BucketApp) handleCreateBucketSynPackageV2(ctx sdk.Context, appCtx *sd
 			PaymentAddress:   createBucketPackageV2.PaymentAddress.String(),
 			PrimarySpApproval: &common.Approval{
 				ExpiredHeight:              createBucketPackageV2.PrimarySpApprovalExpiredHeight,
-				GlobalVirtualGroupFamilyId: createBucketPackageV2.GlobalVirtualGroupFamilyId,
+				GlobalVirtualGroupFamilyId: createBucketPackageV2.GlobalVirtualGroupFamilyID,
 				Sig:                        createBucketPackageV2.PrimarySpApprovalSignature,
 			},
 			ApprovalMsgBytes: createBucketPackageV2.GetApprovalBytes(),
@@ -330,23 +330,23 @@ func (app *BucketApp) handleCreateBucketSynPackageV2(ctx sdk.Context, appCtx *sd
 	return sdk.ExecuteResult{
 		Payload: types.CreateBucketAckPackage{
 			Status:    types.StatusSuccess,
-			Id:        bucketId.BigInt(),
+			Id:        bucketID.BigInt(),
 			Creator:   createBucketPackageV2.Creator,
 			ExtraData: createBucketPackageV2.ExtraData,
 		}.MustSerialize(),
 	}
 }
 
-func (app *BucketApp) handleDeleteBucketAckPackage(ctx sdk.Context, appCtx *sdk.CrossChainAppContext, ackPackage *types.DeleteBucketAckPackage) sdk.ExecuteResult {
+func (app *BucketApp) handleDeleteBucketAckPackage(ctx sdk.Context, _ *sdk.CrossChainAppContext, _ *types.DeleteBucketAckPackage) sdk.ExecuteResult {
 	app.storageKeeper.Logger(ctx).Error("received delete bucket ack package ")
 
-	return sdk.ExecuteResult{}
+	return sdk.ExecuteResult{} //nolint
 }
 
-func (app *BucketApp) handleDeleteBucketFailAckPackage(ctx sdk.Context, appCtx *sdk.CrossChainAppContext, synPackage *types.DeleteBucketSynPackage) sdk.ExecuteResult {
+func (app *BucketApp) handleDeleteBucketFailAckPackage(ctx sdk.Context, _ *sdk.CrossChainAppContext, _ *types.DeleteBucketSynPackage) sdk.ExecuteResult {
 	app.storageKeeper.Logger(ctx).Error("received delete bucket fail ack package ")
 
-	return sdk.ExecuteResult{}
+	return sdk.ExecuteResult{} //nolint
 }
 
 func (app *BucketApp) handleDeleteBucketSynPackage(ctx sdk.Context, appCtx *sdk.CrossChainAppContext, deleteBucketPackage *types.DeleteBucketSynPackage) sdk.ExecuteResult {

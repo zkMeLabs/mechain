@@ -1031,7 +1031,7 @@ func NewEvmos(
 	return app
 }
 
-func (app *Evmos) initModules(ctx sdk.Context) {
+func (app *Evmos) initModules(_ sdk.Context) {
 	app.initCrossChain()
 	app.initBridge()
 	app.initStorage()
@@ -1399,9 +1399,6 @@ func (app *Evmos) setupUpgradeHandlers() {
 	}
 
 	var storeUpgrades *storetypes.StoreUpgrades
-
-	switch upgradeInfo.Name {
-	}
 
 	if storeUpgrades != nil {
 		// configure store loader that checks if version == upgradeHeight and applies store upgrades

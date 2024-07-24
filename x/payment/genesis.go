@@ -10,19 +10,23 @@ import (
 // InitGenesis initializes the module's state from a provided genesis state.
 func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) {
 	// Set all the streamRecord
-	for _, elem := range genState.StreamRecordList {
+	for _, e := range genState.StreamRecordList {
+		elem := e
 		k.SetStreamRecord(ctx, &elem)
 	}
 	// Set all the paymentAccountCount
-	for _, elem := range genState.PaymentAccountCountList {
+	for _, e := range genState.PaymentAccountCountList {
+		elem := e
 		k.SetPaymentAccountCount(ctx, &elem)
 	}
 	// Set all the paymentAccount
-	for _, elem := range genState.PaymentAccountList {
+	for _, e := range genState.PaymentAccountList {
+		elem := e
 		k.SetPaymentAccount(ctx, &elem)
 	}
 	// Set all the autoSettleRecord
-	for _, elem := range genState.AutoSettleRecordList {
+	for _, e := range genState.AutoSettleRecordList {
+		elem := e
 		k.SetAutoSettleRecord(ctx, &elem)
 	}
 	err := k.SetParams(ctx, genState.Params)

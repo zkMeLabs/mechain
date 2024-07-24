@@ -16,7 +16,7 @@ func SimulateMsgTransferOut(
 	_ types.BankKeeper,
 	_ keeper.Keeper,
 ) simtypes.Operation {
-	return func(_ *rand.Rand, _ *baseapp.BaseApp, _ sdk.Context, _ []simtypes.Account, chainID string,
+	return func(_ *rand.Rand, _ *baseapp.BaseApp, _ sdk.Context, _ []simtypes.Account, _ string,
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
 		// simAccount, _ := simtypes.RandomAcc(r, accs)
 		msg := &types.MsgTransferOut{}

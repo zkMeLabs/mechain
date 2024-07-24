@@ -83,32 +83,32 @@ func (s *VirtualGroupTestSuite) queryGlobalVirtualGroupsByFamily(familyID uint32
 	return resp.GlobalVirtualGroups
 }
 
-func (s *VirtualGroupTestSuite) querySpAvailableGlobalVirtualGroupFamilies(spId uint32) []uint32 {
+func (s *VirtualGroupTestSuite) querySpAvailableGlobalVirtualGroupFamilies(spID uint32) []uint32 {
 	resp, err := s.Client.QuerySpAvailableGlobalVirtualGroupFamilies(
 		context.Background(),
 		&virtualgroupmoduletypes.QuerySPAvailableGlobalVirtualGroupFamiliesRequest{
-			SpId: spId,
+			SpId: spID,
 		})
 	s.Require().NoError(err)
 	return resp.GlobalVirtualGroupFamilyIds
 }
 
-func (s *VirtualGroupTestSuite) querySpOptimalGlobalVirtualGroupFamily(spId uint32, strategy virtualgroupmoduletypes.PickVGFStrategy) uint32 {
+func (s *VirtualGroupTestSuite) querySpOptimalGlobalVirtualGroupFamily(spID uint32, strategy virtualgroupmoduletypes.PickVGFStrategy) uint32 {
 	resp, err := s.Client.QuerySpOptimalGlobalVirtualGroupFamily(
 		context.Background(),
 		&virtualgroupmoduletypes.QuerySpOptimalGlobalVirtualGroupFamilyRequest{
-			SpId:            spId,
+			SpId:            spID,
 			PickVgfStrategy: strategy,
 		})
 	s.Require().NoError(err)
 	return resp.GlobalVirtualGroupFamilyId
 }
 
-func (s *VirtualGroupTestSuite) queryAvailableGlobalVirtualGroupFamilies(familyIds []uint32) []uint32 {
+func (s *VirtualGroupTestSuite) queryAvailableGlobalVirtualGroupFamilies(familyIDs []uint32) []uint32 {
 	resp, err := s.Client.AvailableGlobalVirtualGroupFamilies(
 		context.Background(),
 		&virtualgroupmoduletypes.AvailableGlobalVirtualGroupFamiliesRequest{
-			GlobalVirtualGroupFamilyIds: familyIds,
+			GlobalVirtualGroupFamilyIds: familyIDs,
 		})
 	s.Require().NoError(err)
 	return resp.GlobalVirtualGroupFamilyIds
@@ -131,13 +131,13 @@ func (s *VirtualGroupTestSuite) TestBasic() {
 		gvg = g
 	}
 
-	availableGvgFamilyIds := s.queryAvailableGlobalVirtualGroupFamilies([]uint32{gvg.FamilyId})
-	s.Require().Equal(availableGvgFamilyIds[0], gvg.FamilyId)
-	spAvailableGvgFamilyIds := s.querySpAvailableGlobalVirtualGroupFamilies(primarySP.Info.Id)
-	s.Require().Contains(spAvailableGvgFamilyIds, gvg.FamilyId)
+	availableGvgFamilyIDs := s.queryAvailableGlobalVirtualGroupFamilies([]uint32{gvg.FamilyId})
+	s.Require().Equal(availableGvgFamilyIDs[0], gvg.FamilyId)
+	spAvailableGvgFamilyIDs := s.querySpAvailableGlobalVirtualGroupFamilies(primarySP.Info.Id)
+	s.Require().Contains(spAvailableGvgFamilyIDs, gvg.FamilyId)
 
 	spOptimalGvgFamilyId := s.querySpOptimalGlobalVirtualGroupFamily(primarySP.Info.Id, virtualgroupmoduletypes.Strategy_Maximize_Free_Store_Size)
-	s.Require().Contains(spAvailableGvgFamilyIds, spOptimalGvgFamilyId)
+	s.Require().Contains(spAvailableGvgFamilyIDs, spOptimalGvgFamilyId)
 
 	srcGVGs := s.queryGlobalVirtualGroupsByFamily(gvg.FamilyId)
 
@@ -429,12 +429,12 @@ func (s *VirtualGroupTestSuite) createObject() (string, string, *core.StoragePro
 	s.Require().Equal(queryHeadObjectResponse.ObjectInfo.BucketName, bucketName)
 
 	// SealObject
-	gvgId := gvg.Id
+	gvgID := gvg.Id
 	msgSealObject := storagetypes.NewMsgSealObject(sp.SealKey.GetAddr(), bucketName, objectName, gvg.Id, nil)
 
 	secondarySigs := make([][]byte, 0)
 	secondarySPBlsPubKeys := make([]bls.PublicKey, 0)
-	blsSignHash := storagetypes.NewSecondarySpSealObjectSignDoc(s.GetChainID(), gvgId, queryHeadObjectResponse.ObjectInfo.Id, storagetypes.GenerateHash(queryHeadObjectResponse.ObjectInfo.Checksums)).GetBlsSignHash()
+	blsSignHash := storagetypes.NewSecondarySpSealObjectSignDoc(s.GetChainID(), gvgID, queryHeadObjectResponse.ObjectInfo.Id, storagetypes.GenerateHash(queryHeadObjectResponse.ObjectInfo.Checksums)).GetBlsSignHash()
 	// every secondary sp signs the checksums
 	for _, spID := range gvg.SecondarySpIds {
 		sig, err := core.BlsSignAndVerify(s.StorageProviders[spID], blsSignHash)
@@ -1398,11 +1398,12 @@ func filterSettleGVGFamilyEventFromTx(txRes *sdk.TxResponse) virtualgroupmodulet
 	for _, event := range txRes.Logs[0].Events {
 		if event.Type == "greenfield.virtualgroup.EventSettleGlobalVirtualGroupFamily" {
 			for _, attr := range event.Attributes {
-				if attr.Key == "id" {
+				switch attr.Key {
+				case "id":
 					idStr = strings.Trim(attr.Value, `"`)
-				} else if attr.Key == "sp_id" {
+				case "sp_id":
 					spIdStr = strings.Trim(attr.Value, `"`)
-				} else if attr.Key == "amount" {
+				case "amount":
 					amountStr = strings.Trim(attr.Value, `"`)
 				}
 			}

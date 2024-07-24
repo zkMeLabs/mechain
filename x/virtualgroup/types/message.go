@@ -35,11 +35,11 @@ var (
 	_ sdk.Msg = &MsgCompleteSwapIn{}
 )
 
-func NewMsgCreateGlobalVirtualGroup(primarySpAddress sdk.AccAddress, globalVirtualFamilyID uint32, secondarySpIds []uint32, deposit sdk.Coin) *MsgCreateGlobalVirtualGroup {
+func NewMsgCreateGlobalVirtualGroup(primarySpAddress sdk.AccAddress, globalVirtualFamilyID uint32, secondarySpIDs []uint32, deposit sdk.Coin) *MsgCreateGlobalVirtualGroup {
 	return &MsgCreateGlobalVirtualGroup{
 		StorageProvider: primarySpAddress.String(),
 		FamilyId:        globalVirtualFamilyID,
-		SecondarySpIds:  secondarySpIds,
+		SecondarySpIds:  secondarySpIDs,
 		Deposit:         deposit,
 	}
 }

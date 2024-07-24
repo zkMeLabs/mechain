@@ -184,10 +184,10 @@ func (s *PaymentTestSuite) TestVersionedParams_DeleteBucketAfterValidatorTaxRate
 	s.T().Logf("netflow, validatorTaxPoolRate: %s", validatorTaxPoolRate)
 
 	// create bucket, create object
-	user, bucketName, objectName, objectId, checksums := s.createBucketAndObject(sp, gvg)
+	user, bucketName, objectName, objectID, checksums := s.createBucketAndObject(sp, gvg)
 
 	// seal object
-	s.sealObject(sp, gvg, bucketName, objectName, objectId, checksums)
+	s.sealObject(sp, gvg, bucketName, objectName, objectID, checksums)
 
 	// update params
 	params := s.queryParams()
@@ -1295,8 +1295,8 @@ func (s *PaymentTestSuite) TestDiscontinue_InOneBlock_WithoutPriceChange() {
 	bucketName := s.createBucket(sp, gvg, user, 0)
 
 	// create & seal objects
-	_, _, objectName1, objectId1, checksums1, _ := s.createObject(user, bucketName, false)
-	_ = s.sealObject(sp, gvg, bucketName, objectName1, objectId1, checksums1)
+	_, _, objectName1, objectID1, checksums1, _ := s.createObject(user, bucketName, false)
+	_ = s.sealObject(sp, gvg, bucketName, objectName1, objectID1, checksums1)
 
 	// for payment
 	time.Sleep(2 * time.Second)
@@ -1389,8 +1389,8 @@ func (s *PaymentTestSuite) TestDiscontinue_InOneBlock_WithPriceChange() {
 	bucketName := s.createBucket(sp, gvg, user, 1200987)
 
 	// create & seal objects
-	_, _, objectName1, objectId1, checksums1, _ := s.createObject(user, bucketName, false)
-	s.sealObject(sp, gvg, bucketName, objectName1, objectId1, checksums1)
+	_, _, objectName1, objectID1, checksums1, _ := s.createObject(user, bucketName, false)
+	s.sealObject(sp, gvg, bucketName, objectName1, objectID1, checksums1)
 
 	// update new price
 	s.updateGlobalSpPrice(priceRes.GlobalSpStorePrice.ReadPrice, priceRes.GlobalSpStorePrice.PrimaryStorePrice.MulInt64(10000))
@@ -1481,8 +1481,8 @@ func (s *PaymentTestSuite) TestDiscontinue_InBlocks_WithoutPriceChange() {
 
 	// create & seal objects
 	for i := 0; i < 4; i++ {
-		_, _, objectName1, objectId1, checksums1, _ := s.createObject(user, bucketName, false)
-		_ = s.sealObject(sp, gvg, bucketName, objectName1, objectId1, checksums1)
+		_, _, objectName1, objectID1, checksums1, _ := s.createObject(user, bucketName, false)
+		_ = s.sealObject(sp, gvg, bucketName, objectName1, objectID1, checksums1)
 		queryHeadObjectRequest := storagetypes.QueryHeadObjectRequest{
 			BucketName: bucketName,
 			ObjectName: objectName1,
@@ -1595,8 +1595,8 @@ func (s *PaymentTestSuite) TestDiscontinue_InBlocks_WithPriceChange() {
 
 	// create & seal objects
 	for i := 0; i < 2; i++ {
-		_, _, objectName1, objectId1, checksums1, _ := s.createObject(user, bucketName, false)
-		s.sealObject(sp, gvg, bucketName, objectName1, objectId1, checksums1)
+		_, _, objectName1, objectID1, checksums1, _ := s.createObject(user, bucketName, false)
+		s.sealObject(sp, gvg, bucketName, objectName1, objectID1, checksums1)
 		queryHeadObjectRequest := storagetypes.QueryHeadObjectRequest{
 			BucketName: bucketName,
 			ObjectName: objectName1,
@@ -1720,8 +1720,8 @@ func (s *PaymentTestSuite) TestDiscontinue_InBlocks_WithPriceChangeReserveTimeCh
 
 	// create & seal objects
 	for i := 0; i < 2; i++ {
-		_, _, objectName1, objectId1, checksums1, _ := s.createObject(user, bucketName, false)
-		s.sealObject(sp, gvg, bucketName, objectName1, objectId1, checksums1)
+		_, _, objectName1, objectID1, checksums1, _ := s.createObject(user, bucketName, false)
+		s.sealObject(sp, gvg, bucketName, objectName1, objectID1, checksums1)
 		queryHeadObjectRequest := storagetypes.QueryHeadObjectRequest{
 			BucketName: bucketName,
 			ObjectName: objectName1,
@@ -1858,8 +1858,8 @@ func (s *PaymentTestSuite) TestDiscontinue_InBlocks_WithPriceChangeReserveTimeCh
 
 	// create & seal objects
 	for i := 0; i < 2; i++ {
-		_, _, objectName1, objectId1, checksums1, _ := s.createObject(user, bucketName, false)
-		s.sealObject(sp, gvg, bucketName, objectName1, objectId1, checksums1)
+		_, _, objectName1, objectID1, checksums1, _ := s.createObject(user, bucketName, false)
+		s.sealObject(sp, gvg, bucketName, objectName1, objectID1, checksums1)
 		queryHeadObjectRequest := storagetypes.QueryHeadObjectRequest{
 			BucketName: bucketName,
 			ObjectName: objectName1,
@@ -1961,7 +1961,7 @@ func (s *PaymentTestSuite) TestDiscontinue_MultiObjects() {
 
 	// create bucket
 	bucketName := s.createBucket(sp, gvg, user, 0)
-	objectIds := []sdkmath.Uint{}
+	objectIDs := []sdkmath.Uint{}
 
 	// create objects
 	for i := 0; i < 3; i++ {
@@ -1974,7 +1974,7 @@ func (s *PaymentTestSuite) TestDiscontinue_MultiObjects() {
 		s.Require().NoError(err)
 		s.Require().Equal(queryHeadObjectResponse.ObjectInfo.ObjectStatus, storagetypes.OBJECT_STATUS_CREATED)
 		time.Sleep(200 * time.Millisecond)
-		objectIds = append(objectIds, objectId)
+		objectIDs = append(objectIDs, objectId)
 	}
 
 	// create & seal objects
@@ -1989,7 +1989,7 @@ func (s *PaymentTestSuite) TestDiscontinue_MultiObjects() {
 		s.Require().NoError(err)
 		s.Require().Equal(queryHeadObjectResponse.ObjectInfo.ObjectStatus, storagetypes.OBJECT_STATUS_SEALED)
 		time.Sleep(200 * time.Millisecond)
-		objectIds = append(objectIds, objectId)
+		objectIDs = append(objectIDs, objectId)
 	}
 
 	queryBalanceRequest := banktypes.QueryBalanceRequest{Denom: s.Config.Denom, Address: user.GetAddr().String()}
@@ -2018,7 +2018,7 @@ func (s *PaymentTestSuite) TestDiscontinue_MultiObjects() {
 
 	// force objects
 	msgs := make([]sdk.Msg, 0)
-	for _, id := range objectIds {
+	for _, id := range objectIDs {
 		msgDiscontinueObject := storagetypes.NewMsgDiscontinueObject(sp.GcKey.GetAddr(), bucketName, []sdkmath.Uint{id}, "test")
 		msgs = append(msgs, msgDiscontinueObject)
 	}
@@ -2202,7 +2202,7 @@ func (s *PaymentTestSuite) getStreamRecords(addrs []string) (streamRecords Strea
 	return
 }
 
-func (s *PaymentTestSuite) checkStreamRecordsBeforeAndAfter(streamRecordsBefore, streamRecordsAfter StreamRecords, readPrice sdk.Dec,
+func (s *PaymentTestSuite) checkStreamRecordsBeforeAndAfter(streamRecordsBefore, streamRecordsAfter StreamRecords, _ sdk.Dec,
 	readChargeRate sdkmath.Int, primaryStorePrice, secondaryStorePrice sdk.Dec, chargeSize, payloadSize uint64,
 ) {
 	userRateDiff := streamRecordsAfter.User.NetflowRate.Sub(streamRecordsBefore.User.NetflowRate)
@@ -2213,7 +2213,7 @@ func (s *PaymentTestSuite) checkStreamRecordsBeforeAndAfter(streamRecordsBefore,
 
 	outFlowsResponse, err := s.Client.OutFlows(context.Background(), &paymenttypes.QueryOutFlowsRequest{Account: streamRecordsAfter.User.Account})
 	s.Require().NoError(err)
-	userOutflowMap := lo.Reduce(outFlowsResponse.OutFlows, func(m map[string]sdkmath.Int, outflow paymenttypes.OutFlow, i int) map[string]sdkmath.Int {
+	userOutflowMap := lo.Reduce(outFlowsResponse.OutFlows, func(m map[string]sdkmath.Int, outflow paymenttypes.OutFlow, _ int) map[string]sdkmath.Int {
 		m[outflow.ToAddress] = outflow.Rate
 		return m
 	}, make(map[string]sdkmath.Int))
@@ -2239,7 +2239,7 @@ func (s *PaymentTestSuite) getChargeSize(payloadSize uint64) uint64 {
 	}
 }
 
-func (s *PaymentTestSuite) calculateLockFee(bucketName, objectName string, payloadSize uint64) sdkmath.Int {
+func (s *PaymentTestSuite) calculateLockFee(bucketName, _ string, payloadSize uint64) sdkmath.Int {
 	ctx := context.Background()
 
 	params := s.queryParams()
@@ -2595,7 +2595,7 @@ func (s *PaymentTestSuite) sealObject(sp *core.StorageProvider, gvg *virtualgrou
 	return gvg
 }
 
-func (s *PaymentTestSuite) rejectSealObject(sp *core.StorageProvider, gvg *virtualgrouptypes.GlobalVirtualGroup, bucketName, objectName string) {
+func (s *PaymentTestSuite) rejectSealObject(sp *core.StorageProvider, _ *virtualgrouptypes.GlobalVirtualGroup, bucketName, objectName string) {
 	msgRejectSealObject := storagetypes.NewMsgRejectUnsealedObject(sp.SealKey.GetAddr(), bucketName, objectName)
 
 	s.T().Logf("msg %s", msgRejectSealObject.String())

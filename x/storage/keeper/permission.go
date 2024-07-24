@@ -187,19 +187,20 @@ func (k Keeper) VerifyPolicy(ctx sdk.Context, resourceID math.Uint, resourceType
 }
 
 func (k Keeper) GetPolicy(ctx sdk.Context, grn evmtypes.GRN, principal *permtypes.Principal) (*permtypes.Policy, error) {
-	_, resID, err := k.getResourceOwnerAndIdFromGRN(ctx, grn)
+	_, resID, err := k.getResourceOwnerAndIDFromGRN(ctx, grn)
 	if err != nil {
 		return nil, err
 	}
 
 	var policy *permtypes.Policy
 	var found bool
-	if principal.Type == permtypes.PRINCIPAL_TYPE_GNFD_ACCOUNT {
+	switch principal.Type {
+	case permtypes.PRINCIPAL_TYPE_GNFD_ACCOUNT:
 		policy, found = k.permKeeper.GetPolicyForAccount(ctx, resID, grn.ResourceType(),
 			principal.MustGetAccountAddress())
-	} else if principal.Type == permtypes.PRINCIPAL_TYPE_GNFD_GROUP {
+	case permtypes.PRINCIPAL_TYPE_GNFD_GROUP:
 		policy, found = k.permKeeper.GetPolicyForGroup(ctx, resID, grn.ResourceType(), principal.MustGetGroupID())
-	} else {
+	default:
 		return nil, permtypes.ErrInvalidPrincipal
 	}
 
@@ -212,7 +213,7 @@ func (k Keeper) GetPolicy(ctx sdk.Context, grn evmtypes.GRN, principal *permtype
 func (k Keeper) PutPolicy(ctx sdk.Context, operator sdk.AccAddress, grn evmtypes.GRN,
 	policy *permtypes.Policy,
 ) (math.Uint, error) {
-	resOwner, resID, err := k.getResourceOwnerAndIdFromGRN(ctx, grn)
+	resOwner, resID, err := k.getResourceOwnerAndIDFromGRN(ctx, grn)
 	if err != nil {
 		return math.ZeroUint(), err
 	}
@@ -234,7 +235,7 @@ func (k Keeper) PutPolicy(ctx sdk.Context, operator sdk.AccAddress, grn evmtypes
 func (k Keeper) DeletePolicy(
 	ctx sdk.Context, operator sdk.AccAddress, principal *permtypes.Principal, grn evmtypes.GRN,
 ) (math.Uint, error) {
-	resOwner, resID, err := k.getResourceOwnerAndIdFromGRN(ctx, grn)
+	resOwner, resID, err := k.getResourceOwnerAndIDFromGRN(ctx, grn)
 	if err != nil {
 		return math.ZeroUint(), err
 	}
@@ -268,7 +269,8 @@ func (k Keeper) NormalizePrincipal(ctx sdk.Context, principal *permtypes.Princip
 }
 
 func (k Keeper) ValidatePrincipal(ctx sdk.Context, resOwner sdk.AccAddress, principal *permtypes.Principal) error {
-	if principal.Type == permtypes.PRINCIPAL_TYPE_GNFD_ACCOUNT {
+	switch principal.Type {
+	case permtypes.PRINCIPAL_TYPE_GNFD_ACCOUNT:
 		principalAccAddress, err := principal.GetAccountAddress()
 		if err != nil {
 			return err
@@ -276,7 +278,7 @@ func (k Keeper) ValidatePrincipal(ctx sdk.Context, resOwner sdk.AccAddress, prin
 		if principalAccAddress.Equals(resOwner) {
 			return gnfderrors.ErrInvalidPrincipal.Wrapf("principal account can not be the bucket owner")
 		}
-	} else if principal.Type == permtypes.PRINCIPAL_TYPE_GNFD_GROUP {
+	case permtypes.PRINCIPAL_TYPE_GNFD_GROUP:
 		groupID, err := math.ParseUint(principal.Value)
 		if err != nil {
 			return err
@@ -285,13 +287,13 @@ func (k Keeper) ValidatePrincipal(ctx sdk.Context, resOwner sdk.AccAddress, prin
 		if !found {
 			return storagetypes.ErrNoSuchGroup
 		}
-	} else {
+	default:
 		return permtypes.ErrInvalidPrincipal.Wrapf("Unknown principal type.")
 	}
 	return nil
 }
 
-func (k Keeper) getResourceOwnerAndIdFromGRN(ctx sdk.Context, grn evmtypes.GRN) (resOwner sdk.AccAddress, resID math.Uint, err error) {
+func (k Keeper) getResourceOwnerAndIDFromGRN(ctx sdk.Context, grn evmtypes.GRN) (resOwner sdk.AccAddress, resID math.Uint, err error) {
 	switch grn.ResourceType() {
 	case gnfdresource.RESOURCE_TYPE_BUCKET:
 		bucketName, grnErr := grn.GetBucketName()

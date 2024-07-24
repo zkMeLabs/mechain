@@ -113,12 +113,14 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 }
 
 // ProposalMsgs returns msgs used for governance proposals for simulations.
-func (am AppModule) ProposalMsgs(simState module.SimulationState) []simtypes.WeightedProposalMsg {
+func (am AppModule) ProposalMsgs(
+	_ module.SimulationState,
+) []simtypes.WeightedProposalMsg {
 	return []simtypes.WeightedProposalMsg{
 		simulation.NewWeightedProposalMsg(
 			opWeightMsgStorageProviderExit,
 			defaultWeightMsgStorageProviderExit,
-			func(_ *rand.Rand, _ sdk.Context, accs []simtypes.Account) sdk.Msg {
+			func(_ *rand.Rand, _ sdk.Context, _ []simtypes.Account) sdk.Msg {
 				virtualgroupsimulation.SimulateMsgStorageProviderExit(am.accountKeeper, am.bankKeeper, am.keeper)
 				return nil
 			},
@@ -126,7 +128,7 @@ func (am AppModule) ProposalMsgs(simState module.SimulationState) []simtypes.Wei
 		simulation.NewWeightedProposalMsg(
 			opWeightMsgCompleteStorageProviderExit,
 			defaultWeightMsgCompleteStorageProviderExit,
-			func(_ *rand.Rand, _ sdk.Context, accs []simtypes.Account) sdk.Msg {
+			func(_ *rand.Rand, _ sdk.Context, _ []simtypes.Account) sdk.Msg {
 				virtualgroupsimulation.SimulateMsgCompleteStorageProviderExit(am.accountKeeper, am.bankKeeper, am.keeper)
 				return nil
 			},
@@ -134,7 +136,7 @@ func (am AppModule) ProposalMsgs(simState module.SimulationState) []simtypes.Wei
 		simulation.NewWeightedProposalMsg(
 			opWeightMsgCompleteSwapOut,
 			defaultWeightMsgCompleteSwapOut,
-			func(_ *rand.Rand, _ sdk.Context, accs []simtypes.Account) sdk.Msg {
+			func(_ *rand.Rand, _ sdk.Context, _ []simtypes.Account) sdk.Msg {
 				virtualgroupsimulation.SimulateMsgCompleteSwapOut(am.accountKeeper, am.bankKeeper, am.keeper)
 				return nil
 			},
@@ -142,7 +144,7 @@ func (am AppModule) ProposalMsgs(simState module.SimulationState) []simtypes.Wei
 		simulation.NewWeightedProposalMsg(
 			opWeightMsgCancelSwapOut,
 			defaultWeightMsgCancelSwapOut,
-			func(_ *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
+			func(_ *rand.Rand, _ sdk.Context, _ []simtypes.Account) sdk.Msg {
 				virtualgroupsimulation.SimulateMsgCancelSwapOut(am.accountKeeper, am.bankKeeper, am.keeper)
 				return nil
 			},

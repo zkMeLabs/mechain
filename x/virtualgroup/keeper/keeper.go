@@ -574,9 +574,8 @@ func (k Keeper) GetTotalStakingStoreSize(ctx sdk.Context, gvg *types.GlobalVirtu
 	total := gvg.TotalDeposit.Quo(k.GVGStakingPerBytes(ctx))
 	if !total.IsUint64() {
 		return math2.MaxUint64
-	} else {
-		return total.Uint64()
 	}
+	return total.Uint64()
 }
 
 func (k Keeper) GetGlobalVirtualFamilyTotalStakingAndStoredSize(ctx sdk.Context, gvgFamily *types.GlobalVirtualGroupFamily) (uint64, uint64, error) {
@@ -651,10 +650,8 @@ func (k Keeper) DeleteSwapOutInfo(ctx sdk.Context, gvgFamilyID uint32, gvgIDs []
 
 		if swapOutInfo.SpId != spID {
 			return sptypes.ErrStorageProviderNotFound.Wrapf("spID(%d) is different from the spID(%d) in swapOutInfo", spID, swapOutInfo.SpId)
-		} else {
-			store.Delete(key)
 		}
-
+		store.Delete(key)
 	} else {
 		for _, gvgID := range gvgIDs {
 			key := types.GetSwapOutGVGKey(gvgID)
@@ -662,9 +659,8 @@ func (k Keeper) DeleteSwapOutInfo(ctx sdk.Context, gvgFamilyID uint32, gvgIDs []
 			k.cdc.MustUnmarshal(bz, &swapOutInfo)
 			if swapOutInfo.SpId != spID {
 				return sptypes.ErrStorageProviderNotFound.Wrapf("spID(%d) is different from the spID(%d) in swapOutInfo", spID, swapOutInfo.SpId)
-			} else {
-				store.Delete(key)
 			}
+			store.Delete(key)
 		}
 	}
 

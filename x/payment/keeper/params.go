@@ -50,7 +50,7 @@ func (k Keeper) SetVersionedParamsWithTS(ctx sdk.Context, verParams types.Versio
 }
 
 // GetVersionedParamsWithTs find the latest params before and equal than the specific timestamp
-func (k Keeper) GetVersionedParamsWithTs(ctx sdk.Context, ts int64) (verParams types.VersionedParams, err error) {
+func (k Keeper) GetVersionedParamsWithTs(ctx sdk.Context, ts int64) (verParams types.VersionedParams, err error) { //nolint:stylecheck
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.VersionedParamsKeyPrefix)
 
 	// params are updated in the endblock, so we do not need to make the ts to be included

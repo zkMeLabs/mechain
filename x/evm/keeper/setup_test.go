@@ -7,8 +7,8 @@ import (
 
 	"github.com/evmos/evmos/v12/utils"
 
-	. "github.com/onsi/ginkgo/v2"
-	. "github.com/onsi/gomega"
+	. "github.com/onsi/ginkgo/v2" //nolint
+	. "github.com/onsi/gomega"    //nolint
 
 	sdkmath "cosmossdk.io/math"
 	"cosmossdk.io/simapp"

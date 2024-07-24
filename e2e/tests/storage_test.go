@@ -196,11 +196,11 @@ func (s *StorageTestSuite) TestCreateObject() {
 	s.Require().Equal(queryHeadObjectResponse.ObjectInfo.ContentType, contextType)
 
 	// SealObject
-	gvgId := gvg.Id
+	gvgID := gvg.Id
 	msgSealObject := storagetypes.NewMsgSealObject(sp.SealKey.GetAddr(), bucketName, objectName, gvg.Id, nil)
 	secondarySigs := make([][]byte, 0)
 	secondarySPBlsPubKeys := make([]bls.PublicKey, 0)
-	blsSignHash := storagetypes.NewSecondarySpSealObjectSignDoc(s.GetChainID(), gvgId, queryHeadObjectResponse.ObjectInfo.Id, storagetypes.GenerateHash(queryHeadObjectResponse.ObjectInfo.Checksums)).GetBlsSignHash()
+	blsSignHash := storagetypes.NewSecondarySpSealObjectSignDoc(s.GetChainID(), gvgID, queryHeadObjectResponse.ObjectInfo.Id, storagetypes.GenerateHash(queryHeadObjectResponse.ObjectInfo.Checksums)).GetBlsSignHash()
 	// every secondary sp signs the checksums
 	for _, spID := range gvg.SecondarySpIds {
 		sig, err := core.BlsSignAndVerify(s.StorageProviders[spID], blsSignHash)
@@ -476,12 +476,12 @@ func (s *StorageTestSuite) TestDeleteBucket() {
 	s.Require().NoError(err)
 
 	// SealObject
-	gvgId := gvg.Id
+	gvgID := gvg.Id
 	msgSealObject := storagetypes.NewMsgSealObject(sp.SealKey.GetAddr(), bucketName1, objectName,
 		gvg.Id, nil)
 	secondarySigs := make([][]byte, 0)
 	secondarySPBlsPubKeys := make([]bls.PublicKey, 0)
-	blsSignHash := storagetypes.NewSecondarySpSealObjectSignDoc(s.GetChainID(), gvgId, queryHeadObjectResponse.ObjectInfo.Id, storagetypes.GenerateHash(queryHeadObjectResponse.ObjectInfo.Checksums)).GetBlsSignHash()
+	blsSignHash := storagetypes.NewSecondarySpSealObjectSignDoc(s.GetChainID(), gvgID, queryHeadObjectResponse.ObjectInfo.Id, storagetypes.GenerateHash(queryHeadObjectResponse.ObjectInfo.Checksums)).GetBlsSignHash()
 	// every secondary sp signs the checksums
 	for _, spID := range gvg.SecondarySpIds {
 		sig, err := core.BlsSignAndVerify(s.StorageProviders[spID], blsSignHash)
@@ -736,16 +736,16 @@ func (s *StorageTestSuite) TestDeleteBucket() {
 // }
 
 func (s *StorageTestSuite) TestDiscontinueObject_Normal() {
-	sp1, _, bucketName1, _, _, objectId1 := s.createObject()
-	sp2, _, bucketName2, _, _, objectId2 := s.createObject()
+	sp1, _, bucketName1, _, _, objectID1 := s.createObject()
+	sp2, _, bucketName2, _, _, objectID2 := s.createObject()
 
 	// DiscontinueObject
-	msgDiscontinueObject := storagetypes.NewMsgDiscontinueObject(sp1.GcKey.GetAddr(), bucketName1, []sdkmath.Uint{objectId1}, "test")
+	msgDiscontinueObject := storagetypes.NewMsgDiscontinueObject(sp1.GcKey.GetAddr(), bucketName1, []sdkmath.Uint{objectID1}, "test")
 	txRes1 := s.SendTxBlock(sp1.GcKey, msgDiscontinueObject)
 	deleteAt1 := filterDiscontinueObjectEventFromTx(txRes1).DeleteAt
 
 	time.Sleep(3 * time.Second)
-	msgDiscontinueObject2 := storagetypes.NewMsgDiscontinueObject(sp2.GcKey.GetAddr(), bucketName2, []sdkmath.Uint{objectId2}, "test")
+	msgDiscontinueObject2 := storagetypes.NewMsgDiscontinueObject(sp2.GcKey.GetAddr(), bucketName2, []sdkmath.Uint{objectID2}, "test")
 	txRes2 := s.SendTxBlock(sp2.GcKey, msgDiscontinueObject2)
 	deleteAt2 := filterDiscontinueObjectEventFromTx(txRes2).DeleteAt
 
@@ -763,9 +763,8 @@ func (s *StorageTestSuite) TestDiscontinueObject_Normal() {
 		if blockTime >= deleteAt1 {
 			heightAfter = statusRes.SyncInfo.LatestBlockHeight
 			break
-		} else {
-			heightBefore = statusRes.SyncInfo.LatestBlockHeight
 		}
+		heightBefore = statusRes.SyncInfo.LatestBlockHeight
 	}
 
 	time.Sleep(200 * time.Millisecond)
@@ -779,10 +778,10 @@ func (s *StorageTestSuite) TestDiscontinueObject_Normal() {
 
 	object1Found, object2Found := false, false
 	for _, event := range events {
-		if event.ObjectId.Equal(objectId1) {
+		if event.ObjectId.Equal(objectID1) {
 			object1Found = true
 		}
-		if event.ObjectId.Equal(objectId2) {
+		if event.ObjectId.Equal(objectID2) {
 			object2Found = true
 		}
 	}
@@ -803,9 +802,8 @@ func (s *StorageTestSuite) TestDiscontinueObject_Normal() {
 		if blockTime >= deleteAt2 {
 			heightAfter = statusRes.SyncInfo.LatestBlockHeight
 			break
-		} else {
-			heightBefore = statusRes.SyncInfo.LatestBlockHeight
 		}
+		heightBefore = statusRes.SyncInfo.LatestBlockHeight
 	}
 
 	time.Sleep(200 * time.Millisecond)
@@ -817,7 +815,7 @@ func (s *StorageTestSuite) TestDiscontinueObject_Normal() {
 		heightBefore++
 	}
 	for _, event := range events {
-		if event.ObjectId.Equal(objectId2) {
+		if event.ObjectId.Equal(objectID2) {
 			object2Found = true
 		}
 	}
@@ -825,10 +823,10 @@ func (s *StorageTestSuite) TestDiscontinueObject_Normal() {
 }
 
 func (s *StorageTestSuite) TestDiscontinueObject_UserDeleted() {
-	sp, user, bucketName, _, objectName, objectId := s.createObject()
+	sp, user, bucketName, _, objectName, objectID := s.createObject()
 
 	// DiscontinueObject
-	msgDiscontinueObject := storagetypes.NewMsgDiscontinueObject(sp.GcKey.GetAddr(), bucketName, []sdkmath.Uint{objectId}, "test")
+	msgDiscontinueObject := storagetypes.NewMsgDiscontinueObject(sp.GcKey.GetAddr(), bucketName, []sdkmath.Uint{objectID}, "test")
 	_ = s.SendTxBlock(sp.GcKey, msgDiscontinueObject)
 
 	// DeleteObject before discontinue confirm window
@@ -864,9 +862,8 @@ func (s *StorageTestSuite) TestDiscontinueBucket_Normal() {
 		if blockTime >= deleteAt1 {
 			heightAfter = statusRes.SyncInfo.LatestBlockHeight
 			break
-		} else {
-			heightBefore = statusRes.SyncInfo.LatestBlockHeight
 		}
+		heightBefore = statusRes.SyncInfo.LatestBlockHeight
 	}
 
 	time.Sleep(200 * time.Millisecond)
@@ -932,7 +929,7 @@ func (s *StorageTestSuite) TestDiscontinueBucket_UserDeleted() {
 	// DiscontinueBucket
 	msgDiscontinueBucket := storagetypes.NewMsgDiscontinueBucket(sp.GcKey.GetAddr(), bucketName, "test")
 	txRes := s.SendTxBlock(sp.GcKey, msgDiscontinueBucket)
-	deleteAt := int64(filterDiscontinueBucketEventFromTx(txRes).DeleteAt)
+	deleteAt := filterDiscontinueBucketEventFromTx(txRes).DeleteAt
 
 	// DeleteBucket before discontinue confirm window
 	msgDeleteObject := storagetypes.NewMsgDeleteObject(user.GetAddr(), bucketName, objectName)
@@ -1185,7 +1182,7 @@ func filterDeleteBucketEventFromBlock(blockRes *ctypes.ResultBlockResults) []sto
 			bucketIdStr := ""
 			for _, attr := range event.Attributes {
 				if attr.Key == "bucket_id" {
-					bucketIdStr = strings.Trim(string(attr.Value), `"`)
+					bucketIdStr = strings.Trim(attr.Value, `"`)
 				}
 			}
 			bucketId := sdkmath.NewUintFromString(bucketIdStr)
@@ -1203,7 +1200,7 @@ func filterDeleteBucketEventFromTx(txRes *sdk.TxResponse) storagetypes.EventDele
 		if event.Type == "greenfield.storage.EventDeleteBucket" {
 			for _, attr := range event.Attributes {
 				if attr.Key == "bucket_id" {
-					bucketIdStr = strings.Trim(string(attr.Value), `"`)
+					bucketIdStr = strings.Trim(attr.Value, `"`)
 				}
 			}
 		}

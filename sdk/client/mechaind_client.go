@@ -147,8 +147,8 @@ type GreenfieldClient struct {
 	useWebSocket bool
 	// keyManager is the manager used for generating and managing keys.
 	keyManager keys.KeyManager
-	// chainId is the id of the chain.
-	chainId string
+	// chainID is the id of the chain.
+	chainID string
 	// codec is the ProtoCodec used for encoding and decoding messages.
 	codec *codec.ProtoCodec
 	// grpcConn is for client initialization using grpc connection
@@ -166,19 +166,19 @@ func NewGreenfieldClient(rpcAddr, chainID string, opts ...GreenfieldClientOption
 }
 
 // NewCustomGreenfieldClient is used to create a new GreenfieldClient structure, allows for setting a custom http client
-func NewCustomGreenfieldClient(rpcAddr, chainId string, customDialer func(string) (*http.Client, error), opts ...GreenfieldClientOption) (*GreenfieldClient, error) {
+func NewCustomGreenfieldClient(rpcAddr, chainID string, customDialer func(string) (*http.Client, error), opts ...GreenfieldClientOption) (*GreenfieldClient, error) {
 	rpcClient, err := sdkclient.NewCustomClientFromNode(rpcAddr, customDialer)
 	if err != nil {
 		return nil, err
 	}
 
-	return newGreenfieldClient(rpcAddr, chainId, rpcClient, opts...)
+	return newGreenfieldClient(rpcAddr, chainID, rpcClient, opts...)
 }
 
 func newGreenfieldClient(rpcAddr, chainID string, rpcClient *rpchttp.HTTP, opts ...GreenfieldClientOption) (*GreenfieldClient, error) {
 	cdc := types.Codec()
 	client := &GreenfieldClient{
-		chainId: chainID,
+		chainID: chainID,
 		codec:   cdc,
 	}
 	client.tendermintClient = rpcClient
@@ -244,22 +244,22 @@ func (c *GreenfieldClient) SetKeyManager(keyManager keys.KeyManager) {
 // GetKeyManager returns the key manager set in the GreenfieldClient structure.
 func (c *GreenfieldClient) GetKeyManager() (keys.KeyManager, error) {
 	if c.keyManager == nil {
-		return nil, types.KeyManagerNotInitError
+		return nil, types.ErrKeyManagerNotInit
 	}
 	return c.keyManager, nil
 }
 
 // SetChainId sets the chain ID in the GreenfieldClient structure.
-func (c *GreenfieldClient) SetChainId(id string) {
-	c.chainId = id
+func (c *GreenfieldClient) SetChainId(id string) { //nolint
+	c.chainID = id
 }
 
-// GetChainId returns the chain ID set in the GreenfieldClient structure.
-func (c *GreenfieldClient) GetChainId() (string, error) {
-	if c.chainId == "" {
-		return "", types.ChainIdNotSetError
+// GetChainID returns the chain ID set in the GreenfieldClient structure.
+func (c *GreenfieldClient) GetChainID() (string, error) {
+	if c.chainID == "" {
+		return "", types.ErrChainIDNotSet
 	}
-	return c.chainId, nil
+	return c.chainID, nil
 }
 
 func (c *GreenfieldClient) GetCodec() *codec.ProtoCodec {

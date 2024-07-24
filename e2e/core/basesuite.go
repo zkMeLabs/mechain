@@ -132,7 +132,7 @@ func (s *BaseSuite) SetupSuite() {
 		s.InitChain()
 	})
 
-	s.Client, _ = client.NewGreenfieldClient(s.Config.TendermintAddr, s.Config.ChainId)
+	s.Client, _ = client.NewGreenfieldClient(s.Config.TendermintAddr, s.Config.ChainID)
 	tmClient := client.NewTendermintClient(s.Config.TendermintAddr)
 	s.TmClient = &tmClient
 	var err error
@@ -643,12 +643,12 @@ func (s *BaseSuite) CreateObject(user keys.KeyManager, primarySP *StorageProvide
 	s.Require().NoError(err)
 	originGVG := queryGlobalvirtualGroupResp.GlobalVirtualGroup
 	// SealObject
-	gvgId := gvg.Id
+	gvgID = gvg.Id
 	msgSealObject := storagetypes.NewMsgSealObject(primarySP.SealKey.GetAddr(), bucketName, objectName, gvg.Id, nil)
 
 	secondarySigs := make([][]byte, 0)
 	secondarySPBlsPubKeys := make([]bls.PublicKey, 0)
-	blsSignHash := storagetypes.NewSecondarySpSealObjectSignDoc(s.GetChainID(), gvgId, queryHeadObjectResponse.ObjectInfo.Id, storagetypes.GenerateHash(queryHeadObjectResponse.ObjectInfo.Checksums)).GetBlsSignHash()
+	blsSignHash := storagetypes.NewSecondarySpSealObjectSignDoc(s.GetChainID(), gvgID, queryHeadObjectResponse.ObjectInfo.Id, storagetypes.GenerateHash(queryHeadObjectResponse.ObjectInfo.Checksums)).GetBlsSignHash()
 	// every secondary sp signs the checksums
 	for _, spID := range gvg.SecondarySpIds {
 		sig, err := BlsSignAndVerify(s.StorageProviders[spID], blsSignHash)
@@ -735,7 +735,7 @@ func (s *BaseSuite) CreateGlobalVirtualGroup(sp *StorageProvider, familyID uint3
 }
 
 func (s *BaseSuite) GetChainID() string {
-	return s.Config.ChainId
+	return s.Config.ChainID
 }
 
 func (s *BaseSuite) PickStorageProvider() *StorageProvider {
@@ -754,9 +754,9 @@ func (s *BaseSuite) PickStorageProviderByID(id uint32) *StorageProvider {
 	return nil
 }
 
-func (s *BaseSuite) PickDifferentStorageProvider(spId uint32) *StorageProvider {
+func (s *BaseSuite) PickDifferentStorageProvider(spID uint32) *StorageProvider {
 	for _, sp := range s.StorageProviders {
-		if sp.Info.Id != spId {
+		if sp.Info.Id != spID {
 			return sp
 		}
 	}

@@ -258,13 +258,13 @@ type MirrorBucketSynPackage struct {
 }
 
 type GeneralMirrorSynPackageStruct struct {
-	Id    *big.Int
+	ID    *big.Int
 	Owner common.Address
 }
 
 type MirrorBucketAckPackage struct {
 	Status uint8
-	Id     *big.Int
+	ID     *big.Int
 }
 
 var (
@@ -315,7 +315,7 @@ func DeserializeMirrorBucketSynPackage(serializedPackage []byte) (interface{}, e
 	}
 
 	tp := MirrorBucketSynPackage{
-		pkgStruct.Id,
+		pkgStruct.ID,
 		pkgStruct.Owner.Bytes(),
 	}
 	return &tp, nil
@@ -324,7 +324,7 @@ func DeserializeMirrorBucketSynPackage(serializedPackage []byte) (interface{}, e
 func (pkg *MirrorBucketAckPackage) Serialize() ([]byte, error) {
 	return generalMirrorAckPackageArgs.Pack(&MirrorBucketAckPackage{
 		pkg.Status,
-		SafeBigInt(pkg.Id),
+		SafeBigInt(pkg.ID),
 	})
 }
 
@@ -350,7 +350,7 @@ type MirrorObjectSynPackage struct {
 
 type MirrorObjectAckPackage struct {
 	Status uint8
-	Id     *big.Int
+	ID     *big.Int
 }
 
 func (pkg *MirrorObjectSynPackage) Serialize() ([]byte, error) {
@@ -367,7 +367,7 @@ func DeserializeMirrorObjectSynPackage(serializedPackage []byte) (interface{}, e
 	}
 
 	tp := MirrorObjectSynPackage{
-		pkgStruct.Id,
+		pkgStruct.ID,
 		pkgStruct.Owner.Bytes(),
 	}
 	return &tp, nil
@@ -376,7 +376,7 @@ func DeserializeMirrorObjectSynPackage(serializedPackage []byte) (interface{}, e
 func (pkg *MirrorObjectAckPackage) Serialize() ([]byte, error) {
 	return generalMirrorAckPackageArgs.Pack(&MirrorObjectAckPackage{
 		pkg.Status,
-		SafeBigInt(pkg.Id),
+		SafeBigInt(pkg.ID),
 	})
 }
 
@@ -396,7 +396,7 @@ func DeserializeMirrorObjectAckPackage(serializedPackage []byte) (interface{}, e
 }
 
 type MirrorGroupSynPackage struct {
-	Id    *big.Int
+	ID    *big.Int
 	Owner sdk.AccAddress
 }
 
@@ -407,7 +407,7 @@ type MirrorGroupAckPackage struct {
 
 func (pkg *MirrorGroupSynPackage) Serialize() ([]byte, error) {
 	return generalMirrorSynPackageArgs.Pack(&GeneralMirrorSynPackageStruct{
-		SafeBigInt(pkg.Id),
+		SafeBigInt(pkg.ID),
 		common.BytesToAddress(pkg.Owner),
 	})
 }
@@ -419,7 +419,7 @@ func DeserializeMirrorGroupSynPackage(serializedPackage []byte) (interface{}, er
 	}
 
 	tp := MirrorGroupSynPackage{
-		pkgStruct.Id,
+		pkgStruct.ID,
 		pkgStruct.Owner.Bytes(),
 	}
 	return &tp, nil
@@ -466,7 +466,7 @@ type CreateBucketSynPackageV2 struct {
 	PaymentAddress                 sdk.AccAddress
 	PrimarySpAddress               sdk.AccAddress
 	PrimarySpApprovalExpiredHeight uint64
-	GlobalVirtualGroupFamilyId     uint32
+	GlobalVirtualGroupFamilyID     uint32
 	PrimarySpApprovalSignature     []byte
 	ChargedReadQuota               uint64
 	ExtraData                      []byte
@@ -491,7 +491,7 @@ type CreateBucketSynPackageV2Struct struct {
 	PaymentAddress                 common.Address
 	PrimarySpAddress               common.Address
 	PrimarySpApprovalExpiredHeight uint64
-	GlobalVirtualGroupFamilyId     uint32
+	GlobalVirtualGroupFamilyID     uint32
 	PrimarySpApprovalSignature     []byte
 	ChargedReadQuota               uint64
 	ExtraData                      []byte
@@ -617,7 +617,7 @@ func (p CreateBucketSynPackageV2) MustSerialize() []byte {
 		PaymentAddress:                 common.BytesToAddress(p.PaymentAddress),
 		PrimarySpAddress:               common.BytesToAddress(p.PrimarySpAddress),
 		PrimarySpApprovalExpiredHeight: p.PrimarySpApprovalExpiredHeight,
-		GlobalVirtualGroupFamilyId:     p.GlobalVirtualGroupFamilyId,
+		GlobalVirtualGroupFamilyID:     p.GlobalVirtualGroupFamilyID,
 		PrimarySpApprovalSignature:     p.PrimarySpApprovalSignature,
 		ChargedReadQuota:               p.ChargedReadQuota,
 		ExtraData:                      p.ExtraData,
@@ -637,7 +637,7 @@ func (p CreateBucketSynPackageV2) ValidateBasic() error {
 		PrimarySpAddress: p.PrimarySpAddress.String(),
 		PrimarySpApproval: &gnfdcommon.Approval{
 			ExpiredHeight:              p.PrimarySpApprovalExpiredHeight,
-			GlobalVirtualGroupFamilyId: p.GlobalVirtualGroupFamilyId,
+			GlobalVirtualGroupFamilyId: p.GlobalVirtualGroupFamilyID,
 			Sig:                        p.PrimarySpApprovalSignature,
 		},
 		ChargedReadQuota: p.ChargedReadQuota,
@@ -655,7 +655,7 @@ func (p CreateBucketSynPackageV2) GetApprovalBytes() []byte {
 		PrimarySpAddress: p.PrimarySpAddress.String(),
 		PrimarySpApproval: &gnfdcommon.Approval{
 			ExpiredHeight:              p.PrimarySpApprovalExpiredHeight,
-			GlobalVirtualGroupFamilyId: p.GlobalVirtualGroupFamilyId,
+			GlobalVirtualGroupFamilyId: p.GlobalVirtualGroupFamilyID,
 			Sig:                        p.PrimarySpApprovalSignature,
 		},
 		ChargedReadQuota: p.ChargedReadQuota,
@@ -682,7 +682,7 @@ func DeserializeCreateBucketSynPackageV2(serializedPackage []byte) (interface{},
 		pkgStruct.PaymentAddress.Bytes(),
 		pkgStruct.PrimarySpAddress.Bytes(),
 		pkgStruct.PrimarySpApprovalExpiredHeight,
-		pkgStruct.GlobalVirtualGroupFamilyId,
+		pkgStruct.GlobalVirtualGroupFamilyID,
 		pkgStruct.PrimarySpApprovalSignature,
 		pkgStruct.ChargedReadQuota,
 		pkgStruct.ExtraData,
@@ -699,7 +699,7 @@ type CreateBucketAckPackage struct {
 
 type GeneralCreateAckPackageStruct struct {
 	Status    uint8
-	Id        *big.Int
+	ID        *big.Int
 	Creator   common.Address
 	ExtraData []byte
 }
@@ -720,7 +720,7 @@ var (
 func (p CreateBucketAckPackage) MustSerialize() []byte {
 	encodedBytes, err := generalCreateAckPackageArgs.Pack(&GeneralCreateAckPackageStruct{
 		Status:    p.Status,
-		Id:        SafeBigInt(p.Id),
+		ID:        SafeBigInt(p.Id),
 		Creator:   common.BytesToAddress(p.Creator),
 		ExtraData: p.ExtraData,
 	})
@@ -744,7 +744,7 @@ func DeserializeCreateBucketAckPackage(serializedPackage []byte) (interface{}, e
 
 	tp := CreateBucketAckPackage{
 		Status:    pkgStruct.Status,
-		Id:        pkgStruct.Id,
+		Id:        pkgStruct.ID,
 		Creator:   pkgStruct.Creator.Bytes(),
 		ExtraData: pkgStruct.ExtraData,
 	}
@@ -935,7 +935,7 @@ type CreateGroupAckPackage struct {
 func (p CreateGroupAckPackage) MustSerialize() []byte {
 	encodedBytes, err := generalCreateAckPackageArgs.Pack(&GeneralCreateAckPackageStruct{
 		Status:    p.Status,
-		Id:        SafeBigInt(p.Id),
+		ID:        SafeBigInt(p.Id),
 		Creator:   common.BytesToAddress(p.Creator),
 		ExtraData: p.ExtraData,
 	})
@@ -959,7 +959,7 @@ func DeserializeCreateGroupAckPackage(serializedPackage []byte) (interface{}, er
 
 	tp := CreateGroupAckPackage{
 		Status:    pkgStruct.Status,
-		Id:        pkgStruct.Id,
+		Id:        pkgStruct.ID,
 		Creator:   pkgStruct.Creator.Bytes(),
 		ExtraData: pkgStruct.ExtraData,
 	}
@@ -1461,7 +1461,7 @@ type CreatePolicyAckPackage struct {
 func (p CreatePolicyAckPackage) MustSerialize() []byte {
 	encodedBytes, err := generalCreateAckPackageArgs.Pack(&GeneralCreateAckPackageStruct{
 		Status:    p.Status,
-		Id:        SafeBigInt(p.Id),
+		ID:        SafeBigInt(p.Id),
 		Creator:   common.BytesToAddress(p.Creator),
 		ExtraData: p.ExtraData,
 	})
@@ -1485,7 +1485,7 @@ func DeserializeCreatePolicyAckPackage(serializedPackage []byte) (interface{}, e
 
 	tp := CreatePolicyAckPackage{
 		Status:    pkgStruct.Status,
-		Id:        pkgStruct.Id,
+		Id:        pkgStruct.ID,
 		Creator:   pkgStruct.Creator.Bytes(),
 		ExtraData: pkgStruct.ExtraData,
 	}

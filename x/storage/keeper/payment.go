@@ -244,7 +244,7 @@ func (k Keeper) IsPriceChanged(ctx sdk.Context, _ uint32, priceTime int64) (bool
 		&prePrice, preParams.ValidatorTaxRate, &currentPrice, currentParams.ValidatorTaxRate, nil
 }
 
-func (k Keeper) ChargeObjectStoreFee(ctx sdk.Context, primarySpId uint32, bucketInfo *storagetypes.BucketInfo,
+func (k Keeper) ChargeObjectStoreFee(ctx sdk.Context, primarySpID uint32, bucketInfo *storagetypes.BucketInfo,
 	internalBucketInfo *storagetypes.InternalBucketInfo, objectInfo *storagetypes.ObjectInfo,
 ) error {
 	chargeSize, err := k.GetObjectChargeSize(ctx, objectInfo.PayloadSize, objectInfo.GetLatestUpdatedTime())
@@ -252,7 +252,7 @@ func (k Keeper) ChargeObjectStoreFee(ctx sdk.Context, primarySpId uint32, bucket
 		return fmt.Errorf("get charge size failed: %s %s %w", bucketInfo.BucketName, objectInfo.ObjectName, err)
 	}
 
-	priceChanged, _, _, _, _, err := k.IsPriceChanged(ctx, primarySpId, internalBucketInfo.PriceTime)
+	priceChanged, _, _, _, _, err := k.IsPriceChanged(ctx, primarySpID, internalBucketInfo.PriceTime)
 	if err != nil {
 		return fmt.Errorf("check whether price changed failed: %s %s %w", bucketInfo.BucketName, objectInfo.ObjectName, err)
 	}
@@ -467,7 +467,7 @@ func (k Keeper) ChargeViaObjectChange(ctx sdk.Context, bucketInfo *storagetypes.
 	return k.paymentKeeper.MergeOutFlows(userFlows.Flows), nil
 }
 
-func (k Keeper) calculateLVGStoreBill(ctx sdk.Context, price sptypes.GlobalSpStorePrice, params types.VersionedParams,
+func (k Keeper) calculateLVGStoreBill(_ sdk.Context, price sptypes.GlobalSpStorePrice, params types.VersionedParams,
 	gvgFamily *vgtypes.GlobalVirtualGroupFamily, gvg *vgtypes.GlobalVirtualGroup, lvg *storagetypes.LocalVirtualGroup,
 ) []types.OutFlow {
 	outFlows := make([]types.OutFlow, 0)
@@ -667,7 +667,6 @@ func (k Keeper) GetObjectChargeSize(ctx sdk.Context, payloadSize uint64, ts int6
 	minChargeSize := params.MinChargeSize
 	if payloadSize < minChargeSize {
 		return minChargeSize, nil
-	} else {
-		return payloadSize, nil
 	}
+	return payloadSize, nil
 }

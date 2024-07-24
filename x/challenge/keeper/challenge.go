@@ -11,7 +11,7 @@ import (
 )
 
 // GetChallengeId gets the challenge id
-func (k Keeper) GetChallengeId(ctx sdk.Context) uint64 {
+func (k Keeper) GetChallengeId(ctx sdk.Context) uint64 { //nolint
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), []byte{})
 	bz := store.Get(types.ChallengeIDKey)
 
@@ -23,10 +23,10 @@ func (k Keeper) GetChallengeId(ctx sdk.Context) uint64 {
 }
 
 // setChallengeID sets the new challenge id to the store
-func (k Keeper) setChallengeID(ctx sdk.Context, challengeId uint64) {
+func (k Keeper) setChallengeID(ctx sdk.Context, challengeID uint64) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), []byte{})
 	bz := make([]byte, 8)
-	binary.BigEndian.PutUint64(bz, challengeId)
+	binary.BigEndian.PutUint64(bz, challengeID)
 	store.Set(types.ChallengeIDKey, bz)
 }
 

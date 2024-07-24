@@ -19,7 +19,7 @@ func (s *TestSuite) TestSynCreatePolicy() {
 	storageKeeper := storageTypes.NewMockStorageKeeper(ctrl)
 	permissionKeeper := storageTypes.NewMockPermissionKeeper(ctrl)
 
-	resourceIds := []math.Uint{math.NewUint(rand.Uint64()), math.NewUint(rand.Uint64()), math.NewUint(rand.Uint64())}
+	resourceIds := []math.Uint{math.NewUint(rand.Uint64()), math.NewUint(rand.Uint64()), math.NewUint(rand.Uint64())} //nolint
 	// policy without expiry
 	policy := types.Policy{
 		Principal: &types.Principal{

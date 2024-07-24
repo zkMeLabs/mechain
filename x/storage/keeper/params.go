@@ -70,17 +70,17 @@ func (k Keeper) MirrorBucketAckRelayerFee(ctx sdk.Context, destChainID sdk.Chain
 	return relayerFee
 }
 
-func (k Keeper) MirrorObjectRelayerFee(ctx sdk.Context, destChainId sdk.ChainID) *big.Int {
+func (k Keeper) MirrorObjectRelayerFee(ctx sdk.Context, destChainID sdk.ChainID) *big.Int {
 	params := k.GetParams(ctx)
 
 	var relayerFeeParam string
 	switch {
-	case k.crossChainKeeper.GetDestBscChainID() == destChainId:
+	case k.crossChainKeeper.GetDestBscChainID() == destChainID:
 		relayerFeeParam = params.BscMirrorObjectRelayerFee
-	case k.crossChainKeeper.GetDestOpChainID() == destChainId:
+	case k.crossChainKeeper.GetDestOpChainID() == destChainID:
 		relayerFeeParam = params.OpMirrorObjectRelayerFee
 	default:
-		panic(fmt.Sprintf("chain id(%d) is not supported", destChainId))
+		panic(fmt.Sprintf("chain id(%d) is not supported", destChainID))
 	}
 
 	relayerFee, valid := big.NewInt(0).SetString(relayerFeeParam, 10)
@@ -112,16 +112,16 @@ func (k Keeper) MirrorObjectAckRelayerFee(ctx sdk.Context, destChainID sdk.Chain
 	return relayerFee
 }
 
-func (k Keeper) MirrorGroupRelayerFee(ctx sdk.Context, destChainId sdk.ChainID) *big.Int {
+func (k Keeper) MirrorGroupRelayerFee(ctx sdk.Context, destChainID sdk.ChainID) *big.Int {
 	params := k.GetParams(ctx)
 	var relayerFeeParam string
 	switch {
-	case k.crossChainKeeper.GetDestBscChainID() == destChainId:
+	case k.crossChainKeeper.GetDestBscChainID() == destChainID:
 		relayerFeeParam = params.BscMirrorGroupRelayerFee
-	case k.crossChainKeeper.GetDestOpChainID() == destChainId:
+	case k.crossChainKeeper.GetDestOpChainID() == destChainID:
 		relayerFeeParam = params.OpMirrorGroupRelayerFee
 	default:
-		panic(fmt.Sprintf("chain id(%d) is not supported", destChainId))
+		panic(fmt.Sprintf("chain id(%d) is not supported", destChainID))
 
 	}
 
@@ -133,16 +133,17 @@ func (k Keeper) MirrorGroupRelayerFee(ctx sdk.Context, destChainId sdk.ChainID) 
 	return relayerFee
 }
 
-func (k Keeper) MirrorGroupAckRelayerFee(ctx sdk.Context, destChainId sdk.ChainID) *big.Int {
+func (k Keeper) MirrorGroupAckRelayerFee(ctx sdk.Context, destChainID sdk.ChainID) *big.Int {
 	params := k.GetParams(ctx)
 
 	var relayerFeeParam string
-	if k.crossChainKeeper.GetDestBscChainID() == destChainId {
+	switch {
+	case k.crossChainKeeper.GetDestBscChainID() == destChainID:
 		relayerFeeParam = params.BscMirrorGroupAckRelayerFee
-	} else if k.crossChainKeeper.GetDestOpChainID() == destChainId {
+	case k.crossChainKeeper.GetDestOpChainID() == destChainID:
 		relayerFeeParam = params.OpMirrorGroupAckRelayerFee
-	} else {
-		panic(fmt.Sprintf("chain id(%d) is not supported", destChainId))
+	default:
+		panic(fmt.Sprintf("chain id(%d) is not supported", destChainID))
 	}
 
 	relayerFee, valid := big.NewInt(0).SetString(relayerFeeParam, 10)

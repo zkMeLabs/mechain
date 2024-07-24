@@ -47,7 +47,7 @@ func (s *TestSuite) SetupTest() {
 	testCtx := testutil.DefaultContextWithDB(s.T(), key, storetypes.NewTransientStoreKey("transient_test"))
 	header := testCtx.Ctx.BlockHeader()
 	header.Time = time.Now()
-	upgradeChecker := func(ctx sdk.Context, name string) bool {
+	upgradeChecker := func(_ sdk.Context, _ string) bool {
 		return true
 	}
 	testCtx = testutil.TestContext{

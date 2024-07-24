@@ -491,12 +491,12 @@ func (s *StorageProviderTestSuite) updateParams(params sptypes.Params) {
 	s.Require().Equal(txRes.Code, uint32(0))
 
 	// 3. query proposal and get proposal ID
-	var proposalId uint64
+	var proposalID uint64
 	for _, event := range txRes.Logs[0].Events {
 		if event.Type == submitProposalEvent {
 			for _, attr := range event.Attributes {
 				if attr.Key == proposalIDStr {
-					proposalId, err = strconv.ParseUint(attr.Value, 10, 0)
+					proposalID, err = strconv.ParseUint(attr.Value, 10, 0)
 					s.Require().NoError(err)
 					break
 				}
@@ -504,14 +504,14 @@ func (s *StorageProviderTestSuite) updateParams(params sptypes.Params) {
 			break
 		}
 	}
-	s.Require().True(proposalId != 0)
+	s.Require().True(proposalID != 0)
 
-	queryProposal := &v1.QueryProposalRequest{ProposalId: proposalId}
+	queryProposal := &v1.QueryProposalRequest{ProposalId: proposalID}
 	_, err = s.Client.GovQueryClientV1.Proposal(ctx, queryProposal)
 	s.Require().NoError(err)
 
 	// 4. submit MsgVote and wait the proposal exec
-	msgVote := v1.NewMsgVote(validator, proposalId, v1.OptionYes, "test")
+	msgVote := v1.NewMsgVote(validator, proposalID, v1.OptionYes, "test")
 	txRes = s.SendTxBlock(s.Validator, msgVote)
 	s.Require().Equal(txRes.Code, uint32(0))
 

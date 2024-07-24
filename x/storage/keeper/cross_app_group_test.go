@@ -95,7 +95,7 @@ func (s *TestSuite) TestFailAckMirrorGroup() {
 
 	app := keeper.NewGroupApp(storageKeeper)
 	ackPackage := types.MirrorGroupSynPackage{
-		Id:    big.NewInt(10),
+		ID:    big.NewInt(10),
 		Owner: sample.RandAccAddress(),
 	}
 
@@ -191,7 +191,7 @@ func (s *TestSuite) TestSynMirrorGroup() {
 	app := keeper.NewGroupApp(storageKeeper)
 	synPackage := types.MirrorGroupSynPackage{
 		Owner: sample.RandAccAddress(),
-		Id:    big.NewInt(10),
+		ID:    big.NewInt(10),
 	}
 
 	serializedSynPackage, err := synPackage.Serialize()

@@ -202,7 +202,7 @@ func (c *Contract) SealObject(ctx sdk.Context, evm *vm.EVM, contract *vm.Contrac
 		Operator:                    args.SealAddress.String(),
 		BucketName:                  args.BucketName,
 		ObjectName:                  args.ObjectName,
-		GlobalVirtualGroupId:        args.GlobalVirtualGroupId,
+		GlobalVirtualGroupId:        args.GlobalVirtualGroupID,
 		SecondarySpBlsAggSignatures: secondarySpBlsAggSignatures,
 	}
 	if err := msg.ValidateBasic(); err != nil {

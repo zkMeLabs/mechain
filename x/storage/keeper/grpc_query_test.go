@@ -88,12 +88,12 @@ func (s *TestSuite) TestQueryVersionedParams() {
 }
 
 func (s *TestSuite) TestQueryGroupMembersExist() {
-	groupId := rand.Intn(1000)
+	groupId := rand.Intn(1000) //nolint
 	members := make([]string, 3)
 	exists := make(map[string]bool)
 	for i := 0; i < 3; i++ {
 		members[i] = sample.RandAccAddressHex()
-		exist := rand.Intn(2)
+		exist := rand.Intn(2) //nolint
 		if exist == 0 {
 			exists[members[i]] = false
 			s.permissionKeeper.EXPECT().GetGroupMember(gomock.Any(), gomock.Any(), gomock.Any()).Return(nil, false).Times(1)
@@ -118,7 +118,7 @@ func (s *TestSuite) TestQueryGroupsExist() {
 	exists := make(map[string]bool)
 	for i := 0; i < 3; i++ {
 		groupNames[i] = string(sample.RandStr(10))
-		exist := rand.Intn(2)
+		exist := rand.Intn(2) //nolint
 		if exist == 0 {
 			exists[groupNames[i]] = false
 		} else {
@@ -137,24 +137,25 @@ func (s *TestSuite) TestQueryGroupsExist() {
 	s.Require().Equal(exists, res.GetExists())
 }
 
-func (s *TestSuite) TestQueryGroupsExistById() {
-	groupIds := make([]string, 3)
+func (s *TestSuite) TestQueryGroupsExistByID() {
+	groupIDs := make([]string, 3)
 	exists := make(map[string]bool)
 	for i := 0; i < 3; i++ {
-		groupIds[i] = strconv.Itoa(rand.Intn(1000) + 10) // make sure there's no conflict
+		//  make sure there's no conflict
+		groupIDs[i] = strconv.Itoa(rand.Intn(1000) + 10) //nolint
 		exist := rand.Intn(2)
 		if exist == 0 {
-			exists[groupIds[i]] = false
+			exists[groupIDs[i]] = false
 		} else {
 			id, err := s.storageKeeper.CreateGroup(s.ctx, sample.RandAccAddress(), string(sample.RandStr(10)), types.CreateGroupOptions{})
 			s.Require().NoError(err)
-			groupIds[i] = id.String()
-			exists[groupIds[i]] = true
+			groupIDs[i] = id.String()
+			exists[groupIDs[i]] = true
 		}
 	}
 
 	req := &types.QueryGroupsExistByIdRequest{
-		GroupIds: groupIds,
+		GroupIds: groupIDs,
 	}
 	res, err := s.queryClient.QueryGroupsExistById(context.Background(), req)
 	s.Require().NoError(err)

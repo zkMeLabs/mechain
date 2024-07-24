@@ -51,7 +51,7 @@ func (s *TestSuite) SetupTest() {
 	randaoMix = append(randaoMix, crypto.Keccak256([]byte{2})...)
 	header := testCtx.Ctx.BlockHeader()
 	header.RandaoMix = randaoMix
-	upgradeChecker := func(_ sdk.Context, name string) bool {
+	upgradeChecker := func(_ sdk.Context, _ string) bool {
 		return true
 	}
 	testCtx = testutil.TestContext{
@@ -224,6 +224,6 @@ func (s *TestSuite) TestEndBlocker_SuccessRandomChallenge() {
 
 	preChallengeID := s.challengeKeeper.GetChallengeId(s.ctx)
 	challenge.EndBlocker(s.ctx, *s.challengeKeeper)
-	afterChallengeId := s.challengeKeeper.GetChallengeId(s.ctx)
-	s.Require().True(preChallengeID == afterChallengeId-1)
+	afterChallengeID := s.challengeKeeper.GetChallengeId(s.ctx)
+	s.Require().True(preChallengeID == afterChallengeID-1)
 }

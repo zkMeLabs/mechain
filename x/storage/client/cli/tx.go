@@ -1043,7 +1043,7 @@ func CmdMirrorObject() *cobra.Command {
 		Use:   "mirror-object",
 		Short: "Mirror the object to the destination chain",
 		Args:  cobra.ExactArgs(0),
-		RunE: func(cmd *cobra.Command, args []string) (err error) {
+		RunE: func(cmd *cobra.Command, _ []string) (err error) {
 			argObjectID, _ := cmd.Flags().GetString(FlagObjectID)
 			argBucketName, _ := cmd.Flags().GetString(FlagBucketName)
 			argObjectName, _ := cmd.Flags().GetString(FlagObjectName)

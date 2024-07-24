@@ -35,8 +35,8 @@ func (s *GashubTestSuite) TestUpdateParams() {
 	validator := s.Validator.GetAddr()
 
 	// 1. submit MsgUpdateMsgGasParams
-	typeUrl := sdk.MsgTypeURL(&banktypes.MsgSend{})
-	msgSendGasParams := gashubtypes.NewMsgGasParamsWithFixedGas(typeUrl, 1e6)
+	typeURL := sdk.MsgTypeURL(&banktypes.MsgSend{})
+	msgSendGasParams := gashubtypes.NewMsgGasParamsWithFixedGas(typeURL, 1e6)
 	msgUpdateGasParams := gashubtypes.NewMsgSetMsgGasParams(authtypes.NewModuleAddress(govtypes.ModuleName).String(), []*gashubtypes.MsgGasParams{msgSendGasParams}, nil)
 	msgProposal, err := govtypesv1.NewMsgSubmitProposal(
 		[]sdk.Msg{msgUpdateGasParams},
@@ -92,7 +92,7 @@ func (s *GashubTestSuite) TestUpdateParams() {
 	s.Require().NoError(err)
 
 	for _, params := range queryRes.GetMsgGasParams() {
-		if params.MsgTypeUrl == typeUrl {
+		if params.MsgTypeUrl == typeURL {
 			s.Require().True(params.GetFixedType().Equal(msgSendGasParams.GetFixedType()))
 		}
 	}

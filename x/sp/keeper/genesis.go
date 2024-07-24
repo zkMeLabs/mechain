@@ -11,7 +11,8 @@ import (
 func (k Keeper) InitGenesis(ctx sdk.Context, genState types.GenesisState) {
 	depositAmount := sdk.ZeroInt()
 	for _, sp := range genState.StorageProviders {
-		k.SetStorageProvider(ctx, &sp)
+		s := sp
+		k.SetStorageProvider(ctx, &s)
 
 		switch sp.GetStatus() {
 		case types.STATUS_IN_SERVICE,
