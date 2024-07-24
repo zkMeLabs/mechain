@@ -201,9 +201,9 @@ func (app *ObjectApp) handleDeleteObjectSynPackage(ctx sdk.Context, appCtx *sdk.
 		}
 	}
 
-	app.storageKeeper.Logger(ctx).Info("process delete object syn package", "object id", deleteObjectPackage.Id.String())
+	app.storageKeeper.Logger(ctx).Info("process delete object syn package", "object id", deleteObjectPackage.ID.String())
 
-	objectInfo, found := app.storageKeeper.GetObjectInfoById(ctx, math.NewUintFromBigInt(deleteObjectPackage.Id))
+	objectInfo, found := app.storageKeeper.GetObjectInfoById(ctx, math.NewUintFromBigInt(deleteObjectPackage.ID))
 	if !found {
 		return sdk.ExecuteResult{
 			Payload: types.DeleteObjectAckPackage{
@@ -242,20 +242,22 @@ func (app *ObjectApp) handleDeleteObjectSynPackage(ctx sdk.Context, appCtx *sdk.
 	return sdk.ExecuteResult{
 		Payload: types.DeleteObjectAckPackage{
 			Status:    types.StatusSuccess,
-			Id:        objectInfo.Id.BigInt(),
+			ID:        objectInfo.Id.BigInt(),
 			ExtraData: deleteObjectPackage.ExtraData,
 		}.MustSerialize(),
 	}
 }
 
+//nolint:unparam
 func (app *ObjectApp) handleDeleteObjectAckPackage(ctx sdk.Context, _ *sdk.CrossChainAppContext, _ *types.DeleteObjectAckPackage) sdk.ExecuteResult {
 	app.storageKeeper.Logger(ctx).Error("received delete object ack package ")
 
-	return sdk.ExecuteResult{} //nolint
+	return sdk.ExecuteResult{}
 }
 
+//nolint:unparam
 func (app *ObjectApp) handleDeleteObjectFailAckPackage(ctx sdk.Context, _ *sdk.CrossChainAppContext, _ *types.DeleteObjectSynPackage) sdk.ExecuteResult {
 	app.storageKeeper.Logger(ctx).Error("received delete object fail ack package ")
 
-	return sdk.ExecuteResult{} //nolint
+	return sdk.ExecuteResult{}
 }

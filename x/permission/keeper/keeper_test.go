@@ -49,7 +49,7 @@ func (s *TestSuite) TestPruneAccountPolicies() {
 		name       string
 		ctx        sdk.Context
 		resourceID math.Uint
-		policyId   math.Uint
+		policyID   math.Uint
 		found      bool
 		preRun     func()
 		postRun    func()
@@ -58,27 +58,27 @@ func (s *TestSuite) TestPruneAccountPolicies() {
 			name:       "no expiry and no prune",
 			ctx:        s.ctx.WithBlockTime(oneDayAfter),
 			resourceID: resourceIDs[0],
-			policyId:   policyIDs[0],
+			policyID:   policyIDs[0],
 			found:      true,
 		},
 		{
 			name:       "expiry and no prune",
 			ctx:        s.ctx.WithBlockTime(oneDayAfter),
 			resourceID: resourceIDs[1],
-			policyId:   policyIDs[1],
+			policyID:   policyIDs[1],
 			found:      true,
 		},
 		{
 			name:       "expiry and prune",
 			ctx:        s.ctx.WithBlockTime(oneDayAfter.Add(time.Second)),
 			resourceID: resourceIDs[1],
-			policyId:   policyIDs[1],
+			policyID:   policyIDs[1],
 		},
 		{
 			name:       "update from no expiry to expiry and prune",
 			ctx:        s.ctx.WithBlockTime(oneDayAfter.Add(time.Second)),
 			resourceID: resourceIDs[0],
-			policyId:   policyIDs[0],
+			policyID:   policyIDs[0],
 			preRun: func() {
 				oldPolicy, found := s.permissionKeeper.GetPolicyByID(s.ctx, policyIDs[0])
 				s.True(found)
@@ -92,7 +92,7 @@ func (s *TestSuite) TestPruneAccountPolicies() {
 			name:       "update from expiry to no expiry and no prune",
 			ctx:        s.ctx.WithBlockTime(oneDayAfter.Add(time.Second)),
 			resourceID: resourceIDs[2],
-			policyId:   policyIDs[2],
+			policyID:   policyIDs[2],
 			found:      true,
 			preRun: func() {
 				oldPolicy, found := s.permissionKeeper.GetPolicyByID(s.ctx, policyIDs[2])
@@ -111,10 +111,10 @@ func (s *TestSuite) TestPruneAccountPolicies() {
 			if tc.preRun != nil {
 				tc.preRun()
 			}
-			_, found := s.permissionKeeper.GetPolicyByID(tc.ctx, tc.policyId)
+			_, found := s.permissionKeeper.GetPolicyByID(tc.ctx, tc.policyID)
 			s.True(found)
 			s.permissionKeeper.RemoveExpiredPolicies(tc.ctx)
-			_, found = s.permissionKeeper.GetPolicyByID(tc.ctx, tc.policyId)
+			_, found = s.permissionKeeper.GetPolicyByID(tc.ctx, tc.policyID)
 			s.Equal(tc.found, found)
 			if tc.postRun != nil {
 				tc.postRun()

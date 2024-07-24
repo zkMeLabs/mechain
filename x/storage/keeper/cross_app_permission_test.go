@@ -58,7 +58,7 @@ func (s *TestSuite) TestSynDeletePolicy() {
 	app := keeper.NewPermissionApp(storageKeeper, permissionKeeper)
 	synPackage := storageTypes.DeleteBucketSynPackage{
 		Operator:  sample.RandAccAddress(),
-		Id:        big.NewInt(10),
+		ID:        big.NewInt(10),
 		ExtraData: []byte("extra data"),
 	}
 

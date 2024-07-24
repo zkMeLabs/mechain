@@ -1721,7 +1721,7 @@ func (k Keeper) VerifySP(_ sdk.Context, sp *sptypes.StorageProvider, operator sd
 	return nil
 }
 
-func (k Keeper) GenNextBucketId(ctx sdk.Context) sdkmath.Uint {
+func (k Keeper) GenNextBucketId(ctx sdk.Context) sdkmath.Uint { //nolint
 	store := ctx.KVStore(k.storeKey)
 
 	seq := k.bucketSeq.NextVal(store)
@@ -2037,16 +2037,16 @@ func (k Keeper) GarbageCollectResourcesStalePolicy(ctx sdk.Context) {
 }
 
 func (k Keeper) garbageCollectionForResource(ctx sdk.Context, deleteStalePoliciesPrefixStore prefix.Store, iterator storetypes.Iterator,
-	deleteInfo *storagetypes.DeleteInfo, resourceType resource.ResourceType, resourceIds *storagetypes.Ids, maxCleanup, deletedTotal uint64,
+	deleteInfo *storagetypes.DeleteInfo, resourceType resource.ResourceType, resourceIDs *storagetypes.Ids, maxCleanup, deletedTotal uint64,
 ) (uint64, bool) {
 	var done bool
-	if resourceIds != nil && len(resourceIds.Id) > 0 {
-		ids := resourceIds.Id
+	if resourceIDs != nil && len(resourceIDs.Id) > 0 {
+		ids := resourceIDs.Id
 		temp := ids
 		for idx, id := range ids {
 			deletedTotal, done = k.permKeeper.ForceDeleteAccountPolicyForResource(ctx, maxCleanup, deletedTotal, resourceType, id)
 			if !done {
-				resourceIds.Id = temp
+				resourceIDs.Id = temp
 				deleteStalePoliciesPrefixStore.Set(iterator.Key(), k.cdc.MustMarshal(deleteInfo))
 				return deletedTotal, false
 			}
@@ -2062,7 +2062,7 @@ func (k Keeper) garbageCollectionForResource(ctx sdk.Context, deleteStalePolicie
 			}
 			deletedTotal, done = k.permKeeper.ForceDeleteGroupPolicyForResource(ctx, maxCleanup, deletedTotal, resourceType, id)
 			if !done {
-				resourceIds.Id = temp
+				resourceIDs.Id = temp
 				deleteStalePoliciesPrefixStore.Set(iterator.Key(), k.cdc.MustMarshal(deleteInfo))
 				return deletedTotal, false
 			}
@@ -2690,10 +2690,10 @@ func (k Keeper) IncreaseLockedObjectCount(ctx sdk.Context, bucketID sdkmath.Uint
 	store.Set(key, bz)
 }
 
-func (k Keeper) DecreaseLockedObjectCount(ctx sdk.Context, bucketId sdkmath.Uint) {
+func (k Keeper) DecreaseLockedObjectCount(ctx sdk.Context, bucketID sdkmath.Uint) {
 	store := ctx.KVStore(k.storeKey)
 
-	key := storagetypes.GetLockedObjectCountKey(bucketId)
+	key := storagetypes.GetLockedObjectCountKey(bucketID)
 	bz := store.Get(key)
 	before := uint64(0)
 	if bz != nil {

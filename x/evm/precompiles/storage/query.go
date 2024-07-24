@@ -258,9 +258,9 @@ func (c *Contract) HeadObject(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract,
 }
 
 // HeadObjectById queries the object's info.
-func (c *Contract) HeadObjectById(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract, _ bool) ([]byte, error) {
+func (c *Contract) HeadObjectById(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract, _ bool) ([]byte, error) { //nolint
 	method := GetAbiMethod(HeadObjectByIDMethodName)
-	var args HeadObjectByIdArgs
+	var args HeadObjectByIDArgs
 	if err := types.ParseMethodArgs(method, &args, contract.Input[4:]); err != nil {
 		return nil, err
 	}

@@ -1,7 +1,6 @@
 package client
 
 import (
-	_ "encoding/json"
 	"net/http"
 
 	"github.com/cometbft/cometbft/rpc/client"

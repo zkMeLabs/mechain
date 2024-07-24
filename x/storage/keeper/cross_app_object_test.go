@@ -49,7 +49,7 @@ func (s *TestSuite) TestAckDeleteObject() {
 	app := keeper.NewObjectApp(storageKeeper)
 	ackPackage := types.DeleteObjectAckPackage{
 		Status:    types.StatusSuccess,
-		Id:        big.NewInt(10),
+		ID:        big.NewInt(10),
 		ExtraData: []byte("extra data"),
 	}
 
@@ -100,7 +100,7 @@ func (s *TestSuite) TestFailAckDeleteObject() {
 	app := keeper.NewObjectApp(storageKeeper)
 	ackPackage := types.DeleteBucketSynPackage{
 		Operator:  sample.RandAccAddress(),
-		Id:        big.NewInt(10),
+		ID:        big.NewInt(10),
 		ExtraData: []byte("extra data"),
 	}
 
@@ -144,7 +144,7 @@ func (s *TestSuite) TestSynDeleteObject() {
 	app := keeper.NewObjectApp(storageKeeper)
 	synPackage := types.DeleteBucketSynPackage{
 		Operator:  sample.RandAccAddress(),
-		Id:        big.NewInt(10),
+		ID:        big.NewInt(10),
 		ExtraData: []byte("extra data"),
 	}
 

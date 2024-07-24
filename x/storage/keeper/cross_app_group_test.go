@@ -22,7 +22,7 @@ func (s *TestSuite) TestAckMirrorGroup() {
 	app := keeper.NewGroupApp(storageKeeper)
 	ackPackage := types.MirrorGroupAckPackage{
 		Status: types.StatusSuccess,
-		Id:     big.NewInt(10),
+		ID:     big.NewInt(10),
 	}
 
 	serializedAckPackage, err := ackPackage.Serialize()
@@ -51,7 +51,7 @@ func (s *TestSuite) TestAckCreateGroup() {
 	app := keeper.NewGroupApp(storageKeeper)
 	ackPackage := types.CreateGroupAckPackage{
 		Status:    types.StatusSuccess,
-		Id:        big.NewInt(10),
+		ID:        big.NewInt(10),
 		Creator:   sample.RandAccAddress(),
 		ExtraData: []byte("extra data"),
 	}
@@ -74,7 +74,7 @@ func (s *TestSuite) TestAckDeleteGroup() {
 	app := keeper.NewGroupApp(storageKeeper)
 	ackPackage := types.DeleteGroupAckPackage{
 		Status:    types.StatusSuccess,
-		Id:        big.NewInt(10),
+		ID:        big.NewInt(10),
 		ExtraData: []byte("extra data"),
 	}
 
@@ -147,7 +147,7 @@ func (s *TestSuite) TestFailAckDeleteGroup() {
 	app := keeper.NewGroupApp(storageKeeper)
 	ackPackage := types.DeleteBucketSynPackage{
 		Operator:  sample.RandAccAddress(),
-		Id:        big.NewInt(10),
+		ID:        big.NewInt(10),
 		ExtraData: []byte("extra data"),
 	}
 
@@ -251,7 +251,7 @@ func (s *TestSuite) TestSynDeleteGroup() {
 	app := keeper.NewGroupApp(storageKeeper)
 	synPackage := types.DeleteBucketSynPackage{
 		Operator:  sample.RandAccAddress(),
-		Id:        big.NewInt(10),
+		ID:        big.NewInt(10),
 		ExtraData: []byte("extra data"),
 	}
 	serializedSynPackage := synPackage.MustSerialize()

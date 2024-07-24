@@ -208,7 +208,8 @@ func (s *TestSuite) TestSubmit() {
 	}
 	for _, tt := range tests {
 		s.T().Run(tt.name, func(t *testing.T) {
-			_, err := s.msgServer.Submit(s.ctx, &tt.msg)
+			msg := tt.msg
+			_, err := s.msgServer.Submit(s.ctx, &msg)
 			if tt.err != nil {
 				require.ErrorIs(t, err, tt.err)
 				return

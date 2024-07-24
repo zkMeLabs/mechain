@@ -55,8 +55,8 @@ func EndBlocker(ctx sdk.Context, keeper k.Keeper) {
 		seed := k.SeedFromRandaoMix(ctx.BlockHeader().RandaoMix, iteration)
 
 		// random object info
-		objectId := k.RandomObjectID(seed, objectCount)
-		objectInfo, found := keeper.StorageKeeper.GetObjectInfoById(ctx, objectId)
+		objectID := k.RandomObjectID(seed, objectCount)
+		objectInfo, found := keeper.StorageKeeper.GetObjectInfoById(ctx, objectID)
 		if !found || objectInfo.ObjectStatus != storagetypes.OBJECT_STATUS_SEALED {
 			continue
 		}

@@ -1023,7 +1023,7 @@ func (s *StorageTestSuite) TestStalePermissionForAccountGC() {
 	ctx := context.Background()
 	user1 := s.GenAndChargeAccounts(1, 1000000)[0]
 
-	_, owner, bucketName, bucketID, objectName, objectId := s.createObjectWithVisibility(storagetypes.VISIBILITY_TYPE_PUBLIC_READ)
+	_, owner, bucketName, bucketID, objectName, objectID := s.createObjectWithVisibility(storagetypes.VISIBILITY_TYPE_PUBLIC_READ)
 
 	principal := types.NewPrincipalWithAccount(user1.GetAddr())
 
@@ -1061,7 +1061,7 @@ func (s *StorageTestSuite) TestStalePermissionForAccountGC() {
 		PrincipalAddress: user1.GetAddr().String(),
 	})
 	s.Require().NoError(err)
-	s.Require().Equal(objectId, queryPolicyForAccountResp.Policy.ResourceId)
+	s.Require().Equal(objectID, queryPolicyForAccountResp.Policy.ResourceId)
 	objectPolicyID := queryPolicyForAccountResp.Policy.Id
 	s.T().Log(queryPolicyForAccountResp.Policy.String())
 
@@ -1215,7 +1215,7 @@ func (s *StorageTestSuite) TestDeleteGroupPolicy() {
 func (s *StorageTestSuite) TestStalePermissionForGroupGC() {
 	ctx := context.Background()
 	user := s.GenAndChargeAccounts(3, 10000)
-	_, owner, bucketName, bucketId, objectName, objectId := s.createObjectWithVisibility(storagetypes.VISIBILITY_TYPE_PUBLIC_READ)
+	_, owner, bucketName, bucketID, objectName, objectID := s.createObjectWithVisibility(storagetypes.VISIBILITY_TYPE_PUBLIC_READ)
 
 	// Create Group
 	msgCreateGroup := storagetypes.NewMsgCreateGroup(owner.GetAddr(), testGroupName, "")
@@ -1263,10 +1263,10 @@ func (s *StorageTestSuite) TestStalePermissionForGroupGC() {
 
 	queryPolicyForGroupResp, err := s.Client.QueryPolicyForGroup(ctx, &queryPolicyForGroupReq)
 	s.Require().NoError(err)
-	s.Require().Equal(bucketId, queryPolicyForGroupResp.Policy.ResourceId)
+	s.Require().Equal(bucketID, queryPolicyForGroupResp.Policy.ResourceId)
 	s.Require().Equal(queryPolicyForGroupResp.Policy.ResourceType, resource.RESOURCE_TYPE_BUCKET)
 	s.Require().Equal(types.EFFECT_ALLOW, queryPolicyForGroupResp.Policy.Statements[0].Effect)
-	bucketPolicyId := queryPolicyForGroupResp.Policy.Id
+	bucketPolicyID := queryPolicyForGroupResp.Policy.Id
 
 	// Query object policy for group
 	grn2 := types2.NewObjectGRN(bucketName, objectName)
@@ -1275,10 +1275,10 @@ func (s *StorageTestSuite) TestStalePermissionForGroupGC() {
 		PrincipalGroupId: headGroupResponse.GroupInfo.Id.String(),
 	})
 	s.Require().NoError(err)
-	s.Require().Equal(objectId, queryPolicyForGroupResp.Policy.ResourceId)
+	s.Require().Equal(objectID, queryPolicyForGroupResp.Policy.ResourceId)
 	s.Require().Equal(queryPolicyForGroupResp.Policy.ResourceType, resource.RESOURCE_TYPE_OBJECT)
 	s.Require().Equal(types.EFFECT_ALLOW, queryPolicyForGroupResp.Policy.Statements[0].Effect)
-	objectPolicyId := queryPolicyForGroupResp.Policy.Id
+	objectPolicyID := queryPolicyForGroupResp.Policy.Id
 
 	// user1 deletes the object
 	msgDeleteObject := storagetypes.NewMsgDeleteObject(user[1].GetAddr(), bucketName, objectName)
@@ -1305,11 +1305,11 @@ func (s *StorageTestSuite) TestStalePermissionForGroupGC() {
 	s.Require().ErrorContains(err, "No such bucket")
 
 	// policy is GC
-	_, err = s.Client.QueryPolicyById(ctx, &storagetypes.QueryPolicyByIdRequest{PolicyId: objectPolicyId.String()})
+	_, err = s.Client.QueryPolicyById(ctx, &storagetypes.QueryPolicyByIdRequest{PolicyId: objectPolicyID.String()})
 	s.Require().Error(err)
 	s.Require().ErrorContains(err, "No such Policy")
 
-	_, err = s.Client.QueryPolicyById(ctx, &storagetypes.QueryPolicyByIdRequest{PolicyId: bucketPolicyId.String()})
+	_, err = s.Client.QueryPolicyById(ctx, &storagetypes.QueryPolicyByIdRequest{PolicyId: bucketPolicyID.String()})
 	s.Require().Error(err)
 	s.Require().ErrorContains(err, "No such Policy")
 }
@@ -1452,7 +1452,7 @@ func (s *StorageTestSuite) TestExceedEachBlockLimitGC() {
 		_ = s.WaitForNextBlock()
 	}
 
-	policyIds := make([]sdkmath.Uint, 0)
+	policyIDs := make([]sdkmath.Uint, 0)
 	// policies are present for buckets
 	for i := 0; i < bucketNumber; i++ {
 		queryPolicyForAccountResp, err := s.Client.QueryPolicyForAccount(ctx, &storagetypes.QueryPolicyForAccountRequest{
@@ -1460,7 +1460,7 @@ func (s *StorageTestSuite) TestExceedEachBlockLimitGC() {
 			PrincipalAddress: user.GetAddr().String(),
 		})
 		s.Require().NoError(err)
-		policyIds = append(policyIds, queryPolicyForAccountResp.Policy.Id)
+		policyIDs = append(policyIDs, queryPolicyForAccountResp.Policy.Id)
 	}
 
 	// delete batch of buckets
@@ -1476,7 +1476,7 @@ func (s *StorageTestSuite) TestExceedEachBlockLimitGC() {
 	// handling ability of each block
 	notAllPoliciesGC := false
 	for i := 0; i < bucketNumber; i++ {
-		_, err = s.Client.QueryPolicyById(ctx, &storagetypes.QueryPolicyByIdRequest{PolicyId: policyIds[i].String()})
+		_, err = s.Client.QueryPolicyById(ctx, &storagetypes.QueryPolicyByIdRequest{PolicyId: policyIDs[i].String()})
 		if err == nil {
 			// if there is at least 1 policy still exist, that means GC is not fully done yet.
 			notAllPoliciesGC = true
@@ -1491,7 +1491,7 @@ func (s *StorageTestSuite) TestExceedEachBlockLimitGC() {
 
 	for i := 0; i < bucketNumber; i++ {
 		// policy is GC
-		_, err = s.Client.QueryPolicyById(ctx, &storagetypes.QueryPolicyByIdRequest{PolicyId: policyIds[i].String()})
+		_, err = s.Client.QueryPolicyById(ctx, &storagetypes.QueryPolicyByIdRequest{PolicyId: policyIDs[i].String()})
 		s.Require().Error(err)
 		s.Require().ErrorContains(err, "No such Policy")
 	}
@@ -1635,7 +1635,7 @@ func (s *StorageTestSuite) TestVerifyStaleGroupPermission() {
 	}()
 
 	user := s.GenAndChargeAccounts(3, 10000)
-	_, owner, bucketName, bucketId, objectName, objectId := s.createObjectWithVisibility(storagetypes.VISIBILITY_TYPE_PUBLIC_READ)
+	_, owner, bucketName, bucketID, objectName, objectID := s.createObjectWithVisibility(storagetypes.VISIBILITY_TYPE_PUBLIC_READ)
 
 	// Create Group with 3 group member
 
@@ -1689,7 +1689,7 @@ func (s *StorageTestSuite) TestVerifyStaleGroupPermission() {
 
 	queryPolicyForGroupResp, err := s.Client.QueryPolicyForGroup(ctx, &queryPolicyForGroupReq)
 	s.Require().NoError(err)
-	s.Require().Equal(bucketId, queryPolicyForGroupResp.Policy.ResourceId)
+	s.Require().Equal(bucketID, queryPolicyForGroupResp.Policy.ResourceId)
 	s.Require().Equal(queryPolicyForGroupResp.Policy.ResourceType, resource.RESOURCE_TYPE_BUCKET)
 	s.Require().Equal(types.EFFECT_ALLOW, queryPolicyForGroupResp.Policy.Statements[0].Effect)
 	bucketPolicyID := queryPolicyForGroupResp.Policy.Id
@@ -1701,7 +1701,7 @@ func (s *StorageTestSuite) TestVerifyStaleGroupPermission() {
 		PrincipalGroupId: headGroupResponse.GroupInfo.Id.String(),
 	})
 	s.Require().NoError(err)
-	s.Require().Equal(objectId, queryPolicyForGroupResp.Policy.ResourceId)
+	s.Require().Equal(objectID, queryPolicyForGroupResp.Policy.ResourceId)
 	s.Require().Equal(queryPolicyForGroupResp.Policy.ResourceType, resource.RESOURCE_TYPE_OBJECT)
 	s.Require().Equal(types.EFFECT_ALLOW, queryPolicyForGroupResp.Policy.Statements[0].Effect)
 	objectPolicyID := queryPolicyForGroupResp.Policy.Id
@@ -1865,7 +1865,7 @@ func (s *StorageTestSuite) TestExpiredAccountPolicyGCAndRePut() {
 	ctx := context.Background()
 	user1 := s.GenAndChargeAccounts(1, 1000000)[0]
 
-	_, owner, bucketName, bucketId, _, _ := s.createObjectWithVisibility(storagetypes.VISIBILITY_TYPE_PUBLIC_READ)
+	_, owner, bucketName, bucketID, _, _ := s.createObjectWithVisibility(storagetypes.VISIBILITY_TYPE_PUBLIC_READ)
 
 	principal := types.NewPrincipalWithAccount(user1.GetAddr())
 
@@ -1887,7 +1887,7 @@ func (s *StorageTestSuite) TestExpiredAccountPolicyGCAndRePut() {
 		PrincipalAddress: user1.GetAddr().String(),
 	})
 	s.Require().NoError(err)
-	s.Require().Equal(bucketId, queryPolicyForAccountResp.Policy.ResourceId)
+	s.Require().Equal(bucketID, queryPolicyForAccountResp.Policy.ResourceId)
 
 	// wait for policy expired
 	time.Sleep(5 * time.Second)
@@ -1910,13 +1910,13 @@ func (s *StorageTestSuite) TestExpiredAccountPolicyGCAndRePut() {
 		PrincipalAddress: user1.GetAddr().String(),
 	})
 	s.Require().NoError(err)
-	s.Require().Equal(bucketId, queryPolicyForAccountResp.Policy.ResourceId)
+	s.Require().Equal(bucketID, queryPolicyForAccountResp.Policy.ResourceId)
 }
 
 func (s *StorageTestSuite) TestExpiredGroupPolicyGCAndRePut() {
 	ctx := context.Background()
 	user := s.GenAndChargeAccounts(3, 10000)
-	_, owner, bucketName, bucketId, _, _ := s.createObjectWithVisibility(storagetypes.VISIBILITY_TYPE_PUBLIC_READ)
+	_, owner, bucketName, bucketID, _, _ := s.createObjectWithVisibility(storagetypes.VISIBILITY_TYPE_PUBLIC_READ)
 
 	// Create Group
 
@@ -1958,16 +1958,16 @@ func (s *StorageTestSuite) TestExpiredGroupPolicyGCAndRePut() {
 
 	queryPolicyForGroupResp, err := s.Client.QueryPolicyForGroup(ctx, &queryPolicyForGroupReq)
 	s.Require().NoError(err)
-	s.Require().Equal(bucketId, queryPolicyForGroupResp.Policy.ResourceId)
+	s.Require().Equal(bucketID, queryPolicyForGroupResp.Policy.ResourceId)
 	s.Require().Equal(queryPolicyForGroupResp.Policy.ResourceType, resource.RESOURCE_TYPE_BUCKET)
 	s.Require().Equal(types.EFFECT_ALLOW, queryPolicyForGroupResp.Policy.Statements[0].Effect)
-	bucketPolicyId := queryPolicyForGroupResp.Policy.Id
+	bucketPolicyID := queryPolicyForGroupResp.Policy.Id
 
 	// wait for policy expired
 	time.Sleep(5 * time.Second)
 
 	// policy is GC
-	_, err = s.Client.QueryPolicyById(ctx, &storagetypes.QueryPolicyByIdRequest{PolicyId: bucketPolicyId.String()})
+	_, err = s.Client.QueryPolicyById(ctx, &storagetypes.QueryPolicyByIdRequest{PolicyId: bucketPolicyID.String()})
 	s.Require().Error(err)
 	s.Require().ErrorContains(err, "No such Policy")
 
@@ -1978,7 +1978,7 @@ func (s *StorageTestSuite) TestExpiredGroupPolicyGCAndRePut() {
 
 	queryPolicyForGroupResp, err = s.Client.QueryPolicyForGroup(ctx, &queryPolicyForGroupReq)
 	s.Require().NoError(err)
-	s.Require().Equal(bucketId, queryPolicyForGroupResp.Policy.ResourceId)
+	s.Require().Equal(bucketID, queryPolicyForGroupResp.Policy.ResourceId)
 	s.Require().Equal(queryPolicyForGroupResp.Policy.ResourceType, resource.RESOURCE_TYPE_BUCKET)
 	s.Require().Equal(types.EFFECT_ALLOW, queryPolicyForGroupResp.Policy.Statements[0].Effect)
 }

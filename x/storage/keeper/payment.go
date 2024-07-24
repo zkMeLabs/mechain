@@ -252,7 +252,7 @@ func (k Keeper) ChargeObjectStoreFee(ctx sdk.Context, primarySpID uint32, bucket
 		return fmt.Errorf("get charge size failed: %s %s %w", bucketInfo.BucketName, objectInfo.ObjectName, err)
 	}
 
-	priceChanged, _, _, _, _, err := k.IsPriceChanged(ctx, primarySpID, internalBucketInfo.PriceTime)
+	priceChanged, _, _, _, _, err := k.IsPriceChanged(ctx, primarySpID, internalBucketInfo.PriceTime) //nolint
 	if err != nil {
 		return fmt.Errorf("check whether price changed failed: %s %s %w", bucketInfo.BucketName, objectInfo.ObjectName, err)
 	}

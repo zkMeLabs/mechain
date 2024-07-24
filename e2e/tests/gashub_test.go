@@ -52,12 +52,12 @@ func (s *GashubTestSuite) TestUpdateParams() {
 	s.Require().Equal(txRes.Code, uint32(0))
 
 	// 2. query proposal
-	var proposalId uint64
+	var proposalID uint64
 	for _, event := range txRes.Logs[0].Events {
 		if event.Type == submitProposalEvent {
 			for _, attr := range event.Attributes {
 				if attr.Key == proposalIDStr {
-					proposalId, err = strconv.ParseUint(attr.Value, 10, 0)
+					proposalID, err = strconv.ParseUint(attr.Value, 10, 0)
 					s.Require().NoError(err)
 					break
 				}
@@ -65,14 +65,14 @@ func (s *GashubTestSuite) TestUpdateParams() {
 			break
 		}
 	}
-	s.Require().True(proposalId != 0)
+	s.Require().True(proposalID != 0)
 
-	queryProposal := &govtypesv1.QueryProposalRequest{ProposalId: proposalId}
+	queryProposal := &govtypesv1.QueryProposalRequest{ProposalId: proposalID}
 	_, err = s.Client.GovQueryClientV1.Proposal(ctx, queryProposal)
 	s.Require().NoError(err)
 
 	// 3. submit MsgVote and wait the proposal exec
-	msgVote := govtypesv1.NewMsgVote(validator, proposalId, govtypesv1.OptionYes, "test")
+	msgVote := govtypesv1.NewMsgVote(validator, proposalID, govtypesv1.OptionYes, "test")
 	txRes = s.SendTxBlock(s.Validator, msgVote)
 	s.Require().Equal(txRes.Code, uint32(0))
 

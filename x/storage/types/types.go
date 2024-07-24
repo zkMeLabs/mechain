@@ -106,10 +106,9 @@ func (b *InternalBucketInfo) AppendLVG(lvg *LocalVirtualGroup) {
 func (b *InternalBucketInfo) GetMaxLVGID() uint32 {
 	if len(b.LocalVirtualGroups) == 0 {
 		return 0
-	} else {
-		lastLVG := b.LocalVirtualGroups[len(b.LocalVirtualGroups)-1]
-		return lastLVG.Id
 	}
+	lastLVG := b.LocalVirtualGroups[len(b.LocalVirtualGroups)-1]
+	return lastLVG.Id
 }
 
 func (b *InternalBucketInfo) GetLVG(lvgID uint32) (*LocalVirtualGroup, bool) {

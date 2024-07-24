@@ -140,7 +140,7 @@ type SealObjectV2Args struct {
 	SealAddress                 common.Address `abi:"sealAddress"` // primary sp's operator addr or secondary sp's seal addr
 	BucketName                  string         `abi:"bucketName"`
 	ObjectName                  string         `abi:"objectName"`
-	GlobalVirtualGroupId        uint32         `abi:"globalVirtualGroupId"`
+	GlobalVirtualGroupID        uint32         `abi:"globalVirtualGroupId"`
 	SecondarySpBlsAggSignatures string         `abi:"secondarySpBlsAggSignatures"`
 	ExpectChecksums             []string       `abi:"expectChecksums"`
 }
@@ -277,12 +277,12 @@ func (args *HeadObjectArgs) Validate() error {
 	return nil
 }
 
-type HeadObjectByIdArgs struct {
+type HeadObjectByIDArgs struct {
 	ObjectID string `abi:"objectId"`
 }
 
 // Validate HeadObjectByIdArgs the args
-func (args *HeadObjectByIdArgs) Validate() error {
+func (args *HeadObjectByIDArgs) Validate() error {
 	if args.ObjectID == "" {
 		return errors.New("empty object id")
 	}

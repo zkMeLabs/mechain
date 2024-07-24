@@ -216,7 +216,8 @@ func TestPolicy_CreateObjectLimitSize(t *testing.T) {
 					},
 				},
 			}
-			effect, p := policy.Eval(types.ACTION_CREATE_OBJECT, time.Now(), &types.VerifyOptions{WantedSize: &tt.wantedSize})
+			wantedSize := tt.wantedSize
+			effect, p := policy.Eval(types.ACTION_CREATE_OBJECT, time.Now(), &types.VerifyOptions{WantedSize: &wantedSize})
 			if effect == types.EFFECT_ALLOW && tt.limitSize > tt.wantedSize {
 				require.Equal(t, p.Statements[0].LimitSize.GetValue(), tt.limitSize-tt.wantedSize)
 			}

@@ -143,7 +143,7 @@ func (s *TestSuite) TestQueryGroupsExistByID() {
 	for i := 0; i < 3; i++ {
 		//  make sure there's no conflict
 		groupIDs[i] = strconv.Itoa(rand.Intn(1000) + 10) //nolint
-		exist := rand.Intn(2)
+		exist := rand.Intn(2)                            //nolint
 		if exist == 0 {
 			exists[groupIDs[i]] = false
 		} else {

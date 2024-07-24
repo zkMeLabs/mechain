@@ -267,7 +267,7 @@ func (c *Contract) SealObjectV2(ctx sdk.Context, evm *vm.EVM, contract *vm.Contr
 		Operator:                    args.SealAddress.String(),
 		BucketName:                  args.BucketName,
 		ObjectName:                  args.ObjectName,
-		GlobalVirtualGroupId:        args.GlobalVirtualGroupId,
+		GlobalVirtualGroupId:        args.GlobalVirtualGroupID,
 		SecondarySpBlsAggSignatures: secondarySpBlsAggSignatures,
 		ExpectChecksums:             expectChecksums,
 	}

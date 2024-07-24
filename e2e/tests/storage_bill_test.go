@@ -880,7 +880,7 @@ func (s *PaymentTestSuite) TestStorageBill_CreateObject_WithReserveTimeValidator
 
 	// create object with none zero payload size
 	streamRecordsBefore := s.getStreamRecords(streamAddresses)
-	_, _, objectName, _, _, payloadSize := s.createObject(user, bucketName, false)
+	_, _, objectName, _, _, payloadSize := s.createObject(user, bucketName, false) //nolint
 
 	// assertions
 	streamRecordsAfter := s.getStreamRecords(streamAddresses)
@@ -904,7 +904,7 @@ func (s *PaymentTestSuite) TestStorageBill_CreateObject_WithReserveTimeValidator
 
 	// create another object after parameter changes
 	streamRecordsBefore = s.getStreamRecords(streamAddresses)
-	_, _, objectName, _, _, payloadSize = s.createObject(user, bucketName, false)
+	_, _, objectName, _, _, payloadSize = s.createObject(user, bucketName, false) //nolint
 
 	// assertions
 	streamRecordsAfter = s.getStreamRecords(streamAddresses)
@@ -942,7 +942,7 @@ func (s *PaymentTestSuite) TestStorageBill_CancelCreateObject() {
 
 	// create object with none zero payload size
 	streamRecordsBefore := s.getStreamRecords(streamAddresses)
-	_, _, objectName, _, _, payloadSize := s.createObject(user, bucketName, false)
+	_, _, objectName, _, _, payloadSize := s.createObject(user, bucketName, false) //nolint
 
 	// assertions
 	streamRecordsAfter := s.getStreamRecords(streamAddresses)
@@ -991,7 +991,7 @@ func (s *PaymentTestSuite) TestStorageBill_SealObject_WithoutPriceChange() {
 
 	// create object with none zero payload size
 	streamRecordsBefore := s.getStreamRecords(streamAddresses)
-	_, _, objectName, objectId, checksums, payloadSize := s.createObject(user, bucketName, false)
+	_, _, objectName, objectID, checksums, payloadSize := s.createObject(user, bucketName, false)
 
 	// assertions
 	streamRecordsAfter := s.getStreamRecords(streamAddresses)
@@ -1004,7 +1004,7 @@ func (s *PaymentTestSuite) TestStorageBill_SealObject_WithoutPriceChange() {
 	s.Require().Equal(streamRecordsAfter.Tax.NetflowRate.Sub(streamRecordsBefore.Tax.NetflowRate).Int64(), int64(0))
 
 	// case: seal object without price change
-	s.sealObject(sp, gvg, bucketName, objectName, objectId, checksums)
+	s.sealObject(sp, gvg, bucketName, objectName, objectID, checksums)
 
 	// assertions
 	streamRecordsAfter = s.getStreamRecords(streamAddresses)
@@ -1040,7 +1040,7 @@ func (s *PaymentTestSuite) TestStorageBill_SealObject_WithPriceChange() {
 	bucketName := s.createBucket(sp, gvg, user, 102400)
 
 	// case: seal object with read price change and storage price change
-	_, _, objectName, objectId, checksums, payloadSize := s.createObject(user, bucketName, false)
+	_, _, objectName, objectID, checksums, payloadSize := s.createObject(user, bucketName, false)
 
 	priceRes, err := s.Client.QueryGlobalSpStorePriceByTime(ctx, &sptypes.QueryGlobalSpStorePriceByTimeRequest{
 		Timestamp: 0,
@@ -1056,7 +1056,7 @@ func (s *PaymentTestSuite) TestStorageBill_SealObject_WithPriceChange() {
 	gvgFamilyRateReadBefore, taxRateReadBefore, userTotalRateReadBefore := s.calculateReadRates(bucketName)
 
 	// seal object
-	s.sealObject(sp, gvg, bucketName, objectName, objectId, checksums)
+	s.sealObject(sp, gvg, bucketName, objectName, objectID, checksums)
 
 	// assertions
 	streamRecordsAfter := s.getStreamRecords(streamAddresses)
@@ -1097,7 +1097,7 @@ func (s *PaymentTestSuite) TestStorageBill_SealObject_WithPriceChangeValidatorTa
 	bucketName := s.createBucket(sp, gvg, user, 102400)
 
 	// case: seal object with read price change and storage price change
-	_, _, objectName, objectId, checksums, payloadSize := s.createObject(user, bucketName, false)
+	_, _, objectName, objectID, checksums, payloadSize := s.createObject(user, bucketName, false)
 
 	priceRes, err := s.Client.QueryGlobalSpStorePriceByTime(ctx, &sptypes.QueryGlobalSpStorePriceByTimeRequest{
 		Timestamp: 0,
@@ -1112,7 +1112,7 @@ func (s *PaymentTestSuite) TestStorageBill_SealObject_WithPriceChangeValidatorTa
 	gvgFamilyRateReadBefore, taxRateReadBefore, userTotalRateReadBefore := s.calculateReadRates(bucketName)
 
 	// seal object
-	s.sealObject(sp, gvg, bucketName, objectName, objectId, checksums)
+	s.sealObject(sp, gvg, bucketName, objectName, objectID, checksums)
 
 	// assertions
 	streamRecordsAfter := s.getStreamRecords(streamAddresses)
@@ -1136,8 +1136,8 @@ func (s *PaymentTestSuite) TestStorageBill_SealObject_WithPriceChangeValidatorTa
 	params.VersionedParams.ValidatorTaxRate = oldValidatorTaxRate.MulInt64(2)
 	s.updateParams(params)
 
-	_, _, objectName, objectId, checksums, payloadSize = s.createObject(user, bucketName, false)
-	s.sealObject(sp, gvg, bucketName, objectName, objectId, checksums)
+	_, _, objectName, objectID, checksums, payloadSize = s.createObject(user, bucketName, false)
+	s.sealObject(sp, gvg, bucketName, objectName, objectID, checksums)
 
 	// assertions
 	streamRecordsAfter = s.getStreamRecords(streamAddresses)
@@ -1237,8 +1237,8 @@ func (s *PaymentTestSuite) TestStorageBill_FullLifecycle() {
 
 	// full lifecycle
 	bucketName1 := s.createBucket(sp, gvg, user, 0)
-	_, _, objectName1, _, _, _ := s.createObject(user, bucketName1, true)                   //nolint
-	_, _, objectName2, objectID2, checksums2, _ := s.createObject(user, bucketName1, false) //nolint
+	_, _, objectName1, _, _, _ := s.createObject(user, bucketName1, true) //nolint
+	_, _, objectName2, objectID2, checksums2, _ := s.createObject(user, bucketName1, false)
 	s.sealObject(sp, gvg, bucketName1, objectName2, objectID2, checksums2)
 
 	bucketName2 := s.createBucket(sp, gvg, user, 1024)
@@ -1347,7 +1347,7 @@ func (s *PaymentTestSuite) TestStorageBill_CopyObject_WithoutPriceChange() {
 
 	// create object with none zero payload size
 	streamRecordsBefore := s.getStreamRecords(streamAddresses)
-	_, _, objectName, objectId, checksums, payloadSize := s.createObject(user, bucketName, false)
+	_, _, objectName, objectID, checksums, payloadSize := s.createObject(user, bucketName, false)
 
 	// assertions
 	streamRecordsAfter := s.getStreamRecords(streamAddresses)
@@ -1360,7 +1360,7 @@ func (s *PaymentTestSuite) TestStorageBill_CopyObject_WithoutPriceChange() {
 	s.Require().Equal(streamRecordsAfter.Tax.NetflowRate.Sub(streamRecordsBefore.Tax.NetflowRate).Int64(), int64(0))
 
 	// case: seal object without price change
-	s.sealObject(sp, gvg, bucketName, objectName, objectId, checksums)
+	s.sealObject(sp, gvg, bucketName, objectName, objectID, checksums)
 
 	// assertions
 	streamRecordsAfter = s.getStreamRecords(streamAddresses)
@@ -1418,7 +1418,7 @@ func (s *PaymentTestSuite) TestStorageBill_CopyObject_WithPriceChange() {
 
 	// create object with none zero payload size
 	streamRecordsBefore := s.getStreamRecords(streamAddresses)
-	_, _, objectName, objectId, checksums, payloadSize := s.createObject(user, bucketName, false)
+	_, _, objectName, objectID, checksums, payloadSize := s.createObject(user, bucketName, false)
 
 	// assertions
 	streamRecordsAfter := s.getStreamRecords(streamAddresses)
@@ -1431,7 +1431,7 @@ func (s *PaymentTestSuite) TestStorageBill_CopyObject_WithPriceChange() {
 	s.Require().Equal(streamRecordsAfter.Tax.NetflowRate.Sub(streamRecordsBefore.Tax.NetflowRate).Int64(), int64(0))
 
 	// case: seal object without price change
-	s.sealObject(sp, gvg, bucketName, objectName, objectId, checksums)
+	s.sealObject(sp, gvg, bucketName, objectName, objectID, checksums)
 
 	// assertions
 	streamRecordsAfter = s.getStreamRecords(streamAddresses)
@@ -2367,11 +2367,11 @@ func (s *PaymentTestSuite) TestStorageBill_UpdateObject() {
 	s.T().Logf("streamRecordsBeforeSealObjectTx %s", core.YamlString(streamRecordsBeforeSealObjectTx))
 
 	// SealObject
-	gvgId := gvg.Id
+	gvgID := gvg.Id
 	msgSealObject := storagetypes.NewMsgSealObject(sp.SealKey.GetAddr(), bucketName, objectName, gvg.Id, nil)
 	secondarySigs := make([][]byte, 0)
 	secondarySPBlsPubKeys := make([]bls.PublicKey, 0)
-	blsSignHash := storagetypes.NewSecondarySpSealObjectSignDoc(s.GetChainID(), gvgId, queryHeadObjectResponse.ObjectInfo.Id, storagetypes.GenerateHash(queryHeadObjectResponse.ObjectInfo.Checksums)).GetBlsSignHash()
+	blsSignHash := storagetypes.NewSecondarySpSealObjectSignDoc(s.GetChainID(), gvgID, queryHeadObjectResponse.ObjectInfo.Id, storagetypes.GenerateHash(queryHeadObjectResponse.ObjectInfo.Checksums)).GetBlsSignHash()
 
 	// every secondary sp signs the checksums
 	for _, spID := range gvg.SecondarySpIds {
@@ -2531,7 +2531,7 @@ func (s *PaymentTestSuite) TestStorageBill_UpdateObject() {
 	updatedAt := queryHeadShadowObjectResponse.ObjectInfo.UpdatedAt
 
 	// 6 SP seal the object
-	blsSignHash = storagetypes.NewSecondarySpSealObjectSignDoc(s.GetChainID(), gvgId, queryHeadObjectResponse.ObjectInfo.Id, storagetypes.GenerateHash(queryHeadShadowObjectResponse.ObjectInfo.Checksums)).GetBlsSignHash()
+	blsSignHash = storagetypes.NewSecondarySpSealObjectSignDoc(s.GetChainID(), gvgID, queryHeadObjectResponse.ObjectInfo.Id, storagetypes.GenerateHash(queryHeadShadowObjectResponse.ObjectInfo.Checksums)).GetBlsSignHash()
 	msgSealObject = storagetypes.NewMsgSealObject(sp.SealKey.GetAddr(), bucketName, objectName, gvg.Id, nil)
 	secondarySigs = make([][]byte, 0)
 	secondarySPBlsPubKeys = make([]bls.PublicKey, 0)

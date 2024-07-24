@@ -76,7 +76,7 @@ func (app *PermissionApp) handleDeletePolicySynPackage(ctx sdk.Context, deletePo
 		}
 	}
 
-	policy, found := app.permissionKeeper.GetPolicyByID(ctx, math.NewUintFromBigInt(deletePolicyPackage.Id))
+	policy, found := app.permissionKeeper.GetPolicyByID(ctx, math.NewUintFromBigInt(deletePolicyPackage.ID))
 	if !found {
 		return sdk.ExecuteResult{
 			Payload: types.DeletePolicyAckPackage{
@@ -126,7 +126,7 @@ func (app *PermissionApp) handleDeletePolicySynPackage(ctx sdk.Context, deletePo
 	return sdk.ExecuteResult{
 		Payload: types.DeletePolicyAckPackage{
 			Status:    types.StatusSuccess,
-			Id:        policy.Id.BigInt(),
+			ID:        policy.Id.BigInt(),
 			ExtraData: deletePolicyPackage.ExtraData,
 		}.MustSerialize(),
 	}
@@ -211,7 +211,7 @@ func (app *PermissionApp) handleCreatePolicySynPackage(ctx sdk.Context, createPo
 	return sdk.ExecuteResult{
 		Payload: types.CreatePolicyAckPackage{
 			Status:    types.StatusSuccess,
-			Id:        PolicyID.BigInt(),
+			ID:        PolicyID.BigInt(),
 			Creator:   createPolicyPackage.Operator,
 			ExtraData: createPolicyPackage.ExtraData,
 		}.MustSerialize(),

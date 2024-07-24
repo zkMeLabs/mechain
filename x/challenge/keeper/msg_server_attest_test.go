@@ -101,7 +101,8 @@ func (s *TestSuite) TestAttest_Invalid() {
 	}
 	for _, tt := range tests {
 		s.T().Run(tt.name, func(t *testing.T) {
-			_, err := s.msgServer.Attest(s.ctx, &tt.msg)
+			msg := tt.msg
+			_, err := s.msgServer.Attest(s.ctx, &msg)
 			if tt.err != nil {
 				require.ErrorIs(t, err, tt.err)
 				return

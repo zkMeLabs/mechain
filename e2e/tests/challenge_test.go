@@ -472,13 +472,13 @@ func filterChallengeEventFromBlock(blockRes *ctypes.ResultBlockResults) []challe
 	for _, event := range blockRes.EndBlockEvents {
 		if event.Type == "greenfield.challenge.EventStartChallenge" {
 
-			challengeIDStr, objectIdStr, redundancyIndexStr, segmentIndexStr, spOpAddress := "", "", "", "", ""
+			challengeIDStr, objectIDStr, redundancyIndexStr, segmentIndexStr, spOpAddress := "", "", "", "", ""
 			for _, attr := range event.Attributes {
 				switch attr.Key {
 				case "challenge_id":
 					challengeIDStr = strings.Trim(attr.Value, `"`)
-				case objectIdStr:
-					objectIdStr = strings.Trim(attr.Value, `"`)
+				case objectIDStr:
+					objectIDStr = strings.Trim(attr.Value, `"`)
 				case "redundancy_index":
 					redundancyIndexStr = strings.Trim(attr.Value, `"`)
 				case "segment_index":
@@ -487,13 +487,13 @@ func filterChallengeEventFromBlock(blockRes *ctypes.ResultBlockResults) []challe
 					spOpAddress = strings.Trim(attr.Value, `"`)
 				}
 			}
-			challengeId, _ := strconv.ParseInt(challengeIDStr, 10, 64)
-			objectId := sdkmath.NewUintFromString(objectIdStr)
+			challengeID, _ := strconv.ParseInt(challengeIDStr, 10, 64)
+			objectID := sdkmath.NewUintFromString(objectIDStr)
 			redundancyIndex, _ := strconv.ParseInt(redundancyIndexStr, 10, 32)
 			segmentIndex, _ := strconv.ParseInt(segmentIndexStr, 10, 32)
 			challengeEvents = append(challengeEvents, challengetypes.EventStartChallenge{
-				ChallengeId:       uint64(challengeId),
-				ObjectId:          objectId,
+				ChallengeId:       uint64(challengeID),
+				ObjectId:          objectID,
 				SegmentIndex:      uint32(segmentIndex),
 				SpOperatorAddress: spOpAddress,
 				RedundancyIndex:   int32(redundancyIndex),
@@ -504,7 +504,7 @@ func filterChallengeEventFromBlock(blockRes *ctypes.ResultBlockResults) []challe
 }
 
 func filterChallengeEventFromTx(txRes *sdk.TxResponse) challengetypes.EventStartChallenge {
-	challengeIDStr, objectIdStr, redundancyIndexStr, segmentIndexStr, spOpAddress, expiredHeightStr := "", "", "", "", "", ""
+	challengeIDStr, objIDStr, redundancyIndexStr, segmentIndexStr, spOpAddress, expiredHeightStr := "", "", "", "", "", ""
 	for _, event := range txRes.Logs[0].Events {
 		if event.Type == "greenfield.challenge.EventStartChallenge" {
 			for _, attr := range event.Attributes {
@@ -512,7 +512,7 @@ func filterChallengeEventFromTx(txRes *sdk.TxResponse) challengetypes.EventStart
 				case "challenge_id":
 					challengeIDStr = strings.Trim(attr.Value, `"`)
 				case objectIDStr:
-					objectIdStr = strings.Trim(attr.Value, `"`)
+					objIDStr = strings.Trim(attr.Value, `"`)
 				case "redundancy_index":
 					redundancyIndexStr = strings.Trim(attr.Value, `"`)
 				case "segment_index":
@@ -525,14 +525,14 @@ func filterChallengeEventFromTx(txRes *sdk.TxResponse) challengetypes.EventStart
 			}
 		}
 	}
-	challengeId, _ := strconv.ParseInt(challengeIDStr, 10, 64)
-	objectId := sdkmath.NewUintFromString(objectIdStr)
+	challengeID, _ := strconv.ParseInt(challengeIDStr, 10, 64)
+	objectID := sdkmath.NewUintFromString(objIDStr)
 	redundancyIndex, _ := strconv.ParseInt(redundancyIndexStr, 10, 32)
 	segmentIndex, _ := strconv.ParseInt(segmentIndexStr, 10, 32)
 	expiredHeight, _ := strconv.ParseInt(expiredHeightStr, 10, 64)
 	return challengetypes.EventStartChallenge{
-		ChallengeId:       uint64(challengeId),
-		ObjectId:          objectId,
+		ChallengeId:       uint64(challengeID),
+		ObjectId:          objectID,
 		SegmentIndex:      uint32(segmentIndex),
 		SpOperatorAddress: spOpAddress,
 		RedundancyIndex:   int32(redundancyIndex),
@@ -673,12 +673,12 @@ func (s *ChallengeTestSuite) updateParams(params challengetypes.Params) {
 	s.Require().Equal(txRes.Code, uint32(0))
 
 	// 3. query proposal and get proposal ID
-	var proposalId uint64
+	var proposalID uint64
 	for _, event := range txRes.Logs[0].Events {
 		if event.Type == submitProposalEvent {
 			for _, attr := range event.Attributes {
 				if attr.Key == proposalIDStr {
-					proposalId, err = strconv.ParseUint(attr.Value, 10, 0)
+					proposalID, err = strconv.ParseUint(attr.Value, 10, 0)
 					s.Require().NoError(err)
 					break
 				}
@@ -686,14 +686,14 @@ func (s *ChallengeTestSuite) updateParams(params challengetypes.Params) {
 			break
 		}
 	}
-	s.Require().True(proposalId != 0)
+	s.Require().True(proposalID != 0)
 
-	queryProposal := &govtypesv1.QueryProposalRequest{ProposalId: proposalId}
+	queryProposal := &govtypesv1.QueryProposalRequest{ProposalId: proposalID}
 	_, err = s.Client.GovQueryClientV1.Proposal(ctx, queryProposal)
 	s.Require().NoError(err)
 
 	// 4. submit MsgVote and wait the proposal exec
-	msgVote := govtypesv1.NewMsgVote(validator, proposalId, govtypesv1.OptionYes, "test")
+	msgVote := govtypesv1.NewMsgVote(validator, proposalID, govtypesv1.OptionYes, "test")
 	txRes = s.SendTxBlock(s.Validator, msgVote)
 	s.Require().Equal(txRes.Code, uint32(0))
 

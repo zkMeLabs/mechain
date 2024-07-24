@@ -139,7 +139,8 @@ func (s *KeeperTestSuite) TestMsgCreateStorageProvider() {
 	}
 	for _, testCase := range testCases {
 		s.Suite.T().Run(testCase.Name, func(t *testing.T) {
-			_, err := s.msgServer.CreateStorageProvider(s.ctx, &testCase.req)
+			req := testCase.req
+			_, err := s.msgServer.CreateStorageProvider(s.ctx, &req)
 			if testCase.ExceptErr {
 				require.Error(t, err)
 			} else {

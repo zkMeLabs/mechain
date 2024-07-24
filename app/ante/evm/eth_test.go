@@ -315,7 +315,7 @@ func (suite *AnteTestSuite) TestEthGasConsumeDecorator() {
 			},
 			false, true,
 			0,
-			func(ctx sdk.Context) {},
+			func(_ sdk.Context) {},
 		},
 		{
 			"not enough block gas",

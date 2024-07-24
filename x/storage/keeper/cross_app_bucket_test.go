@@ -19,7 +19,7 @@ func (s *TestSuite) TestSynDeleteBucket() {
 	app := keeper.NewBucketApp(storageKeeper)
 	deleteSynPackage := storagetypes.DeleteBucketSynPackage{
 		Operator:  sample.RandAccAddress(),
-		Id:        big.NewInt(10),
+		ID:        big.NewInt(10),
 		ExtraData: []byte("extra data"),
 	}
 
@@ -153,7 +153,7 @@ func (s *TestSuite) TestAckCreateBucket() {
 	app := keeper.NewBucketApp(storageKeeper)
 	ackPackage := storagetypes.CreateBucketAckPackage{
 		Status:    storagetypes.StatusSuccess,
-		Id:        big.NewInt(10),
+		ID:        big.NewInt(10),
 		Creator:   sample.RandAccAddress(),
 		ExtraData: []byte("extra data"),
 	}
@@ -176,7 +176,7 @@ func (s *TestSuite) TestAckDeleteBucket() {
 	app := keeper.NewBucketApp(storageKeeper)
 	ackPackage := storagetypes.DeleteBucketAckPackage{
 		Status:    storagetypes.StatusSuccess,
-		Id:        big.NewInt(10),
+		ID:        big.NewInt(10),
 		ExtraData: []byte("extra data"),
 	}
 
@@ -252,7 +252,7 @@ func (s *TestSuite) TestFailAckDeleteBucket() {
 	app := keeper.NewBucketApp(storageKeeper)
 	deleteSynPackage := storagetypes.DeleteBucketSynPackage{
 		Operator:  sample.RandAccAddress(),
-		Id:        big.NewInt(10),
+		ID:        big.NewInt(10),
 		ExtraData: []byte("extra data"),
 	}
 

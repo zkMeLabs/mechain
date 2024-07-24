@@ -65,7 +65,8 @@ func (app *Evmos) reconBankChanges(ctx sdk.Context, bankIavl *iavl.Store) bool {
 		kBz := []byte(k)
 		denom := ""
 		isSupply := false
-		if bytes.HasPrefix(kBz, SupplyKey) {
+		switch {
+		case bytes.HasPrefix(kBz, SupplyKey):
 			isSupply = true
 			denom = parseDenomFromSupplyKey(kBz)
 			amount := math.ZeroInt()
@@ -73,14 +74,14 @@ func (app *Evmos) reconBankChanges(ctx sdk.Context, bankIavl *iavl.Store) bool {
 				amount = parseAmountFromValue(vBz)
 			}
 			supplyCurrent = supplyCurrent.Add(sdk.NewCoin(denom, amount))
-		} else if bytes.HasPrefix(kBz, BalancesPrefix) {
+		case bytes.HasPrefix(kBz, BalancesPrefix):
 			denom = parseDenomFromBalanceKey(kBz)
 			amount := math.ZeroInt()
 			if vBz := bankIavl.Get(kBz); vBz != nil {
 				amount = parseAmountFromValue(vBz)
 			}
 			balanceCurrent = balanceCurrent.Add(sdk.NewCoin(denom, amount))
-		} else {
+		default:
 			continue
 		}
 
