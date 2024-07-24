@@ -2310,6 +2310,7 @@ func (s *PaymentTestSuite) calculateReadRatesCurrentTimestamp(bucketName string)
 	return gvgFamilyRate, taxRate, gvgFamilyRate.Add(taxRate)
 }
 
+//nolint:unparam
 func (s *PaymentTestSuite) calculateStorageRates(bucketName, objectName string, payloadSize uint64, priceTime int64) (sdkmath.Int, sdkmath.Int, sdkmath.Int, sdkmath.Int) {
 	params := s.queryParams()
 
