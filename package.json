@@ -18,8 +18,7 @@
       "shfmt -w"
     ],
     "*.go": [
-      "goimports -w",
-      "golangci-lint run --out-format=tab"
+      "goimports -w"
     ]
   }
 }

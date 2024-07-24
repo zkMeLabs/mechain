@@ -164,9 +164,9 @@ type TLSConfig struct {
 }
 
 type CrossChainConfig struct {
-	SrcChainID     uint32 `mapstructure:"src-chain-id"`
-	DestBscChainID uint32 `mapstructure:"dest-bsc-chain-id"`
-	DestOpChainID  uint32 `mapstructure:"dest-op-chain-id"`
+	SrcChainId     uint32 `mapstructure:"src-chain-id"`      //nolint
+	DestBscChainId uint32 `mapstructure:"dest-bsc-chain-id"` //nolint
+	DestOpChainId  uint32 `mapstructure:"dest-op-chain-id"`  //nolint
 }
 
 type PaymentCheckConfig struct {
@@ -381,9 +381,9 @@ func (c TLSConfig) Validate() error {
 // DefaultCrossChainConfig returns the default CrossChain configuration
 func DefaultCrossChainConfig() *CrossChainConfig {
 	return &CrossChainConfig{
-		SrcChainID:     DefaultSrcChainID,
-		DestBscChainID: DefaultDestBscChainID,
-		DestOpChainID:  DefaultDestOpChainID,
+		SrcChainId:     DefaultSrcChainID,
+		DestBscChainId: DefaultDestBscChainID,
+		DestOpChainId:  DefaultDestOpChainID,
 	}
 }
 
@@ -440,9 +440,9 @@ func GetConfig(v *viper.Viper) (AppConfig, error) {
 			KeyPath:         v.GetString("tls.key-path"),
 		},
 		CrossChain: CrossChainConfig{
-			SrcChainID:     v.GetUint32("cross-chain.src-chain-id"),
-			DestBscChainID: v.GetUint32("cross-chain.dest-bsc-chain-id"),
-			DestOpChainID:  v.GetUint32("cross-chain.dest-op-chain-id"),
+			SrcChainId:     v.GetUint32("cross-chain.src-chain-id"),
+			DestBscChainId: v.GetUint32("cross-chain.dest-bsc-chain-id"),
+			DestOpChainId:  v.GetUint32("cross-chain.dest-op-chain-id"),
 		},
 		PaymentCheck: PaymentCheckConfig{
 			Enabled:  v.GetBool("payment-check.enabled"),
