@@ -31,6 +31,11 @@ import (
 	storagetypes "github.com/evmos/evmos/v12/x/storage/types"
 )
 
+const (
+	eventStreamType = "text/event-stream"
+	objectIDStr     = "object_id"
+)
+
 type ChallengeTestSuite struct {
 	core.BaseSuite
 	defaultParams challengetypes.Params
@@ -78,16 +83,7 @@ func (s *ChallengeTestSuite) createObject(sp *core.StorageProvider) (string, str
 	objectName := storagetestutil.GenRandomObjectName()
 	// create test buffer
 	var buffer bytes.Buffer
-	line := `1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,123`
+	line := strings.Repeat(repeatPart, 92) + "123"
 	// Create 1MiB content where each line contains 1024 characters.
 	for i := 0; i < 1024; i++ {
 		buffer.WriteString(fmt.Sprintf("[%05d] %s\n", i, line))
@@ -95,7 +91,7 @@ func (s *ChallengeTestSuite) createObject(sp *core.StorageProvider) (string, str
 	payloadSize := buffer.Len()
 	checksum := crypto.Keccak256(buffer.Bytes())
 	expectChecksum := [][]byte{checksum, checksum, checksum, checksum, checksum, checksum, checksum}
-	contextType := "text/event-stream"
+	contextType := eventStreamType
 	msgCreateObject := storagetypes.NewMsgCreateObject(user.GetAddr(), bucketName, objectName, uint64(payloadSize), storagetypes.VISIBILITY_TYPE_PRIVATE, expectChecksum, contextType, storagetypes.REDUNDANCY_EC_TYPE, math.MaxUint, nil)
 	msgCreateObject.PrimarySpApproval.Sig, err = sp.ApprovalKey.Sign(msgCreateObject.GetApprovalBytes())
 	s.Require().NoError(err)
@@ -112,12 +108,12 @@ func (s *ChallengeTestSuite) createObject(sp *core.StorageProvider) (string, str
 	s.Require().Equal(queryHeadObjectResponse.ObjectInfo.BucketName, bucketName)
 
 	// SealObject
-	gvgId := gvg.Id
+	gvgID := gvg.Id
 	msgSealObject := storagetypes.NewMsgSealObject(sp.SealKey.GetAddr(), bucketName, objectName, gvg.Id, nil)
 
 	secondarySigs := make([][]byte, 0)
 	secondarySPBlsPubKeys := make([]bls.PublicKey, 0)
-	blsSignHash := storagetypes.NewSecondarySpSealObjectSignDoc(s.GetChainID(), gvgId, queryHeadObjectResponse.ObjectInfo.Id, storagetypes.GenerateHash(queryHeadObjectResponse.ObjectInfo.Checksums[:])).GetBlsSignHash()
+	blsSignHash := storagetypes.NewSecondarySpSealObjectSignDoc(s.GetChainID(), gvgID, queryHeadObjectResponse.ObjectInfo.Id, storagetypes.GenerateHash(queryHeadObjectResponse.ObjectInfo.Checksums)).GetBlsSignHash()
 	// every secondary sp signs the checksums
 	for _, gvgID := range gvg.SecondarySpIds {
 		sig, err := core.BlsSignAndVerify(s.StorageProviders[gvgID], blsSignHash)
@@ -173,7 +169,7 @@ func (s *ChallengeTestSuite) calculateValidatorBitSet(height int64, blsKey strin
 	}
 
 	for idx, val := range valRes.Validators {
-		if strings.EqualFold(blsKey, hex.EncodeToString(val.BlsKey[:])) {
+		if strings.EqualFold(blsKey, hex.EncodeToString(val.BlsKey)) {
 			valBitSet.Set(uint(idx))
 		}
 	}
@@ -198,7 +194,7 @@ func (s *ChallengeTestSuite) TestNormalAttest() {
 
 	msgAttest := challengetypes.NewMsgAttest(s.Challenger.GetAddr(), event.ChallengeId, event.ObjectId, primarySp.OperatorKey.GetAddr().String(),
 		challengetypes.CHALLENGE_SUCCEED, user.GetAddr().String(), valBitset.Bytes(), nil)
-	toSign := msgAttest.GetBlsSignBytes(s.Config.ChainId)
+	toSign := msgAttest.GetBlsSignBytes(s.Config.ChainID)
 
 	voteAggSignature, err := s.ValidatorBLS.Sign(toSign[:])
 	if err != nil {
@@ -226,12 +222,12 @@ func (s *ChallengeTestSuite) TestNormalAttest() {
 	queryAllRes, err := s.Client.ChallengeQueryClient.LatestAttestedChallenges(context.Background(), &challengetypes.QueryLatestAttestedChallengesRequest{})
 	s.Require().NoError(err)
 	found := false
-	challengeId := uint64(0)
+	challengeID := uint64(0)
 	result := challengetypes.CHALLENGE_FAILED
 	for _, challenge := range queryAllRes.Challenges {
 		if challenge.Id == event.ChallengeId {
 			found = true
-			challengeId = challenge.Id
+			challengeID = challenge.Id
 			result = challenge.Result
 			break
 		}
@@ -239,7 +235,7 @@ func (s *ChallengeTestSuite) TestNormalAttest() {
 	s.Require().True(found)
 	s.Require().True(result == challengetypes.CHALLENGE_SUCCEED)
 
-	queryOneRes, err := s.Client.ChallengeQueryClient.AttestedChallenge(context.Background(), &challengetypes.QueryAttestedChallengeRequest{ChallengeId: challengeId})
+	queryOneRes, err := s.Client.ChallengeQueryClient.AttestedChallenge(context.Background(), &challengetypes.QueryAttestedChallengeRequest{ChallengeId: challengeID})
 	s.Require().NoError(err)
 	s.Require().True(queryOneRes.Challenge.Result == challengetypes.CHALLENGE_SUCCEED)
 }
@@ -286,7 +282,7 @@ func (s *ChallengeTestSuite) TestHeartbeatAttest() {
 
 	msgAttest := challengetypes.NewMsgAttest(s.Challenger.GetAddr(), event.ChallengeId, event.ObjectId,
 		event.SpOperatorAddress, challengetypes.CHALLENGE_FAILED, "", valBitset.Bytes(), nil)
-	toSign := msgAttest.GetBlsSignBytes(s.Config.ChainId)
+	toSign := msgAttest.GetBlsSignBytes(s.Config.ChainID)
 
 	voteAggSignature, err := s.ValidatorBLS.Sign(toSign[:])
 	if err != nil {
@@ -357,7 +353,7 @@ func (s *ChallengeTestSuite) TestFailedAttest_ChallengeExpired() {
 
 	msgAttest := challengetypes.NewMsgAttest(user.GetAddr(), event.ChallengeId, event.ObjectId, primarySp.OperatorKey.GetAddr().String(),
 		challengetypes.CHALLENGE_SUCCEED, user.GetAddr().String(), valBitset.Bytes(), nil)
-	toSign := msgAttest.GetBlsSignBytes(s.Config.ChainId)
+	toSign := msgAttest.GetBlsSignBytes(s.Config.ChainID)
 
 	voteAggSignature, err := s.ValidatorBLS.Sign(toSign[:])
 	if err != nil {
@@ -365,7 +361,7 @@ func (s *ChallengeTestSuite) TestFailedAttest_ChallengeExpired() {
 	}
 	msgAttest.VoteAggSignature = voteAggSignature
 
-	s.SendTxBlockWithExpectErrorString(msgAttest, user, challengetypes.ErrInvalidChallengeId.Error())
+	s.SendTxBlockWithExpectErrorString(msgAttest, user, challengetypes.ErrInvalidChallengeID.Error())
 }
 
 func (s *ChallengeTestSuite) TestFailedAttest_ExceedMaxSlashAmount() {
@@ -391,7 +387,7 @@ func (s *ChallengeTestSuite) TestFailedAttest_ExceedMaxSlashAmount() {
 
 	msgAttest := challengetypes.NewMsgAttest(s.Challenger.GetAddr(), event.ChallengeId, event.ObjectId, primarySp.OperatorKey.GetAddr().String(),
 		challengetypes.CHALLENGE_SUCCEED, user.GetAddr().String(), valBitset.Bytes(), nil)
-	toSign := msgAttest.GetBlsSignBytes(s.Config.ChainId)
+	toSign := msgAttest.GetBlsSignBytes(s.Config.ChainID)
 
 	voteAggSignature, err := s.ValidatorBLS.Sign(toSign[:])
 	if err != nil {
@@ -430,7 +426,7 @@ func (s *ChallengeTestSuite) TestFailedAttest_ExceedMaxSlashAmount() {
 
 	msgAttest = challengetypes.NewMsgAttest(s.Challenger.GetAddr(), event.ChallengeId, event.ObjectId, primarySp.OperatorKey.GetAddr().String(),
 		challengetypes.CHALLENGE_SUCCEED, user.GetAddr().String(), valBitset.Bytes(), nil)
-	toSign = msgAttest.GetBlsSignBytes(s.Config.ChainId)
+	toSign = msgAttest.GetBlsSignBytes(s.Config.ChainID)
 
 	voteAggSignature, err = s.ValidatorBLS.Sign(toSign[:])
 	if err != nil {
@@ -476,27 +472,28 @@ func filterChallengeEventFromBlock(blockRes *ctypes.ResultBlockResults) []challe
 	for _, event := range blockRes.EndBlockEvents {
 		if event.Type == "greenfield.challenge.EventStartChallenge" {
 
-			challengeIdStr, objectIdStr, redundancyIndexStr, segmentIndexStr, spOpAddress := "", "", "", "", ""
+			challengeIDStr, objectIDStr, redundancyIndexStr, segmentIndexStr, spOpAddress := "", "", "", "", ""
 			for _, attr := range event.Attributes {
-				if string(attr.Key) == "challenge_id" {
-					challengeIdStr = strings.Trim(string(attr.Value), `"`)
-				} else if string(attr.Key) == "object_id" {
-					objectIdStr = strings.Trim(string(attr.Value), `"`)
-				} else if string(attr.Key) == "redundancy_index" {
-					redundancyIndexStr = strings.Trim(string(attr.Value), `"`)
-				} else if string(attr.Key) == "segment_index" {
-					segmentIndexStr = strings.Trim(string(attr.Value), `"`)
-				} else if string(attr.Key) == "sp_operator_address" {
-					spOpAddress = strings.Trim(string(attr.Value), `"`)
+				switch attr.Key {
+				case "challenge_id":
+					challengeIDStr = strings.Trim(attr.Value, `"`)
+				case objectIDStr:
+					objectIDStr = strings.Trim(attr.Value, `"`)
+				case "redundancy_index":
+					redundancyIndexStr = strings.Trim(attr.Value, `"`)
+				case "segment_index":
+					segmentIndexStr = strings.Trim(attr.Value, `"`)
+				case "sp_operator_address":
+					spOpAddress = strings.Trim(attr.Value, `"`)
 				}
 			}
-			challengeId, _ := strconv.ParseInt(challengeIdStr, 10, 64)
-			objectId := sdkmath.NewUintFromString(objectIdStr)
+			challengeID, _ := strconv.ParseInt(challengeIDStr, 10, 64)
+			objectID := sdkmath.NewUintFromString(objectIDStr)
 			redundancyIndex, _ := strconv.ParseInt(redundancyIndexStr, 10, 32)
 			segmentIndex, _ := strconv.ParseInt(segmentIndexStr, 10, 32)
 			challengeEvents = append(challengeEvents, challengetypes.EventStartChallenge{
-				ChallengeId:       uint64(challengeId),
-				ObjectId:          objectId,
+				ChallengeId:       uint64(challengeID),
+				ObjectId:          objectID,
 				SegmentIndex:      uint32(segmentIndex),
 				SpOperatorAddress: spOpAddress,
 				RedundancyIndex:   int32(redundancyIndex),
@@ -507,34 +504,35 @@ func filterChallengeEventFromBlock(blockRes *ctypes.ResultBlockResults) []challe
 }
 
 func filterChallengeEventFromTx(txRes *sdk.TxResponse) challengetypes.EventStartChallenge {
-	challengeIdStr, objectIdStr, redundancyIndexStr, segmentIndexStr, spOpAddress, expiredHeightStr := "", "", "", "", "", ""
+	challengeIDStr, objIDStr, redundancyIndexStr, segmentIndexStr, spOpAddress, expiredHeightStr := "", "", "", "", "", ""
 	for _, event := range txRes.Logs[0].Events {
 		if event.Type == "greenfield.challenge.EventStartChallenge" {
 			for _, attr := range event.Attributes {
-				if attr.Key == "challenge_id" {
-					challengeIdStr = strings.Trim(attr.Value, `"`)
-				} else if attr.Key == "object_id" {
-					objectIdStr = strings.Trim(attr.Value, `"`)
-				} else if attr.Key == "redundancy_index" {
+				switch attr.Key {
+				case "challenge_id":
+					challengeIDStr = strings.Trim(attr.Value, `"`)
+				case objectIDStr:
+					objIDStr = strings.Trim(attr.Value, `"`)
+				case "redundancy_index":
 					redundancyIndexStr = strings.Trim(attr.Value, `"`)
-				} else if attr.Key == "segment_index" {
+				case "segment_index":
 					segmentIndexStr = strings.Trim(attr.Value, `"`)
-				} else if attr.Key == "sp_operator_address" {
+				case "sp_operator_address":
 					spOpAddress = strings.Trim(attr.Value, `"`)
-				} else if attr.Key == "expired_height" {
+				case "expired_height":
 					expiredHeightStr = strings.Trim(attr.Value, `"`)
 				}
 			}
 		}
 	}
-	challengeId, _ := strconv.ParseInt(challengeIdStr, 10, 64)
-	objectId := sdkmath.NewUintFromString(objectIdStr)
+	challengeID, _ := strconv.ParseInt(challengeIDStr, 10, 64)
+	objectID := sdkmath.NewUintFromString(objIDStr)
 	redundancyIndex, _ := strconv.ParseInt(redundancyIndexStr, 10, 32)
 	segmentIndex, _ := strconv.ParseInt(segmentIndexStr, 10, 32)
 	expiredHeight, _ := strconv.ParseInt(expiredHeightStr, 10, 64)
 	return challengetypes.EventStartChallenge{
-		ChallengeId:       uint64(challengeId),
-		ObjectId:          objectId,
+		ChallengeId:       uint64(challengeID),
+		ObjectId:          objectID,
 		SegmentIndex:      uint32(segmentIndex),
 		SpOperatorAddress: spOpAddress,
 		RedundancyIndex:   int32(redundancyIndex),
@@ -568,7 +566,7 @@ func (s *ChallengeTestSuite) TestUpdateChallengerParams() {
 	s.Require().NoError(err)
 	if txResp.Code == 0 && txResp.Height > 0 {
 		for _, event := range txResp.Events {
-			if event.Type == "submit_proposal" {
+			if event.Type == submitProposalEvent {
 				proposalID, err = strconv.Atoi(event.GetAttributes()[0].Value)
 				s.Require().NoError(err)
 			}
@@ -675,12 +673,12 @@ func (s *ChallengeTestSuite) updateParams(params challengetypes.Params) {
 	s.Require().Equal(txRes.Code, uint32(0))
 
 	// 3. query proposal and get proposal ID
-	var proposalId uint64
+	var proposalID uint64
 	for _, event := range txRes.Logs[0].Events {
-		if event.Type == "submit_proposal" {
+		if event.Type == submitProposalEvent {
 			for _, attr := range event.Attributes {
-				if attr.Key == "proposal_id" {
-					proposalId, err = strconv.ParseUint(attr.Value, 10, 0)
+				if attr.Key == proposalIDStr {
+					proposalID, err = strconv.ParseUint(attr.Value, 10, 0)
 					s.Require().NoError(err)
 					break
 				}
@@ -688,14 +686,14 @@ func (s *ChallengeTestSuite) updateParams(params challengetypes.Params) {
 			break
 		}
 	}
-	s.Require().True(proposalId != 0)
+	s.Require().True(proposalID != 0)
 
-	queryProposal := &govtypesv1.QueryProposalRequest{ProposalId: proposalId}
+	queryProposal := &govtypesv1.QueryProposalRequest{ProposalId: proposalID}
 	_, err = s.Client.GovQueryClientV1.Proposal(ctx, queryProposal)
 	s.Require().NoError(err)
 
 	// 4. submit MsgVote and wait the proposal exec
-	msgVote := govtypesv1.NewMsgVote(validator, proposalId, govtypesv1.OptionYes, "test")
+	msgVote := govtypesv1.NewMsgVote(validator, proposalID, govtypesv1.OptionYes, "test")
 	txRes = s.SendTxBlock(s.Validator, msgVote)
 	s.Require().Equal(txRes.Code, uint32(0))
 

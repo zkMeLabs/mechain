@@ -5,8 +5,8 @@ import (
 	"strings"
 
 	sdkmath "cosmossdk.io/math"
-	. "github.com/onsi/ginkgo/v2"
-	. "github.com/onsi/gomega"
+	. "github.com/onsi/ginkgo/v2" //nolint
+	. "github.com/onsi/gomega"    //nolint
 
 	"github.com/cosmos/cosmos-sdk/crypto/keys/eth/ethsecp256k1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -120,7 +120,6 @@ var _ = Describe("Feemarket", func() {
 				privKey, msg = setupTestWithContext(chainID, "5", sdk.NewDec(3), sdk.NewInt(5))
 			})
 
-			//nolint
 			Context("during CheckTx", func() {
 				It("should reject transactions with gasPrice < MinGasPrices", func() {
 					gasPrice := sdkmath.NewInt(2)
@@ -150,7 +149,6 @@ var _ = Describe("Feemarket", func() {
 				})
 			})
 
-			//nolint
 			Context("during DeliverTx", func() {
 				It("should reject transactions with gasPrice < MinGasPrices", func() {
 					gasPrice := sdkmath.NewInt(2)

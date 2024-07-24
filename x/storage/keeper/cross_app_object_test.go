@@ -5,7 +5,7 @@ import (
 	"math/big"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/golang/mock/gomock"
+	"go.uber.org/mock/gomock"
 
 	"github.com/evmos/evmos/v12/testutil/sample"
 	"github.com/evmos/evmos/v12/x/storage/keeper"
@@ -20,7 +20,7 @@ func (s *TestSuite) TestAckMirrorObject() {
 	app := keeper.NewObjectApp(storageKeeper)
 	ackPackage := types.MirrorObjectAckPackage{
 		Status: types.StatusSuccess,
-		Id:     big.NewInt(10),
+		ID:     big.NewInt(10),
 	}
 
 	serializedAckPackage, err := ackPackage.Serialize()
@@ -49,7 +49,7 @@ func (s *TestSuite) TestAckDeleteObject() {
 	app := keeper.NewObjectApp(storageKeeper)
 	ackPackage := types.DeleteObjectAckPackage{
 		Status:    types.StatusSuccess,
-		Id:        big.NewInt(10),
+		ID:        big.NewInt(10),
 		ExtraData: []byte("extra data"),
 	}
 
@@ -71,7 +71,7 @@ func (s *TestSuite) TestFailAckMirrorObject() {
 	app := keeper.NewObjectApp(storageKeeper)
 	ackPackage := types.MirrorObjectSynPackage{
 		Owner: sample.RandAccAddress(),
-		Id:    big.NewInt(10),
+		ID:    big.NewInt(10),
 	}
 
 	serializedAckPackage, err := ackPackage.Serialize()
@@ -100,7 +100,7 @@ func (s *TestSuite) TestFailAckDeleteObject() {
 	app := keeper.NewObjectApp(storageKeeper)
 	ackPackage := types.DeleteBucketSynPackage{
 		Operator:  sample.RandAccAddress(),
-		Id:        big.NewInt(10),
+		ID:        big.NewInt(10),
 		ExtraData: []byte("extra data"),
 	}
 
@@ -122,7 +122,7 @@ func (s *TestSuite) TestSynMirrorObject() {
 	app := keeper.NewObjectApp(storageKeeper)
 	synPackage := types.MirrorObjectSynPackage{
 		Owner: sample.RandAccAddress(),
-		Id:    big.NewInt(10),
+		ID:    big.NewInt(10),
 	}
 
 	serializedSynPackage, err := synPackage.Serialize()
@@ -144,7 +144,7 @@ func (s *TestSuite) TestSynDeleteObject() {
 	app := keeper.NewObjectApp(storageKeeper)
 	synPackage := types.DeleteBucketSynPackage{
 		Operator:  sample.RandAccAddress(),
-		Id:        big.NewInt(10),
+		ID:        big.NewInt(10),
 		ExtraData: []byte("extra data"),
 	}
 

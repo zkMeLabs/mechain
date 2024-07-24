@@ -9,6 +9,7 @@ import (
 	"math/big"
 	"reflect"
 	"strconv"
+	"strings"
 	"testing"
 	"time"
 
@@ -21,7 +22,6 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	govtypesv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
-	v1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 	"github.com/prysmaticlabs/prysm/crypto/bls"
 	"github.com/samber/lo"
 	"github.com/stretchr/testify/suite"
@@ -130,7 +130,7 @@ func (s *PaymentTestSuite) TestVersionedParams_SealObjectAfterReserveTimeChange(
 	s.Require().True(found)
 
 	// create bucket, create object
-	user, bucketName, objectName, objectId, checksums := s.createBucketAndObject(sp, gvg)
+	user, bucketName, objectName, objectID, checksums := s.createBucketAndObject(sp, gvg)
 
 	// update params
 	params := s.queryParams()
@@ -142,7 +142,7 @@ func (s *PaymentTestSuite) TestVersionedParams_SealObjectAfterReserveTimeChange(
 	s.updateParams(params)
 
 	// seal object
-	s.sealObject(sp, gvg, bucketName, objectName, objectId, checksums)
+	s.sealObject(sp, gvg, bucketName, objectName, objectID, checksums)
 
 	queryHeadObjectRequest := storagetypes.QueryHeadObjectRequest{
 		BucketName: bucketName,
@@ -184,10 +184,10 @@ func (s *PaymentTestSuite) TestVersionedParams_DeleteBucketAfterValidatorTaxRate
 	s.T().Logf("netflow, validatorTaxPoolRate: %s", validatorTaxPoolRate)
 
 	// create bucket, create object
-	user, bucketName, objectName, objectId, checksums := s.createBucketAndObject(sp, gvg)
+	user, bucketName, objectName, objectID, checksums := s.createBucketAndObject(sp, gvg)
 
 	// seal object
-	s.sealObject(sp, gvg, bucketName, objectName, objectId, checksums)
+	s.sealObject(sp, gvg, bucketName, objectName, objectID, checksums)
 
 	// update params
 	params := s.queryParams()
@@ -225,10 +225,10 @@ func (s *PaymentTestSuite) TestVersionedParams_DeleteObjectAfterReserveTimeChang
 	s.Require().True(found)
 
 	// create bucket, create object
-	user, bucketName, objectName, objectId, checksums := s.createBucketAndObject(sp, gvg)
+	user, bucketName, objectName, objectID, checksums := s.createBucketAndObject(sp, gvg)
 
 	// seal object
-	s.sealObject(sp, gvg, bucketName, objectName, objectId, checksums)
+	s.sealObject(sp, gvg, bucketName, objectName, objectID, checksums)
 
 	// for payment
 	time.Sleep(2 * time.Second)
@@ -1132,8 +1132,8 @@ func (s *PaymentTestSuite) TestVirtualGroup_Settle() {
 	user := s.GenAndChargeAccounts(1, 1000000)[0]
 
 	bucketName := s.createBucket(sp, gvg, user, 1024)
-	_, _, objectName, objectId, checksums, _ := s.createObject(user, bucketName, false)
-	s.sealObject(sp, gvg, bucketName, objectName, objectId, checksums)
+	_, _, objectName, objectID, checksums, _ := s.createObject(user, bucketName, false)
+	s.sealObject(sp, gvg, bucketName, objectName, objectID, checksums)
 
 	// sleep seconds
 	time.Sleep(3 * time.Second)
@@ -1170,7 +1170,7 @@ func (s *PaymentTestSuite) TestVirtualGroup_Settle() {
 	s.Require().Equal(streamRecordsAfter.Tax.NetflowRate.Sub(streamRecordsBefore.Tax.NetflowRate).Int64(), int64(0))
 }
 
-//func (s *PaymentTestSuite) TestVirtualGroup_SwapOut() {
+//  func (s *PaymentTestSuite) TestVirtualGroup_SwapOut() {
 //	ctx := context.Background()
 //	user := s.GenAndChargeAccounts(1, 1000000)[0]
 //	successorSp := s.PickStorageProvider()
@@ -1295,8 +1295,8 @@ func (s *PaymentTestSuite) TestDiscontinue_InOneBlock_WithoutPriceChange() {
 	bucketName := s.createBucket(sp, gvg, user, 0)
 
 	// create & seal objects
-	_, _, objectName1, objectId1, checksums1, _ := s.createObject(user, bucketName, false)
-	_ = s.sealObject(sp, gvg, bucketName, objectName1, objectId1, checksums1)
+	_, _, objectName1, objectID1, checksums1, _ := s.createObject(user, bucketName, false)
+	_ = s.sealObject(sp, gvg, bucketName, objectName1, objectID1, checksums1)
 
 	// for payment
 	time.Sleep(2 * time.Second)
@@ -1389,8 +1389,8 @@ func (s *PaymentTestSuite) TestDiscontinue_InOneBlock_WithPriceChange() {
 	bucketName := s.createBucket(sp, gvg, user, 1200987)
 
 	// create & seal objects
-	_, _, objectName1, objectId1, checksums1, _ := s.createObject(user, bucketName, false)
-	s.sealObject(sp, gvg, bucketName, objectName1, objectId1, checksums1)
+	_, _, objectName1, objectID1, checksums1, _ := s.createObject(user, bucketName, false)
+	s.sealObject(sp, gvg, bucketName, objectName1, objectID1, checksums1)
 
 	// update new price
 	s.updateGlobalSpPrice(priceRes.GlobalSpStorePrice.ReadPrice, priceRes.GlobalSpStorePrice.PrimaryStorePrice.MulInt64(10000))
@@ -1481,8 +1481,8 @@ func (s *PaymentTestSuite) TestDiscontinue_InBlocks_WithoutPriceChange() {
 
 	// create & seal objects
 	for i := 0; i < 4; i++ {
-		_, _, objectName1, objectId1, checksums1, _ := s.createObject(user, bucketName, false)
-		_ = s.sealObject(sp, gvg, bucketName, objectName1, objectId1, checksums1)
+		_, _, objectName1, objectID1, checksums1, _ := s.createObject(user, bucketName, false)
+		_ = s.sealObject(sp, gvg, bucketName, objectName1, objectID1, checksums1)
 		queryHeadObjectRequest := storagetypes.QueryHeadObjectRequest{
 			BucketName: bucketName,
 			ObjectName: objectName1,
@@ -1595,8 +1595,8 @@ func (s *PaymentTestSuite) TestDiscontinue_InBlocks_WithPriceChange() {
 
 	// create & seal objects
 	for i := 0; i < 2; i++ {
-		_, _, objectName1, objectId1, checksums1, _ := s.createObject(user, bucketName, false)
-		s.sealObject(sp, gvg, bucketName, objectName1, objectId1, checksums1)
+		_, _, objectName1, objectID1, checksums1, _ := s.createObject(user, bucketName, false)
+		s.sealObject(sp, gvg, bucketName, objectName1, objectID1, checksums1)
 		queryHeadObjectRequest := storagetypes.QueryHeadObjectRequest{
 			BucketName: bucketName,
 			ObjectName: objectName1,
@@ -1720,8 +1720,8 @@ func (s *PaymentTestSuite) TestDiscontinue_InBlocks_WithPriceChangeReserveTimeCh
 
 	// create & seal objects
 	for i := 0; i < 2; i++ {
-		_, _, objectName1, objectId1, checksums1, _ := s.createObject(user, bucketName, false)
-		s.sealObject(sp, gvg, bucketName, objectName1, objectId1, checksums1)
+		_, _, objectName1, objectID1, checksums1, _ := s.createObject(user, bucketName, false)
+		s.sealObject(sp, gvg, bucketName, objectName1, objectID1, checksums1)
 		queryHeadObjectRequest := storagetypes.QueryHeadObjectRequest{
 			BucketName: bucketName,
 			ObjectName: objectName1,
@@ -1858,8 +1858,8 @@ func (s *PaymentTestSuite) TestDiscontinue_InBlocks_WithPriceChangeReserveTimeCh
 
 	// create & seal objects
 	for i := 0; i < 2; i++ {
-		_, _, objectName1, objectId1, checksums1, _ := s.createObject(user, bucketName, false)
-		s.sealObject(sp, gvg, bucketName, objectName1, objectId1, checksums1)
+		_, _, objectName1, objectID1, checksums1, _ := s.createObject(user, bucketName, false)
+		s.sealObject(sp, gvg, bucketName, objectName1, objectID1, checksums1)
 		queryHeadObjectRequest := storagetypes.QueryHeadObjectRequest{
 			BucketName: bucketName,
 			ObjectName: objectName1,
@@ -1961,11 +1961,11 @@ func (s *PaymentTestSuite) TestDiscontinue_MultiObjects() {
 
 	// create bucket
 	bucketName := s.createBucket(sp, gvg, user, 0)
-	objectIds := []sdkmath.Uint{}
+	objectIDs := []sdkmath.Uint{}
 
 	// create objects
 	for i := 0; i < 3; i++ {
-		_, _, objectName, objectId, _, _ := s.createObject(user, bucketName, false)
+		_, _, objectName, objectID, _, _ := s.createObject(user, bucketName, false)
 		queryHeadObjectRequest := storagetypes.QueryHeadObjectRequest{
 			BucketName: bucketName,
 			ObjectName: objectName,
@@ -1974,13 +1974,13 @@ func (s *PaymentTestSuite) TestDiscontinue_MultiObjects() {
 		s.Require().NoError(err)
 		s.Require().Equal(queryHeadObjectResponse.ObjectInfo.ObjectStatus, storagetypes.OBJECT_STATUS_CREATED)
 		time.Sleep(200 * time.Millisecond)
-		objectIds = append(objectIds, objectId)
+		objectIDs = append(objectIDs, objectID)
 	}
 
 	// create & seal objects
 	for i := 0; i < 3; i++ {
-		_, _, objectName, objectId, checksums, _ := s.createObject(user, bucketName, false)
-		s.sealObject(sp, gvg, bucketName, objectName, objectId, checksums)
+		_, _, objectName, objectID, checksums, _ := s.createObject(user, bucketName, false)
+		s.sealObject(sp, gvg, bucketName, objectName, objectID, checksums)
 		queryHeadObjectRequest := storagetypes.QueryHeadObjectRequest{
 			BucketName: bucketName,
 			ObjectName: objectName,
@@ -1989,7 +1989,7 @@ func (s *PaymentTestSuite) TestDiscontinue_MultiObjects() {
 		s.Require().NoError(err)
 		s.Require().Equal(queryHeadObjectResponse.ObjectInfo.ObjectStatus, storagetypes.OBJECT_STATUS_SEALED)
 		time.Sleep(200 * time.Millisecond)
-		objectIds = append(objectIds, objectId)
+		objectIDs = append(objectIDs, objectID)
 	}
 
 	queryBalanceRequest := banktypes.QueryBalanceRequest{Denom: s.Config.Denom, Address: user.GetAddr().String()}
@@ -2018,7 +2018,7 @@ func (s *PaymentTestSuite) TestDiscontinue_MultiObjects() {
 
 	// force objects
 	msgs := make([]sdk.Msg, 0)
-	for _, id := range objectIds {
+	for _, id := range objectIDs {
 		msgDiscontinueObject := storagetypes.NewMsgDiscontinueObject(sp.GcKey.GetAddr(), bucketName, []sdkmath.Uint{id}, "test")
 		msgs = append(msgs, msgDiscontinueObject)
 	}
@@ -2089,8 +2089,8 @@ func (s *PaymentTestSuite) TestDiscontinue_MultiBuckets() {
 
 	// create & seal objects
 	for i := 0; i < 2; i++ {
-		_, _, objectName, objectId, checksums, _ := s.createObject(user, bucketName1, false)
-		s.sealObject(sp, gvg, bucketName1, objectName, objectId, checksums)
+		_, _, objectName, objectID, checksums, _ := s.createObject(user, bucketName1, false)
+		s.sealObject(sp, gvg, bucketName1, objectName, objectID, checksums)
 		queryHeadObjectRequest := storagetypes.QueryHeadObjectRequest{
 			BucketName: bucketName1,
 			ObjectName: objectName,
@@ -2202,7 +2202,7 @@ func (s *PaymentTestSuite) getStreamRecords(addrs []string) (streamRecords Strea
 	return
 }
 
-func (s *PaymentTestSuite) checkStreamRecordsBeforeAndAfter(streamRecordsBefore, streamRecordsAfter StreamRecords, readPrice sdk.Dec,
+func (s *PaymentTestSuite) checkStreamRecordsBeforeAndAfter(streamRecordsBefore, streamRecordsAfter StreamRecords, _ sdk.Dec,
 	readChargeRate sdkmath.Int, primaryStorePrice, secondaryStorePrice sdk.Dec, chargeSize, payloadSize uint64,
 ) {
 	userRateDiff := streamRecordsAfter.User.NetflowRate.Sub(streamRecordsBefore.User.NetflowRate)
@@ -2213,7 +2213,7 @@ func (s *PaymentTestSuite) checkStreamRecordsBeforeAndAfter(streamRecordsBefore,
 
 	outFlowsResponse, err := s.Client.OutFlows(context.Background(), &paymenttypes.QueryOutFlowsRequest{Account: streamRecordsAfter.User.Account})
 	s.Require().NoError(err)
-	userOutflowMap := lo.Reduce(outFlowsResponse.OutFlows, func(m map[string]sdkmath.Int, outflow paymenttypes.OutFlow, i int) map[string]sdkmath.Int {
+	userOutflowMap := lo.Reduce(outFlowsResponse.OutFlows, func(m map[string]sdkmath.Int, outflow paymenttypes.OutFlow, _ int) map[string]sdkmath.Int {
 		m[outflow.ToAddress] = outflow.Rate
 		return m
 	}, make(map[string]sdkmath.Int))
@@ -2234,12 +2234,11 @@ func (s *PaymentTestSuite) getChargeSize(payloadSize uint64) uint64 {
 	minChargeSize := storageParams.Params.VersionedParams.MinChargeSize
 	if payloadSize < minChargeSize {
 		return minChargeSize
-	} else {
-		return payloadSize
 	}
+	return payloadSize
 }
 
-func (s *PaymentTestSuite) calculateLockFee(bucketName, objectName string, payloadSize uint64) sdkmath.Int {
+func (s *PaymentTestSuite) calculateLockFee(bucketName, _ string, payloadSize uint64) sdkmath.Int {
 	ctx := context.Background()
 
 	params := s.queryParams()
@@ -2311,6 +2310,7 @@ func (s *PaymentTestSuite) calculateReadRatesCurrentTimestamp(bucketName string)
 	return gvgFamilyRate, taxRate, gvgFamilyRate.Add(taxRate)
 }
 
+//nolint:unparam
 func (s *PaymentTestSuite) calculateStorageRates(bucketName, objectName string, payloadSize uint64, priceTime int64) (sdkmath.Int, sdkmath.Int, sdkmath.Int, sdkmath.Int) {
 	params := s.queryParams()
 
@@ -2392,12 +2392,12 @@ func (s *PaymentTestSuite) updateParams(params paymenttypes.Params) {
 	s.Require().Equal(txRes.Code, uint32(0))
 
 	// 3. query proposal and get proposal ID
-	var proposalId uint64
+	var proposalID uint64
 	for _, event := range txRes.Logs[0].Events {
-		if event.Type == "submit_proposal" {
+		if event.Type == submitProposalEvent {
 			for _, attr := range event.Attributes {
-				if attr.Key == "proposal_id" {
-					proposalId, err = strconv.ParseUint(attr.Value, 10, 0)
+				if attr.Key == proposalIDStr {
+					proposalID, err = strconv.ParseUint(attr.Value, 10, 0)
 					s.Require().NoError(err)
 					break
 				}
@@ -2405,14 +2405,14 @@ func (s *PaymentTestSuite) updateParams(params paymenttypes.Params) {
 			break
 		}
 	}
-	s.Require().True(proposalId != 0)
+	s.Require().True(proposalID != 0)
 
-	queryProposal := &govtypesv1.QueryProposalRequest{ProposalId: proposalId}
+	queryProposal := &govtypesv1.QueryProposalRequest{ProposalId: proposalID}
 	_, err = s.Client.GovQueryClientV1.Proposal(ctx, queryProposal)
 	s.Require().NoError(err)
 
 	// 4. submit MsgVote and wait the proposal exec
-	msgVote := govtypesv1.NewMsgVote(validator, proposalId, govtypesv1.OptionYes, "test")
+	msgVote := govtypesv1.NewMsgVote(validator, proposalID, govtypesv1.OptionYes, "test")
 	txRes = s.SendTxBlock(s.Validator, msgVote)
 	s.Require().Equal(txRes.Code, uint32(0))
 
@@ -2458,16 +2458,7 @@ func (s *PaymentTestSuite) createBucketAndObject(sp *core.StorageProvider, gvg *
 	objectName := storagetestutils.GenRandomObjectName()
 	// create test buffer
 	var buffer bytes.Buffer
-	line := `1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,123`
+	line := strings.Repeat(repeatPart, 92) + "123"
 	// Create 1MiB content where each line contains 1024 characters.
 	for i := 0; i < 1024; i++ {
 		buffer.WriteString(fmt.Sprintf("[%05d] %s\n", i, line))
@@ -2475,7 +2466,7 @@ func (s *PaymentTestSuite) createBucketAndObject(sp *core.StorageProvider, gvg *
 	payloadSize := buffer.Len()
 	checksum := crypto.Keccak256(buffer.Bytes())
 	expectChecksum := [][]byte{checksum, checksum, checksum, checksum, checksum, checksum, checksum}
-	contextType := "text/event-stream"
+	contextType := eventStreamType
 	msgCreateObject := storagetypes.NewMsgCreateObject(user.GetAddr(), bucketName, objectName, uint64(payloadSize),
 		storagetypes.VISIBILITY_TYPE_PRIVATE, expectChecksum, contextType,
 		storagetypes.REDUNDANCY_EC_TYPE, math.MaxUint, nil)
@@ -2517,6 +2508,7 @@ func (s *PaymentTestSuite) createBucket(sp *core.StorageProvider, gvg *virtualgr
 	return bucketName
 }
 
+//nolint:unparam
 func (s *PaymentTestSuite) createObject(user keys.KeyManager, bucketName string, empty bool) (keys.KeyManager, string, string, storagetypes.Uint, [][]byte, uint64) {
 	var err error
 	sp := s.BaseSuite.PickStorageProviderByBucketName(bucketName)
@@ -2525,16 +2517,7 @@ func (s *PaymentTestSuite) createObject(user keys.KeyManager, bucketName string,
 	objectName := storagetestutils.GenRandomObjectName()
 	// create test buffer
 	var buffer bytes.Buffer
-	line := `1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,123`
+	line := strings.Repeat(repeatPart, 92) + "123"
 	// Create 1MiB content where each line contains 1024 characters.
 	if !empty {
 		for i := 0; i < 1024; i++ {
@@ -2544,7 +2527,7 @@ func (s *PaymentTestSuite) createObject(user keys.KeyManager, bucketName string,
 	payloadSize := uint64(buffer.Len())
 	checksum := crypto.Keccak256(buffer.Bytes())
 	expectChecksum := [][]byte{checksum, checksum, checksum, checksum, checksum, checksum, checksum}
-	contextType := "text/event-stream"
+	contextType := eventStreamType
 	msgCreateObject := storagetypes.NewMsgCreateObject(user.GetAddr(), bucketName, objectName, payloadSize,
 		storagetypes.VISIBILITY_TYPE_PRIVATE, expectChecksum, contextType,
 		storagetypes.REDUNDANCY_EC_TYPE, math.MaxUint, nil)
@@ -2578,13 +2561,14 @@ func (s *PaymentTestSuite) cancelCreateObject(user keys.KeyManager, bucketName, 
 	s.Require().Error(err)
 }
 
-func (s *PaymentTestSuite) sealObject(sp *core.StorageProvider, gvg *virtualgrouptypes.GlobalVirtualGroup, bucketName, objectName string, objectId storagetypes.Uint, checksums [][]byte) *virtualgrouptypes.GlobalVirtualGroup {
+//nolint:unparam
+func (s *PaymentTestSuite) sealObject(sp *core.StorageProvider, gvg *virtualgrouptypes.GlobalVirtualGroup, bucketName, objectName string, objectID storagetypes.Uint, checksums [][]byte) *virtualgrouptypes.GlobalVirtualGroup {
 	// SealObject
-	gvgId := gvg.Id
+	gvgID := gvg.Id
 	msgSealObject := storagetypes.NewMsgSealObject(sp.SealKey.GetAddr(), bucketName, objectName, gvg.Id, nil)
 	secondarySigs := make([][]byte, 0)
 	secondarySPBlsPubKeys := make([]bls.PublicKey, 0)
-	blsSignHash := storagetypes.NewSecondarySpSealObjectSignDoc(s.GetChainID(), gvgId, objectId, storagetypes.GenerateHash(checksums[:])).GetBlsSignHash()
+	blsSignHash := storagetypes.NewSecondarySpSealObjectSignDoc(s.GetChainID(), gvgID, objectID, storagetypes.GenerateHash(checksums)).GetBlsSignHash()
 	// every secondary sp signs the checksums
 	for _, spID := range gvg.SecondarySpIds {
 		sig, err := core.BlsSignAndVerify(s.StorageProviders[spID], blsSignHash)
@@ -2613,7 +2597,7 @@ func (s *PaymentTestSuite) sealObject(sp *core.StorageProvider, gvg *virtualgrou
 	return gvg
 }
 
-func (s *PaymentTestSuite) rejectSealObject(sp *core.StorageProvider, gvg *virtualgrouptypes.GlobalVirtualGroup, bucketName, objectName string) {
+func (s *PaymentTestSuite) rejectSealObject(sp *core.StorageProvider, _ *virtualgrouptypes.GlobalVirtualGroup, bucketName, objectName string) {
 	msgRejectSealObject := storagetypes.NewMsgRejectUnsealedObject(sp.SealKey.GetAddr(), bucketName, objectName)
 
 	s.T().Logf("msg %s", msgRejectSealObject.String())
@@ -2665,7 +2649,7 @@ func (s *PaymentTestSuite) TestUpdatePaymentParams() {
 		Params:    updatedParams,
 	}
 
-	proposal, err := v1.NewMsgSubmitProposal([]sdk.Msg{msgUpdateParams}, sdk.NewCoins(sdk.NewCoin("azkme", sdk.NewInt(1000000000000000000))),
+	proposal, err := govtypesv1.NewMsgSubmitProposal([]sdk.Msg{msgUpdateParams}, sdk.NewCoins(sdk.NewCoin("azkme", sdk.NewInt(1000000000000000000))),
 		s.Validator.GetAddr().String(), "", "update Payment params", "Test update Payment params")
 	s.Require().NoError(err)
 	txBroadCastResp, err := s.SendTxBlockWithoutCheck(proposal, s.Validator)
@@ -2678,7 +2662,7 @@ func (s *PaymentTestSuite) TestUpdatePaymentParams() {
 	s.Require().NoError(err)
 	if txResp.Code == 0 && txResp.Height > 0 {
 		for _, event := range txResp.Events {
-			if event.Type == "submit_proposal" {
+			if event.Type == submitProposalEvent {
 				proposalID, err = strconv.Atoi(event.GetAttributes()[0].Value)
 				s.Require().NoError(err)
 			}
@@ -2697,7 +2681,7 @@ func (s *PaymentTestSuite) TestUpdatePaymentParams() {
 		Memo:      "",
 		FeeAmount: sdk.NewCoins(sdk.NewCoin("azkme", sdk.NewInt(1000000000000000000))),
 	}
-	voteBroadCastResp, err := s.SendTxBlockWithoutCheckWithTxOpt(v1.NewMsgVote(s.Validator.GetAddr(), uint64(proposalID), v1.OptionYes, ""),
+	voteBroadCastResp, err := s.SendTxBlockWithoutCheckWithTxOpt(govtypesv1.NewMsgVote(s.Validator.GetAddr(), uint64(proposalID), govtypesv1.OptionYes, ""),
 		s.Validator, txOpt)
 	s.Require().NoError(err)
 	voteResp, err := s.WaitForTx(voteBroadCastResp.TxResponse.TxHash)
@@ -2711,20 +2695,20 @@ func (s *PaymentTestSuite) TestUpdatePaymentParams() {
 	// 3. query proposal until it is end voting period
 CheckProposalStatus:
 	for {
-		queryProposalResp, err := s.Client.Proposal(context.Background(), &v1.QueryProposalRequest{ProposalId: uint64(proposalID)})
+		queryProposalResp, err := s.Client.Proposal(context.Background(), &govtypesv1.QueryProposalRequest{ProposalId: uint64(proposalID)})
 		s.Require().NoError(err)
-		if queryProposalResp.Proposal.Status != v1.StatusVotingPeriod {
+		if queryProposalResp.Proposal.Status != govtypesv1.StatusVotingPeriod {
 			switch queryProposalResp.Proposal.Status {
-			case v1.StatusDepositPeriod:
+			case govtypesv1.StatusDepositPeriod:
 				s.T().Errorf("proposal deposit period")
 				return
-			case v1.StatusRejected:
+			case govtypesv1.StatusRejected:
 				s.T().Errorf("proposal rejected")
 				return
-			case v1.StatusPassed:
+			case govtypesv1.StatusPassed:
 				s.T().Logf("proposal passed")
 				break CheckProposalStatus
-			case v1.StatusFailed:
+			case govtypesv1.StatusFailed:
 				s.T().Errorf("proposal failed, reason %s", queryProposalResp.Proposal.FailedReason)
 				return
 			}

@@ -57,15 +57,13 @@ func (k msgServer) CreateGlobalVirtualGroup(goCtx context.Context, req *types.Ms
 	if len(req.GetSecondarySpIds()) != expectSecondarySPNum {
 		return nil, types.ErrInvalidSecondarySPCount.Wrapf("the number of secondary sp in the Global virtual group should be %d", expectSecondarySPNum)
 	}
-	spIdSet := make(map[uint32]struct{}, len(req.GetSecondarySpIds()))
-	for _, spId := range req.GetSecondarySpIds() {
-		if _, ok := spIdSet[spId]; ok {
-			return nil, types.ErrDuplicateSecondarySP.Wrapf("the SP(id=%d) is duplicate in the Global virtual group.", spId)
+	spIDSet := make(map[uint32]struct{}, len(req.GetSecondarySpIds()))
+	for _, spID := range req.GetSecondarySpIds() {
+		if _, ok := spIDSet[spID]; ok {
+			return nil, types.ErrDuplicateSecondarySP.Wrapf("the SP(id=%d) is duplicate in the Global virtual group.", spID)
 		}
-		spIdSet[spId] = struct{}{}
+		spIDSet[spID] = struct{}{}
 	}
-
-	var gvgStatisticsWithinSPs []*types.GVGStatisticsWithinSP
 
 	spOperatorAddr := sdk.MustAccAddressFromHex(req.StorageProvider)
 
@@ -77,12 +75,12 @@ func (k msgServer) CreateGlobalVirtualGroup(goCtx context.Context, req *types.Ms
 	if !sp.IsInService() && !sp.IsInMaintenance() {
 		return nil, sptypes.ErrStorageProviderNotInService.Wrapf("sp is not in service or in maintenance, status: %s", sp.Status.String())
 	}
-
+	gvgStatisticsWithinSPs := make([]*types.GVGStatisticsWithinSP, 0, 1+len(req.SecondarySpIds))
 	stat := k.GetOrCreateGVGStatisticsWithinSP(ctx, sp.Id)
 	stat.PrimaryCount++
 	gvgStatisticsWithinSPs = append(gvgStatisticsWithinSPs, stat)
 
-	var secondarySpIds []uint32
+	secondarySpIDs := make([]uint32, 0, len(req.SecondarySpIds))
 	for _, id := range req.SecondarySpIds {
 		ssp, found := k.spKeeper.GetStorageProvider(ctx, id)
 		if !found {
@@ -92,7 +90,7 @@ func (k msgServer) CreateGlobalVirtualGroup(goCtx context.Context, req *types.Ms
 			return nil, sptypes.ErrStorageProviderNotInService.Wrapf("sp in GVG is not in service or in maintenance, status: %s", sp.Status.String())
 		}
 
-		secondarySpIds = append(secondarySpIds, ssp.Id)
+		secondarySpIDs = append(secondarySpIDs, ssp.Id)
 		gvgStatisticsWithinSP := k.GetOrCreateGVGStatisticsWithinSP(ctx, ssp.Id)
 		gvgStatisticsWithinSP.SecondaryCount++
 		gvgStatisticsWithinSPs = append(gvgStatisticsWithinSPs, gvgStatisticsWithinSP)
@@ -109,10 +107,10 @@ func (k msgServer) CreateGlobalVirtualGroup(goCtx context.Context, req *types.Ms
 			return nil, types.ErrGVGNotExist
 		}
 		for i, secondarySPId := range gvg.SecondarySpIds {
-			if secondarySPId != secondarySpIds[i] {
+			if secondarySPId != secondarySpIDs[i] {
 				break
 			}
-			if i == len(secondarySpIds)-1 {
+			if i == len(secondarySpIDs)-1 {
 				return nil, types.ErrDuplicateGVG.Wrapf("the global virtual group family already has a GVG with same SP in same order")
 			}
 		}
@@ -135,7 +133,7 @@ func (k msgServer) CreateGlobalVirtualGroup(goCtx context.Context, req *types.Ms
 		Id:                    gvgID,
 		FamilyId:              gvgFamily.Id,
 		PrimarySpId:           sp.Id,
-		SecondarySpIds:        secondarySpIds,
+		SecondarySpIds:        secondarySpIDs,
 		StoredSize:            0,
 		VirtualPaymentAddress: k.DeriveVirtualPaymentAccount(types.GVGVirtualPaymentAccountName, gvgID).String(),
 		TotalDeposit:          req.Deposit.Amount,
@@ -158,7 +156,7 @@ func (k msgServer) CreateGlobalVirtualGroup(goCtx context.Context, req *types.Ms
 	}); err != nil {
 		return nil, err
 	}
-	if req.FamilyId == types.NoSpecifiedFamilyId {
+	if req.FamilyId == types.NoSpecifiedFamilyID {
 		if err := ctx.EventManager().EmitTypedEvents(&types.EventCreateGlobalVirtualGroupFamily{
 			Id:                    gvgFamily.Id,
 			PrimarySpId:           gvgFamily.PrimarySpId,
@@ -377,7 +375,7 @@ func (k msgServer) Settle(goCtx context.Context, req *types.MsgSettle) (*types.M
 
 	var sp *sptypes.StorageProvider
 
-	if req.GlobalVirtualGroupFamilyId != types.NoSpecifiedFamilyId {
+	if req.GlobalVirtualGroupFamilyId != types.NoSpecifiedFamilyID {
 		family, found := k.GetGVGFamily(ctx, req.GlobalVirtualGroupFamilyId)
 		if !found {
 			return nil, types.ErrGVGFamilyNotExist

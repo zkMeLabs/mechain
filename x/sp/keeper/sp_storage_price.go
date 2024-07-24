@@ -31,17 +31,17 @@ func (k Keeper) SetSpStoragePrice(ctx sdk.Context, spStoragePrice types.SpStorag
 // GetSpStoragePrice returns a SpStoragePrice from its index
 func (k Keeper) GetSpStoragePrice(
 	ctx sdk.Context,
-	spId uint32,
+	spID uint32,
 ) (val types.SpStoragePrice, found bool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.SpStoragePriceKeyPrefix)
 
-	b := store.Get(types.SpStoragePriceKey(spId))
+	b := store.Get(types.SpStoragePriceKey(spID))
 	if b == nil {
 		return val, false
 	}
 
 	k.cdc.MustUnmarshal(b, &val)
-	val.SpId = spId
+	val.SpId = spID
 	return val, true
 }
 
@@ -55,8 +55,8 @@ func (k Keeper) GetAllSpStoragePrice(ctx sdk.Context) (list []types.SpStoragePri
 	for ; iterator.Valid(); iterator.Next() {
 		var val types.SpStoragePrice
 		k.cdc.MustUnmarshal(iterator.Value(), &val)
-		spId := types.ParseSpStoragePriceKey(iterator.Key())
-		val.SpId = spId
+		spID := types.ParseSpStoragePriceKey(iterator.Key())
+		val.SpId = spID
 		list = append(list, val)
 	}
 

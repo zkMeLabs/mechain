@@ -329,16 +329,16 @@ func initTestnetFiles(
 		blsProofBuf := blsSecretKey.Sign(tmhash.Sum(blsSecretKey.PublicKey().Marshal()))
 		blsProof := hex.EncodeToString(blsProofBuf.Marshal())
 		createValMsg, err := stakingtypes.NewMsgCreateValidator(
-			sdk.AccAddress(addr),
+			addr,
 			valPubKeys[i],
 			sdk.NewCoin(cmdcfg.BaseDenom, valTokens),
 			stakingtypes.NewDescription(nodeDirName, "", "", "", ""),
 			stakingtypes.NewCommissionRates(sdk.OneDec().QuoInt64(10), sdk.OneDec(), sdk.OneDec()),
 			sdk.OneInt(),
-			sdk.AccAddress(addr),
-			sdk.AccAddress(addr),
-			sdk.AccAddress(addr),
-			sdk.AccAddress(addr),
+			addr,
+			addr,
+			addr,
+			addr,
 			blsPk,
 			blsProof,
 		)

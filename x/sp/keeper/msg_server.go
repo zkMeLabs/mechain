@@ -6,18 +6,15 @@ import (
 	"time"
 
 	"cosmossdk.io/errors"
-	errorsmod "cosmossdk.io/errors"
 	"github.com/cometbft/cometbft/crypto/tmhash"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	gov "github.com/cosmos/cosmos-sdk/x/gov/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+	gnfderrors "github.com/evmos/evmos/v12/types/errors"
+	"github.com/evmos/evmos/v12/x/sp/types"
 	"github.com/prysmaticlabs/prysm/crypto/bls"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-
-	gnfderrors "github.com/evmos/evmos/v12/types/errors"
-	"github.com/evmos/evmos/v12/x/sp/types"
 )
 
 type msgServer struct {
@@ -58,7 +55,7 @@ func (k msgServer) CreateStorageProvider(goCtx context.Context, msg *types.MsgCr
 			return nil, types.ErrSignerNotSPOperator
 		}
 	} else {
-		if len(signers) != 1 || !signers[0].Equals(k.accountKeeper.GetModuleAddress(gov.ModuleName)) {
+		if len(signers) != 1 || !signers[0].Equals(k.accountKeeper.GetModuleAddress(govtypes.ModuleName)) {
 			return nil, types.ErrSignerNotGovModule
 		}
 	}
@@ -114,7 +111,7 @@ func (k msgServer) CreateStorageProvider(goCtx context.Context, msg *types.MsgCr
 	if ctx.BlockHeight() != 0 {
 		err := k.CheckDepositAuthorization(
 			ctx,
-			k.accountKeeper.GetModuleAddress(gov.ModuleName),
+			k.accountKeeper.GetModuleAddress(govtypes.ModuleName),
 			fundingAcc,
 			types.NewMsgDeposit(fundingAcc, spAcc, msg.Deposit))
 		if err != nil {
@@ -351,7 +348,7 @@ func IsLastDaysOfTheMonth(now time.Time, days int) bool {
 
 func (k msgServer) UpdateParams(goCtx context.Context, req *types.MsgUpdateParams) (*types.MsgUpdateParamsResponse, error) {
 	if k.GetAuthority() != req.Authority {
-		return nil, errorsmod.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
+		return nil, errors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)

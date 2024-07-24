@@ -7,11 +7,10 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	types2 "github.com/evmos/evmos/v12/types"
+	evmtypes "github.com/evmos/evmos/v12/types"
 	gnfderrors "github.com/evmos/evmos/v12/types/errors"
 	gnfdresource "github.com/evmos/evmos/v12/types/resource"
 	permtypes "github.com/evmos/evmos/v12/x/permission/types"
-	"github.com/evmos/evmos/v12/x/storage/types"
 	storagetypes "github.com/evmos/evmos/v12/x/storage/types"
 )
 
@@ -35,7 +34,7 @@ var (
 // Third, verify the policy corresponding to the bucket and the operator.
 //  1. If the policy is evaluated as "allow", return "allow" to the user.
 //  2. If it is evaluated as "deny" or "unspecified", return "deny".
-func (k Keeper) VerifyBucketPermission(ctx sdk.Context, bucketInfo *types.BucketInfo, operator sdk.AccAddress,
+func (k Keeper) VerifyBucketPermission(ctx sdk.Context, bucketInfo *storagetypes.BucketInfo, operator sdk.AccAddress,
 	action permtypes.ActionType, options *permtypes.VerifyOptions,
 ) permtypes.Effect {
 	// if bucket is public, anyone can read but can not write it.
@@ -70,7 +69,7 @@ func (k Keeper) VerifyBucketPermission(ctx sdk.Context, bucketInfo *types.Bucket
 //  2. If it is evaluated as "allow", return "allow".
 //  3. If it is evaluated as "unspecified", then if the EffectBucket is "allow", return allow
 //  4. If it is evaluated as "unspecified", then if the EffectBucket is "unspecified", return deny
-func (k Keeper) VerifyObjectPermission(ctx sdk.Context, bucketInfo *types.BucketInfo, objectInfo *types.ObjectInfo,
+func (k Keeper) VerifyObjectPermission(ctx sdk.Context, bucketInfo *storagetypes.BucketInfo, objectInfo *storagetypes.ObjectInfo,
 	operator sdk.AccAddress, action permtypes.ActionType,
 ) permtypes.Effect {
 	// anyone can read but can not write it when the following case: 1) object is public 2) object is inherit, only when bucket is public
@@ -95,7 +94,7 @@ func (k Keeper) VerifyObjectPermission(ctx sdk.Context, bucketInfo *types.Bucket
 
 	// verify policy
 	opts := &permtypes.VerifyOptions{
-		Resource: types2.NewObjectGRN(objectInfo.BucketName, objectInfo.ObjectName).String(),
+		Resource: evmtypes.NewObjectGRN(objectInfo.BucketName, objectInfo.ObjectName).String(),
 	}
 	bucketEffect := k.VerifyPolicy(ctx, bucketInfo.Id, gnfdresource.RESOURCE_TYPE_BUCKET, operator, action, opts)
 	if bucketEffect == permtypes.EFFECT_DENY {
@@ -114,7 +113,7 @@ func (k Keeper) VerifyObjectPermission(ctx sdk.Context, bucketInfo *types.Bucket
 	return permtypes.EFFECT_DENY
 }
 
-func (k Keeper) VerifyGroupPermission(ctx sdk.Context, groupInfo *types.GroupInfo, operator sdk.AccAddress,
+func (k Keeper) VerifyGroupPermission(ctx sdk.Context, groupInfo *storagetypes.GroupInfo, operator sdk.AccAddress,
 	action permtypes.ActionType,
 ) permtypes.Effect {
 	// The owner has full permissions
@@ -187,39 +186,40 @@ func (k Keeper) VerifyPolicy(ctx sdk.Context, resourceID math.Uint, resourceType
 	return permtypes.EFFECT_UNSPECIFIED
 }
 
-func (k Keeper) GetPolicy(ctx sdk.Context, grn types2.GRN, principal *permtypes.Principal) (*permtypes.Policy, error) {
-	_, resID, err := k.getResourceOwnerAndIdFromGRN(ctx, grn)
+func (k Keeper) GetPolicy(ctx sdk.Context, grn evmtypes.GRN, principal *permtypes.Principal) (*permtypes.Policy, error) {
+	_, resID, err := k.getResourceOwnerAndIDFromGRN(ctx, grn)
 	if err != nil {
 		return nil, err
 	}
 
 	var policy *permtypes.Policy
 	var found bool
-	if principal.Type == permtypes.PRINCIPAL_TYPE_GNFD_ACCOUNT {
+	switch principal.Type {
+	case permtypes.PRINCIPAL_TYPE_GNFD_ACCOUNT:
 		policy, found = k.permKeeper.GetPolicyForAccount(ctx, resID, grn.ResourceType(),
 			principal.MustGetAccountAddress())
-	} else if principal.Type == permtypes.PRINCIPAL_TYPE_GNFD_GROUP {
+	case permtypes.PRINCIPAL_TYPE_GNFD_GROUP:
 		policy, found = k.permKeeper.GetPolicyForGroup(ctx, resID, grn.ResourceType(), principal.MustGetGroupID())
-	} else {
+	default:
 		return nil, permtypes.ErrInvalidPrincipal
 	}
 
 	if !found {
-		return nil, types.ErrNoSuchPolicy.Wrapf("GRN: %s, principal:%s", grn.String(), principal.String())
+		return nil, storagetypes.ErrNoSuchPolicy.Wrapf("GRN: %s, principal:%s", grn.String(), principal.String())
 	}
 	return policy, nil
 }
 
-func (k Keeper) PutPolicy(ctx sdk.Context, operator sdk.AccAddress, grn types2.GRN,
+func (k Keeper) PutPolicy(ctx sdk.Context, operator sdk.AccAddress, grn evmtypes.GRN,
 	policy *permtypes.Policy,
 ) (math.Uint, error) {
-	resOwner, resID, err := k.getResourceOwnerAndIdFromGRN(ctx, grn)
+	resOwner, resID, err := k.getResourceOwnerAndIDFromGRN(ctx, grn)
 	if err != nil {
 		return math.ZeroUint(), err
 	}
 
 	if !operator.Equals(resOwner) {
-		return math.ZeroUint(), types.ErrAccessDenied.Wrapf(
+		return math.ZeroUint(), storagetypes.ErrAccessDenied.Wrapf(
 			"Only resource owner can put policy, operator (%s), owner(%s)",
 			operator.String(), resOwner.String())
 	}
@@ -233,15 +233,15 @@ func (k Keeper) PutPolicy(ctx sdk.Context, operator sdk.AccAddress, grn types2.G
 }
 
 func (k Keeper) DeletePolicy(
-	ctx sdk.Context, operator sdk.AccAddress, principal *permtypes.Principal, grn types2.GRN,
+	ctx sdk.Context, operator sdk.AccAddress, principal *permtypes.Principal, grn evmtypes.GRN,
 ) (math.Uint, error) {
-	resOwner, resID, err := k.getResourceOwnerAndIdFromGRN(ctx, grn)
+	resOwner, resID, err := k.getResourceOwnerAndIDFromGRN(ctx, grn)
 	if err != nil {
 		return math.ZeroUint(), err
 	}
 
 	if !operator.Equals(resOwner) {
-		return math.ZeroUint(), types.ErrAccessDenied.Wrapf(
+		return math.ZeroUint(), storagetypes.ErrAccessDenied.Wrapf(
 			"Only resource owner can delete bucket policy, operator (%s), owner(%s)",
 			operator.String(), resOwner.String())
 	}
@@ -253,7 +253,7 @@ func (k Keeper) NormalizePrincipal(ctx sdk.Context, principal *permtypes.Princip
 		if _, err := math.ParseUint(principal.Value); err == nil {
 			return
 		}
-		var grn types2.GRN
+		var grn evmtypes.GRN
 		if err := grn.ParseFromString(principal.Value, false); err != nil {
 			return
 		}
@@ -269,7 +269,8 @@ func (k Keeper) NormalizePrincipal(ctx sdk.Context, principal *permtypes.Princip
 }
 
 func (k Keeper) ValidatePrincipal(ctx sdk.Context, resOwner sdk.AccAddress, principal *permtypes.Principal) error {
-	if principal.Type == permtypes.PRINCIPAL_TYPE_GNFD_ACCOUNT {
+	switch principal.Type {
+	case permtypes.PRINCIPAL_TYPE_GNFD_ACCOUNT:
 		principalAccAddress, err := principal.GetAccountAddress()
 		if err != nil {
 			return err
@@ -277,22 +278,22 @@ func (k Keeper) ValidatePrincipal(ctx sdk.Context, resOwner sdk.AccAddress, prin
 		if principalAccAddress.Equals(resOwner) {
 			return gnfderrors.ErrInvalidPrincipal.Wrapf("principal account can not be the bucket owner")
 		}
-	} else if principal.Type == permtypes.PRINCIPAL_TYPE_GNFD_GROUP {
+	case permtypes.PRINCIPAL_TYPE_GNFD_GROUP:
 		groupID, err := math.ParseUint(principal.Value)
 		if err != nil {
 			return err
 		}
 		_, found := k.GetGroupInfoById(ctx, groupID)
 		if !found {
-			return types.ErrNoSuchGroup
+			return storagetypes.ErrNoSuchGroup
 		}
-	} else {
+	default:
 		return permtypes.ErrInvalidPrincipal.Wrapf("Unknown principal type.")
 	}
 	return nil
 }
 
-func (k Keeper) getResourceOwnerAndIdFromGRN(ctx sdk.Context, grn types2.GRN) (resOwner sdk.AccAddress, resID math.Uint, err error) {
+func (k Keeper) getResourceOwnerAndIDFromGRN(ctx sdk.Context, grn evmtypes.GRN) (resOwner sdk.AccAddress, resID math.Uint, err error) {
 	switch grn.ResourceType() {
 	case gnfdresource.RESOURCE_TYPE_BUCKET:
 		bucketName, grnErr := grn.GetBucketName()
@@ -301,7 +302,7 @@ func (k Keeper) getResourceOwnerAndIdFromGRN(ctx sdk.Context, grn types2.GRN) (r
 		}
 		bucketInfo, found := k.GetBucketInfo(ctx, bucketName)
 		if !found {
-			return resOwner, resID, types.ErrNoSuchBucket.Wrapf("bucketName: %s", bucketName)
+			return resOwner, resID, storagetypes.ErrNoSuchBucket.Wrapf("bucketName: %s", bucketName)
 		}
 		resOwner = sdk.MustAccAddressFromHex(bucketInfo.Owner)
 		resID = bucketInfo.Id
@@ -312,7 +313,7 @@ func (k Keeper) getResourceOwnerAndIdFromGRN(ctx sdk.Context, grn types2.GRN) (r
 		}
 		objectInfo, found := k.GetObjectInfo(ctx, bucketName, objectName)
 		if !found {
-			return resOwner, resID, types.ErrNoSuchObject.Wrapf("BucketName: %s, objectName: %s", bucketName, objectName)
+			return resOwner, resID, storagetypes.ErrNoSuchObject.Wrapf("BucketName: %s, objectName: %s", bucketName, objectName)
 		}
 		resOwner = sdk.MustAccAddressFromHex(objectInfo.Owner)
 		resID = objectInfo.Id
@@ -323,7 +324,7 @@ func (k Keeper) getResourceOwnerAndIdFromGRN(ctx sdk.Context, grn types2.GRN) (r
 		}
 		groupInfo, found := k.GetGroupInfo(ctx, groupOwner, groupName)
 		if !found {
-			return resOwner, resID, types.ErrNoSuchBucket.Wrapf("groupOwner: %s, groupName: %s", groupOwner.String(), groupName)
+			return resOwner, resID, storagetypes.ErrNoSuchBucket.Wrapf("groupOwner: %s, groupName: %s", groupOwner.String(), groupName)
 		}
 		resOwner = sdk.MustAccAddressFromHex(groupInfo.Owner)
 		resID = groupInfo.Id

@@ -23,7 +23,7 @@ var (
 )
 
 const (
-	opWeightMsgTransferOut = "op_weight_msg_transfer_out"
+	opWeightMsgTransferOut = "op_weight_msg_transfer_out" //nolint:gosec
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgTransferOut int = 100
 )

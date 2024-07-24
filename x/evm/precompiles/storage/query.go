@@ -21,7 +21,7 @@ const (
 	HeadGroupMethodName       = "headGroup"
 	HeadGroupMemberMethodName = "headGroupMember"
 	HeadObjectMethodName      = "headObject"
-	HeadObjectByIdMethodName  = "headObjectById"
+	HeadObjectByIDMethodName  = "headObjectById"
 )
 
 func (c *Contract) registerQuery() {
@@ -32,7 +32,7 @@ func (c *Contract) registerQuery() {
 	c.registerMethod(HeadGroupMethodName, 50_000, c.HeadGroup, "")
 	c.registerMethod(HeadGroupMemberMethodName, 50_000, c.HeadGroupMember, "")
 	c.registerMethod(HeadObjectMethodName, 50_000, c.HeadObject, "")
-	c.registerMethod(HeadObjectByIdMethodName, 50_000, c.HeadObjectById, "")
+	c.registerMethod(HeadObjectByIDMethodName, 50_000, c.HeadObjectById, "")
 }
 
 // ListBuckets queries the total buckets.
@@ -59,7 +59,7 @@ func (c *Contract) ListBuckets(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract
 	if err != nil {
 		return nil, err
 	}
-	var bucketInfos []BucketInfo
+	bucketInfos := make([]BucketInfo, 0, len(res.BucketInfos))
 	for _, bucketInfo := range res.BucketInfos {
 		bucketInfos = append(bucketInfos, BucketInfo{
 			Owner:                      common.HexToAddress(bucketInfo.Owner),
@@ -103,7 +103,7 @@ func (c *Contract) ListObjects(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract
 	if err != nil {
 		return nil, err
 	}
-	var objectInfos []ObjectInfo
+	objectInfos := make([]ObjectInfo, 0, len(res.ObjectInfos))
 	for _, objectInfo := range res.ObjectInfos {
 		objectInfos = append(objectInfos, *outputObjectInfo(objectInfo))
 	}
@@ -134,7 +134,7 @@ func (c *Contract) ListGroups(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract,
 	if err != nil {
 		return nil, err
 	}
-	var groupInfos []GroupInfo
+	groupInfos := make([]GroupInfo, 0, len(res.GroupInfos))
 	for _, groupInfo := range res.GroupInfos {
 		groupInfos = append(groupInfos, GroupInfo{
 			Owner:      common.HexToAddress(groupInfo.Owner),
@@ -258,14 +258,14 @@ func (c *Contract) HeadObject(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract,
 }
 
 // HeadObjectById queries the object's info.
-func (c *Contract) HeadObjectById(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract, _ bool) ([]byte, error) {
-	method := GetAbiMethod(HeadObjectByIdMethodName)
-	var args HeadObjectByIdArgs
+func (c *Contract) HeadObjectById(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract, _ bool) ([]byte, error) { //nolint
+	method := GetAbiMethod(HeadObjectByIDMethodName)
+	var args HeadObjectByIDArgs
 	if err := types.ParseMethodArgs(method, &args, contract.Input[4:]); err != nil {
 		return nil, err
 	}
 	msg := &storagetypes.QueryHeadObjectByIdRequest{
-		ObjectId: args.ObjectId,
+		ObjectId: args.ObjectID,
 	}
 	res, err := c.storageKeeper.HeadObjectById(ctx, msg)
 	if err != nil {
@@ -317,7 +317,7 @@ func outputsGlobalVirtualGroup(g *vgtypes.GlobalVirtualGroup) *GlobalVirtualGrou
 }
 
 func outputTags(tags *storagetypes.ResourceTags) []Tag {
-	var t []Tag
+	t := make([]Tag, 0)
 	if tags == nil {
 		return t
 	}

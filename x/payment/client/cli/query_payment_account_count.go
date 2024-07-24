@@ -14,7 +14,7 @@ func CmdListPaymentAccountCount() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "list-payment-account-count",
 		Short: "list all payment-account-count",
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(cmd *cobra.Command, _ []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
 			pageReq, err := client.ReadPageRequest(cmd.Flags())

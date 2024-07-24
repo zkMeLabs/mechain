@@ -169,7 +169,8 @@ func TestParseTxResult(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			parsed, err := ParseTxResult(&tc.response, nil)
+			r := tc.response
+			parsed, err := ParseTxResult(&r, nil)
 			if tc.expTxs == nil {
 				require.Error(t, err)
 			} else {

@@ -112,9 +112,8 @@ func (p *Policy) Eval(action ActionType, blockTime time.Time, opts *VerifyOption
 	if allowed {
 		if updated {
 			return EFFECT_ALLOW, p
-		} else {
-			return EFFECT_ALLOW, nil
 		}
+		return EFFECT_ALLOW, nil
 	}
 	return EFFECT_UNSPECIFIED, nil
 }
@@ -166,14 +165,12 @@ func (s *Statement) Eval(action ActionType, opts *VerifyOptions) (Effect, *State
 				if s.LimitSize.GetValue() >= *opts.WantedSize {
 					s.LimitSize = &common.UInt64Value{Value: s.LimitSize.GetValue() - *opts.WantedSize}
 					return EFFECT_ALLOW, s
-				} else {
-					return EFFECT_DENY, nil
 				}
+				return EFFECT_DENY, nil
 			}
 			return s.Effect, nil
 		}
 	}
-
 	return EFFECT_UNSPECIFIED, nil
 }
 
@@ -216,7 +213,7 @@ func (s *Statement) ValidateBasic(resType resource.ResourceType) error {
 	return nil
 }
 
-func (s *Statement) ValidateRuntime(ctx sdk.Context, resType resource.ResourceType) error {
+func (s *Statement) ValidateRuntime(_ sdk.Context, resType resource.ResourceType) error {
 	switch resType {
 	case resource.RESOURCE_TYPE_BUCKET:
 		for _, r := range s.Resources {
@@ -237,9 +234,7 @@ func (s *Statement) ValidateRuntime(ctx sdk.Context, resType resource.ResourceTy
 		return ErrInvalidStatement.Wrap("unknown resource type.")
 	}
 
-	var bucketAllowedActions map[ActionType]bool
-
-	bucketAllowedActions = BucketAllowedActionsAfterPampas
+	bucketAllowedActions := BucketAllowedActionsAfterPampas
 
 	if resType == resource.RESOURCE_TYPE_BUCKET {
 		containsCreateObject := false

@@ -117,13 +117,13 @@ func hasBadPathComponent(path string) bool {
 func CheckValidExpectChecksums(expectChecksums [][]byte) error {
 	for _, checksum := range expectChecksums {
 		if len(checksum) != sha256.Size {
-			return errors.Wrap(gnfderrors.ErrInvalidChecksum, "Invalid SHA256 checksum size.")
+			return errors.Wrap(gnfderrors.ErrInvalidChecksum, "invalid SHA256 checksum size")
 		}
 	}
 	return nil
 }
 
-func CheckValidContentType(contentType string) error {
+func CheckValidContentType(_ string) error {
 	// TODO(fynn): check validity of the contentType
 	return nil
 }

@@ -13,7 +13,7 @@ const (
 )
 
 // TotalSupply queries the total supply of all coins.
-func (c *Contract) TotalSupply(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract, _ bool) ([]byte, error) {
+func (c *Contract) TotalSupply(ctx sdk.Context, _ *vm.EVM, _ *vm.Contract, _ bool) ([]byte, error) {
 	method := MustMethod(TotalSupplyMethodName)
 
 	msg := &banktypes.QueryTotalSupplyRequest{}
@@ -23,7 +23,7 @@ func (c *Contract) TotalSupply(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract
 		return nil, err
 	}
 
-	var balances []Coin
+	balances := make([]Coin, 0, len(res.Supply))
 	for _, balance := range res.Supply {
 		balances = append(balances, Coin{
 			Denom:  balance.Denom,

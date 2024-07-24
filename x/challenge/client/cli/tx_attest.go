@@ -24,12 +24,12 @@ func CmdAttest() *cobra.Command {
 		Short: "Broadcast message attest",
 		Args:  cobra.ExactArgs(7),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			argChallengeId, err := strconv.ParseUint(args[0], 10, 64)
+			argChallengeID, err := strconv.ParseUint(args[0], 10, 64)
 			if err != nil {
 				return fmt.Errorf("challenge-id %s not a valid uint, please input a valid challenge-id", args[0])
 			}
 
-			argObjectId := sdkmath.NewUintFromString(args[1])
+			argObjectID := sdkmath.NewUintFromString(args[1])
 
 			argSpOperatorAddress := args[2]
 			_, err = sdk.AccAddressFromHexUnsafe(argSpOperatorAddress)
@@ -56,12 +56,12 @@ func CmdAttest() *cobra.Command {
 			for _, split := range splits {
 				val, err := strconv.ParseUint(split, 10, 64)
 				if err != nil {
-					return fmt.Errorf("vote-validator-set %s not a valid comma seperated uint array, please input a valid vote-validator-set", args[5])
+					return fmt.Errorf("vote-validator-set %s not a valid comma separated uint array, please input a valid vote-validator-set", args[5])
 				}
 				argVoteValidatorSet = append(argVoteValidatorSet, val)
 			}
 			if len(argVoteValidatorSet) == 0 {
-				return fmt.Errorf("vote-validator-set %s not a valid comma seperated uint array, please input a valid vote-validator-set", args[5])
+				return fmt.Errorf("vote-validator-set %s not a valid comma separated uint array, please input a valid vote-validator-set", args[5])
 			}
 
 			argVoteAggSignature, err := hex.DecodeString(args[6])
@@ -76,8 +76,8 @@ func CmdAttest() *cobra.Command {
 
 			msg := types.NewMsgAttest(
 				clientCtx.GetFromAddress(),
-				argChallengeId,
-				argObjectId,
+				argChallengeID,
+				argObjectID,
 				argSpOperatorAddress,
 				types.VoteResult(argVoteResult),
 				argChallengerAddress,

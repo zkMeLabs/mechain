@@ -62,11 +62,11 @@ func MustEvent(name string) abi.Event {
 	return event
 }
 
-type CoinJson = Coin
+type CoinJSON = Coin
 
 type SendArgs struct {
 	ToAddress common.Address `abi:"toAddress"`
-	Amount    []CoinJson     `abi:"amount"`
+	Amount    []CoinJSON     `abi:"amount"`
 }
 
 // Validate Send args

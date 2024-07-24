@@ -18,7 +18,7 @@ import (
 	teststypes "github.com/evmos/evmos/v12/types/tests"
 	"github.com/evmos/evmos/v12/utils"
 	"github.com/evmos/evmos/v12/x/erc20/types"
-	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/ginkgo/v2" //nolint
 )
 
 var _ = Describe("Convert receiving IBC to Erc20", Ordered, func() {

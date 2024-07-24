@@ -45,7 +45,7 @@ func (msg *MsgCancelSwapOut) ValidateBasic() error {
 	if err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid creator address (%s)", err)
 	}
-	if msg.GlobalVirtualGroupFamilyId == NoSpecifiedFamilyId {
+	if msg.GlobalVirtualGroupFamilyId == NoSpecifiedFamilyID {
 		if len(msg.GlobalVirtualGroupIds) == 0 {
 			return gnfderrors.ErrInvalidMessage.Wrap("The gvgs are not allowed to be empty when familyID is not specified.")
 		}

@@ -14,7 +14,7 @@ func NewPrincipalWithAccount(addr sdk.AccAddress) *Principal {
 	}
 }
 
-func NewPrincipalWithGroupId(groupID sdkmath.Uint) *Principal {
+func NewPrincipalWithGroupID(groupID sdkmath.Uint) *Principal {
 	return &Principal{
 		Type:  PRINCIPAL_TYPE_GNFD_GROUP,
 		Value: groupID.String(),

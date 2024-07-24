@@ -202,7 +202,7 @@ func (k Keeper) UpdateStreamRecord(ctx sdk.Context, streamRecord *types.StreamRe
 		return fmt.Errorf("stream account %s balance not enough, lack of %s azkme", streamRecord.Account, streamRecord.StaticBalance.Abs())
 	}
 	// calculate settle time
-	var settleTimestamp int64 = 0
+	var settleTimestamp int64
 	if streamRecord.NetflowRate.IsNegative() {
 		payDuration := streamRecord.StaticBalance.Add(streamRecord.BufferBalance).Quo(streamRecord.NetflowRate.Abs())
 		if payDuration.LTE(sdkmath.NewIntFromUint64(params.ForcedSettleTime)) {
@@ -338,7 +338,8 @@ func (k Keeper) AutoSettle(ctx sdk.Context) {
 			count++
 		}
 
-		for _, outFlow := range toUpdate {
+		for _, o := range toUpdate {
+			outFlow := o
 			k.SetOutFlow(ctx, addr, &outFlow)
 		}
 
@@ -420,21 +421,22 @@ func (k Keeper) TryResumeStreamRecord(ctx sdk.Context, streamRecord *types.Strea
 			outFlow.Status = types.OUT_FLOW_STATUS_ACTIVE
 			toUpdate = append(toUpdate, outFlow)
 		}
-		for _, outFlow := range toUpdate {
+		for _, o := range toUpdate {
+			outFlow := o
 			k.SetOutFlow(ctx, addr, &outFlow)
 		}
 
 		k.SetStreamRecord(ctx, streamRecord)
 		k.UpdateAutoSettleRecord(ctx, sdk.MustAccAddressFromHex(streamRecord.Account), prevSettleTime, streamRecord.SettleTimestamp)
 		return nil
-	} else { // enqueue for resume in end block
-		k.SetStreamRecord(ctx, streamRecord)
-		k.SetAutoResumeRecord(ctx, &types.AutoResumeRecord{
-			Timestamp: now,
-			Addr:      streamRecord.Account,
-		})
-		return nil
 	}
+	// enqueue for resume in end block
+	k.SetStreamRecord(ctx, streamRecord)
+	k.SetAutoResumeRecord(ctx, &types.AutoResumeRecord{
+		Timestamp: now,
+		Addr:      streamRecord.Account,
+	})
+	return nil
 }
 
 func (k Keeper) AutoResume(ctx sdk.Context) {
@@ -442,7 +444,7 @@ func (k Keeper) AutoResume(ctx sdk.Context) {
 	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 	defer iterator.Close()
 
-	var count uint64 = 0
+	var count uint64
 	max := k.GetParams(ctx).MaxAutoResumeFlowCount
 	for ; iterator.Valid(); iterator.Next() {
 		record := types.ParseAutoResumeRecordKey(iterator.Key())
@@ -495,7 +497,8 @@ func (k Keeper) AutoResume(ctx sdk.Context) {
 			count++
 		}
 
-		for _, outFlow := range toUpdate {
+		for _, o := range toUpdate {
+			outFlow := o
 			k.SetOutFlow(ctx, addr, &outFlow)
 		}
 

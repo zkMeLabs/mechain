@@ -10,12 +10,11 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"github.com/cosmos/cosmos-sdk/x/mint"
-	"github.com/stretchr/testify/require"
-
 	"github.com/evmos/evmos/v12/testutil/nullify"
 	"github.com/evmos/evmos/v12/x/storage"
 	"github.com/evmos/evmos/v12/x/storage/keeper"
 	"github.com/evmos/evmos/v12/x/storage/types"
+	"github.com/stretchr/testify/require"
 )
 
 func makeKeeper(t *testing.T) (*keeper.Keeper, sdk.Context) {
@@ -34,9 +33,9 @@ func makeKeeper(t *testing.T) (*keeper.Keeper, sdk.Context) {
 		&types.MockPermissionKeeper{},
 		&types.MockCrossChainKeeper{},
 		&types.MockVirtualGroupKeeper{},
+		&types.MockEVMKeeper{},
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
-
 	return k, testCtx.Ctx
 }
 

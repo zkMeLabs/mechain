@@ -66,7 +66,7 @@ func VerifyBlsAggSignature(blsPubKeys []bls.PublicKey, sigHash [32]byte, blsAggS
 	if err != nil {
 		return errors.Wrapf(gnfderrors.ErrInvalidBlsSignature, "BLS signature conversion failed: %v", err)
 	}
-	if !aggSig.FastAggregateVerify(blsPubKeys[:], sigHash) {
+	if !aggSig.FastAggregateVerify(blsPubKeys, sigHash) {
 		return errors.Wrapf(gnfderrors.ErrInvalidBlsSignature, "aggregated signature verification failed")
 	}
 	return nil

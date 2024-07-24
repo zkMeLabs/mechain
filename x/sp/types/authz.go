@@ -32,7 +32,7 @@ func (a DepositAuthorization) ValidateBasic() error {
 }
 
 // Accept implements Authorization.Accept.
-func (a DepositAuthorization) Accept(_ctx sdk.Context, msg sdk.Msg) (authz.AcceptResponse, error) {
+func (a DepositAuthorization) Accept(_ sdk.Context, msg sdk.Msg) (authz.AcceptResponse, error) {
 	mDeposit, ok := msg.(*MsgDeposit)
 	if !ok {
 		return authz.AcceptResponse{}, sdkerrors.ErrInvalidRequest.Wrap("msg type mismatch")

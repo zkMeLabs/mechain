@@ -56,10 +56,10 @@ func (k msgServer) Submit(goCtx context.Context, msg *types.MsgSubmit) (*types.M
 		}
 
 		// check secondary sp
-		for i, spId := range gvg.SecondarySpIds {
-			tmpSp, found := k.SpKeeper.GetStorageProvider(ctx, spId)
+		for i, spID := range gvg.SecondarySpIds {
+			tmpSp, found := k.SpKeeper.GetStorageProvider(ctx, spID)
 			if !found {
-				return nil, errors.Wrapf(types.ErrUnknownSp, "cannot find storage provider: %d", spId)
+				return nil, errors.Wrapf(types.ErrUnknownSp, "cannot find storage provider: %d", spID)
 			}
 			if spOperator.Equals(sdk.MustAccAddressFromHex(tmpSp.OperatorAddress)) {
 				redundancyIndex = int32(i)
@@ -86,22 +86,20 @@ func (k msgServer) Submit(goCtx context.Context, msg *types.MsgSubmit) (*types.M
 	segments := CalculateSegments(objectInfo.PayloadSize, segmentSize)
 	if msg.RandomIndex {
 		segmentIndex = RandomSegmentIndex(ctx.BlockHeader().RandaoMix, segments)
-	} else {
-		if uint64(segmentIndex) > segments-1 {
-			return nil, types.ErrInvalidSegmentIndex
-		}
+	} else if uint64(segmentIndex) > segments-1 {
+		return nil, types.ErrInvalidSegmentIndex
 	}
 
 	k.IncrChallengeCountCurrentBlock(ctx)
-	challengeId := k.GetChallengeId(ctx) + 1
+	challengeID := k.GetChallengeId(ctx) + 1
 	expiredHeight := k.Keeper.GetParams(ctx).ChallengeKeepAlivePeriod + uint64(ctx.BlockHeight())
 	k.SaveChallenge(ctx, types.Challenge{
-		Id:            challengeId,
+		Id:            challengeID,
 		ExpiredHeight: expiredHeight,
 	})
 
 	if err := ctx.EventManager().EmitTypedEvents(&types.EventStartChallenge{
-		ChallengeId:       challengeId,
+		ChallengeId:       challengeID,
 		ObjectId:          objectInfo.Id,
 		SegmentIndex:      segmentIndex,
 		SpId:              sp.Id,
@@ -113,5 +111,5 @@ func (k msgServer) Submit(goCtx context.Context, msg *types.MsgSubmit) (*types.M
 		return nil, err
 	}
 
-	return &types.MsgSubmitResponse{ChallengeId: challengeId}, nil
+	return &types.MsgSubmitResponse{ChallengeId: challengeID}, nil
 }

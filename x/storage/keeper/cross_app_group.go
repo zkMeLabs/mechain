@@ -22,7 +22,7 @@ func NewGroupApp(keeper types.StorageKeeper) *GroupApp {
 }
 
 func (app *GroupApp) ExecuteAckPackage(ctx sdk.Context, appCtx *sdk.CrossChainAppContext, payload []byte) sdk.ExecuteResult {
-	pack, err := types.DeserializeCrossChainPackage(payload, types.GroupChannelId, sdk.AckCrossChainPackageType)
+	pack, err := types.DeserializeCrossChainPackage(payload, types.GroupChannelID, sdk.AckCrossChainPackageType)
 	if err != nil {
 		app.storageKeeper.Logger(ctx).Error("deserialize group cross chain package error", "payload", hex.EncodeToString(payload), "error", err.Error())
 		panic("deserialize group cross chain package error")
@@ -59,7 +59,7 @@ func (app *GroupApp) ExecuteAckPackage(ctx sdk.Context, appCtx *sdk.CrossChainAp
 }
 
 func (app *GroupApp) ExecuteFailAckPackage(ctx sdk.Context, appCtx *sdk.CrossChainAppContext, payload []byte) sdk.ExecuteResult {
-	pack, err := types.DeserializeCrossChainPackage(payload, types.GroupChannelId, sdk.FailAckCrossChainPackageType)
+	pack, err := types.DeserializeCrossChainPackage(payload, types.GroupChannelID, sdk.FailAckCrossChainPackageType)
 	if err != nil {
 		app.storageKeeper.Logger(ctx).Error("deserialize group cross chain package error", "payload", hex.EncodeToString(payload), "error", err.Error())
 		panic("deserialize group cross chain package error")
@@ -96,7 +96,7 @@ func (app *GroupApp) ExecuteFailAckPackage(ctx sdk.Context, appCtx *sdk.CrossCha
 }
 
 func (app *GroupApp) ExecuteSynPackage(ctx sdk.Context, appCtx *sdk.CrossChainAppContext, payload []byte) sdk.ExecuteResult {
-	pack, err := types.DeserializeCrossChainPackage(payload, types.GroupChannelId, sdk.SynCrossChainPackageType)
+	pack, err := types.DeserializeCrossChainPackage(payload, types.GroupChannelID, sdk.SynCrossChainPackageType)
 	if err != nil {
 		app.storageKeeper.Logger(ctx).Error("deserialize group cross chain package error", "payload", hex.EncodeToString(payload), "error", err.Error())
 		panic("deserialize group cross chain package error")
@@ -134,13 +134,15 @@ func (app *GroupApp) ExecuteSynPackage(ctx sdk.Context, appCtx *sdk.CrossChainAp
 	return result
 }
 
-func (app *GroupApp) handleDeleteGroupAckPackage(ctx sdk.Context, appCtx *sdk.CrossChainAppContext, ackPackage *types.DeleteGroupAckPackage) sdk.ExecuteResult {
+//nolint:unparam
+func (app *GroupApp) handleDeleteGroupAckPackage(ctx sdk.Context, _ *sdk.CrossChainAppContext, _ *types.DeleteGroupAckPackage) sdk.ExecuteResult {
 	app.storageKeeper.Logger(ctx).Error("received delete group ack package ")
 
 	return sdk.ExecuteResult{}
 }
 
-func (app *GroupApp) handleDeleteGroupFailAckPackage(ctx sdk.Context, appCtx *sdk.CrossChainAppContext, synPackage *types.DeleteGroupSynPackage) sdk.ExecuteResult {
+//nolint:unparam
+func (app *GroupApp) handleDeleteGroupFailAckPackage(ctx sdk.Context, _ *sdk.CrossChainAppContext, _ *types.DeleteGroupSynPackage) sdk.ExecuteResult {
 	app.storageKeeper.Logger(ctx).Error("received delete group fail ack package ")
 
 	return sdk.ExecuteResult{}
@@ -158,9 +160,9 @@ func (app *GroupApp) handleDeleteGroupSynPackage(ctx sdk.Context, appCtx *sdk.Cr
 		}
 	}
 
-	app.storageKeeper.Logger(ctx).Info("process delete group syn package", "group id", deleteGroupPackage.Id.String())
+	app.storageKeeper.Logger(ctx).Info("process delete group syn package", "group id", deleteGroupPackage.ID.String())
 
-	groupInfo, found := app.storageKeeper.GetGroupInfoById(ctx, math.NewUintFromBigInt(deleteGroupPackage.Id))
+	groupInfo, found := app.storageKeeper.GetGroupInfoById(ctx, math.NewUintFromBigInt(deleteGroupPackage.ID))
 	if !found {
 		return sdk.ExecuteResult{
 			Payload: types.DeleteGroupAckPackage{
@@ -198,19 +200,21 @@ func (app *GroupApp) handleDeleteGroupSynPackage(ctx sdk.Context, appCtx *sdk.Cr
 	return sdk.ExecuteResult{
 		Payload: types.DeleteGroupAckPackage{
 			Status:    types.StatusSuccess,
-			Id:        groupInfo.Id.BigInt(),
+			ID:        groupInfo.Id.BigInt(),
 			ExtraData: deleteGroupPackage.ExtraData,
 		}.MustSerialize(),
 	}
 }
 
-func (app *GroupApp) handleCreateGroupAckPackage(ctx sdk.Context, appCtx *sdk.CrossChainAppContext, ackPackage *types.CreateGroupAckPackage) sdk.ExecuteResult {
+//nolint:unparam
+func (app *GroupApp) handleCreateGroupAckPackage(ctx sdk.Context, _ *sdk.CrossChainAppContext, _ *types.CreateGroupAckPackage) sdk.ExecuteResult {
 	app.storageKeeper.Logger(ctx).Error("received create group ack package ")
 
 	return sdk.ExecuteResult{}
 }
 
-func (app *GroupApp) handleCreateGroupFailAckPackage(ctx sdk.Context, appCtx *sdk.CrossChainAppContext, ackPackage *types.CreateGroupSynPackage) sdk.ExecuteResult {
+//nolint:unparam
+func (app *GroupApp) handleCreateGroupFailAckPackage(ctx sdk.Context, _ *sdk.CrossChainAppContext, _ *types.CreateGroupSynPackage) sdk.ExecuteResult {
 	app.storageKeeper.Logger(ctx).Error("received create group fail ack package ")
 
 	return sdk.ExecuteResult{}
@@ -237,7 +241,7 @@ func (app *GroupApp) handleCreateGroupSynPackage(ctx sdk.Context, appCtx *sdk.Cr
 		}
 	}
 
-	groupId, err := app.storageKeeper.CreateGroup(ctx,
+	groupID, err := app.storageKeeper.CreateGroup(ctx,
 		createGroupPackage.Creator,
 		createGroupPackage.GroupName,
 		types.CreateGroupOptions{
@@ -258,7 +262,7 @@ func (app *GroupApp) handleCreateGroupSynPackage(ctx sdk.Context, appCtx *sdk.Cr
 	return sdk.ExecuteResult{
 		Payload: types.CreateGroupAckPackage{
 			Status:    types.StatusSuccess,
-			Id:        groupId.BigInt(),
+			ID:        groupID.BigInt(),
 			Creator:   createGroupPackage.Creator,
 			ExtraData: createGroupPackage.ExtraData,
 		}.MustSerialize(),
@@ -266,9 +270,9 @@ func (app *GroupApp) handleCreateGroupSynPackage(ctx sdk.Context, appCtx *sdk.Cr
 }
 
 func (app *GroupApp) handleMirrorGroupAckPackage(ctx sdk.Context, appCtx *sdk.CrossChainAppContext, ackPackage *types.MirrorGroupAckPackage) sdk.ExecuteResult {
-	groupInfo, found := app.storageKeeper.GetGroupInfoById(ctx, math.NewUintFromBigInt(ackPackage.Id))
+	groupInfo, found := app.storageKeeper.GetGroupInfoById(ctx, math.NewUintFromBigInt(ackPackage.ID))
 	if !found {
-		app.storageKeeper.Logger(ctx).Error("group does not exist", "group id", ackPackage.Id.String())
+		app.storageKeeper.Logger(ctx).Error("group does not exist", "group id", ackPackage.ID.String())
 		return sdk.ExecuteResult{
 			Err: types.ErrNoSuchGroup,
 		}
@@ -302,9 +306,9 @@ func (app *GroupApp) handleMirrorGroupAckPackage(ctx sdk.Context, appCtx *sdk.Cr
 }
 
 func (app *GroupApp) handleMirrorGroupFailAckPackage(ctx sdk.Context, appCtx *sdk.CrossChainAppContext, mirrorGroupPackage *types.MirrorGroupSynPackage) sdk.ExecuteResult {
-	groupInfo, found := app.storageKeeper.GetGroupInfoById(ctx, math.NewUintFromBigInt(mirrorGroupPackage.Id))
+	groupInfo, found := app.storageKeeper.GetGroupInfoById(ctx, math.NewUintFromBigInt(mirrorGroupPackage.ID))
 	if !found {
-		app.storageKeeper.Logger(ctx).Error("group does not exist", "group id", mirrorGroupPackage.Id.String())
+		app.storageKeeper.Logger(ctx).Error("group does not exist", "group id", mirrorGroupPackage.ID.String())
 		return sdk.ExecuteResult{
 			Err: types.ErrNoSuchGroup,
 		}
@@ -326,7 +330,8 @@ func (app *GroupApp) handleMirrorGroupFailAckPackage(ctx sdk.Context, appCtx *sd
 	return sdk.ExecuteResult{}
 }
 
-func (app *GroupApp) handleMirrorGroupSynPackage(ctx sdk.Context, header *sdk.CrossChainAppContext, synPackage *types.MirrorGroupSynPackage) sdk.ExecuteResult {
+//nolint:unparam
+func (app *GroupApp) handleMirrorGroupSynPackage(ctx sdk.Context, _ *sdk.CrossChainAppContext, _ *types.MirrorGroupSynPackage) sdk.ExecuteResult {
 	app.storageKeeper.Logger(ctx).Error("received mirror group syn ack package ")
 
 	return sdk.ExecuteResult{}
@@ -345,7 +350,7 @@ func (app *GroupApp) handleUpdateGroupMemberSynPackage(ctx sdk.Context, appCtx *
 		}
 	}
 
-	groupInfo, found := app.storageKeeper.GetGroupInfoById(ctx, math.NewUintFromBigInt(updateGroupPackage.GroupId))
+	groupInfo, found := app.storageKeeper.GetGroupInfoById(ctx, math.NewUintFromBigInt(updateGroupPackage.GroupID))
 	if !found {
 		return sdk.ExecuteResult{
 			Payload: types.UpdateGroupMemberAckPackage{
@@ -385,7 +390,7 @@ func (app *GroupApp) handleUpdateGroupMemberSynPackage(ctx sdk.Context, appCtx *
 	return sdk.ExecuteResult{
 		Payload: types.UpdateGroupMemberAckPackage{
 			Status:        types.StatusSuccess,
-			Id:            groupInfo.Id.BigInt(),
+			ID:            groupInfo.Id.BigInt(),
 			Operator:      updateGroupPackage.Operator,
 			OperationType: updateGroupPackage.OperationType,
 			Members:       updateGroupPackage.Members,
@@ -428,13 +433,15 @@ func (app *GroupApp) handleRenewGroupOperation(ctx sdk.Context, sourceType types
 	)
 }
 
-func (app *GroupApp) handleUpdateGroupMemberAckPackage(ctx sdk.Context, header *sdk.CrossChainAppContext, createGroupPackage *types.UpdateGroupMemberAckPackage) sdk.ExecuteResult {
+//nolint:unparam
+func (app *GroupApp) handleUpdateGroupMemberAckPackage(ctx sdk.Context, _ *sdk.CrossChainAppContext, _ *types.UpdateGroupMemberAckPackage) sdk.ExecuteResult {
 	app.storageKeeper.Logger(ctx).Error("received update group member ack package ")
 
 	return sdk.ExecuteResult{}
 }
 
-func (app *GroupApp) handleUpdateGroupMemberFailAckPackage(ctx sdk.Context, header *sdk.CrossChainAppContext, createGroupPackage *types.UpdateGroupMemberSynPackage) sdk.ExecuteResult {
+//nolint:unparam
+func (app *GroupApp) handleUpdateGroupMemberFailAckPackage(ctx sdk.Context, _ *sdk.CrossChainAppContext, _ *types.UpdateGroupMemberSynPackage) sdk.ExecuteResult {
 	app.storageKeeper.Logger(ctx).Error("received update group member fail ack package ")
 
 	return sdk.ExecuteResult{}

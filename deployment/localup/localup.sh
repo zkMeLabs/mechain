@@ -74,7 +74,7 @@ function generate_genesis() {
 		sp_size=$2
 	fi
 
-  declare -a addrs=("0x1111102dd32160b064f2a512cdef74bfdb6a9f96" "0x2222207b1f7b8d37566d9a2778732451dbfbc5d0")
+	declare -a addrs=("0x1111102dd32160b064f2a512cdef74bfdb6a9f96" "0x2222207b1f7b8d37566d9a2778732451dbfbc5d0")
 
 	declare -a validator_addrs=()
 	for ((i = 0; i < ${size}; i++)); do

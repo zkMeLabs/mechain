@@ -16,7 +16,7 @@ func Handler(title, specURL string) http.HandlerFunc {
 		panic(err)
 	}
 
-	return func(w http.ResponseWriter, req *http.Request) {
+	return func(w http.ResponseWriter, _ *http.Request) {
 		err := t.Execute(w, struct {
 			Title string
 			URL   string

@@ -8,9 +8,7 @@ import (
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 )
 
-var (
-	ErrSequenceUniqueConstraint = errors.Register("sequence_u256", 1, "sequence already initialized")
-)
+var ErrSequenceUniqueConstraint = errors.Register("sequence_u256", 1, "sequence already initialized")
 
 type Number interface {
 	uint32 | math.Uint
@@ -55,7 +53,7 @@ func (s Sequence[T]) InitVal(store storetypes.KVStore, seq T) error {
 	return nil
 }
 
-func (s Sequence[T]) ToUint32(seq T) uint32 {
+func (s Sequence[T]) ToUint32(_ T) uint32 {
 	var t T
 	switch ret := any(t).(type) {
 	case uint32:
@@ -65,7 +63,7 @@ func (s Sequence[T]) ToUint32(seq T) uint32 {
 	}
 }
 
-func (s Sequence[T]) ToUint256(seq T) math.Uint {
+func (s Sequence[T]) ToUint256(_ T) math.Uint {
 	var t T
 	switch ret := any(t).(type) {
 	case math.Uint:

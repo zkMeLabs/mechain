@@ -14,7 +14,6 @@ import (
 	permtypes "github.com/evmos/evmos/v12/x/permission/types"
 	sptypes "github.com/evmos/evmos/v12/x/sp/types"
 	"github.com/evmos/evmos/v12/x/storage/types"
-	storagetypes "github.com/evmos/evmos/v12/x/storage/types"
 	virtualgroupmoduletypes "github.com/evmos/evmos/v12/x/virtualgroup/types"
 )
 
@@ -37,7 +36,7 @@ func (k msgServer) CreateBucket(goCtx context.Context, msg *types.MsgCreateBucke
 
 	primarySPAcc := sdk.MustAccAddressFromHex(msg.PrimarySpAddress)
 
-	id, err := k.Keeper.CreateBucket(ctx, ownerAcc, msg.BucketName, primarySPAcc, &storagetypes.CreateBucketOptions{
+	id, err := k.Keeper.CreateBucket(ctx, ownerAcc, msg.BucketName, primarySPAcc, &types.CreateBucketOptions{
 		PaymentAddress:    msg.PaymentAddress,
 		Visibility:        msg.Visibility,
 		ChargedReadQuota:  msg.ChargedReadQuota,
@@ -59,7 +58,7 @@ func (k msgServer) DeleteBucket(goCtx context.Context, msg *types.MsgDeleteBucke
 
 	operatorAcc := sdk.MustAccAddressFromHex(msg.Operator)
 
-	err := k.Keeper.DeleteBucket(ctx, operatorAcc, msg.BucketName, storagetypes.DeleteBucketOptions{
+	err := k.Keeper.DeleteBucket(ctx, operatorAcc, msg.BucketName, types.DeleteBucketOptions{
 		SourceType: types.SOURCE_TYPE_ORIGIN,
 	})
 	if err != nil {
@@ -77,7 +76,7 @@ func (k msgServer) UpdateBucketInfo(goCtx context.Context, msg *types.MsgUpdateB
 	if msg.ChargedReadQuota != nil {
 		chargedReadQuota = &msg.ChargedReadQuota.Value
 	}
-	err := k.Keeper.UpdateBucketInfo(ctx, operatorAcc, msg.BucketName, storagetypes.UpdateBucketOptions{
+	err := k.Keeper.UpdateBucketInfo(ctx, operatorAcc, msg.BucketName, types.UpdateBucketOptions{
 		SourceType:       types.SOURCE_TYPE_ORIGIN,
 		PaymentAddress:   msg.PaymentAddress,
 		Visibility:       msg.Visibility,
@@ -89,7 +88,7 @@ func (k msgServer) UpdateBucketInfo(goCtx context.Context, msg *types.MsgUpdateB
 	return &types.MsgUpdateBucketInfoResponse{}, nil
 }
 
-func (k msgServer) DiscontinueBucket(goCtx context.Context, msg *storagetypes.MsgDiscontinueBucket) (*storagetypes.MsgDiscontinueBucketResponse, error) {
+func (k msgServer) DiscontinueBucket(goCtx context.Context, msg *types.MsgDiscontinueBucket) (*types.MsgDiscontinueBucketResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	operatorAcc := sdk.MustAccAddressFromHex(msg.Operator)
@@ -101,7 +100,7 @@ func (k msgServer) DiscontinueBucket(goCtx context.Context, msg *storagetypes.Ms
 	return &types.MsgDiscontinueBucketResponse{}, nil
 }
 
-func (k msgServer) ToggleSPAsDelegatedAgent(goCtx context.Context, msg *storagetypes.MsgToggleSPAsDelegatedAgent) (*storagetypes.MsgToggleSPAsDelegatedAgentResponse, error) {
+func (k msgServer) ToggleSPAsDelegatedAgent(goCtx context.Context, msg *types.MsgToggleSPAsDelegatedAgent) (*types.MsgToggleSPAsDelegatedAgentResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	bucketInfo, found := k.GetBucketInfo(ctx, msg.BucketName)
 	if !found {
@@ -133,7 +132,7 @@ func (k msgServer) CreateObject(goCtx context.Context, msg *types.MsgCreateObjec
 			len(msg.ExpectChecksums))
 	}
 
-	id, err := k.Keeper.CreateObject(ctx, ownerAcc, msg.BucketName, msg.ObjectName, msg.PayloadSize, storagetypes.CreateObjectOptions{
+	id, err := k.Keeper.CreateObject(ctx, ownerAcc, msg.BucketName, msg.ObjectName, msg.PayloadSize, types.CreateObjectOptions{
 		SourceType:        types.SOURCE_TYPE_ORIGIN,
 		Visibility:        msg.Visibility,
 		ContentType:       msg.ContentType,
@@ -156,7 +155,7 @@ func (k msgServer) CancelCreateObject(goCtx context.Context, msg *types.MsgCance
 
 	operatorAcc := sdk.MustAccAddressFromHex(msg.Operator)
 
-	err := k.Keeper.CancelCreateObject(ctx, operatorAcc, msg.BucketName, msg.ObjectName, storagetypes.CancelCreateObjectOptions{SourceType: types.SOURCE_TYPE_ORIGIN})
+	err := k.Keeper.CancelCreateObject(ctx, operatorAcc, msg.BucketName, msg.ObjectName, types.CancelCreateObjectOptions{SourceType: types.SOURCE_TYPE_ORIGIN})
 	if err != nil {
 		return nil, err
 	}
@@ -170,7 +169,7 @@ func (k msgServer) SealObject(goCtx context.Context, msg *types.MsgSealObject) (
 	spSealAcc := sdk.MustAccAddressFromHex(msg.Operator)
 
 	err := k.Keeper.SealObject(ctx, spSealAcc, msg.BucketName, msg.ObjectName, SealObjectOptions{
-		GlobalVirtualGroupId:     msg.GlobalVirtualGroupId,
+		GlobalVirtualGroupID:     msg.GlobalVirtualGroupId,
 		SecondarySpBlsSignatures: msg.SecondarySpBlsAggSignatures,
 	})
 	if err != nil {
@@ -185,9 +184,9 @@ func (k msgServer) CopyObject(goCtx context.Context, msg *types.MsgCopyObject) (
 
 	ownerAcc := sdk.MustAccAddressFromHex(msg.Operator)
 
-	id, err := k.Keeper.CopyObject(ctx, ownerAcc, msg.SrcBucketName, msg.SrcObjectName, msg.DstBucketName, msg.DstObjectName, storagetypes.CopyObjectOptions{
+	id, err := k.Keeper.CopyObject(ctx, ownerAcc, msg.SrcBucketName, msg.SrcObjectName, msg.DstBucketName, msg.DstObjectName, types.CopyObjectOptions{
 		SourceType:        types.SOURCE_TYPE_ORIGIN,
-		Visibility:        storagetypes.VISIBILITY_TYPE_PRIVATE,
+		Visibility:        types.VISIBILITY_TYPE_PRIVATE,
 		PrimarySpApproval: msg.DstPrimarySpApproval,
 		ApprovalMsgBytes:  msg.GetApprovalBytes(),
 	})
@@ -205,7 +204,7 @@ func (k msgServer) DeleteObject(goCtx context.Context, msg *types.MsgDeleteObjec
 
 	operatorAcc := sdk.MustAccAddressFromHex(msg.Operator)
 
-	err := k.Keeper.DeleteObject(ctx, operatorAcc, msg.BucketName, msg.ObjectName, storagetypes.DeleteObjectOptions{
+	err := k.Keeper.DeleteObject(ctx, operatorAcc, msg.BucketName, msg.ObjectName, types.DeleteObjectOptions{
 		SourceType: types.SOURCE_TYPE_ORIGIN,
 	})
 	if err != nil {
@@ -225,7 +224,7 @@ func (k msgServer) RejectSealObject(goCtx context.Context, msg *types.MsgRejectS
 	return &types.MsgRejectSealObjectResponse{}, nil
 }
 
-func (k msgServer) DiscontinueObject(goCtx context.Context, msg *storagetypes.MsgDiscontinueObject) (*storagetypes.MsgDiscontinueObjectResponse, error) {
+func (k msgServer) DiscontinueObject(goCtx context.Context, msg *types.MsgDiscontinueObject) (*types.MsgDiscontinueObjectResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	spAcc := sdk.MustAccAddressFromHex(msg.Operator)
@@ -252,7 +251,7 @@ func (k msgServer) CreateGroup(goCtx context.Context, msg *types.MsgCreateGroup)
 
 	ownerAcc := sdk.MustAccAddressFromHex(msg.Creator)
 
-	id, err := k.Keeper.CreateGroup(ctx, ownerAcc, msg.GroupName, storagetypes.CreateGroupOptions{Extra: msg.Extra})
+	id, err := k.Keeper.CreateGroup(ctx, ownerAcc, msg.GroupName, types.CreateGroupOptions{Extra: msg.Extra})
 	if err != nil {
 		return nil, err
 	}
@@ -266,7 +265,7 @@ func (k msgServer) DeleteGroup(goCtx context.Context, msg *types.MsgDeleteGroup)
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	operatorAcc := sdk.MustAccAddressFromHex(msg.Operator)
-	err := k.Keeper.DeleteGroup(ctx, operatorAcc, msg.GroupName, storagetypes.DeleteGroupOptions{SourceType: types.SOURCE_TYPE_ORIGIN})
+	err := k.Keeper.DeleteGroup(ctx, operatorAcc, msg.GroupName, types.DeleteGroupOptions{SourceType: types.SOURCE_TYPE_ORIGIN})
 	if err != nil {
 		return nil, err
 	}
@@ -281,7 +280,7 @@ func (k msgServer) LeaveGroup(goCtx context.Context, msg *types.MsgLeaveGroup) (
 
 	ownerAcc := sdk.MustAccAddressFromHex(msg.GroupOwner)
 
-	err := k.Keeper.LeaveGroup(ctx, memberAcc, ownerAcc, msg.GroupName, storagetypes.LeaveGroupOptions{SourceType: types.SOURCE_TYPE_ORIGIN})
+	err := k.Keeper.LeaveGroup(ctx, memberAcc, ownerAcc, msg.GroupName, types.LeaveGroupOptions{SourceType: types.SOURCE_TYPE_ORIGIN})
 	if err != nil {
 		return nil, err
 	}
@@ -306,7 +305,7 @@ func (k msgServer) UpdateGroupMember(goCtx context.Context, msg *types.MsgUpdate
 		membersToAdd = append(membersToAdd, msg.MembersToAdd[i].GetMember())
 		membersExpirationToAdd = append(membersExpirationToAdd, msg.MembersToAdd[i].GetExpirationTime())
 	}
-	err := k.Keeper.UpdateGroupMember(ctx, operator, groupInfo, storagetypes.UpdateGroupMemberOptions{
+	err := k.Keeper.UpdateGroupMember(ctx, operator, groupInfo, types.UpdateGroupMemberOptions{
 		SourceType:             types.SOURCE_TYPE_ORIGIN,
 		MembersToAdd:           membersToAdd,
 		MembersExpirationToAdd: membersExpirationToAdd,
@@ -338,7 +337,7 @@ func (k msgServer) RenewGroupMember(goCtx context.Context, msg *types.MsgRenewGr
 		membersExpiration = append(membersExpiration, msg.Members[i].GetExpirationTime())
 	}
 
-	err := k.Keeper.RenewGroupMember(ctx, operator, groupInfo, storagetypes.RenewGroupMemberOptions{
+	err := k.Keeper.RenewGroupMember(ctx, operator, groupInfo, types.RenewGroupMemberOptions{
 		SourceType:        types.SOURCE_TYPE_ORIGIN,
 		Members:           members,
 		MembersExpiration: membersExpiration,
@@ -426,9 +425,9 @@ func (k msgServer) MirrorObject(goCtx context.Context, msg *types.MsgMirrorObjec
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	operator := sdk.MustAccAddressFromHex(msg.Operator)
-	destChainId := sdk.ChainID(msg.DestChainId)
+	destChainID := sdk.ChainID(msg.DestChainId)
 
-	if !k.crossChainKeeper.IsDestChainSupported(destChainId) {
+	if !k.crossChainKeeper.IsDestChainSupported(destChainID) {
 		return nil, errorsmod.Wrapf(types.ErrChainNotSupported, "dest chain id (%d) is not supported", msg.DestChainId)
 	}
 
@@ -458,7 +457,7 @@ func (k msgServer) MirrorObject(goCtx context.Context, msg *types.MsgMirrorObjec
 	owner := sdk.MustAccAddressFromHex(objectInfo.Owner)
 
 	mirrorPackage := types.MirrorObjectSynPackage{
-		Id:    objectInfo.Id.BigInt(),
+		ID:    objectInfo.Id.BigInt(),
 		Owner: owner,
 	}
 
@@ -473,11 +472,11 @@ func (k msgServer) MirrorObject(goCtx context.Context, msg *types.MsgMirrorObjec
 	}
 	encodedWrapPackage := wrapPackage.MustSerialize()
 
-	relayerFee := k.Keeper.MirrorObjectRelayerFee(ctx, destChainId)
-	ackRelayerFee := k.Keeper.MirrorObjectAckRelayerFee(ctx, destChainId)
+	relayerFee := k.Keeper.MirrorObjectRelayerFee(ctx, destChainID)
+	ackRelayerFee := k.Keeper.MirrorObjectAckRelayerFee(ctx, destChainID)
 
-	_, err = k.crossChainKeeper.CreateRawIBCPackageWithFee(ctx, destChainId,
-		types.ObjectChannelId, sdk.SynCrossChainPackageType, encodedWrapPackage, relayerFee, ackRelayerFee)
+	_, err = k.crossChainKeeper.CreateRawIBCPackageWithFee(ctx, destChainID,
+		types.ObjectChannelID, sdk.SynCrossChainPackageType, encodedWrapPackage, relayerFee, ackRelayerFee)
 	if err != nil {
 		return nil, err
 	}
@@ -491,7 +490,7 @@ func (k msgServer) MirrorObject(goCtx context.Context, msg *types.MsgMirrorObjec
 		BucketName:  objectInfo.BucketName,
 		ObjectName:  objectInfo.ObjectName,
 		ObjectId:    objectInfo.Id,
-		DestChainId: uint32(destChainId),
+		DestChainId: uint32(destChainID),
 	}); err != nil {
 		return nil, err
 	}
@@ -502,9 +501,9 @@ func (k msgServer) MirrorBucket(goCtx context.Context, msg *types.MsgMirrorBucke
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	operator := sdk.MustAccAddressFromHex(msg.Operator)
-	destChainId := sdk.ChainID(msg.DestChainId)
+	destChainID := sdk.ChainID(msg.DestChainId)
 
-	if !k.crossChainKeeper.IsDestChainSupported(destChainId) {
+	if !k.crossChainKeeper.IsDestChainSupported(destChainID) {
 		return nil, errorsmod.Wrapf(types.ErrChainNotSupported, "dest chain id (%d) is not supported", msg.DestChainId)
 	}
 
@@ -533,7 +532,7 @@ func (k msgServer) MirrorBucket(goCtx context.Context, msg *types.MsgMirrorBucke
 	}
 
 	mirrorPackage := types.MirrorBucketSynPackage{
-		Id:    bucketInfo.Id.BigInt(),
+		ID:    bucketInfo.Id.BigInt(),
 		Owner: owner,
 	}
 
@@ -548,11 +547,11 @@ func (k msgServer) MirrorBucket(goCtx context.Context, msg *types.MsgMirrorBucke
 	}
 	encodedWrapPackage := wrapPackage.MustSerialize()
 
-	relayerFee := k.Keeper.MirrorBucketRelayerFee(ctx, destChainId)
-	ackRelayerFee := k.Keeper.MirrorBucketAckRelayerFee(ctx, destChainId)
+	relayerFee := k.Keeper.MirrorBucketRelayerFee(ctx, destChainID)
+	ackRelayerFee := k.Keeper.MirrorBucketAckRelayerFee(ctx, destChainID)
 
-	_, err = k.crossChainKeeper.CreateRawIBCPackageWithFee(ctx, destChainId,
-		types.BucketChannelId, sdk.SynCrossChainPackageType, encodedWrapPackage, relayerFee, ackRelayerFee)
+	_, err = k.crossChainKeeper.CreateRawIBCPackageWithFee(ctx, destChainID,
+		types.BucketChannelID, sdk.SynCrossChainPackageType, encodedWrapPackage, relayerFee, ackRelayerFee)
 	if err != nil {
 		return nil, err
 	}
@@ -565,7 +564,7 @@ func (k msgServer) MirrorBucket(goCtx context.Context, msg *types.MsgMirrorBucke
 		Operator:    bucketInfo.Owner,
 		BucketName:  bucketInfo.BucketName,
 		BucketId:    bucketInfo.Id,
-		DestChainId: uint32(destChainId),
+		DestChainId: uint32(destChainID),
 	}); err != nil {
 		return nil, err
 	}
@@ -577,9 +576,9 @@ func (k msgServer) MirrorGroup(goCtx context.Context, msg *types.MsgMirrorGroup)
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	operator := sdk.MustAccAddressFromHex(msg.Operator)
-	destChainId := sdk.ChainID(msg.DestChainId)
+	destChainID := sdk.ChainID(msg.DestChainId)
 
-	if !k.crossChainKeeper.IsDestChainSupported(destChainId) {
+	if !k.crossChainKeeper.IsDestChainSupported(destChainID) {
 		return nil, errorsmod.Wrapf(types.ErrChainNotSupported, "dest chain id (%d) is not supported", msg.DestChainId)
 	}
 
@@ -603,7 +602,7 @@ func (k msgServer) MirrorGroup(goCtx context.Context, msg *types.MsgMirrorGroup)
 	}
 
 	mirrorPackage := types.MirrorGroupSynPackage{
-		Id:    groupInfo.Id.BigInt(),
+		ID:    groupInfo.Id.BigInt(),
 		Owner: operator,
 	}
 
@@ -618,11 +617,11 @@ func (k msgServer) MirrorGroup(goCtx context.Context, msg *types.MsgMirrorGroup)
 	}
 	encodedWrapPackage := wrapPackage.MustSerialize()
 
-	relayerFee := k.Keeper.MirrorGroupRelayerFee(ctx, destChainId)
-	ackRelayerFee := k.Keeper.MirrorGroupAckRelayerFee(ctx, destChainId)
+	relayerFee := k.Keeper.MirrorGroupRelayerFee(ctx, destChainID)
+	ackRelayerFee := k.Keeper.MirrorGroupAckRelayerFee(ctx, destChainID)
 
-	_, err = k.crossChainKeeper.CreateRawIBCPackageWithFee(ctx, destChainId,
-		types.GroupChannelId, sdk.SynCrossChainPackageType, encodedWrapPackage, relayerFee, ackRelayerFee)
+	_, err = k.crossChainKeeper.CreateRawIBCPackageWithFee(ctx, destChainID,
+		types.GroupChannelID, sdk.SynCrossChainPackageType, encodedWrapPackage, relayerFee, ackRelayerFee)
 	if err != nil {
 		return nil, err
 	}
@@ -635,7 +634,7 @@ func (k msgServer) MirrorGroup(goCtx context.Context, msg *types.MsgMirrorGroup)
 		Owner:       groupInfo.Owner,
 		GroupName:   groupInfo.GroupName,
 		GroupId:     groupInfo.Id,
-		DestChainId: uint32(destChainId),
+		DestChainId: uint32(destChainID),
 	}); err != nil {
 		return nil, err
 	}
@@ -697,7 +696,7 @@ func (k msgServer) CancelMigrateBucket(goCtx context.Context, msg *types.MsgCanc
 	return &types.MsgCancelMigrateBucketResponse{}, nil
 }
 
-func (k msgServer) RejectMigrateBucket(goCtx context.Context, msg *storagetypes.MsgRejectMigrateBucket) (*storagetypes.MsgRejectMigrateBucketResponse, error) {
+func (k msgServer) RejectMigrateBucket(goCtx context.Context, msg *types.MsgRejectMigrateBucket) (*types.MsgRejectMigrateBucketResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	operator := sdk.MustAccAddressFromHex(msg.Operator)
@@ -727,7 +726,7 @@ func (k msgServer) SetTag(goCtx context.Context, msg *types.MsgSetTag) (*types.M
 	return &types.MsgSetTagResponse{}, nil
 }
 
-func (k msgServer) UpdateObjectContent(goCtx context.Context, msg *storagetypes.MsgUpdateObjectContent) (*storagetypes.MsgUpdateObjectContentResponse, error) {
+func (k msgServer) UpdateObjectContent(goCtx context.Context, msg *types.MsgUpdateObjectContent) (*types.MsgUpdateObjectContentResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	if len(msg.ExpectChecksums) != int(1+k.GetExpectSecondarySPNumForECObject(ctx, ctx.BlockTime().Unix())) {
@@ -736,7 +735,7 @@ func (k msgServer) UpdateObjectContent(goCtx context.Context, msg *storagetypes.
 			len(msg.ExpectChecksums))
 	}
 	operatorAcc := sdk.MustAccAddressFromHex(msg.Operator)
-	err := k.Keeper.UpdateObjectContent(ctx, operatorAcc, msg.BucketName, msg.ObjectName, msg.PayloadSize, storagetypes.UpdateObjectOptions{
+	err := k.Keeper.UpdateObjectContent(ctx, operatorAcc, msg.BucketName, msg.ObjectName, msg.PayloadSize, types.UpdateObjectOptions{
 		Checksums:   msg.ExpectChecksums,
 		ContentType: msg.ContentType,
 	})
@@ -746,7 +745,7 @@ func (k msgServer) UpdateObjectContent(goCtx context.Context, msg *storagetypes.
 	return &types.MsgUpdateObjectContentResponse{}, nil
 }
 
-func (k msgServer) CancelUpdateObjectContent(goCtx context.Context, msg *storagetypes.MsgCancelUpdateObjectContent) (*storagetypes.MsgCancelUpdateObjectContentResponse, error) {
+func (k msgServer) CancelUpdateObjectContent(goCtx context.Context, msg *types.MsgCancelUpdateObjectContent) (*types.MsgCancelUpdateObjectContentResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	operatorAcc := sdk.MustAccAddressFromHex(msg.Operator)
@@ -757,11 +756,11 @@ func (k msgServer) CancelUpdateObjectContent(goCtx context.Context, msg *storage
 	return &types.MsgCancelUpdateObjectContentResponse{}, nil
 }
 
-func (k msgServer) DelegateCreateObject(goCtx context.Context, msg *storagetypes.MsgDelegateCreateObject) (*storagetypes.MsgDelegateCreateObjectResponse, error) {
+func (k msgServer) DelegateCreateObject(goCtx context.Context, msg *types.MsgDelegateCreateObject) (*types.MsgDelegateCreateObjectResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	operatorAddr := sdk.MustAccAddressFromHex(msg.Operator)
 	creatorAddr := sdk.MustAccAddressFromHex(msg.Creator)
-	id, err := k.Keeper.CreateObject(ctx, operatorAddr, msg.BucketName, msg.ObjectName, msg.PayloadSize, storagetypes.CreateObjectOptions{
+	id, err := k.Keeper.CreateObject(ctx, operatorAddr, msg.BucketName, msg.ObjectName, msg.PayloadSize, types.CreateObjectOptions{
 		SourceType:     types.SOURCE_TYPE_ORIGIN,
 		Visibility:     msg.Visibility,
 		ContentType:    msg.ContentType,
@@ -778,11 +777,11 @@ func (k msgServer) DelegateCreateObject(goCtx context.Context, msg *storagetypes
 	}, nil
 }
 
-func (k msgServer) DelegateUpdateObjectContent(goCtx context.Context, msg *storagetypes.MsgDelegateUpdateObjectContent) (*storagetypes.MsgDelegateUpdateObjectContentResponse, error) {
+func (k msgServer) DelegateUpdateObjectContent(goCtx context.Context, msg *types.MsgDelegateUpdateObjectContent) (*types.MsgDelegateUpdateObjectContentResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	operatorAddr := sdk.MustAccAddressFromHex(msg.Operator)
 	updaterAddr := sdk.MustAccAddressFromHex(msg.Updater)
-	err := k.Keeper.UpdateObjectContent(ctx, operatorAddr, msg.BucketName, msg.ObjectName, msg.PayloadSize, storagetypes.UpdateObjectOptions{
+	err := k.Keeper.UpdateObjectContent(ctx, operatorAddr, msg.BucketName, msg.ObjectName, msg.PayloadSize, types.UpdateObjectOptions{
 		ContentType: msg.ContentType,
 		Checksums:   msg.ExpectChecksums,
 		Delegated:   true,
@@ -794,13 +793,13 @@ func (k msgServer) DelegateUpdateObjectContent(goCtx context.Context, msg *stora
 	return &types.MsgDelegateUpdateObjectContentResponse{}, nil
 }
 
-func (k msgServer) SealObjectV2(goCtx context.Context, msg *storagetypes.MsgSealObjectV2) (*storagetypes.MsgSealObjectV2Response, error) {
+func (k msgServer) SealObjectV2(goCtx context.Context, msg *types.MsgSealObjectV2) (*types.MsgSealObjectV2Response, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	spSealAcc := sdk.MustAccAddressFromHex(msg.Operator)
 
 	err := k.Keeper.SealObject(ctx, spSealAcc, msg.BucketName, msg.ObjectName, SealObjectOptions{
-		GlobalVirtualGroupId:     msg.GlobalVirtualGroupId,
+		GlobalVirtualGroupID:     msg.GlobalVirtualGroupId,
 		SecondarySpBlsSignatures: msg.SecondarySpBlsAggSignatures,
 		Checksums:                msg.ExpectChecksums,
 	})
@@ -810,7 +809,7 @@ func (k msgServer) SealObjectV2(goCtx context.Context, msg *storagetypes.MsgSeal
 	return &types.MsgSealObjectV2Response{}, nil
 }
 
-func (k Keeper) verifyGVGSignatures(ctx sdk.Context, bucketID math.Uint, dstSP *sptypes.StorageProvider, gvgMappings []*storagetypes.GVGMapping) error {
+func (k Keeper) verifyGVGSignatures(ctx sdk.Context, bucketID math.Uint, dstSP *sptypes.StorageProvider, gvgMappings []*types.GVGMapping) error {
 	// verify secondary sp signature
 	for _, newLvg2gvg := range gvgMappings {
 		dstGVG, found := k.virtualGroupKeeper.GetGVG(ctx, newLvg2gvg.DstGlobalVirtualGroupId)
@@ -818,7 +817,7 @@ func (k Keeper) verifyGVGSignatures(ctx sdk.Context, bucketID math.Uint, dstSP *
 			return virtualgroupmoduletypes.ErrGVGNotExist.Wrapf("dst gvg not found")
 		}
 		// validate the aggregated bls signature
-		migrationBucketSignDocBlsSignHash := storagetypes.NewSecondarySpMigrationBucketSignDoc(ctx.ChainID(), bucketID, dstSP.Id, newLvg2gvg.SrcGlobalVirtualGroupId, dstGVG.Id).GetBlsSignHash()
+		migrationBucketSignDocBlsSignHash := types.NewSecondarySpMigrationBucketSignDoc(ctx.ChainID(), bucketID, dstSP.Id, newLvg2gvg.SrcGlobalVirtualGroupId, dstGVG.Id).GetBlsSignHash()
 		err := k.VerifyGVGSecondarySPsBlsSignature(ctx, dstGVG, migrationBucketSignDocBlsSignHash, newLvg2gvg.SecondarySpBlsSignature)
 		if err != nil {
 			return err

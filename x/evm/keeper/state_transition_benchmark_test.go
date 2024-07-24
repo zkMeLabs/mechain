@@ -238,7 +238,6 @@ func BenchmarkApplyTransactionWithDynamicFeeTx(b *testing.B) {
 	}
 }
 
-//nolint:all
 func BenchmarkApplyMessage(b *testing.B) {
 	suite := KeeperTestSuite{enableLondonHF: true}
 	suite.SetupTestWithT(b)
@@ -274,7 +273,6 @@ func BenchmarkApplyMessage(b *testing.B) {
 	}
 }
 
-//nolint:all
 func BenchmarkApplyMessageWithLegacyTx(b *testing.B) {
 	suite := KeeperTestSuite{enableLondonHF: true}
 	suite.SetupTestWithT(b)

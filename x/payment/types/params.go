@@ -30,7 +30,7 @@ var (
 	DefaultPaymentAccountCountLimit  uint64 = 200
 	DefaultMaxAutoSettleFlowCount    uint64 = 100
 	DefaultMaxAutoResumeFlowCount    uint64 = 100
-	DefaultFeeDenom                  string = "azkme"
+	DefaultFeeDenom                         = "azkme"
 	DefaultWithdrawTimeLockThreshold        = math.NewIntFromBigInt(big.NewInt(1e18)).MulRaw(100) // 100 azkme
 	DefaultWithdrawTimeLockDuration  uint64 = 24 * 60 * 60                                        // 1 day
 )
@@ -46,7 +46,7 @@ func NewParams(
 	validatorTaxRate sdk.Dec,
 	forcedSettleTime uint64,
 	paymentAccountCountLimit uint64,
-	MaxAutoSettleFlowCount uint64,
+	maxAutoSettleFlowCount uint64,
 	maxAutoResumeFlowCount uint64,
 	feeDenom string,
 	withdrawTimeLockThreshold math.Int,
@@ -56,7 +56,7 @@ func NewParams(
 		VersionedParams:           VersionedParams{ReserveTime: reserveTime, ValidatorTaxRate: validatorTaxRate},
 		ForcedSettleTime:          forcedSettleTime,
 		PaymentAccountCountLimit:  paymentAccountCountLimit,
-		MaxAutoSettleFlowCount:    MaxAutoSettleFlowCount,
+		MaxAutoSettleFlowCount:    maxAutoSettleFlowCount,
 		MaxAutoResumeFlowCount:    maxAutoResumeFlowCount,
 		FeeDenom:                  feeDenom,
 		WithdrawTimeLockThreshold: &withdrawTimeLockThreshold,

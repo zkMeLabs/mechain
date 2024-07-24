@@ -36,8 +36,8 @@ import (
 	evmoskeyring "github.com/evmos/evmos/v12/crypto/keyring"
 	feemarkettypes "github.com/evmos/evmos/v12/x/feemarket/types"
 
-	. "github.com/onsi/ginkgo/v2"
-	. "github.com/onsi/gomega"
+	. "github.com/onsi/ginkgo/v2" //nolint
+	. "github.com/onsi/gomega"    //nolint
 )
 
 var s *LedgerTestSuite

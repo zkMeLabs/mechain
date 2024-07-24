@@ -122,7 +122,7 @@ func PolicyByExpTimeKey(exp *time.Time) []byte {
 	return append(PolicyQueueKeyPrefix, sdk.FormatTimeBytes(*exp)...)
 }
 
-func ParsePolicyIdFromQueueKey(key []byte) math.Uint {
+func ParsePolicyIDFromQueueKey(key []byte) math.Uint {
 	// key is of format:
 	// <key_prefix><expiration_bytes(fixed length)><policy_id_bytes>
 	bz := key[FormatTimeBytesLength+1:]

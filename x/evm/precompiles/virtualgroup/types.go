@@ -3,6 +3,7 @@ package virtualgroup
 import (
 	"bytes"
 	"fmt"
+
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/evmos/evmos/v12/types"
@@ -62,14 +63,14 @@ func MustEvent(name string) abi.Event {
 }
 
 type (
-	CoinJson        = Coin
-	PageRequestJson = PageRequest
+	CoinJSON        = Coin
+	PageRequestJSON = PageRequest
 )
 
 type CreateGlobalVirtualGroupArgs struct {
-	FamilyId       uint32   `abi:"familyId"`
-	SecondarySpIds []uint32 `abi:"secondarySpIds"`
-	Deposit        CoinJson `abi:"deposit"`
+	FamilyID       uint32   `abi:"familyId"`
+	SecondarySpIDs []uint32 `abi:"secondarySpIds"`
+	Deposit        CoinJSON `abi:"deposit"`
 }
 
 // Validate CreateGlobalVirtualGroupArgs args
@@ -78,7 +79,7 @@ func (args *CreateGlobalVirtualGroupArgs) Validate() error {
 }
 
 type GlobalVirtualGroupFamiliesArgs struct {
-	Pagination PageRequestJson `abi:"pagination"`
+	Pagination PageRequestJSON `abi:"pagination"`
 }
 
 // Validate GlobalVirtualGroupFamiliesArgs the args

@@ -47,7 +47,7 @@ func YamlString(data interface{}) string {
 
 // RandInt64 generate random int64 between min and max
 func RandInt64(min, max int64) int64 {
-	return min + rand.Int63n(max-min)
+	return min + rand.Int63n(max-min) //nolint
 }
 
 func BlsSignAndVerify(sp *StorageProvider, signBz [32]byte) ([]byte, error) {

@@ -53,8 +53,8 @@ var (
 
 	DiscontinueObjectCountPrefix  = []byte{0x41}
 	DiscontinueBucketCountPrefix  = []byte{0x42}
-	DiscontinueObjectIdsPrefix    = []byte{0x43}
-	DiscontinueBucketIdsPrefix    = []byte{0x44}
+	DiscontinueObjectIDsPrefix    = []byte{0x43}
+	DiscontinueBucketIDsPrefix    = []byte{0x44}
 	DiscontinueObjectStatusPrefix = []byte{0x45}
 
 	// CurrentBlockDeleteStalePoliciesKey is the key for DeleteInfo which keep track of deleted resources in the current block,
@@ -105,41 +105,41 @@ func GetGroupKeyOnlyOwnerPrefix(owner sdk.AccAddress) []byte {
 }
 
 // GetBucketByIDKey return the bucketID store key
-func GetBucketByIDKey(bucketId math.Uint) []byte {
+func GetBucketByIDKey(bucketID math.Uint) []byte {
 	var seq sequence.Sequence[math.Uint]
-	return append(BucketByIDPrefix, seq.EncodeSequence(bucketId)...)
+	return append(BucketByIDPrefix, seq.EncodeSequence(bucketID)...)
 }
 
 // GetObjectByIDKey return the objectId store key
-func GetObjectByIDKey(objectId math.Uint) []byte {
+func GetObjectByIDKey(objectID math.Uint) []byte {
 	var seq sequence.Sequence[math.Uint]
-	return append(ObjectByIDPrefix, seq.EncodeSequence(objectId)...)
+	return append(ObjectByIDPrefix, seq.EncodeSequence(objectID)...)
 }
 
 // GetGroupByIDKey return the groupId store key
-func GetGroupByIDKey(groupId math.Uint) []byte {
+func GetGroupByIDKey(groupID math.Uint) []byte {
 	var seq sequence.Sequence[math.Uint]
-	return append(GroupByIDPrefix, seq.EncodeSequence(groupId)...)
+	return append(GroupByIDPrefix, seq.EncodeSequence(groupID)...)
 }
 
 // GetDiscontinueObjectIdsKey return discontinue object store key
-func GetDiscontinueObjectIdsKey(timestamp int64) []byte {
+func GetDiscontinueObjectIdsKey(timestamp int64) []byte { //nolint: revive
 	bz := make([]byte, 8)
 	binary.BigEndian.PutUint64(bz, uint64(timestamp))
-	return append(DiscontinueObjectIdsPrefix, bz...)
+	return append(DiscontinueObjectIDsPrefix, bz...)
 }
 
-// GetDiscontinueBucketIdsKey return discontinue bucket store key
-func GetDiscontinueBucketIdsKey(timestamp int64) []byte {
+// GetDiscontinueBucketIDsKey return discontinue bucket store key
+func GetDiscontinueBucketIDsKey(timestamp int64) []byte {
 	bz := make([]byte, 8)
 	binary.BigEndian.PutUint64(bz, uint64(timestamp))
-	return append(DiscontinueBucketIdsPrefix, bz...)
+	return append(DiscontinueBucketIDsPrefix, bz...)
 }
 
 // GetDiscontinueObjectStatusKey return discontinue object status store key
-func GetDiscontinueObjectStatusKey(objectId math.Uint) []byte {
+func GetDiscontinueObjectStatusKey(objectID math.Uint) []byte {
 	var seq sequence.Sequence[math.Uint]
-	return append(DiscontinueObjectStatusPrefix, seq.EncodeSequence(objectId)...)
+	return append(DiscontinueObjectStatusPrefix, seq.EncodeSequence(objectID)...)
 }
 
 // GetParamsKeyWithTimestamp return multi-version params store key
@@ -172,9 +172,9 @@ func GetInternalBucketInfoKey(bucketID math.Uint) []byte {
 	return append(InternalBucketInfoPrefix, seq.EncodeSequence(bucketID)...)
 }
 
-func GetLockedObjectCountKey(bucketId math.Uint) []byte {
+func GetLockedObjectCountKey(bucketID math.Uint) []byte {
 	var seq sequence.Sequence[math.Uint]
-	return append(LockedObjectCountPrefix, seq.EncodeSequence(bucketId)...)
+	return append(LockedObjectCountPrefix, seq.EncodeSequence(bucketID)...)
 }
 
 // GetBucketFlowRateLimitKey return the bucket rate limit store key

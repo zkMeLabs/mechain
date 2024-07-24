@@ -85,9 +85,9 @@ const (
 	// DefaultMaxOpenConnections represents the amount of open connections (unlimited = 0)
 	DefaultMaxOpenConnections = 0
 
-	DefaultSrcChainId     = 1
-	DefaultDestBscChainId = 2
-	DefaultDestOpChainId  = 3
+	DefaultSrcChainID     = 1
+	DefaultDestBscChainID = 2
+	DefaultDestOpChainID  = 3
 )
 
 var evmTracers = []string{"json", "markdown", "struct", "access_list"}
@@ -164,9 +164,9 @@ type TLSConfig struct {
 }
 
 type CrossChainConfig struct {
-	SrcChainId     uint32 `mapstructure:"src-chain-id"`
-	DestBscChainId uint32 `mapstructure:"dest-bsc-chain-id"`
-	DestOpChainId  uint32 `mapstructure:"dest-op-chain-id"`
+	SrcChainID     uint32 `mapstructure:"src-chain-id"`
+	DestBscChainID uint32 `mapstructure:"dest-bsc-chain-id"`
+	DestOpChainID  uint32 `mapstructure:"dest-op-chain-id"`
 }
 
 type PaymentCheckConfig struct {
@@ -381,9 +381,9 @@ func (c TLSConfig) Validate() error {
 // DefaultCrossChainConfig returns the default CrossChain configuration
 func DefaultCrossChainConfig() *CrossChainConfig {
 	return &CrossChainConfig{
-		SrcChainId:     DefaultSrcChainId,
-		DestBscChainId: DefaultDestBscChainId,
-		DestOpChainId:  DefaultDestOpChainId,
+		SrcChainID:     DefaultSrcChainID,
+		DestBscChainID: DefaultDestBscChainID,
+		DestOpChainID:  DefaultDestOpChainID,
 	}
 }
 
@@ -440,9 +440,9 @@ func GetConfig(v *viper.Viper) (AppConfig, error) {
 			KeyPath:         v.GetString("tls.key-path"),
 		},
 		CrossChain: CrossChainConfig{
-			SrcChainId:     v.GetUint32("cross-chain.src-chain-id"),
-			DestBscChainId: v.GetUint32("cross-chain.dest-bsc-chain-id"),
-			DestOpChainId:  v.GetUint32("cross-chain.dest-op-chain-id"),
+			SrcChainID:     v.GetUint32("cross-chain.src-chain-id"),
+			DestBscChainID: v.GetUint32("cross-chain.dest-bsc-chain-id"),
+			DestOpChainID:  v.GetUint32("cross-chain.dest-op-chain-id"),
 		},
 		PaymentCheck: PaymentCheckConfig{
 			Enabled:  v.GetBool("payment-check.enabled"),

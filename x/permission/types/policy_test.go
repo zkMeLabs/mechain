@@ -127,7 +127,7 @@ func TestPolicy_BucketExpirationBasic(t *testing.T) {
 			policyExpirationTime: &now,
 			operateAction:        types.ACTION_UPDATE_BUCKET_INFO,
 			expectEffect:         types.EFFECT_UNSPECIFIED,
-			operateTime:          time.Now().Add(time.Duration(1 * time.Second)),
+			operateTime:          time.Now().Add(1 * time.Second),
 		},
 		{
 			name:                 "policy_not_expired",
@@ -136,7 +136,7 @@ func TestPolicy_BucketExpirationBasic(t *testing.T) {
 			policyExpirationTime: &now,
 			operateAction:        types.ACTION_UPDATE_BUCKET_INFO,
 			expectEffect:         types.EFFECT_ALLOW,
-			operateTime:          time.Now().Add(-time.Duration(1 * time.Second)),
+			operateTime:          time.Now().Add(-1 * time.Second),
 		},
 		{
 			name:                    "statement_expired",
@@ -145,7 +145,7 @@ func TestPolicy_BucketExpirationBasic(t *testing.T) {
 			statementExpirationTime: &now,
 			operateAction:           types.ACTION_UPDATE_BUCKET_INFO,
 			expectEffect:            types.EFFECT_UNSPECIFIED,
-			operateTime:             time.Now().Add(time.Duration(1 * time.Second)),
+			operateTime:             time.Now().Add(1 * time.Second),
 		},
 		{
 			name:                 "statement_not_expired",
@@ -154,7 +154,7 @@ func TestPolicy_BucketExpirationBasic(t *testing.T) {
 			policyExpirationTime: &now,
 			operateAction:        types.ACTION_UPDATE_BUCKET_INFO,
 			expectEffect:         types.EFFECT_ALLOW,
-			operateTime:          time.Now().Add(-time.Duration(1 * time.Second)),
+			operateTime:          time.Now().Add(1 * time.Second),
 		},
 	}
 
@@ -216,7 +216,8 @@ func TestPolicy_CreateObjectLimitSize(t *testing.T) {
 					},
 				},
 			}
-			effect, p := policy.Eval(types.ACTION_CREATE_OBJECT, time.Now(), &types.VerifyOptions{WantedSize: &tt.wantedSize})
+			wantedSize := tt.wantedSize
+			effect, p := policy.Eval(types.ACTION_CREATE_OBJECT, time.Now(), &types.VerifyOptions{WantedSize: &wantedSize})
 			if effect == types.EFFECT_ALLOW && tt.limitSize > tt.wantedSize {
 				require.Equal(t, p.Statements[0].LimitSize.GetValue(), tt.limitSize-tt.wantedSize)
 			}

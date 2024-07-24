@@ -30,7 +30,7 @@ func NewExecutorApp(storageKeeper types.StorageKeeper, storageMsgServer types.St
 	}
 }
 
-func (app *ExecutorApp) ExecuteSynPackage(ctx sdk.Context, appCtx *sdk.CrossChainAppContext, payload []byte) (result sdk.ExecuteResult) {
+func (app *ExecutorApp) ExecuteSynPackage(ctx sdk.Context, _ *sdk.CrossChainAppContext, payload []byte) (result sdk.ExecuteResult) {
 	// This app will not have any ack/failAck package, so we should not panic.
 	defer func() {
 		if r := recover(); r != nil {
@@ -69,12 +69,12 @@ func (app *ExecutorApp) ExecuteSynPackage(ctx sdk.Context, appCtx *sdk.CrossChai
 	return result
 }
 
-func (app *ExecutorApp) ExecuteAckPackage(ctx sdk.Context, appCtx *sdk.CrossChainAppContext, payload []byte) sdk.ExecuteResult {
+func (app *ExecutorApp) ExecuteAckPackage(ctx sdk.Context, _ *sdk.CrossChainAppContext, _ []byte) sdk.ExecuteResult {
 	app.sKeeper.Logger(ctx).Error("received execute ack package ")
 	return sdk.ExecuteResult{}
 }
 
-func (app *ExecutorApp) ExecuteFailAckPackage(ctx sdk.Context, appCtx *sdk.CrossChainAppContext, payload []byte) sdk.ExecuteResult {
+func (app *ExecutorApp) ExecuteFailAckPackage(ctx sdk.Context, _ *sdk.CrossChainAppContext, _ []byte) sdk.ExecuteResult {
 	app.sKeeper.Logger(ctx).Error("received execute fail ack package ")
 	return sdk.ExecuteResult{}
 }

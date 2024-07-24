@@ -41,15 +41,15 @@ func randString(n int) string {
 
 // GenRandomObjectName generate random object name.
 func GenRandomObjectName() string {
-	return randString(rand.Intn(10) + 1)
+	return randString(rand.Intn(10) + 1) //nolint:gosec
 }
 
 // GenRandomBucketName generate random bucket name.
 func GenRandomBucketName() string {
-	return randString(rand.Intn(10) + 3)
+	return randString(rand.Intn(10) + 3) //nolint:gosec
 }
 
 // GenRandomGroupName generate random group name.
 func GenRandomGroupName() string {
-	return randString(rand.Intn(10) + 3)
+	return randString(rand.Intn(10) + 3) //nolint:gosec
 }

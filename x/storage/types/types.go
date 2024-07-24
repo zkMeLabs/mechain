@@ -66,22 +66,22 @@ func getNFTAttributes(m interface{}) []Trait {
 }
 
 func (di *DeleteInfo) IsEmpty() bool {
-	isBucketIdsEmpty := false
-	isObjectIdsEmpty := false
-	isGroupIdsEmpty := false
+	isBucketIDsEmpty := false
+	isObjectIDsEmpty := false
+	isGroupIDsEmpty := false
 	if di == nil {
 		return true
 	}
 	if di.BucketIds == nil || len(di.BucketIds.Id) == 0 {
-		isBucketIdsEmpty = true
+		isBucketIDsEmpty = true
 	}
 	if di.ObjectIds == nil || len(di.ObjectIds.Id) == 0 {
-		isObjectIdsEmpty = true
+		isObjectIDsEmpty = true
 	}
 	if di.GroupIds == nil || len(di.GroupIds.Id) == 0 {
-		isGroupIdsEmpty = true
+		isGroupIDsEmpty = true
 	}
-	return isBucketIdsEmpty && isObjectIdsEmpty && isGroupIdsEmpty
+	return isBucketIDsEmpty && isObjectIDsEmpty && isGroupIDsEmpty
 }
 
 func (b *InternalBucketInfo) GetLVGByGVGID(gvgID uint32) (*LocalVirtualGroup, bool) {
@@ -106,10 +106,9 @@ func (b *InternalBucketInfo) AppendLVG(lvg *LocalVirtualGroup) {
 func (b *InternalBucketInfo) GetMaxLVGID() uint32 {
 	if len(b.LocalVirtualGroups) == 0 {
 		return 0
-	} else {
-		lastLVG := b.LocalVirtualGroups[len(b.LocalVirtualGroups)-1]
-		return lastLVG.Id
 	}
+	lastLVG := b.LocalVirtualGroups[len(b.LocalVirtualGroups)-1]
+	return lastLVG.Id
 }
 
 func (b *InternalBucketInfo) GetLVG(lvgID uint32) (*LocalVirtualGroup, bool) {
@@ -140,9 +139,9 @@ func (b *InternalBucketInfo) DeleteLVG(lvgID uint32) {
 
 // GetLatestUpdatedTime gets the latest timestamp the object's content is updated.
 // UpdatedAt is a new introduced field, it is default to be 0
-func (o *ObjectInfo) GetLatestUpdatedTime() int64 {
-	if o.UpdatedAt != 0 {
-		return o.UpdatedAt
+func (m *ObjectInfo) GetLatestUpdatedTime() int64 {
+	if m.UpdatedAt != 0 {
+		return m.UpdatedAt
 	}
-	return o.CreateAt
+	return m.CreateAt
 }

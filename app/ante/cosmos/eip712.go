@@ -35,7 +35,6 @@ import (
 	"github.com/ethereum/go-ethereum/crypto/secp256k1"
 	"github.com/ethereum/go-ethereum/signer/core/apitypes"
 	"github.com/evmos/evmos/v12/types"
-
 	evmtypes "github.com/evmos/evmos/v12/x/evm/types"
 )
 

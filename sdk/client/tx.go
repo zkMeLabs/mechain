@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	ctypes "github.com/cometbft/cometbft/rpc/core/types"
-	"github.com/cosmos/cosmos-sdk/client"
 	sdkclient "github.com/cosmos/cosmos-sdk/client"
 	clitx "github.com/cosmos/cosmos-sdk/client/tx"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -124,7 +123,7 @@ func (c *GreenfieldClient) SignTx(ctx context.Context, msgs []sdk.Msg, txOpt *ty
 	return c.signTx(ctx, txConfig, txBuilder, txOpt)
 }
 
-func (c *GreenfieldClient) signTx(ctx context.Context, txConfig client.TxConfig, txBuilder client.TxBuilder, txOpt *types.TxOption) ([]byte, error) {
+func (c *GreenfieldClient) signTx(ctx context.Context, txConfig sdkclient.TxConfig, txBuilder sdkclient.TxBuilder, txOpt *types.TxOption) ([]byte, error) {
 	var km keys.KeyManager
 	var err error
 
@@ -147,7 +146,7 @@ func (c *GreenfieldClient) signTx(ctx context.Context, txConfig client.TxConfig,
 	}
 
 	signerData := xauthsigning.SignerData{
-		ChainID:       c.chainId,
+		ChainID:       c.chainID,
 		AccountNumber: account.GetAccountNumber(),
 		Sequence:      nonce,
 	}
@@ -174,7 +173,7 @@ func (c *GreenfieldClient) signTx(ctx context.Context, txConfig client.TxConfig,
 }
 
 // setSingerInfo gathers the signer info by doing "empty signature" hack, and inject it into txBuilder
-func (c *GreenfieldClient) setSingerInfo(ctx context.Context, txBuilder client.TxBuilder, txOpt *types.TxOption) error {
+func (c *GreenfieldClient) setSingerInfo(ctx context.Context, txBuilder sdkclient.TxBuilder, txOpt *types.TxOption) error {
 	var km keys.KeyManager
 	var err error
 	if txOpt != nil && txOpt.OverrideKeyManager != nil {
@@ -206,7 +205,7 @@ func (c *GreenfieldClient) setSingerInfo(ctx context.Context, txBuilder client.T
 	return nil
 }
 
-func (c *GreenfieldClient) constructTx(ctx context.Context, msgs []sdk.Msg, txOpt *types.TxOption, txBuilder client.TxBuilder) error {
+func (c *GreenfieldClient) constructTx(ctx context.Context, msgs []sdk.Msg, txOpt *types.TxOption, txBuilder sdkclient.TxBuilder) error {
 	for _, m := range msgs {
 		if err := m.ValidateBasic(); err != nil {
 			return err
@@ -234,7 +233,7 @@ func (c *GreenfieldClient) constructTx(ctx context.Context, msgs []sdk.Msg, txOp
 	return c.setSingerInfo(ctx, txBuilder, txOpt)
 }
 
-func (c *GreenfieldClient) constructTxWithGasInfo(ctx context.Context, msgs []sdk.Msg, txOpt *types.TxOption, txConfig client.TxConfig, txBuilder client.TxBuilder) error {
+func (c *GreenfieldClient) constructTxWithGasInfo(ctx context.Context, msgs []sdk.Msg, txOpt *types.TxOption, txConfig sdkclient.TxConfig, txBuilder sdkclient.TxBuilder) error {
 	// construct a tx with txOpt excluding GasLimit and
 	if err := c.constructTx(ctx, msgs, txOpt, txBuilder); err != nil {
 		return err
@@ -250,7 +249,7 @@ func (c *GreenfieldClient) constructTxWithGasInfo(ctx context.Context, msgs []sd
 			return err
 		}
 		if txOpt.GasLimit == 0 || isFeeAmtZero {
-			return types.GasInfoNotProvidedError
+			return types.ErrGasInfoNotProvided
 		}
 		txBuilder.SetGasLimit(txOpt.GasLimit)
 		txBuilder.SetFeeAmount(txOpt.FeeAmount)
@@ -267,7 +266,7 @@ func (c *GreenfieldClient) constructTxWithGasInfo(ctx context.Context, msgs []sd
 		return err
 	}
 	if gasPrice.IsNil() || gasPrice.IsZero() {
-		return types.SimulatedGasPriceError
+		return types.ErrSimulatedGasPrice
 	}
 	feeAmount := sdk.NewCoins(
 		sdk.NewCoin(gasPrice.Denom, gasPrice.Amount.Mul(sdk.NewInt(int64(gasLimit)))), // gasPrice * gasLimit
@@ -314,10 +313,10 @@ func isFeeAmountZero(feeAmount sdk.Coins) (bool, error) {
 		return true, nil
 	}
 	if len(feeAmount) != 1 {
-		return false, types.FeeAmountNotValidError
+		return false, types.ErrFeeAmountNotValid
 	}
 	if feeAmount[0].Amount.IsNil() {
-		return false, types.FeeAmountNotValidError
+		return false, types.ErrFeeAmountNotValid
 	}
 	return feeAmount[0].IsZero(), nil
 }

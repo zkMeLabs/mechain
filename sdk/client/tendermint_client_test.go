@@ -12,21 +12,21 @@ import (
 )
 
 func TestGetABCIInfo(t *testing.T) {
-	client := NewTendermintClient(test.TEST_RPC_ADDR)
+	client := NewTendermintClient(test.TestRPCAddr)
 	abci, err := client.TmClient.ABCIInfo(context.Background())
 	assert.NoError(t, err)
 	t.Log(abci.Response.LastBlockHeight)
 }
 
 func TestGetStatus(t *testing.T) {
-	client := NewTendermintClient(test.TEST_RPC_ADDR)
+	client := NewTendermintClient(test.TestRPCAddr)
 	status, err := client.TmClient.Status(context.Background())
 	assert.NoError(t, err)
 	t.Log(status.ValidatorInfo)
 }
 
 func TestGetValidators(t *testing.T) {
-	client := NewTendermintClient(test.TEST_RPC_ADDR)
+	client := NewTendermintClient(test.TestRPCAddr)
 	validators, err := client.TmClient.Validators(context.Background(), nil, nil, nil)
 	assert.NoError(t, err)
 	t.Log(validators.Validators)
@@ -34,7 +34,7 @@ func TestGetValidators(t *testing.T) {
 
 func TestSubscribeEvent(t *testing.T) {
 	const subscriber = "TestBlockEvents"
-	client := NewTendermintClient(test.TEST_RPC_ADDR)
+	client := NewTendermintClient(test.TestRPCAddr)
 	err := client.TmClient.Start()
 	require.NoError(t, err)
 	eventCh, err := client.TmClient.Subscribe(context.Background(), subscriber, types.QueryForEvent(types.EventNewBlock).String())

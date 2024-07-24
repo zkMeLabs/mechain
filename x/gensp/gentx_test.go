@@ -283,7 +283,7 @@ func (suite *GenTxTestSuite) TestDeliverGenTxs() {
 		{
 			"success",
 			func() {
-				r := rand.New(rand.NewSource(time.Now().UnixNano()))
+				r := rand.New(rand.NewSource(time.Now().UnixNano())) //nolint:gosec
 				msg := banktypes.NewMsgSend(addr1, addr2, sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 1)})
 				tx, err := simtestutil.GenSignedMockTx(
 					r,
@@ -303,7 +303,7 @@ func (suite *GenTxTestSuite) TestDeliverGenTxs() {
 				suite.Require().NoError(err)
 				genTxs[0] = genTx
 			},
-			func(tx abci.RequestDeliverTx) abci.ResponseDeliverTx {
+			func(_ abci.RequestDeliverTx) abci.ResponseDeliverTx {
 				return abci.ResponseDeliverTx{
 					Code:      sdkerrors.ErrUnauthorized.ABCICode(),
 					GasWanted: int64(10000000),

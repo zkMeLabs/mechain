@@ -53,7 +53,7 @@ func (msg *MsgCompleteMigrateBucket) ValidateBasic() error {
 	if err != nil {
 		return err
 	}
-	if msg.GlobalVirtualGroupFamilyId == types.NoSpecifiedFamilyId {
+	if msg.GlobalVirtualGroupFamilyId == types.NoSpecifiedFamilyID {
 		return gnfderrors.ErrInvalidMessage.Wrap("the global virtual group family id not specify.")
 	}
 

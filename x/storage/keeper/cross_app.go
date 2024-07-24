@@ -6,25 +6,25 @@ import (
 
 func RegisterCrossApps(keeper Keeper) {
 	bucketApp := NewBucketApp(keeper)
-	err := keeper.crossChainKeeper.RegisterChannel(types.BucketChannel, types.BucketChannelId, bucketApp)
+	err := keeper.crossChainKeeper.RegisterChannel(types.BucketChannel, types.BucketChannelID, bucketApp)
 	if err != nil {
 		panic(err)
 	}
 
 	objectApp := NewObjectApp(keeper)
-	err = keeper.crossChainKeeper.RegisterChannel(types.ObjectChannel, types.ObjectChannelId, objectApp)
+	err = keeper.crossChainKeeper.RegisterChannel(types.ObjectChannel, types.ObjectChannelID, objectApp)
 	if err != nil {
 		panic(err)
 	}
 
 	groupApp := NewGroupApp(keeper)
-	err = keeper.crossChainKeeper.RegisterChannel(types.GroupChannel, types.GroupChannelId, groupApp)
+	err = keeper.crossChainKeeper.RegisterChannel(types.GroupChannel, types.GroupChannelID, groupApp)
 	if err != nil {
 		panic(err)
 	}
 
 	permissionApp := NewPermissionApp(keeper, keeper.permKeeper)
-	err = keeper.crossChainKeeper.RegisterChannel(types.PermissionChannel, types.PermissionChannelId, permissionApp)
+	err = keeper.crossChainKeeper.RegisterChannel(types.PermissionChannel, types.PermissionChannelID, permissionApp)
 	if err != nil {
 		panic(err)
 	}

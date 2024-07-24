@@ -18,7 +18,7 @@ func CmdCreatePaymentAccount() *cobra.Command {
 		Use:   "create-payment-account",
 		Short: "Broadcast message create-payment-account",
 		Args:  cobra.ExactArgs(0),
-		RunE: func(cmd *cobra.Command, args []string) (err error) {
+		RunE: func(cmd *cobra.Command, _ []string) (err error) {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err

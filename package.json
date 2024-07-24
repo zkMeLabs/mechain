@@ -16,6 +16,9 @@
     ],
     "*.sh": [
       "shfmt -w"
+    ],
+    "*.go": [
+      "goimports -w"
     ]
   }
 }

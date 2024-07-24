@@ -31,9 +31,9 @@ func SeedFromRandaoMix(randaoMix []byte, number uint64) []byte {
 	return seedBytes
 }
 
-// RandomObjectId generates a random object id for challenge.
+// RandomObjectID generates a random object id for challenge.
 // Be noted: id starts from 1.
-func RandomObjectId(seed []byte, objectCount sdkmath.Uint) sdkmath.Uint {
+func RandomObjectID(seed []byte, objectCount sdkmath.Uint) sdkmath.Uint {
 	number := new(big.Int).SetBytes(crypto.Keccak256(seed))
 	number = new(big.Int).Abs(number)
 

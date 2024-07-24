@@ -26,8 +26,8 @@ const (
 	// GVGFamilyName string for derive the virtual payment account for GVG family
 	GVGFamilyName = "global_virtual_group_family"
 
-	// NoSpecifiedFamilyId defines
-	NoSpecifiedFamilyId = uint32(0)
+	// NoSpecifiedFamilyID defines
+	NoSpecifiedFamilyID = uint32(0)
 
 	NoSpecifiedGVGId = uint32(0)
 )

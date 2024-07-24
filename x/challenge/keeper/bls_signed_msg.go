@@ -15,7 +15,7 @@ import (
 // BlsSignedMsg defined the interface of a bls signed message.
 type BlsSignedMsg interface {
 	// GetBlsSignBytes returns the bls signed message in bytes.
-	GetBlsSignBytes(chainId string) [32]byte
+	GetBlsSignBytes(chainID string) [32]byte
 
 	// GetVoteValidatorSet returns the validators who signed the message.
 	GetVoteValidatorSet() []uint64

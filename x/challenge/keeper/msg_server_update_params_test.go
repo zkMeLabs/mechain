@@ -34,7 +34,8 @@ func (s *TestSuite) TestUpdateParams() {
 	}
 	for _, tt := range tests {
 		s.T().Run(tt.name, func(t *testing.T) {
-			_, err := s.msgServer.UpdateParams(s.ctx, &tt.msg)
+			msg := tt.msg
+			_, err := s.msgServer.UpdateParams(s.ctx, &msg)
 			if tt.err {
 				require.Error(t, err)
 				return

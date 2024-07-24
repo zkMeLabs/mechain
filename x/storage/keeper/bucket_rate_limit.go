@@ -167,14 +167,14 @@ func (k Keeper) setBucketFlowRateLimit(ctx sdk.Context, paymentAccount, bucketOw
 }
 
 // setBucketFlowRateLimitStatus sets the flow rate limit status of the bucket to the store
-func (k Keeper) setBucketFlowRateLimitStatus(ctx sdk.Context, bucketName string, bucketId sdkmath.Uint, status *types.BucketFlowRateLimitStatus) {
+func (k Keeper) setBucketFlowRateLimitStatus(ctx sdk.Context, bucketName string, bucketID sdkmath.Uint, status *types.BucketFlowRateLimitStatus) {
 	store := ctx.KVStore(k.storeKey)
 
 	bz := k.cdc.MustMarshal(status)
 	store.Set(types.GetBucketFlowRateLimitStatusKey(bucketName), bz)
 
 	if err := ctx.EventManager().EmitTypedEvents(&types.EventBucketFlowRateLimitStatus{
-		BucketId:   bucketId,
+		BucketId:   bucketID,
 		BucketName: bucketName,
 		IsLimited:  status.IsBucketLimited,
 	}); err != nil {
@@ -197,14 +197,14 @@ func (k Keeper) getBucketFlowRateLimitStatus(ctx sdk.Context, bucketName string)
 }
 
 // deleteBucketFlowRateLimitStatus deletes the flow rate limit status of the bucket from the store
-func (k Keeper) deleteBucketFlowRateLimitStatus(ctx sdk.Context, bucketName string, bucketId sdkmath.Uint) {
+func (k Keeper) deleteBucketFlowRateLimitStatus(ctx sdk.Context, bucketName string, bucketID sdkmath.Uint) {
 	store := ctx.KVStore(k.storeKey)
 	store.Delete(types.GetBucketFlowRateLimitStatusKey(bucketName))
 
 	if err := ctx.EventManager().EmitTypedEvents(&types.EventBucketFlowRateLimitStatus{
 		BucketName: bucketName,
 		IsLimited:  false,
-		BucketId:   bucketId,
+		BucketId:   bucketID,
 	}); err != nil {
 		panic(err)
 	}

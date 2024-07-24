@@ -24,16 +24,16 @@ func NewPermissionApp(keeper types.StorageKeeper, permissionKeeper types.Permiss
 	}
 }
 
-func (app *PermissionApp) ExecuteAckPackage(ctx sdk.Context, appCtx *sdk.CrossChainAppContext, payload []byte) sdk.ExecuteResult {
+func (app *PermissionApp) ExecuteAckPackage(_ sdk.Context, _ *sdk.CrossChainAppContext, _ []byte) sdk.ExecuteResult {
 	panic("invalid cross chain ack package")
 }
 
-func (app *PermissionApp) ExecuteFailAckPackage(ctx sdk.Context, appCtx *sdk.CrossChainAppContext, payload []byte) sdk.ExecuteResult {
+func (app *PermissionApp) ExecuteFailAckPackage(_ sdk.Context, _ *sdk.CrossChainAppContext, _ []byte) sdk.ExecuteResult {
 	panic("invalid cross chain fail ack package")
 }
 
-func (app *PermissionApp) ExecuteSynPackage(ctx sdk.Context, appCtx *sdk.CrossChainAppContext, payload []byte) sdk.ExecuteResult {
-	pack, err := types.DeserializeCrossChainPackage(payload, types.PermissionChannelId, sdk.SynCrossChainPackageType)
+func (app *PermissionApp) ExecuteSynPackage(ctx sdk.Context, _ *sdk.CrossChainAppContext, payload []byte) sdk.ExecuteResult {
+	pack, err := types.DeserializeCrossChainPackage(payload, types.PermissionChannelID, sdk.SynCrossChainPackageType)
 	if err != nil {
 		panic("deserialize Policy cross chain package error")
 	}
@@ -76,7 +76,7 @@ func (app *PermissionApp) handleDeletePolicySynPackage(ctx sdk.Context, deletePo
 		}
 	}
 
-	policy, found := app.permissionKeeper.GetPolicyByID(ctx, math.NewUintFromBigInt(deletePolicyPackage.Id))
+	policy, found := app.permissionKeeper.GetPolicyByID(ctx, math.NewUintFromBigInt(deletePolicyPackage.ID))
 	if !found {
 		return sdk.ExecuteResult{
 			Payload: types.DeletePolicyAckPackage{
@@ -126,7 +126,7 @@ func (app *PermissionApp) handleDeletePolicySynPackage(ctx sdk.Context, deletePo
 	return sdk.ExecuteResult{
 		Payload: types.DeletePolicyAckPackage{
 			Status:    types.StatusSuccess,
-			Id:        policy.Id.BigInt(),
+			ID:        policy.Id.BigInt(),
 			ExtraData: deletePolicyPackage.ExtraData,
 		}.MustSerialize(),
 	}
@@ -196,7 +196,7 @@ func (app *PermissionApp) handleCreatePolicySynPackage(ctx sdk.Context, createPo
 		}
 	}
 
-	PolicyId, err := app.permissionKeeper.PutPolicy(ctx, &policy)
+	PolicyID, err := app.permissionKeeper.PutPolicy(ctx, &policy)
 	if err != nil {
 		return sdk.ExecuteResult{
 			Payload: types.CreatePolicyAckPackage{
@@ -211,7 +211,7 @@ func (app *PermissionApp) handleCreatePolicySynPackage(ctx sdk.Context, createPo
 	return sdk.ExecuteResult{
 		Payload: types.CreatePolicyAckPackage{
 			Status:    types.StatusSuccess,
-			Id:        PolicyId.BigInt(),
+			ID:        PolicyID.BigInt(),
 			Creator:   createPolicyPackage.Operator,
 			ExtraData: createPolicyPackage.ExtraData,
 		}.MustSerialize(),

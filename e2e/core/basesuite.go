@@ -132,7 +132,7 @@ func (s *BaseSuite) SetupSuite() {
 		s.InitChain()
 	})
 
-	s.Client, _ = client.NewGreenfieldClient(s.Config.TendermintAddr, s.Config.ChainId)
+	s.Client, _ = client.NewGreenfieldClient(s.Config.TendermintAddr, s.Config.ChainID)
 	tmClient := client.NewTendermintClient(s.Config.TendermintAddr)
 	s.TmClient = &tmClient
 	var err error
@@ -512,12 +512,12 @@ func (s *BaseSuite) CreateNewStorageProvider() *StorageProvider {
 	s.Require().Equal(txRes.Code, uint32(0))
 
 	// 3. query proposal and get proposal ID
-	var proposalId uint64
+	var proposalID uint64
 	for _, event := range txRes.Logs[0].Events {
 		if event.Type == "submit_proposal" {
 			for _, attr := range event.Attributes {
 				if attr.Key == "proposal_id" {
-					proposalId, err = strconv.ParseUint(attr.Value, 10, 0)
+					proposalID, err = strconv.ParseUint(attr.Value, 10, 0)
 					s.Require().NoError(err)
 					break
 				}
@@ -525,14 +525,14 @@ func (s *BaseSuite) CreateNewStorageProvider() *StorageProvider {
 			break
 		}
 	}
-	s.Require().True(proposalId != 0)
+	s.Require().True(proposalID != 0)
 
-	queryProposal := &govtypesv1.QueryProposalRequest{ProposalId: proposalId}
+	queryProposal := &govtypesv1.QueryProposalRequest{ProposalId: proposalID}
 	_, err = s.Client.GovQueryClientV1.Proposal(context.Background(), queryProposal)
 	s.Require().NoError(err)
 
 	// 4. submit MsgVote and wait the proposal exec
-	msgVote := govtypesv1.NewMsgVote(validator, proposalId, govtypesv1.OptionYes, "test")
+	msgVote := govtypesv1.NewMsgVote(validator, proposalID, govtypesv1.OptionYes, "test")
 	txRes = s.SendTxBlock(s.Validator, msgVote)
 	s.Require().Equal(txRes.Code, uint32(0))
 
@@ -643,12 +643,12 @@ func (s *BaseSuite) CreateObject(user keys.KeyManager, primarySP *StorageProvide
 	s.Require().NoError(err)
 	originGVG := queryGlobalvirtualGroupResp.GlobalVirtualGroup
 	// SealObject
-	gvgId := gvg.Id
+	gvgID = gvg.Id
 	msgSealObject := storagetypes.NewMsgSealObject(primarySP.SealKey.GetAddr(), bucketName, objectName, gvg.Id, nil)
 
 	secondarySigs := make([][]byte, 0)
 	secondarySPBlsPubKeys := make([]bls.PublicKey, 0)
-	blsSignHash := storagetypes.NewSecondarySpSealObjectSignDoc(s.GetChainID(), gvgId, queryHeadObjectResponse.ObjectInfo.Id, storagetypes.GenerateHash(queryHeadObjectResponse.ObjectInfo.Checksums[:])).GetBlsSignHash()
+	blsSignHash := storagetypes.NewSecondarySpSealObjectSignDoc(s.GetChainID(), gvgID, queryHeadObjectResponse.ObjectInfo.Id, storagetypes.GenerateHash(queryHeadObjectResponse.ObjectInfo.Checksums)).GetBlsSignHash()
 	// every secondary sp signs the checksums
 	for _, spID := range gvg.SecondarySpIds {
 		sig, err := BlsSignAndVerify(s.StorageProviders[spID], blsSignHash)
@@ -735,7 +735,7 @@ func (s *BaseSuite) CreateGlobalVirtualGroup(sp *StorageProvider, familyID uint3
 }
 
 func (s *BaseSuite) GetChainID() string {
-	return s.Config.ChainId
+	return s.Config.ChainID
 }
 
 func (s *BaseSuite) PickStorageProvider() *StorageProvider {
@@ -754,9 +754,9 @@ func (s *BaseSuite) PickStorageProviderByID(id uint32) *StorageProvider {
 	return nil
 }
 
-func (s *BaseSuite) PickDifferentStorageProvider(spId uint32) *StorageProvider {
+func (s *BaseSuite) PickDifferentStorageProvider(spID uint32) *StorageProvider {
 	for _, sp := range s.StorageProviders {
-		if sp.Info.Id != spId {
+		if sp.Info.Id != spID {
 			return sp
 		}
 	}

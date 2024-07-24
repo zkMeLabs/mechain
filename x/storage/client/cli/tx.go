@@ -325,11 +325,12 @@ func CmdCreateObject() *cobra.Command {
 			}
 
 			var redundancyType types.RedundancyType
-			if redundancyTypeFlag == "EC" {
+			switch redundancyTypeFlag {
+			case "EC":
 				redundancyType = types.REDUNDANCY_EC_TYPE
-			} else if redundancyTypeFlag == "Replica" {
+			case "Replica":
 				redundancyType = types.REDUNDANCY_REPLICA_TYPE
-			} else {
+			default:
 				return types.ErrInvalidRedundancyType
 			}
 
@@ -498,7 +499,7 @@ func CmdDiscontinueObject() *cobra.Command {
 		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			argBucketName := args[0]
-			argObjectIds := args[1]
+			argObjectIDs := args[1]
 			argObjectReason := args[2]
 
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -506,9 +507,9 @@ func CmdDiscontinueObject() *cobra.Command {
 				return err
 			}
 
-			objectIds := make([]cmath.Uint, 0)
-			splitIds := strings.Split(argObjectIds, ",")
-			for _, split := range splitIds {
+			objectIDs := make([]cmath.Uint, 0)
+			splitIDs := strings.Split(argObjectIDs, ",")
+			for _, split := range splitIDs {
 				id, ok := big.NewInt(0).SetString(split, 10)
 				if !ok {
 					return fmt.Errorf("invalid object id: %s", id)
@@ -517,13 +518,13 @@ func CmdDiscontinueObject() *cobra.Command {
 					return fmt.Errorf("object id should not be negative")
 				}
 
-				objectIds = append(objectIds, cmath.NewUintFromBigInt(id))
+				objectIDs = append(objectIDs, cmath.NewUintFromBigInt(id))
 			}
 
 			msg := types.NewMsgDiscontinueObject(
 				clientCtx.GetFromAddress(),
 				argBucketName,
-				objectIds,
+				objectIDs,
 				argObjectReason,
 			)
 			if err := msg.ValidateBasic(); err != nil {
@@ -909,31 +910,32 @@ func CmdMirrorBucket() *cobra.Command {
 		Use:   "mirror-bucket",
 		Short: "Mirror an existing bucket to the destination chain",
 		Args:  cobra.ExactArgs(0),
-		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			argBucketId, _ := cmd.Flags().GetString(FlagBucketId)
+		RunE: func(cmd *cobra.Command, _ []string) (err error) {
+			argBucketID, _ := cmd.Flags().GetString(FlagBucketID)
 			argBucketName, _ := cmd.Flags().GetString(FlagBucketName)
-			argDestChainId, _ := cmd.Flags().GetString(FlagDestChainId)
+			argDestChainID, _ := cmd.Flags().GetString(FlagDestChainID)
 
-			bucketId := big.NewInt(0)
-			if argBucketId == "" && argBucketName == "" {
+			bucketID := big.NewInt(0)
+			switch {
+			case argBucketID == "" && argBucketName == "":
 				return fmt.Errorf("bucket id or bucket name should be provided")
-			} else if argBucketId != "" && argBucketName != "" {
+			case argBucketID != "" && argBucketName != "":
 				return fmt.Errorf("bucket id and bucket name should not be provided together")
-			} else if argBucketId != "" {
+			case argBucketID != "":
 				ok := false
-				bucketId, ok = big.NewInt(0).SetString(argBucketId, 10)
+				bucketID, ok = big.NewInt(0).SetString(argBucketID, 10)
 				if !ok {
-					return fmt.Errorf("invalid bucket id: %s", argBucketId)
+					return fmt.Errorf("invalid bucket id: %s", argBucketID)
 				}
-				if bucketId.Cmp(big.NewInt(0)) <= 0 {
+				if bucketID.Cmp(big.NewInt(0)) <= 0 {
 					return fmt.Errorf("bucket id should be positive")
 				}
 			}
 
-			if argDestChainId == "" {
+			if argDestChainID == "" {
 				return fmt.Errorf("destination chain id should be provided")
 			}
-			destChainId, err := strconv.ParseUint(argDestChainId, 10, 16)
+			destChainID, err := strconv.ParseUint(argDestChainID, 10, 16)
 			if err != nil {
 				return err
 			}
@@ -945,8 +947,8 @@ func CmdMirrorBucket() *cobra.Command {
 
 			msg := types.NewMsgMirrorBucket(
 				clientCtx.GetFromAddress(),
-				sdk.ChainID(destChainId),
-				cmath.NewUintFromBigInt(bucketId),
+				sdk.ChainID(destChainID),
+				cmath.NewUintFromBigInt(bucketID),
 				argBucketName,
 			)
 			if err := msg.ValidateBasic(); err != nil {
@@ -956,9 +958,9 @@ func CmdMirrorBucket() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().String(FlagBucketId, "", "Id of the bucket to mirror")
+	cmd.Flags().String(FlagBucketID, "", "Id of the bucket to mirror")
 	cmd.Flags().String(FlagBucketName, "", "Name of the bucket to mirror")
-	cmd.Flags().String(FlagDestChainId, "", "the destination chain id")
+	cmd.Flags().String(FlagDestChainID, "", "the destination chain id")
 	flags.AddTxFlagsToCmd(cmd)
 
 	return cmd
@@ -1041,34 +1043,35 @@ func CmdMirrorObject() *cobra.Command {
 		Use:   "mirror-object",
 		Short: "Mirror the object to the destination chain",
 		Args:  cobra.ExactArgs(0),
-		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			argObjectId, _ := cmd.Flags().GetString(FlagObjectId)
+		RunE: func(cmd *cobra.Command, _ []string) (err error) {
+			argObjectID, _ := cmd.Flags().GetString(FlagObjectID)
 			argBucketName, _ := cmd.Flags().GetString(FlagBucketName)
 			argObjectName, _ := cmd.Flags().GetString(FlagObjectName)
-			argDestChainId, _ := cmd.Flags().GetString(FlagDestChainId)
+			argDestChainID, _ := cmd.Flags().GetString(FlagDestChainID)
 
-			objectId := big.NewInt(0)
-			if argObjectId == "" && argObjectName == "" {
+			objectID := big.NewInt(0)
+			switch {
+			case argObjectID == "" && argObjectName == "":
 				return fmt.Errorf("object id or object name should be provided")
-			} else if argObjectId != "" && argObjectName != "" {
+			case argObjectID != "" && argObjectName != "":
 				return fmt.Errorf("object id and object name should not be provided together")
-			} else if argObjectId != "" {
+			case argObjectID != "":
 				ok := false
-				objectId, ok = big.NewInt(0).SetString(argObjectId, 10)
+				objectID, ok = big.NewInt(0).SetString(argObjectID, 10)
 				if !ok {
-					return fmt.Errorf("invalid object id: %s", argObjectId)
+					return fmt.Errorf("invalid object id: %s", argObjectID)
 				}
-				if objectId.Cmp(big.NewInt(0)) <= 0 {
+				if objectID.Cmp(big.NewInt(0)) <= 0 {
 					return fmt.Errorf("object id should be positive")
 				}
-			} else if argObjectName != "" && argBucketName == "" {
+			case argObjectName != "" && argBucketName == "":
 				return fmt.Errorf("object name and bucket name should not be provided together")
 			}
 
-			if argDestChainId == "" {
+			if argDestChainID == "" {
 				return fmt.Errorf("destination chain id should be provided")
 			}
-			destChainId, err := strconv.ParseUint(argDestChainId, 10, 16)
+			destChainID, err := strconv.ParseUint(argDestChainID, 10, 16)
 			if err != nil {
 				return err
 			}
@@ -1080,8 +1083,8 @@ func CmdMirrorObject() *cobra.Command {
 
 			msg := types.NewMsgMirrorObject(
 				clientCtx.GetFromAddress(),
-				sdk.ChainID(destChainId),
-				cmath.NewUintFromBigInt(objectId),
+				sdk.ChainID(destChainID),
+				cmath.NewUintFromBigInt(objectID),
 				argBucketName,
 				argObjectName,
 			)
@@ -1092,10 +1095,10 @@ func CmdMirrorObject() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().String(FlagObjectId, "", "Id of the object to mirror")
+	cmd.Flags().String(FlagObjectID, "", "Id of the object to mirror")
 	cmd.Flags().String(FlagObjectName, "", "Name of the object to mirror")
 	cmd.Flags().String(FlagBucketName, "", "Name of the bucket that the object belongs to")
-	cmd.Flags().String(FlagDestChainId, "", "the destination chain id")
+	cmd.Flags().String(FlagDestChainID, "", "the destination chain id")
 	flags.AddTxFlagsToCmd(cmd)
 
 	return cmd
@@ -1106,31 +1109,32 @@ func CmdMirrorGroup() *cobra.Command {
 		Use:   "mirror-group",
 		Short: "Mirror an existing group to the destination chain",
 		Args:  cobra.ExactArgs(0),
-		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			argGroupId, _ := cmd.Flags().GetString(FlagGroupId)
+		RunE: func(cmd *cobra.Command, _ []string) (err error) {
+			argGroupID, _ := cmd.Flags().GetString(FlagGroupID)
 			argGroupName, _ := cmd.Flags().GetString(FlagGroupName)
-			argDestChainId, _ := cmd.Flags().GetString(FlagDestChainId)
+			argDestChainID, _ := cmd.Flags().GetString(FlagDestChainID)
 
-			groupId := big.NewInt(0)
-			if argGroupId == "" && argGroupName == "" {
+			groupID := big.NewInt(0)
+			switch {
+			case argGroupID == "" && argGroupName == "":
 				return fmt.Errorf("group id or group name should be provided")
-			} else if argGroupId != "" && argGroupName != "" {
+			case argGroupID != "" && argGroupName != "":
 				return fmt.Errorf("group id and group name should not be provided together")
-			} else if argGroupId != "" {
+			case argGroupID != "":
 				ok := false
-				groupId, ok = big.NewInt(0).SetString(argGroupId, 10)
+				groupID, ok = big.NewInt(0).SetString(argGroupID, 10)
 				if !ok {
-					return fmt.Errorf("invalid groupd id: %s", argGroupId)
+					return fmt.Errorf("invalid groupd id: %s", argGroupID)
 				}
-				if groupId.Cmp(big.NewInt(0)) <= 0 {
+				if groupID.Cmp(big.NewInt(0)) <= 0 {
 					return fmt.Errorf("groupd id should be positive")
 				}
 			}
 
-			if argDestChainId == "" {
+			if argDestChainID == "" {
 				return fmt.Errorf("destination chain id should be provided")
 			}
-			destChainId, err := strconv.ParseUint(argDestChainId, 10, 16)
+			destChainID, err := strconv.ParseUint(argDestChainID, 10, 16)
 			if err != nil {
 				return err
 			}
@@ -1142,8 +1146,8 @@ func CmdMirrorGroup() *cobra.Command {
 
 			msg := types.NewMsgMirrorGroup(
 				clientCtx.GetFromAddress(),
-				sdk.ChainID(destChainId),
-				cmath.NewUintFromBigInt(groupId),
+				sdk.ChainID(destChainID),
+				cmath.NewUintFromBigInt(groupID),
 				argGroupName,
 			)
 			if err := msg.ValidateBasic(); err != nil {
@@ -1153,9 +1157,9 @@ func CmdMirrorGroup() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().String(FlagGroupId, "", "Id of the group to mirror")
+	cmd.Flags().String(FlagGroupID, "", "Id of the group to mirror")
 	cmd.Flags().String(FlagGroupName, "", "Name of the group to mirror")
-	cmd.Flags().String(FlagDestChainId, "", "the destination chain id")
+	cmd.Flags().String(FlagDestChainID, "", "the destination chain id")
 	flags.AddTxFlagsToCmd(cmd)
 
 	return cmd

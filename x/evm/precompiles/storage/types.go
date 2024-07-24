@@ -42,8 +42,8 @@ func GetAbiEvent(name string) abi.Event {
 }
 
 type (
-	ApprovalJson    = Approval
-	PageRequestJson = PageRequest
+	ApprovalJSON    = Approval
+	PageRequestJSON = PageRequest
 )
 
 type CreateBucketArgs struct {
@@ -51,7 +51,7 @@ type CreateBucketArgs struct {
 	Visibility        uint8          `abi:"visibility"`
 	PaymentAddress    common.Address `abi:"paymentAddress"`
 	PrimarySpAddress  common.Address `abi:"primarySpAddress"`
-	PrimarySpApproval ApprovalJson   `abi:"primarySpApproval"`
+	PrimarySpApproval ApprovalJSON   `abi:"primarySpApproval"`
 	ChargedReadQuota  uint64         `abi:"chargedReadQuota"`
 }
 
@@ -80,7 +80,7 @@ func (args *UpdateBucketInfoArgs) Validate() error {
 }
 
 type ListBucketsArgs struct {
-	Pagination PageRequestJson `abi:"pagination"`
+	Pagination PageRequestJSON `abi:"pagination"`
 }
 
 // Validate ListBucketsArgs the args
@@ -103,7 +103,7 @@ type CreateObjectArgs struct {
 	PayloadSize       uint64       `abi:"payloadSize"`
 	Visibility        uint8        `abi:"visibility"`
 	ContentType       string       `abi:"contentType"`
-	PrimarySpApproval ApprovalJson `abi:"primarySpApproval"`
+	PrimarySpApproval ApprovalJSON `abi:"primarySpApproval"`
 	ExpectChecksums   []string     `abi:"expectChecksums"`
 	RedundancyType    uint8        `abi:"redundancyType"`
 }
@@ -114,7 +114,7 @@ func (args *CreateObjectArgs) Validate() error {
 }
 
 type ListObjectsArgs struct {
-	Pagination PageRequestJson `abi:"pagination"`
+	Pagination PageRequestJSON `abi:"pagination"`
 	BucketName string          `abi:"bucketName"`
 }
 
@@ -127,7 +127,7 @@ type SealObjectArgs struct {
 	SealAddress                 common.Address `abi:"sealAddress"` // primary sp's operator addr or secondary sp's seal addr
 	BucketName                  string         `abi:"bucketName"`
 	ObjectName                  string         `abi:"objectName"`
-	GlobalVirtualGroupId        uint32         `abi:"globalVirtualGroupId"`
+	GlobalVirtualGroupID        uint32         `abi:"globalVirtualGroupId"`
 	SecondarySpBlsAggSignatures string         `abi:"secondarySpBlsAggSignatures"`
 }
 
@@ -140,7 +140,7 @@ type SealObjectV2Args struct {
 	SealAddress                 common.Address `abi:"sealAddress"` // primary sp's operator addr or secondary sp's seal addr
 	BucketName                  string         `abi:"bucketName"`
 	ObjectName                  string         `abi:"objectName"`
-	GlobalVirtualGroupId        uint32         `abi:"globalVirtualGroupId"`
+	GlobalVirtualGroupID        uint32         `abi:"globalVirtualGroupId"`
 	SecondarySpBlsAggSignatures string         `abi:"secondarySpBlsAggSignatures"`
 	ExpectChecksums             []string       `abi:"expectChecksums"`
 }
@@ -172,7 +172,7 @@ func (args *CreateGroupArgs) Validate() error {
 }
 
 type ListGroupsArgs struct {
-	Pagination PageRequestJson `abi:"pagination"`
+	Pagination PageRequestJSON `abi:"pagination"`
 	GroupOwner common.Address  `abi:"groupOwner"`
 }
 
@@ -277,13 +277,13 @@ func (args *HeadObjectArgs) Validate() error {
 	return nil
 }
 
-type HeadObjectByIdArgs struct {
-	ObjectId string `abi:"objectId"`
+type HeadObjectByIDArgs struct {
+	ObjectID string `abi:"objectId"`
 }
 
 // Validate HeadObjectByIdArgs the args
-func (args *HeadObjectByIdArgs) Validate() error {
-	if args.ObjectId == "" {
+func (args *HeadObjectByIDArgs) Validate() error {
+	if args.ObjectID == "" {
 		return errors.New("empty object id")
 	}
 	return nil

@@ -6,7 +6,7 @@ import (
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/golang/mock/gomock"
+	"go.uber.org/mock/gomock"
 
 	"github.com/evmos/evmos/v12/testutil/sample"
 	gnfderrors "github.com/evmos/evmos/v12/types/errors"
@@ -22,7 +22,7 @@ func (s *TestSuite) TestAckMirrorGroup() {
 	app := keeper.NewGroupApp(storageKeeper)
 	ackPackage := types.MirrorGroupAckPackage{
 		Status: types.StatusSuccess,
-		Id:     big.NewInt(10),
+		ID:     big.NewInt(10),
 	}
 
 	serializedAckPackage, err := ackPackage.Serialize()
@@ -51,7 +51,7 @@ func (s *TestSuite) TestAckCreateGroup() {
 	app := keeper.NewGroupApp(storageKeeper)
 	ackPackage := types.CreateGroupAckPackage{
 		Status:    types.StatusSuccess,
-		Id:        big.NewInt(10),
+		ID:        big.NewInt(10),
 		Creator:   sample.RandAccAddress(),
 		ExtraData: []byte("extra data"),
 	}
@@ -74,7 +74,7 @@ func (s *TestSuite) TestAckDeleteGroup() {
 	app := keeper.NewGroupApp(storageKeeper)
 	ackPackage := types.DeleteGroupAckPackage{
 		Status:    types.StatusSuccess,
-		Id:        big.NewInt(10),
+		ID:        big.NewInt(10),
 		ExtraData: []byte("extra data"),
 	}
 
@@ -95,7 +95,7 @@ func (s *TestSuite) TestFailAckMirrorGroup() {
 
 	app := keeper.NewGroupApp(storageKeeper)
 	ackPackage := types.MirrorGroupSynPackage{
-		Id:    big.NewInt(10),
+		ID:    big.NewInt(10),
 		Owner: sample.RandAccAddress(),
 	}
 
@@ -147,7 +147,7 @@ func (s *TestSuite) TestFailAckDeleteGroup() {
 	app := keeper.NewGroupApp(storageKeeper)
 	ackPackage := types.DeleteBucketSynPackage{
 		Operator:  sample.RandAccAddress(),
-		Id:        big.NewInt(10),
+		ID:        big.NewInt(10),
 		ExtraData: []byte("extra data"),
 	}
 
@@ -169,7 +169,7 @@ func (s *TestSuite) TestFailAckUpdateGroupMember() {
 	app := keeper.NewGroupApp(storageKeeper)
 	ackPackage := types.UpdateGroupMemberSynPackage{
 		Operator:  sample.RandAccAddress(),
-		GroupId:   big.NewInt(10),
+		GroupID:   big.NewInt(10),
 		ExtraData: []byte("extra data"),
 	}
 
@@ -191,7 +191,7 @@ func (s *TestSuite) TestSynMirrorGroup() {
 	app := keeper.NewGroupApp(storageKeeper)
 	synPackage := types.MirrorGroupSynPackage{
 		Owner: sample.RandAccAddress(),
-		Id:    big.NewInt(10),
+		ID:    big.NewInt(10),
 	}
 
 	serializedSynPackage, err := synPackage.Serialize()
@@ -251,7 +251,7 @@ func (s *TestSuite) TestSynDeleteGroup() {
 	app := keeper.NewGroupApp(storageKeeper)
 	synPackage := types.DeleteBucketSynPackage{
 		Operator:  sample.RandAccAddress(),
-		Id:        big.NewInt(10),
+		ID:        big.NewInt(10),
 		ExtraData: []byte("extra data"),
 	}
 	serializedSynPackage := synPackage.MustSerialize()
@@ -288,7 +288,7 @@ func (s *TestSuite) TestSynUpdateGroupMember() {
 	app := keeper.NewGroupApp(storageKeeper)
 	synPackage := types.UpdateGroupMemberSynPackage{
 		Operator:  sample.RandAccAddress(),
-		GroupId:   big.NewInt(10),
+		GroupID:   big.NewInt(10),
 		ExtraData: []byte("extra data"),
 	}
 

@@ -47,7 +47,7 @@ func TestCollectTxsHandlesDirectories(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	txDecoder := sdk.TxDecoder(func(txBytes []byte) (sdk.Tx, error) {
+	txDecoder := sdk.TxDecoder(func(_ []byte) (sdk.Tx, error) {
 		return nil, nil
 	})
 

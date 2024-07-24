@@ -14,7 +14,7 @@ func CmdListStreamRecord() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "list-stream-record",
 		Short: "list all stream-record",
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(cmd *cobra.Command, _ []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
 			pageReq, err := client.ReadPageRequest(cmd.Flags())

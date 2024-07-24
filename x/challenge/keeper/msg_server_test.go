@@ -47,7 +47,7 @@ func (s *TestSuite) SetupTest() {
 	randaoMix = append(randaoMix, crypto.Keccak256([]byte{2})...)
 	header := testCtx.Ctx.BlockHeader()
 	header.RandaoMix = randaoMix
-	upgradeChecker := func(ctx sdk.Context, name string) bool {
+	upgradeChecker := func(_ sdk.Context, _ string) bool {
 		return true
 	}
 	testCtx = testutil.TestContext{

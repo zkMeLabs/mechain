@@ -25,6 +25,11 @@ import (
 	storagetypes "github.com/evmos/evmos/v12/x/storage/types"
 )
 
+const (
+	testGroupName = "testGroup"
+	repeatPart    = "1234567890,"
+)
+
 func (s *StorageTestSuite) TestDeleteBucketPermission() {
 	var err error
 	user := s.GenAndChargeAccounts(2, 1000000)
@@ -292,16 +297,7 @@ func (s *StorageTestSuite) TestCreateObjectByOthers() {
 	objectName := storageutil.GenRandomObjectName()
 	// create test buffer
 	var buffer bytes.Buffer
-	line := `1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,123`
+	line := strings.Repeat(repeatPart, 92) + "123"
 	// Create 1MiB content where each line contains 1024 characters.
 	for i := 0; i < 1024; i++ {
 		buffer.WriteString(fmt.Sprintf("[%05d] %s\n", i, line))
@@ -309,7 +305,7 @@ func (s *StorageTestSuite) TestCreateObjectByOthers() {
 	payloadSize := buffer.Len()
 	checksum := crypto.Keccak256(buffer.Bytes())
 	expectChecksum := [][]byte{checksum, checksum, checksum, checksum, checksum, checksum, checksum}
-	contextType := "text/event-stream"
+	contextType := eventStreamType
 	msgCreateObject := storagetypes.NewMsgCreateObject(user[1].GetAddr(), bucketName, objectName, uint64(payloadSize),
 		storagetypes.VISIBILITY_TYPE_PUBLIC_READ, expectChecksum, contextType, storagetypes.REDUNDANCY_EC_TYPE, math.MaxUint, nil)
 	msgCreateObject.PrimarySpApproval.Sig, err = sp.ApprovalKey.Sign(msgCreateObject.GetApprovalBytes())
@@ -477,16 +473,7 @@ func (s *StorageTestSuite) TestCreateObjectByOthersExpiration() {
 	objectName := storageutil.GenRandomObjectName()
 	// create test buffer
 	var buffer bytes.Buffer
-	line := `1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,123`
+	line := strings.Repeat(repeatPart, 92) + "123"
 	// Create 1MiB content where each line contains 1024 characters.
 	for i := 0; i < 1024; i++ {
 		buffer.WriteString(fmt.Sprintf("[%05d] %s\n", i, line))
@@ -494,7 +481,7 @@ func (s *StorageTestSuite) TestCreateObjectByOthersExpiration() {
 	payloadSize := buffer.Len()
 	checksum := crypto.Keccak256(buffer.Bytes())
 	expectChecksum := [][]byte{checksum, checksum, checksum, checksum, checksum, checksum, checksum}
-	contextType := "text/event-stream"
+	contextType := eventStreamType
 	msgCreateObject := storagetypes.NewMsgCreateObject(user[1].GetAddr(), bucketName, objectName, uint64(payloadSize), storagetypes.VISIBILITY_TYPE_PUBLIC_READ, expectChecksum, contextType, storagetypes.REDUNDANCY_EC_TYPE, math.MaxUint, nil)
 	msgCreateObject.PrimarySpApproval.Sig, err = sp.ApprovalKey.Sign(msgCreateObject.GetApprovalBytes())
 	s.Require().NoError(err)
@@ -599,16 +586,7 @@ func (s *StorageTestSuite) TestCreateObjectByOthersLimitSize() {
 	objectName := storageutil.GenRandomObjectName()
 	// create test buffer
 	var buffer bytes.Buffer
-	line := `1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,123`
+	line := strings.Repeat(repeatPart, 92) + "123"
 	// Create 1MiB content where each line contains 1024 characters.
 	for i := 0; i < 1024; i++ {
 		buffer.WriteString(fmt.Sprintf("[%05d] %s\n", i, line))
@@ -616,7 +594,7 @@ func (s *StorageTestSuite) TestCreateObjectByOthersLimitSize() {
 	payloadSize := buffer.Len()
 	checksum := crypto.Keccak256(buffer.Bytes())
 	expectChecksum := [][]byte{checksum, checksum, checksum, checksum, checksum, checksum, checksum}
-	contextType := "text/event-stream"
+	contextType := eventStreamType
 	msgCreateObject := storagetypes.NewMsgCreateObject(user[1].GetAddr(), bucketName, objectName, uint64(payloadSize), storagetypes.VISIBILITY_TYPE_PUBLIC_READ, expectChecksum, contextType, storagetypes.REDUNDANCY_EC_TYPE, math.MaxUint, nil)
 	msgCreateObject.PrimarySpApproval.Sig, err = sp.ApprovalKey.Sign(msgCreateObject.GetApprovalBytes())
 	s.Require().NoError(err)
@@ -689,7 +667,6 @@ func (s *StorageTestSuite) TestGrantsPermissionToGroup() {
 	s.T().Logf("resp: %s, rep %s", verifyPermReq.String(), verifyPermResp.String())
 
 	// Create Group
-	testGroupName := "testGroup"
 	msgCreateGroup := storagetypes.NewMsgCreateGroup(user[0].GetAddr(), testGroupName, "")
 	s.SendTxBlock(user[0], msgCreateGroup)
 
@@ -855,23 +832,14 @@ func (s *StorageTestSuite) TestVisibilityPermission() {
 	}
 
 	var buffer bytes.Buffer
-	line := `1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,123`
+	line := strings.Repeat(repeatPart, 92) + "123"
 
 	// Create content contains 1024 characters.
 	buffer.WriteString(line)
 	payloadSize := buffer.Len()
 	checksum := crypto.Keccak256(buffer.Bytes())
 	expectChecksum := [][]byte{checksum, checksum, checksum, checksum, checksum, checksum, checksum}
-	contextType := "text/event-stream"
+	contextType := eventStreamType
 
 	ctx := context.Background()
 
@@ -1019,23 +987,14 @@ func (s *StorageTestSuite) TestEmptyPermission() {
 	}
 
 	var buffer bytes.Buffer
-	line := `1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,123`
+	line := strings.Repeat(repeatPart, 92) + "123"
 
 	// Create content contains 1024 characters.
 	buffer.WriteString(line)
 	payloadSize := buffer.Len()
 	checksum := crypto.Keccak256(buffer.Bytes())
 	expectChecksum := [][]byte{checksum, checksum, checksum, checksum, checksum, checksum, checksum}
-	contextType := "text/event-stream"
+	contextType := eventStreamType
 
 	for _, object := range objects {
 		msgCreateObject0 := storagetypes.NewMsgCreateObject(user[0].GetAddr(), object.BucketName, object.ObjectName, uint64(payloadSize), object.PublicType, expectChecksum, contextType, storagetypes.REDUNDANCY_EC_TYPE, math.MaxUint, nil)
@@ -1064,7 +1023,7 @@ func (s *StorageTestSuite) TestStalePermissionForAccountGC() {
 	ctx := context.Background()
 	user1 := s.GenAndChargeAccounts(1, 1000000)[0]
 
-	_, owner, bucketName, bucketId, objectName, objectId := s.createObjectWithVisibility(storagetypes.VISIBILITY_TYPE_PUBLIC_READ)
+	_, owner, bucketName, bucketID, objectName, objectID := s.createObjectWithVisibility(storagetypes.VISIBILITY_TYPE_PUBLIC_READ)
 
 	principal := types.NewPrincipalWithAccount(user1.GetAddr())
 
@@ -1093,8 +1052,8 @@ func (s *StorageTestSuite) TestStalePermissionForAccountGC() {
 		PrincipalAddress: user1.GetAddr().String(),
 	})
 	s.Require().NoError(err)
-	s.Require().Equal(bucketId, queryPolicyForAccountResp.Policy.ResourceId)
-	bucketPolicyId := queryPolicyForAccountResp.Policy.Id
+	s.Require().Equal(bucketID, queryPolicyForAccountResp.Policy.ResourceId)
+	bucketPolicyID := queryPolicyForAccountResp.Policy.Id
 
 	grn2 := types2.NewObjectGRN(bucketName, objectName)
 	queryPolicyForAccountResp, err = s.Client.QueryPolicyForAccount(ctx, &storagetypes.QueryPolicyForAccountRequest{
@@ -1102,8 +1061,8 @@ func (s *StorageTestSuite) TestStalePermissionForAccountGC() {
 		PrincipalAddress: user1.GetAddr().String(),
 	})
 	s.Require().NoError(err)
-	s.Require().Equal(objectId, queryPolicyForAccountResp.Policy.ResourceId)
-	objectPolicyId := queryPolicyForAccountResp.Policy.Id
+	s.Require().Equal(objectID, queryPolicyForAccountResp.Policy.ResourceId)
+	objectPolicyID := queryPolicyForAccountResp.Policy.Id
 	s.T().Log(queryPolicyForAccountResp.Policy.String())
 
 	// user1 deletes the object
@@ -1131,11 +1090,11 @@ func (s *StorageTestSuite) TestStalePermissionForAccountGC() {
 	s.Require().ErrorContains(err, "No such bucket")
 
 	// policy is GC
-	_, err = s.Client.QueryPolicyById(ctx, &storagetypes.QueryPolicyByIdRequest{PolicyId: bucketPolicyId.String()})
+	_, err = s.Client.QueryPolicyById(ctx, &storagetypes.QueryPolicyByIdRequest{PolicyId: bucketPolicyID.String()})
 	s.Require().Error(err)
 	s.Require().ErrorContains(err, "No such Policy")
 
-	_, err = s.Client.QueryPolicyById(ctx, &storagetypes.QueryPolicyByIdRequest{PolicyId: objectPolicyId.String()})
+	_, err = s.Client.QueryPolicyById(ctx, &storagetypes.QueryPolicyByIdRequest{PolicyId: objectPolicyID.String()})
 	s.Require().Error(err)
 	s.Require().ErrorContains(err, "No such Policy")
 }
@@ -1145,7 +1104,7 @@ func (s *StorageTestSuite) TestDeleteObjectPolicy() {
 	ctx := context.Background()
 	user1 := s.GenAndChargeAccounts(1, 1000000)[0]
 
-	_, owner, bucketName, _, objectName, objectId := s.createObjectWithVisibility(storagetypes.VISIBILITY_TYPE_PUBLIC_READ)
+	_, owner, bucketName, _, objectName, objectID := s.createObjectWithVisibility(storagetypes.VISIBILITY_TYPE_PUBLIC_READ)
 
 	principal := types.NewPrincipalWithAccount(user1.GetAddr())
 
@@ -1174,7 +1133,7 @@ func (s *StorageTestSuite) TestDeleteObjectPolicy() {
 		PrincipalAddress: user1.GetAddr().String(),
 	})
 	s.Require().NoError(err)
-	s.Require().Equal(objectId, queryPolicyForAccountResp.Policy.ResourceId)
+	s.Require().Equal(objectID, queryPolicyForAccountResp.Policy.ResourceId)
 
 	// Delete object policy
 	msgDeletePolicy := storagetypes.NewMsgDeletePolicy(owner.GetAddr(), grn1.String(), types.NewPrincipalWithAccount(user1.GetAddr()))
@@ -1202,7 +1161,6 @@ func (s *StorageTestSuite) TestDeleteGroupPolicy() {
 	_ = s.BaseSuite.PickStorageProvider()
 
 	// Create Group
-	testGroupName := "testGroup"
 	msgCreateGroup := storagetypes.NewMsgCreateGroup(owner.GetAddr(), testGroupName, "")
 	s.SendTxBlock(owner, msgCreateGroup)
 	membersToAdd := []*storagetypes.MsgGroupMember{
@@ -1257,10 +1215,9 @@ func (s *StorageTestSuite) TestDeleteGroupPolicy() {
 func (s *StorageTestSuite) TestStalePermissionForGroupGC() {
 	ctx := context.Background()
 	user := s.GenAndChargeAccounts(3, 10000)
-	_, owner, bucketName, bucketId, objectName, objectId := s.createObjectWithVisibility(storagetypes.VISIBILITY_TYPE_PUBLIC_READ)
+	_, owner, bucketName, bucketID, objectName, objectID := s.createObjectWithVisibility(storagetypes.VISIBILITY_TYPE_PUBLIC_READ)
 
 	// Create Group
-	testGroupName := "testGroup"
 	msgCreateGroup := storagetypes.NewMsgCreateGroup(owner.GetAddr(), testGroupName, "")
 	s.SendTxBlock(owner, msgCreateGroup)
 	membersToAdd := []*storagetypes.MsgGroupMember{
@@ -1278,7 +1235,7 @@ func (s *StorageTestSuite) TestStalePermissionForGroupGC() {
 	s.Require().True(owner.GetAddr().Equals(sdk.MustAccAddressFromHex(headGroupResponse.GroupInfo.Owner)))
 	s.T().Logf("GroupInfo: %s", headGroupResponse.GetGroupInfo().String())
 
-	principal := types.NewPrincipalWithGroupId(headGroupResponse.GroupInfo.Id)
+	principal := types.NewPrincipalWithGroupID(headGroupResponse.GroupInfo.Id)
 	// Put bucket policy for group
 	bucketStatement := &types.Statement{
 		Actions: []types.ActionType{types.ACTION_DELETE_BUCKET},
@@ -1306,10 +1263,10 @@ func (s *StorageTestSuite) TestStalePermissionForGroupGC() {
 
 	queryPolicyForGroupResp, err := s.Client.QueryPolicyForGroup(ctx, &queryPolicyForGroupReq)
 	s.Require().NoError(err)
-	s.Require().Equal(bucketId, queryPolicyForGroupResp.Policy.ResourceId)
+	s.Require().Equal(bucketID, queryPolicyForGroupResp.Policy.ResourceId)
 	s.Require().Equal(queryPolicyForGroupResp.Policy.ResourceType, resource.RESOURCE_TYPE_BUCKET)
 	s.Require().Equal(types.EFFECT_ALLOW, queryPolicyForGroupResp.Policy.Statements[0].Effect)
-	bucketPolicyId := queryPolicyForGroupResp.Policy.Id
+	bucketPolicyID := queryPolicyForGroupResp.Policy.Id
 
 	// Query object policy for group
 	grn2 := types2.NewObjectGRN(bucketName, objectName)
@@ -1318,10 +1275,10 @@ func (s *StorageTestSuite) TestStalePermissionForGroupGC() {
 		PrincipalGroupId: headGroupResponse.GroupInfo.Id.String(),
 	})
 	s.Require().NoError(err)
-	s.Require().Equal(objectId, queryPolicyForGroupResp.Policy.ResourceId)
+	s.Require().Equal(objectID, queryPolicyForGroupResp.Policy.ResourceId)
 	s.Require().Equal(queryPolicyForGroupResp.Policy.ResourceType, resource.RESOURCE_TYPE_OBJECT)
 	s.Require().Equal(types.EFFECT_ALLOW, queryPolicyForGroupResp.Policy.Statements[0].Effect)
-	objectPolicyId := queryPolicyForGroupResp.Policy.Id
+	objectPolicyID := queryPolicyForGroupResp.Policy.Id
 
 	// user1 deletes the object
 	msgDeleteObject := storagetypes.NewMsgDeleteObject(user[1].GetAddr(), bucketName, objectName)
@@ -1348,11 +1305,11 @@ func (s *StorageTestSuite) TestStalePermissionForGroupGC() {
 	s.Require().ErrorContains(err, "No such bucket")
 
 	// policy is GC
-	_, err = s.Client.QueryPolicyById(ctx, &storagetypes.QueryPolicyByIdRequest{PolicyId: objectPolicyId.String()})
+	_, err = s.Client.QueryPolicyById(ctx, &storagetypes.QueryPolicyByIdRequest{PolicyId: objectPolicyID.String()})
 	s.Require().Error(err)
 	s.Require().ErrorContains(err, "No such Policy")
 
-	_, err = s.Client.QueryPolicyById(ctx, &storagetypes.QueryPolicyByIdRequest{PolicyId: bucketPolicyId.String()})
+	_, err = s.Client.QueryPolicyById(ctx, &storagetypes.QueryPolicyByIdRequest{PolicyId: bucketPolicyID.String()})
 	s.Require().Error(err)
 	s.Require().ErrorContains(err, "No such Policy")
 }
@@ -1368,7 +1325,6 @@ func (s *StorageTestSuite) TestGroupMembersAndPolicyGC() {
 	_ = s.BaseSuite.PickStorageProvider()
 
 	// Create Group
-	testGroupName := "testGroup"
 	msgCreateGroup := storagetypes.NewMsgCreateGroup(owner.GetAddr(), testGroupName, "")
 	s.SendTxBlock(owner, msgCreateGroup)
 	membersToAdd := []*storagetypes.MsgGroupMember{
@@ -1496,7 +1452,7 @@ func (s *StorageTestSuite) TestExceedEachBlockLimitGC() {
 		_ = s.WaitForNextBlock()
 	}
 
-	policyIds := make([]sdkmath.Uint, 0)
+	policyIDs := make([]sdkmath.Uint, 0)
 	// policies are present for buckets
 	for i := 0; i < bucketNumber; i++ {
 		queryPolicyForAccountResp, err := s.Client.QueryPolicyForAccount(ctx, &storagetypes.QueryPolicyForAccountRequest{
@@ -1504,7 +1460,7 @@ func (s *StorageTestSuite) TestExceedEachBlockLimitGC() {
 			PrincipalAddress: user.GetAddr().String(),
 		})
 		s.Require().NoError(err)
-		policyIds = append(policyIds, queryPolicyForAccountResp.Policy.Id)
+		policyIDs = append(policyIDs, queryPolicyForAccountResp.Policy.Id)
 	}
 
 	// delete batch of buckets
@@ -1520,7 +1476,7 @@ func (s *StorageTestSuite) TestExceedEachBlockLimitGC() {
 	// handling ability of each block
 	notAllPoliciesGC := false
 	for i := 0; i < bucketNumber; i++ {
-		_, err = s.Client.QueryPolicyById(ctx, &storagetypes.QueryPolicyByIdRequest{PolicyId: policyIds[i].String()})
+		_, err = s.Client.QueryPolicyById(ctx, &storagetypes.QueryPolicyByIdRequest{PolicyId: policyIDs[i].String()})
 		if err == nil {
 			// if there is at least 1 policy still exist, that means GC is not fully done yet.
 			notAllPoliciesGC = true
@@ -1535,7 +1491,7 @@ func (s *StorageTestSuite) TestExceedEachBlockLimitGC() {
 
 	for i := 0; i < bucketNumber; i++ {
 		// policy is GC
-		_, err = s.Client.QueryPolicyById(ctx, &storagetypes.QueryPolicyByIdRequest{PolicyId: policyIds[i].String()})
+		_, err = s.Client.QueryPolicyById(ctx, &storagetypes.QueryPolicyByIdRequest{PolicyId: policyIDs[i].String()})
 		s.Require().Error(err)
 		s.Require().ErrorContains(err, "No such Policy")
 	}
@@ -1549,7 +1505,6 @@ func (s *StorageTestSuite) TestUpdateGroupExtraWithPermission() {
 	owner := user[0]
 
 	// Create Group
-	testGroupName := "testGroup"
 	msgCreateGroup := storagetypes.NewMsgCreateGroup(owner.GetAddr(), testGroupName, "")
 	s.SendTxBlock(owner, msgCreateGroup)
 	membersToAdd := []*storagetypes.MsgGroupMember{
@@ -1633,16 +1588,7 @@ func (s *StorageTestSuite) TestPutPolicy_ObjectWithSlash() {
 	objectName := "test/" + storageutil.GenRandomObjectName()
 	// create test buffer
 	var buffer bytes.Buffer
-	line := `1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,123`
+	line := strings.Repeat(repeatPart, 92) + "123"
 	// Create 1MiB content where each line contains 1024 characters.
 	for i := 0; i < 1024; i++ {
 		buffer.WriteString(fmt.Sprintf("[%05d] %s\n", i, line))
@@ -1650,7 +1596,7 @@ func (s *StorageTestSuite) TestPutPolicy_ObjectWithSlash() {
 	payloadSize := buffer.Len()
 	checksum := crypto.Keccak256(buffer.Bytes())
 	expectChecksum := [][]byte{checksum, checksum, checksum, checksum, checksum, checksum, checksum}
-	contextType := "text/event-stream"
+	contextType := eventStreamType
 	msgCreateObject := storagetypes.NewMsgCreateObject(user[0].GetAddr(), bucketName, objectName, uint64(payloadSize), storagetypes.VISIBILITY_TYPE_PUBLIC_READ, expectChecksum, contextType, storagetypes.REDUNDANCY_EC_TYPE, math.MaxUint, nil)
 	msgCreateObject.PrimarySpApproval.Sig, err = sp.ApprovalKey.Sign(msgCreateObject.GetApprovalBytes())
 	s.Require().NoError(err)
@@ -1689,10 +1635,10 @@ func (s *StorageTestSuite) TestVerifyStaleGroupPermission() {
 	}()
 
 	user := s.GenAndChargeAccounts(3, 10000)
-	_, owner, bucketName, bucketId, objectName, objectId := s.createObjectWithVisibility(storagetypes.VISIBILITY_TYPE_PUBLIC_READ)
+	_, owner, bucketName, bucketID, objectName, objectID := s.createObjectWithVisibility(storagetypes.VISIBILITY_TYPE_PUBLIC_READ)
 
 	// Create Group with 3 group member
-	testGroupName := "testGroup"
+
 	msgCreateGroup := storagetypes.NewMsgCreateGroup(owner.GetAddr(), testGroupName, "")
 	msgUpdateGroupMember := storagetypes.NewMsgUpdateGroupMember(owner.GetAddr(), owner.GetAddr(), testGroupName,
 		[]*storagetypes.MsgGroupMember{
@@ -1715,7 +1661,7 @@ func (s *StorageTestSuite) TestVerifyStaleGroupPermission() {
 	s.Require().True(owner.GetAddr().Equals(sdk.MustAccAddressFromHex(headGroupResponse.GroupInfo.Owner)))
 	s.T().Logf("GroupInfo: %s", headGroupResponse.GetGroupInfo().String())
 
-	principal := types.NewPrincipalWithGroupId(headGroupResponse.GroupInfo.Id)
+	principal := types.NewPrincipalWithGroupID(headGroupResponse.GroupInfo.Id)
 	// Put bucket policy for group
 	bucketStatement := &types.Statement{
 		Actions: []types.ActionType{types.ACTION_DELETE_BUCKET},
@@ -1743,7 +1689,7 @@ func (s *StorageTestSuite) TestVerifyStaleGroupPermission() {
 
 	queryPolicyForGroupResp, err := s.Client.QueryPolicyForGroup(ctx, &queryPolicyForGroupReq)
 	s.Require().NoError(err)
-	s.Require().Equal(bucketId, queryPolicyForGroupResp.Policy.ResourceId)
+	s.Require().Equal(bucketID, queryPolicyForGroupResp.Policy.ResourceId)
 	s.Require().Equal(queryPolicyForGroupResp.Policy.ResourceType, resource.RESOURCE_TYPE_BUCKET)
 	s.Require().Equal(types.EFFECT_ALLOW, queryPolicyForGroupResp.Policy.Statements[0].Effect)
 	bucketPolicyID := queryPolicyForGroupResp.Policy.Id
@@ -1755,7 +1701,7 @@ func (s *StorageTestSuite) TestVerifyStaleGroupPermission() {
 		PrincipalGroupId: headGroupResponse.GroupInfo.Id.String(),
 	})
 	s.Require().NoError(err)
-	s.Require().Equal(objectId, queryPolicyForGroupResp.Policy.ResourceId)
+	s.Require().Equal(objectID, queryPolicyForGroupResp.Policy.ResourceId)
 	s.Require().Equal(queryPolicyForGroupResp.Policy.ResourceType, resource.RESOURCE_TYPE_OBJECT)
 	s.Require().Equal(types.EFFECT_ALLOW, queryPolicyForGroupResp.Policy.Statements[0].Effect)
 	objectPolicyID := queryPolicyForGroupResp.Policy.Id
@@ -1845,12 +1791,12 @@ func (s *StorageTestSuite) UpdateParams(newParams *storagetypes.Params) {
 	s.Require().Equal(txRes.Code, uint32(0))
 
 	// 3. query proposal and get proposal ID
-	var proposalId uint64
+	var proposalID uint64
 	for _, event := range txRes.Logs[0].Events {
-		if event.Type == "submit_proposal" {
+		if event.Type == submitProposalEvent {
 			for _, attr := range event.Attributes {
-				if attr.Key == "proposal_id" {
-					proposalId, err = strconv.ParseUint(attr.Value, 10, 0)
+				if attr.Key == proposalIDStr {
+					proposalID, err = strconv.ParseUint(attr.Value, 10, 0)
 					s.Require().NoError(err)
 					break
 				}
@@ -1858,14 +1804,14 @@ func (s *StorageTestSuite) UpdateParams(newParams *storagetypes.Params) {
 			break
 		}
 	}
-	s.Require().True(proposalId != 0)
+	s.Require().True(proposalID != 0)
 
-	queryProposal := &govtypesv1.QueryProposalRequest{ProposalId: proposalId}
+	queryProposal := &govtypesv1.QueryProposalRequest{ProposalId: proposalID}
 	_, err = s.Client.GovQueryClientV1.Proposal(ctx, queryProposal)
 	s.Require().NoError(err)
 
 	// 4. submit MsgVote and wait the proposal exec
-	msgVote := govtypesv1.NewMsgVote(validator, proposalId, govtypesv1.OptionYes, "test")
+	msgVote := govtypesv1.NewMsgVote(validator, proposalID, govtypesv1.OptionYes, "test")
 	txRes = s.SendTxBlock(s.Validator, msgVote)
 	s.Require().Equal(txRes.Code, uint32(0))
 
@@ -1919,7 +1865,7 @@ func (s *StorageTestSuite) TestExpiredAccountPolicyGCAndRePut() {
 	ctx := context.Background()
 	user1 := s.GenAndChargeAccounts(1, 1000000)[0]
 
-	_, owner, bucketName, bucketId, _, _ := s.createObjectWithVisibility(storagetypes.VISIBILITY_TYPE_PUBLIC_READ)
+	_, owner, bucketName, bucketID, _, _ := s.createObjectWithVisibility(storagetypes.VISIBILITY_TYPE_PUBLIC_READ)
 
 	principal := types.NewPrincipalWithAccount(user1.GetAddr())
 
@@ -1941,7 +1887,7 @@ func (s *StorageTestSuite) TestExpiredAccountPolicyGCAndRePut() {
 		PrincipalAddress: user1.GetAddr().String(),
 	})
 	s.Require().NoError(err)
-	s.Require().Equal(bucketId, queryPolicyForAccountResp.Policy.ResourceId)
+	s.Require().Equal(bucketID, queryPolicyForAccountResp.Policy.ResourceId)
 
 	// wait for policy expired
 	time.Sleep(5 * time.Second)
@@ -1964,16 +1910,16 @@ func (s *StorageTestSuite) TestExpiredAccountPolicyGCAndRePut() {
 		PrincipalAddress: user1.GetAddr().String(),
 	})
 	s.Require().NoError(err)
-	s.Require().Equal(bucketId, queryPolicyForAccountResp.Policy.ResourceId)
+	s.Require().Equal(bucketID, queryPolicyForAccountResp.Policy.ResourceId)
 }
 
 func (s *StorageTestSuite) TestExpiredGroupPolicyGCAndRePut() {
 	ctx := context.Background()
 	user := s.GenAndChargeAccounts(3, 10000)
-	_, owner, bucketName, bucketId, _, _ := s.createObjectWithVisibility(storagetypes.VISIBILITY_TYPE_PUBLIC_READ)
+	_, owner, bucketName, bucketID, _, _ := s.createObjectWithVisibility(storagetypes.VISIBILITY_TYPE_PUBLIC_READ)
 
 	// Create Group
-	testGroupName := "testGroup"
+
 	msgCreateGroup := storagetypes.NewMsgCreateGroup(owner.GetAddr(), testGroupName, "")
 	s.SendTxBlock(owner, msgCreateGroup)
 	membersToAdd := []*storagetypes.MsgGroupMember{
@@ -1991,7 +1937,7 @@ func (s *StorageTestSuite) TestExpiredGroupPolicyGCAndRePut() {
 	s.Require().True(owner.GetAddr().Equals(sdk.MustAccAddressFromHex(headGroupResponse.GroupInfo.Owner)))
 	s.T().Logf("GroupInfo: %s", headGroupResponse.GetGroupInfo().String())
 
-	principal := types.NewPrincipalWithGroupId(headGroupResponse.GroupInfo.Id)
+	principal := types.NewPrincipalWithGroupID(headGroupResponse.GroupInfo.Id)
 	// Put bucket policy for group
 	expirationTime := time.Now().Add(3 * time.Second)
 
@@ -2012,16 +1958,16 @@ func (s *StorageTestSuite) TestExpiredGroupPolicyGCAndRePut() {
 
 	queryPolicyForGroupResp, err := s.Client.QueryPolicyForGroup(ctx, &queryPolicyForGroupReq)
 	s.Require().NoError(err)
-	s.Require().Equal(bucketId, queryPolicyForGroupResp.Policy.ResourceId)
+	s.Require().Equal(bucketID, queryPolicyForGroupResp.Policy.ResourceId)
 	s.Require().Equal(queryPolicyForGroupResp.Policy.ResourceType, resource.RESOURCE_TYPE_BUCKET)
 	s.Require().Equal(types.EFFECT_ALLOW, queryPolicyForGroupResp.Policy.Statements[0].Effect)
-	bucketPolicyId := queryPolicyForGroupResp.Policy.Id
+	bucketPolicyID := queryPolicyForGroupResp.Policy.Id
 
 	// wait for policy expired
 	time.Sleep(5 * time.Second)
 
 	// policy is GC
-	_, err = s.Client.QueryPolicyById(ctx, &storagetypes.QueryPolicyByIdRequest{PolicyId: bucketPolicyId.String()})
+	_, err = s.Client.QueryPolicyById(ctx, &storagetypes.QueryPolicyByIdRequest{PolicyId: bucketPolicyID.String()})
 	s.Require().Error(err)
 	s.Require().ErrorContains(err, "No such Policy")
 
@@ -2032,7 +1978,7 @@ func (s *StorageTestSuite) TestExpiredGroupPolicyGCAndRePut() {
 
 	queryPolicyForGroupResp, err = s.Client.QueryPolicyForGroup(ctx, &queryPolicyForGroupReq)
 	s.Require().NoError(err)
-	s.Require().Equal(bucketId, queryPolicyForGroupResp.Policy.ResourceId)
+	s.Require().Equal(bucketID, queryPolicyForGroupResp.Policy.ResourceId)
 	s.Require().Equal(queryPolicyForGroupResp.Policy.ResourceType, resource.RESOURCE_TYPE_BUCKET)
 	s.Require().Equal(types.EFFECT_ALLOW, queryPolicyForGroupResp.Policy.Statements[0].Effect)
 }
@@ -2090,7 +2036,7 @@ func (s *StorageTestSuite) TestSetResourceTagWithPermission() {
 	payloadSize := buffer.Len()
 	checksum := crypto.Keccak256(buffer.Bytes())
 	expectChecksum := [][]byte{checksum, checksum, checksum, checksum, checksum, checksum, checksum}
-	contextType := "text/event-stream"
+	contextType := eventStreamType
 	msgCreateObject := storagetypes.NewMsgCreateObject(owner.GetAddr(), bucketName, objectName, uint64(payloadSize), storagetypes.VISIBILITY_TYPE_PRIVATE, expectChecksum, contextType, storagetypes.REDUNDANCY_EC_TYPE, math.MaxUint, nil)
 	msgCreateObject.PrimarySpApproval.Sig, err = sp.ApprovalKey.Sign(msgCreateObject.GetApprovalBytes())
 	s.Require().NoError(err)

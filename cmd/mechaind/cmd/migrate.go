@@ -36,8 +36,10 @@ import (
 )
 
 // FlagGenesisTime defines the genesis time in string format
-const FlagGenesisTime = "genesis-time"
-const chainUpgradeGuide = "https://github.com/cosmos/cosmos-sdk/blob/main/UPGRADING.md"
+const (
+	FlagGenesisTime   = "genesis-time"
+	chainUpgradeGuide = "https://github.com/cosmos/cosmos-sdk/blob/main/UPGRADING.md"
+)
 
 var migrationMap = genutiltypes.MigrationMap{}
 

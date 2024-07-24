@@ -42,13 +42,13 @@ func NewTestApp(
 	valSet := tmtypes.NewValidatorSet([]*tmtypes.Validator{validator})
 
 	// generate genesis account
-	bz, _ := hex.DecodeString(test.TEST_PUBKEY)
+	bz, _ := hex.DecodeString(test.TestPublicKey)
 	faucetPubKey := &ethsecp256k1.PubKey{Key: bz}
 
 	acc := authtypes.NewBaseAccount(faucetPubKey.Address().Bytes(), faucetPubKey, 0, 0)
 	balance := banktypes.Balance{
 		Address: acc.GetAddress().String(),
-		Coins:   sdk.NewCoins(sdk.NewCoin(test.TEST_TOKEN_NAME, sdk.NewInt(100000000000000))),
+		Coins:   sdk.NewCoins(sdk.NewCoin(test.TestTokenName, sdk.NewInt(100000000000000))),
 	}
 
 	encCfg := encoding.MakeConfig(app.ModuleBasics)

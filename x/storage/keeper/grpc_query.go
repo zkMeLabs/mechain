@@ -44,7 +44,7 @@ func (k Keeper) QueryParamsByTimestamp(c context.Context, req *types.QueryParams
 	}
 
 	params := k.GetParams(ctx)
-	versionedParams, err := k.GetVersionedParamsWithTs(ctx, ts)
+	versionedParams, err := k.GetVersionedParamsWithTS(ctx, ts)
 	params.VersionedParams = versionedParams
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
@@ -74,7 +74,7 @@ func (k Keeper) HeadBucket(goCtx context.Context, req *types.QueryHeadBucketRequ
 	return nil, types.ErrNoSuchBucket
 }
 
-func (k Keeper) HeadBucketById(goCtx context.Context, req *types.QueryHeadBucketByIdRequest) (*types.QueryHeadBucketResponse, error) {
+func (k Keeper) HeadBucketById(goCtx context.Context, req *types.QueryHeadBucketByIdRequest) (*types.QueryHeadBucketResponse, error) { //nolint
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -123,7 +123,7 @@ func (k Keeper) HeadObject(goCtx context.Context, req *types.QueryHeadObjectRequ
 	}, nil
 }
 
-func (k Keeper) HeadObjectById(goCtx context.Context, req *types.QueryHeadObjectByIdRequest) (*types.QueryHeadObjectResponse, error) {
+func (k Keeper) HeadObjectById(goCtx context.Context, req *types.QueryHeadObjectByIdRequest) (*types.QueryHeadObjectResponse, error) { //nolint
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -191,7 +191,7 @@ func (k Keeper) ListBuckets(goCtx context.Context, req *types.QueryListBucketsRe
 	store := ctx.KVStore(k.storeKey)
 	bucketStore := prefix.NewStore(store, types.BucketByIDPrefix)
 
-	pageRes, err := query.Paginate(bucketStore, req.Pagination, func(key, value []byte) error {
+	pageRes, err := query.Paginate(bucketStore, req.Pagination, func(_, value []byte) error {
 		var bucketInfo types.BucketInfo
 		k.cdc.MustUnmarshal(value, &bucketInfo)
 		bucketInfos = append(bucketInfos, &bucketInfo)
@@ -224,7 +224,7 @@ func (k Keeper) ListObjects(goCtx context.Context, req *types.QueryListObjectsRe
 	store := ctx.KVStore(k.storeKey)
 	objectPrefixStore := prefix.NewStore(store, types.GetObjectKeyOnlyBucketPrefix(req.BucketName))
 
-	pageRes, err := query.Paginate(objectPrefixStore, req.Pagination, func(key, value []byte) error {
+	pageRes, err := query.Paginate(objectPrefixStore, req.Pagination, func(_, value []byte) error {
 		objectInfo, found := k.GetObjectInfoById(ctx, k.objectSeq.DecodeSequence(value))
 		if found {
 			objectInfos = append(objectInfos, objectInfo)
@@ -237,7 +237,7 @@ func (k Keeper) ListObjects(goCtx context.Context, req *types.QueryListObjectsRe
 	return &types.QueryListObjectsResponse{ObjectInfos: objectInfos, Pagination: pageRes}, nil
 }
 
-func (k Keeper) ListObjectsByBucketId(goCtx context.Context, req *types.QueryListObjectsByBucketIdRequest) (*types.QueryListObjectsResponse, error) {
+func (k Keeper) ListObjectsByBucketId(goCtx context.Context, req *types.QueryListObjectsByBucketIdRequest) (*types.QueryListObjectsResponse, error) { //nolint
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -262,7 +262,7 @@ func (k Keeper) ListObjectsByBucketId(goCtx context.Context, req *types.QueryLis
 	}
 	objectPrefixStore := prefix.NewStore(store, types.GetObjectKeyOnlyBucketPrefix(bucketInfo.BucketName))
 
-	pageRes, err := query.Paginate(objectPrefixStore, req.Pagination, func(key, value []byte) error {
+	pageRes, err := query.Paginate(objectPrefixStore, req.Pagination, func(_, value []byte) error {
 		u256Seq := sequence.Sequence[math.Uint]{}
 		objectInfo, found := k.GetObjectInfoById(ctx, u256Seq.DecodeSequence(value))
 		if found {
@@ -277,7 +277,7 @@ func (k Keeper) ListObjectsByBucketId(goCtx context.Context, req *types.QueryLis
 }
 
 func (k Keeper) HeadBucketNFT(goCtx context.Context, req *types.QueryNFTRequest) (*types.QueryBucketNFTResponse, error) {
-	id, err := validateAndGetId(req)
+	id, err := validateAndGetID(req)
 	if err != nil {
 		return nil, err
 	}
@@ -292,7 +292,7 @@ func (k Keeper) HeadBucketNFT(goCtx context.Context, req *types.QueryNFTRequest)
 }
 
 func (k Keeper) HeadObjectNFT(goCtx context.Context, req *types.QueryNFTRequest) (*types.QueryObjectNFTResponse, error) {
-	id, err := validateAndGetId(req)
+	id, err := validateAndGetID(req)
 	if err != nil {
 		return nil, err
 	}
@@ -307,7 +307,7 @@ func (k Keeper) HeadObjectNFT(goCtx context.Context, req *types.QueryNFTRequest)
 }
 
 func (k Keeper) HeadGroupNFT(goCtx context.Context, req *types.QueryNFTRequest) (*types.QueryGroupNFTResponse, error) {
-	id, err := validateAndGetId(req)
+	id, err := validateAndGetID(req)
 	if err != nil {
 		return nil, err
 	}
@@ -415,7 +415,7 @@ func (k Keeper) QueryQuotaUpdateTime(c context.Context, req *types.QueryQuoteUpd
 	}, nil
 }
 
-func validateAndGetId(req *types.QueryNFTRequest) (math.Uint, error) {
+func validateAndGetID(req *types.QueryNFTRequest) (math.Uint, error) {
 	if req == nil {
 		return math.ZeroUint(), status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -474,7 +474,7 @@ func (k Keeper) QueryPolicyForGroup(goCtx context.Context, req *types.QueryPolic
 		return nil, status.Errorf(codes.InvalidArgument, "failed to parse GRN %s: %v", req.Resource, err)
 	}
 
-	policy, err := k.GetPolicy(ctx, grn, permtypes.NewPrincipalWithGroupId(id))
+	policy, err := k.GetPolicy(ctx, grn, permtypes.NewPrincipalWithGroupID(id))
 	if err != nil {
 		return nil, err
 	}
@@ -558,7 +558,7 @@ func (k Keeper) ListGroups(goCtx context.Context, req *types.QueryListGroupsRequ
 	store := ctx.KVStore(k.storeKey)
 	groupStore := prefix.NewStore(store, types.GetGroupKeyOnlyOwnerPrefix(owner))
 
-	pageRes, err := query.Paginate(groupStore, req.Pagination, func(key, value []byte) error {
+	pageRes, err := query.Paginate(groupStore, req.Pagination, func(_, value []byte) error {
 		groupInfo, found := k.GetGroupInfoById(ctx, k.groupSeq.DecodeSequence(value))
 		if found {
 			groupInfos = append(groupInfos, groupInfo)
@@ -599,20 +599,18 @@ func (k Keeper) HeadGroupMember(goCtx context.Context, req *types.QueryHeadGroup
 	return &types.QueryHeadGroupMemberResponse{GroupMember: groupMember}, nil
 }
 
-func (k Keeper) QueryPolicyById(goCtx context.Context, req *types.QueryPolicyByIdRequest) (*types.
-	QueryPolicyByIdResponse, error,
-) {
+func (k Keeper) QueryPolicyById(goCtx context.Context, req *types.QueryPolicyByIdRequest) (*types.QueryPolicyByIdResponse, error) { //nolint
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	policyId, err := math.ParseUint(req.PolicyId)
+	policyID, err := math.ParseUint(req.PolicyId)
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid policy id")
 	}
 
-	policy, found := k.permKeeper.GetPolicyByID(ctx, policyId)
+	policy, found := k.permKeeper.GetPolicyByID(ctx, policyID)
 	if !found {
 		return nil, types.ErrNoSuchPolicy
 	}
@@ -661,7 +659,7 @@ func (k Keeper) QueryGroupsExist(goCtx context.Context, req *types.QueryGroupsEx
 	return &types.QueryGroupsExistResponse{Exists: exists}, nil
 }
 
-func (k Keeper) QueryGroupsExistById(goCtx context.Context, req *types.QueryGroupsExistByIdRequest) (*types.QueryGroupsExistResponse, error) {
+func (k Keeper) QueryGroupsExistById(goCtx context.Context, req *types.QueryGroupsExistByIdRequest) (*types.QueryGroupsExistResponse, error) { //nolint
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -669,13 +667,13 @@ func (k Keeper) QueryGroupsExistById(goCtx context.Context, req *types.QueryGrou
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	exists := make(map[string]bool)
-	for _, groupId := range req.GroupIds {
-		id, err := math.ParseUint(groupId)
+	for _, groupID := range req.GroupIds {
+		id, err := math.ParseUint(groupID)
 		if err != nil {
 			return nil, status.Error(codes.InvalidArgument, "invalid group id")
 		}
 		_, found := k.GetGroupInfoById(ctx, id)
-		exists[groupId] = found
+		exists[groupID] = found
 	}
 	return &types.QueryGroupsExistResponse{Exists: exists}, nil
 }

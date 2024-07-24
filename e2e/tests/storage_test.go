@@ -18,7 +18,6 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	govtypesv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
-	v1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 	"github.com/prysmaticlabs/prysm/crypto/bls"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
@@ -172,7 +171,7 @@ func (s *StorageTestSuite) TestCreateObject() {
 	payloadSize := buffer.Len()
 	checksum := crypto.Keccak256(buffer.Bytes())
 	expectChecksum := [][]byte{checksum, checksum, checksum, checksum, checksum, checksum, checksum}
-	contextType := "text/event-stream"
+	contextType := eventStreamType
 	msgCreateObject := storagetypes.NewMsgCreateObject(user.GetAddr(), bucketName, objectName, uint64(payloadSize), storagetypes.VISIBILITY_TYPE_PRIVATE, expectChecksum, contextType, storagetypes.REDUNDANCY_EC_TYPE, math.MaxUint, nil)
 	msgCreateObject.PrimarySpApproval.Sig, err = sp.ApprovalKey.Sign(msgCreateObject.GetApprovalBytes())
 	s.Require().NoError(err)
@@ -197,11 +196,11 @@ func (s *StorageTestSuite) TestCreateObject() {
 	s.Require().Equal(queryHeadObjectResponse.ObjectInfo.ContentType, contextType)
 
 	// SealObject
-	gvgId := gvg.Id
+	gvgID := gvg.Id
 	msgSealObject := storagetypes.NewMsgSealObject(sp.SealKey.GetAddr(), bucketName, objectName, gvg.Id, nil)
 	secondarySigs := make([][]byte, 0)
 	secondarySPBlsPubKeys := make([]bls.PublicKey, 0)
-	blsSignHash := storagetypes.NewSecondarySpSealObjectSignDoc(s.GetChainID(), gvgId, queryHeadObjectResponse.ObjectInfo.Id, storagetypes.GenerateHash(queryHeadObjectResponse.ObjectInfo.Checksums[:])).GetBlsSignHash()
+	blsSignHash := storagetypes.NewSecondarySpSealObjectSignDoc(s.GetChainID(), gvgID, queryHeadObjectResponse.ObjectInfo.Id, storagetypes.GenerateHash(queryHeadObjectResponse.ObjectInfo.Checksums)).GetBlsSignHash()
 	// every secondary sp signs the checksums
 	for _, spID := range gvg.SecondarySpIds {
 		sig, err := core.BlsSignAndVerify(s.StorageProviders[spID], blsSignHash)
@@ -460,7 +459,7 @@ func (s *StorageTestSuite) TestDeleteBucket() {
 	payloadSize := buffer.Len()
 	checksum := crypto.Keccak256(buffer.Bytes())
 	expectChecksum := [][]byte{checksum, checksum, checksum, checksum, checksum, checksum, checksum}
-	contextType := "text/event-stream"
+	contextType := eventStreamType
 	msgCreateObject := storagetypes.NewMsgCreateObject(user.GetAddr(), bucketName1, objectName, uint64(payloadSize),
 		storagetypes.VISIBILITY_TYPE_PRIVATE, expectChecksum, contextType, storagetypes.REDUNDANCY_EC_TYPE, math.MaxUint, nil)
 	msgCreateObject.PrimarySpApproval.Sig, err = sp.ApprovalKey.Sign(msgCreateObject.GetApprovalBytes())
@@ -477,12 +476,12 @@ func (s *StorageTestSuite) TestDeleteBucket() {
 	s.Require().NoError(err)
 
 	// SealObject
-	gvgId := gvg.Id
+	gvgID := gvg.Id
 	msgSealObject := storagetypes.NewMsgSealObject(sp.SealKey.GetAddr(), bucketName1, objectName,
 		gvg.Id, nil)
 	secondarySigs := make([][]byte, 0)
 	secondarySPBlsPubKeys := make([]bls.PublicKey, 0)
-	blsSignHash := storagetypes.NewSecondarySpSealObjectSignDoc(s.GetChainID(), gvgId, queryHeadObjectResponse.ObjectInfo.Id, storagetypes.GenerateHash(queryHeadObjectResponse.ObjectInfo.Checksums[:])).GetBlsSignHash()
+	blsSignHash := storagetypes.NewSecondarySpSealObjectSignDoc(s.GetChainID(), gvgID, queryHeadObjectResponse.ObjectInfo.Id, storagetypes.GenerateHash(queryHeadObjectResponse.ObjectInfo.Checksums)).GetBlsSignHash()
 	// every secondary sp signs the checksums
 	for _, spID := range gvg.SecondarySpIds {
 		sig, err := core.BlsSignAndVerify(s.StorageProviders[spID], blsSignHash)
@@ -602,7 +601,7 @@ func (s *StorageTestSuite) TestDeleteBucket() {
 // 	payloadSize := buffer.Len()
 // 	checksum := crypto.Keccak256(buffer.Bytes())
 // 	expectChecksum := [][]byte{checksum, checksum, checksum, checksum, checksum, checksum, checksum}
-// 	contextType := "text/event-stream"
+// 	contextType := eventStreamType
 // 	msgCreateObject := storagetypes.NewMsgCreateObject(user.GetAddr(), bucketName, objectName, uint64(payloadSize), storagetypes.VISIBILITY_TYPE_PRIVATE, expectChecksum, contextType, storagetypes.REDUNDANCY_EC_TYPE, math.MaxUint, nil)
 // 	msgCreateObject.PrimarySpApproval.Sig, err = sp.ApprovalKey.Sign(msgCreateObject.GetApprovalBytes())
 // 	s.Require().NoError(err)
@@ -737,18 +736,18 @@ func (s *StorageTestSuite) TestDeleteBucket() {
 // }
 
 func (s *StorageTestSuite) TestDiscontinueObject_Normal() {
-	sp1, _, bucketName1, _, _, objectId1 := s.createObject()
-	sp2, _, bucketName2, _, _, objectId2 := s.createObject()
+	sp1, _, bucketName1, _, _, objectID1 := s.createObject()
+	sp2, _, bucketName2, _, _, objectID2 := s.createObject()
 
 	// DiscontinueObject
-	msgDiscontinueObject := storagetypes.NewMsgDiscontinueObject(sp1.GcKey.GetAddr(), bucketName1, []sdkmath.Uint{objectId1}, "test")
+	msgDiscontinueObject := storagetypes.NewMsgDiscontinueObject(sp1.GcKey.GetAddr(), bucketName1, []sdkmath.Uint{objectID1}, "test")
 	txRes1 := s.SendTxBlock(sp1.GcKey, msgDiscontinueObject)
-	deleteAt1 := int64(filterDiscontinueObjectEventFromTx(txRes1).DeleteAt)
+	deleteAt1 := filterDiscontinueObjectEventFromTx(txRes1).DeleteAt
 
 	time.Sleep(3 * time.Second)
-	msgDiscontinueObject2 := storagetypes.NewMsgDiscontinueObject(sp2.GcKey.GetAddr(), bucketName2, []sdkmath.Uint{objectId2}, "test")
+	msgDiscontinueObject2 := storagetypes.NewMsgDiscontinueObject(sp2.GcKey.GetAddr(), bucketName2, []sdkmath.Uint{objectID2}, "test")
 	txRes2 := s.SendTxBlock(sp2.GcKey, msgDiscontinueObject2)
-	deleteAt2 := int64(filterDiscontinueObjectEventFromTx(txRes2).DeleteAt)
+	deleteAt2 := filterDiscontinueObjectEventFromTx(txRes2).DeleteAt
 
 	// Wait after the delete timestamp for first discontinue request
 	heightBefore := txRes1.Height
@@ -764,9 +763,8 @@ func (s *StorageTestSuite) TestDiscontinueObject_Normal() {
 		if blockTime >= deleteAt1 {
 			heightAfter = statusRes.SyncInfo.LatestBlockHeight
 			break
-		} else {
-			heightBefore = statusRes.SyncInfo.LatestBlockHeight
 		}
+		heightBefore = statusRes.SyncInfo.LatestBlockHeight
 	}
 
 	time.Sleep(200 * time.Millisecond)
@@ -780,10 +778,10 @@ func (s *StorageTestSuite) TestDiscontinueObject_Normal() {
 
 	object1Found, object2Found := false, false
 	for _, event := range events {
-		if event.ObjectId.Equal(objectId1) {
+		if event.ObjectId.Equal(objectID1) {
 			object1Found = true
 		}
-		if event.ObjectId.Equal(objectId2) {
+		if event.ObjectId.Equal(objectID2) {
 			object2Found = true
 		}
 	}
@@ -804,9 +802,8 @@ func (s *StorageTestSuite) TestDiscontinueObject_Normal() {
 		if blockTime >= deleteAt2 {
 			heightAfter = statusRes.SyncInfo.LatestBlockHeight
 			break
-		} else {
-			heightBefore = statusRes.SyncInfo.LatestBlockHeight
 		}
+		heightBefore = statusRes.SyncInfo.LatestBlockHeight
 	}
 
 	time.Sleep(200 * time.Millisecond)
@@ -818,7 +815,7 @@ func (s *StorageTestSuite) TestDiscontinueObject_Normal() {
 		heightBefore++
 	}
 	for _, event := range events {
-		if event.ObjectId.Equal(objectId2) {
+		if event.ObjectId.Equal(objectID2) {
 			object2Found = true
 		}
 	}
@@ -826,20 +823,20 @@ func (s *StorageTestSuite) TestDiscontinueObject_Normal() {
 }
 
 func (s *StorageTestSuite) TestDiscontinueObject_UserDeleted() {
-	sp, user, bucketName, _, objectName, objectId := s.createObject()
+	sp, user, bucketName, _, objectName, objectID := s.createObject()
 
 	// DiscontinueObject
-	msgDiscontinueObject := storagetypes.NewMsgDiscontinueObject(sp.GcKey.GetAddr(), bucketName, []sdkmath.Uint{objectId}, "test")
+	msgDiscontinueObject := storagetypes.NewMsgDiscontinueObject(sp.GcKey.GetAddr(), bucketName, []sdkmath.Uint{objectID}, "test")
 	_ = s.SendTxBlock(sp.GcKey, msgDiscontinueObject)
 
 	// DeleteObject before discontinue confirm window
 	msgDeleteObject := storagetypes.NewMsgDeleteObject(user.GetAddr(), bucketName, objectName)
-	s.SendTxBlockWithExpectErrorString(msgDeleteObject, user, "is discontined")
+	s.SendTxBlockWithExpectErrorString(msgDeleteObject, user, "is discontinued")
 }
 
 func (s *StorageTestSuite) TestDiscontinueBucket_Normal() {
-	sp1, _, bucketName1, bucketId1, _, _ := s.createObject()
-	sp2, _, bucketName2, bucketId2, _, _ := s.createObject()
+	sp1, _, bucketName1, bucketID1, _, _ := s.createObject()
+	sp2, _, bucketName2, bucketID2, _, _ := s.createObject()
 
 	// DiscontinueBucket
 	msgDiscontinueBucket := storagetypes.NewMsgDiscontinueBucket(sp1.GcKey.GetAddr(), bucketName1, "test")
@@ -865,9 +862,8 @@ func (s *StorageTestSuite) TestDiscontinueBucket_Normal() {
 		if blockTime >= deleteAt1 {
 			heightAfter = statusRes.SyncInfo.LatestBlockHeight
 			break
-		} else {
-			heightBefore = statusRes.SyncInfo.LatestBlockHeight
 		}
+		heightBefore = statusRes.SyncInfo.LatestBlockHeight
 	}
 
 	time.Sleep(200 * time.Millisecond)
@@ -881,10 +877,10 @@ func (s *StorageTestSuite) TestDiscontinueBucket_Normal() {
 
 	bucket1Found, bucket2Found := false, false
 	for _, event := range events {
-		if event.BucketId.Equal(bucketId1) {
+		if event.BucketId.Equal(bucketID1) {
 			bucket1Found = true
 		}
-		if event.BucketId.Equal(bucketId2) {
+		if event.BucketId.Equal(bucketID2) {
 			bucket2Found = true
 		}
 	}
@@ -905,9 +901,8 @@ func (s *StorageTestSuite) TestDiscontinueBucket_Normal() {
 		if blockTime >= deleteAt2 {
 			heightAfter = statusRes.SyncInfo.LatestBlockHeight
 			break
-		} else {
-			heightBefore = statusRes.SyncInfo.LatestBlockHeight
 		}
+		heightBefore = statusRes.SyncInfo.LatestBlockHeight
 	}
 
 	time.Sleep(200 * time.Millisecond)
@@ -920,7 +915,7 @@ func (s *StorageTestSuite) TestDiscontinueBucket_Normal() {
 	}
 
 	for _, event := range events {
-		if event.BucketId.Equal(bucketId2) {
+		if event.BucketId.Equal(bucketID2) {
 			bucket2Found = true
 		}
 	}
@@ -928,12 +923,12 @@ func (s *StorageTestSuite) TestDiscontinueBucket_Normal() {
 }
 
 func (s *StorageTestSuite) TestDiscontinueBucket_UserDeleted() {
-	sp, user, bucketName, bucketId, objectName, _ := s.createObject()
+	sp, user, bucketName, bucketID, objectName, _ := s.createObject()
 
 	// DiscontinueBucket
 	msgDiscontinueBucket := storagetypes.NewMsgDiscontinueBucket(sp.GcKey.GetAddr(), bucketName, "test")
 	txRes := s.SendTxBlock(sp.GcKey, msgDiscontinueBucket)
-	deleteAt := int64(filterDiscontinueBucketEventFromTx(txRes).DeleteAt)
+	deleteAt := filterDiscontinueBucketEventFromTx(txRes).DeleteAt
 
 	// DeleteBucket before discontinue confirm window
 	msgDeleteObject := storagetypes.NewMsgDeleteObject(user.GetAddr(), bucketName, objectName)
@@ -941,7 +936,7 @@ func (s *StorageTestSuite) TestDiscontinueBucket_UserDeleted() {
 	msgDeleteBucket := storagetypes.NewMsgDeleteBucket(user.GetAddr(), bucketName)
 	txRes = s.SendTxBlock(user, msgDeleteBucket)
 	event := filterDeleteBucketEventFromTx(txRes)
-	s.Require().Equal(event.BucketId, bucketId)
+	s.Require().Equal(event.BucketId, bucketID)
 
 	// Wait after the delete timestamp
 	heightBefore := txRes.Height
@@ -957,9 +952,8 @@ func (s *StorageTestSuite) TestDiscontinueBucket_UserDeleted() {
 		if blockTime >= deleteAt {
 			heightAfter = statusRes.SyncInfo.LatestBlockHeight
 			break
-		} else {
-			heightBefore = statusRes.SyncInfo.LatestBlockHeight
 		}
+		heightBefore = statusRes.SyncInfo.LatestBlockHeight
 	}
 
 	time.Sleep(200 * time.Millisecond)
@@ -974,7 +968,7 @@ func (s *StorageTestSuite) TestDiscontinueBucket_UserDeleted() {
 	// Already deleted by user
 	found := false
 	for _, event := range events {
-		if event.BucketId.Equal(bucketId) {
+		if event.BucketId.Equal(bucketID) {
 			found = true
 		}
 	}
@@ -1048,16 +1042,7 @@ func (s *StorageTestSuite) createObjectWithVisibility(v storagetypes.VisibilityT
 	objectName := storageutils.GenRandomObjectName()
 	// create test buffer
 	var buffer bytes.Buffer
-	line := `1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,1234567890,
-	1234567890,1234567890,1234567890,123`
+	line := strings.Repeat(repeatPart, 1024)
 	// Create 1MiB content where each line contains 1024 characters.
 	for i := 0; i < 1024; i++ {
 		buffer.WriteString(fmt.Sprintf("[%05d] %s\n", i, line))
@@ -1065,7 +1050,7 @@ func (s *StorageTestSuite) createObjectWithVisibility(v storagetypes.VisibilityT
 	payloadSize := buffer.Len()
 	checksum := crypto.Keccak256(buffer.Bytes())
 	expectChecksum := [][]byte{checksum, checksum, checksum, checksum, checksum, checksum, checksum}
-	contextType := "text/event-stream"
+	contextType := eventStreamType
 	msgCreateObject := storagetypes.NewMsgCreateObject(user.GetAddr(), bucketName, objectName, uint64(payloadSize), v, expectChecksum, contextType, storagetypes.REDUNDANCY_EC_TYPE, math.MaxUint, nil)
 	msgCreateObject.PrimarySpApproval.Sig, err = sp.ApprovalKey.Sign(msgCreateObject.GetApprovalBytes())
 	s.Require().NoError(err)
@@ -1090,12 +1075,12 @@ func (s *StorageTestSuite) createObjectWithVisibility(v storagetypes.VisibilityT
 	s.Require().Equal(queryHeadObjectResponse.ObjectInfo.ContentType, contextType)
 
 	// SealObject
-	gvgId := gvg.Id
-	msgSealObject := storagetypes.NewMsgSealObject(sp.SealKey.GetAddr(), bucketName, objectName, gvgId, nil)
+	gvgID := gvg.Id
+	msgSealObject := storagetypes.NewMsgSealObject(sp.SealKey.GetAddr(), bucketName, objectName, gvgID, nil)
 
 	secondarySigs := make([][]byte, 0)
 	secondarySPBlsPubKeys := make([]bls.PublicKey, 0)
-	blsSignHash := storagetypes.NewSecondarySpSealObjectSignDoc(s.GetChainID(), gvgId, queryHeadObjectResponse.ObjectInfo.Id, storagetypes.GenerateHash(queryHeadObjectResponse.ObjectInfo.Checksums[:])).GetBlsSignHash()
+	blsSignHash := storagetypes.NewSecondarySpSealObjectSignDoc(s.GetChainID(), gvgID, queryHeadObjectResponse.ObjectInfo.Id, storagetypes.GenerateHash(queryHeadObjectResponse.ObjectInfo.Checksums)).GetBlsSignHash()
 	// every secondary sp signs the checksums
 	for _, spID := range gvg.SecondarySpIds {
 		sig, err := core.BlsSignAndVerify(s.StorageProviders[spID], blsSignHash)
@@ -1155,15 +1140,15 @@ func filterDeleteObjectEventFromBlock(blockRes *ctypes.ResultBlockResults) []sto
 
 	for _, event := range blockRes.EndBlockEvents {
 		if event.Type == "greenfield.storage.EventDeleteObject" {
-			objectIdStr := ""
+			objIDStr := ""
 			for _, attr := range event.Attributes {
-				if string(attr.Key) == "object_id" {
-					objectIdStr = strings.Trim(string(attr.Value), `"`)
+				if attr.Key == objectIDStr {
+					objIDStr = strings.Trim(attr.Value, `"`)
 				}
 			}
-			objectId := sdkmath.NewUintFromString(objectIdStr)
+			objectID := sdkmath.NewUintFromString(objIDStr)
 			events = append(events, storagetypes.EventDeleteObject{
-				ObjectId: objectId,
+				ObjectId: objectID,
 			})
 		}
 	}
@@ -1192,15 +1177,15 @@ func filterDeleteBucketEventFromBlock(blockRes *ctypes.ResultBlockResults) []sto
 
 	for _, event := range blockRes.EndBlockEvents {
 		if event.Type == "greenfield.storage.EventDeleteBucket" {
-			bucketIdStr := ""
+			bucketIDStr := ""
 			for _, attr := range event.Attributes {
-				if string(attr.Key) == "bucket_id" {
-					bucketIdStr = strings.Trim(string(attr.Value), `"`)
+				if attr.Key == "bucket_id" {
+					bucketIDStr = strings.Trim(attr.Value, `"`)
 				}
 			}
-			bucketId := sdkmath.NewUintFromString(bucketIdStr)
+			bucketID := sdkmath.NewUintFromString(bucketIDStr)
 			events = append(events, storagetypes.EventDeleteBucket{
-				BucketId: bucketId,
+				BucketId: bucketID,
 			})
 		}
 	}
@@ -1208,19 +1193,19 @@ func filterDeleteBucketEventFromBlock(blockRes *ctypes.ResultBlockResults) []sto
 }
 
 func filterDeleteBucketEventFromTx(txRes *sdk.TxResponse) storagetypes.EventDeleteBucket {
-	bucketIdStr := ""
+	bucketIDStr := ""
 	for _, event := range txRes.Events {
 		if event.Type == "greenfield.storage.EventDeleteBucket" {
 			for _, attr := range event.Attributes {
-				if string(attr.Key) == "bucket_id" {
-					bucketIdStr = strings.Trim(string(attr.Value), `"`)
+				if attr.Key == "bucket_id" {
+					bucketIDStr = strings.Trim(attr.Value, `"`)
 				}
 			}
 		}
 	}
-	bucketId := sdkmath.NewUintFromString(bucketIdStr)
+	bucketID := sdkmath.NewUintFromString(bucketIDStr)
 	return storagetypes.EventDeleteBucket{
-		BucketId: bucketId,
+		BucketId: bucketID,
 	}
 }
 
@@ -1265,7 +1250,7 @@ func (s *StorageTestSuite) TestCancelCreateObject() {
 	payloadSize := buffer.Len()
 	checksum := crypto.Keccak256(buffer.Bytes())
 	expectChecksum := [][]byte{checksum, checksum, checksum, checksum, checksum, checksum, checksum}
-	contextType := "text/event-stream"
+	contextType := eventStreamType
 	msgCreateObject := storagetypes.NewMsgCreateObject(user.GetAddr(), bucketName, objectName, uint64(payloadSize), storagetypes.VISIBILITY_TYPE_PRIVATE, expectChecksum, contextType, storagetypes.REDUNDANCY_EC_TYPE, math.MaxUint, nil)
 	msgCreateObject.PrimarySpApproval.Sig, err = sp.ApprovalKey.Sign(msgCreateObject.GetApprovalBytes())
 	s.Require().NoError(err)
@@ -1333,7 +1318,7 @@ func (s *StorageTestSuite) TestCreateObjectWithCommonPrefix() {
 	payloadSize := buffer.Len()
 	checksum := crypto.Keccak256(buffer.Bytes())
 	expectChecksum := [][]byte{checksum, checksum, checksum, checksum, checksum, checksum, checksum}
-	contextType := "text/event-stream"
+	contextType := eventStreamType
 	msgCreateObject := storagetypes.NewMsgCreateObject(user.GetAddr(), bucketName, objectName, uint64(payloadSize), storagetypes.VISIBILITY_TYPE_PRIVATE, expectChecksum, contextType, storagetypes.REDUNDANCY_EC_TYPE, math.MaxUint, nil)
 	msgCreateObject.PrimarySpApproval.Sig, err = sp.ApprovalKey.Sign(msgCreateObject.GetApprovalBytes())
 	s.Require().NoError(err)
@@ -1414,12 +1399,12 @@ func (s *StorageTestSuite) TestUpdateParams() {
 	s.Require().Equal(txRes.Code, uint32(0))
 
 	// 3. query proposal and get proposal ID
-	var proposalId uint64
+	var proposalID uint64
 	for _, event := range txRes.Logs[0].Events {
-		if event.Type == "submit_proposal" {
+		if event.Type == submitProposalEvent {
 			for _, attr := range event.Attributes {
-				if attr.Key == "proposal_id" {
-					proposalId, err = strconv.ParseUint(attr.Value, 10, 0)
+				if attr.Key == proposalIDStr {
+					proposalID, err = strconv.ParseUint(attr.Value, 10, 0)
 					s.Require().NoError(err)
 					break
 				}
@@ -1427,14 +1412,14 @@ func (s *StorageTestSuite) TestUpdateParams() {
 			break
 		}
 	}
-	s.Require().True(proposalId != 0)
+	s.Require().True(proposalID != 0)
 
-	queryProposal := &govtypesv1.QueryProposalRequest{ProposalId: proposalId}
+	queryProposal := &govtypesv1.QueryProposalRequest{ProposalId: proposalID}
 	_, err = s.Client.GovQueryClientV1.Proposal(ctx, queryProposal)
 	s.Require().NoError(err)
 
 	// 4. submit MsgVote and wait the proposal exec
-	msgVote := govtypesv1.NewMsgVote(validator, proposalId, govtypesv1.OptionYes, "test")
+	msgVote := govtypesv1.NewMsgVote(validator, proposalID, govtypesv1.OptionYes, "test")
 	txRes = s.SendTxBlock(s.Validator, msgVote)
 	s.Require().Equal(txRes.Code, uint32(0))
 
@@ -1591,7 +1576,7 @@ func (s *StorageTestSuite) TestRejectSealObject() {
 	payloadSize := buffer.Len()
 	checksum := crypto.Keccak256(buffer.Bytes())
 	expectChecksum := [][]byte{checksum, checksum, checksum, checksum, checksum, checksum, checksum}
-	contextType := "text/event-stream"
+	contextType := eventStreamType
 	msgCreateObject := storagetypes.NewMsgCreateObject(user.GetAddr(), bucketName, objectName, uint64(payloadSize), storagetypes.VISIBILITY_TYPE_PRIVATE, expectChecksum, contextType, storagetypes.REDUNDANCY_EC_TYPE, math.MaxUint, nil)
 	msgCreateObject.PrimarySpApproval.Sig, err = sp.ApprovalKey.Sign(msgCreateObject.GetApprovalBytes())
 	s.Require().NoError(err)
@@ -1629,7 +1614,7 @@ func (s *StorageTestSuite) TestRejectSealObject() {
 	s.Require().True(strings.Contains(err.Error(), storagetypes.ErrNoSuchObject.Error()))
 }
 
-//func (s *StorageTestSuite) TestMigrationBucket() {
+// func (s *StorageTestSuite) TestMigrationBucket() {
 //	// construct bucket and object
 //	primarySP := s.BaseSuite.PickStorageProvider()
 //	gvg, found := primarySP.GetFirstGlobalVirtualGroup()
@@ -1723,7 +1708,7 @@ func (s *StorageTestSuite) TestUpdateStorageParams() {
 		Params:    updatedParams,
 	}
 
-	proposal, err := v1.NewMsgSubmitProposal([]sdk.Msg{msgUpdateParams}, sdk.NewCoins(sdk.NewCoin("azkme", sdk.NewInt(1000000000000000000))),
+	proposal, err := govtypesv1.NewMsgSubmitProposal([]sdk.Msg{msgUpdateParams}, sdk.NewCoins(sdk.NewCoin("azkme", sdk.NewInt(1000000000000000000))),
 		s.Validator.GetAddr().String(), "", "update storage params", "Test update storage params")
 	s.Require().NoError(err)
 	txBroadCastResp, err := s.SendTxBlockWithoutCheck(proposal, s.Validator)
@@ -1736,7 +1721,7 @@ func (s *StorageTestSuite) TestUpdateStorageParams() {
 	s.Require().NoError(err)
 	if txResp.Code == 0 && txResp.Height > 0 {
 		for _, event := range txResp.Events {
-			if event.Type == "submit_proposal" {
+			if event.Type == submitProposalEvent {
 				proposalID, err = strconv.Atoi(event.GetAttributes()[0].Value)
 				s.Require().NoError(err)
 			}
@@ -1755,7 +1740,7 @@ func (s *StorageTestSuite) TestUpdateStorageParams() {
 		Memo:      "",
 		FeeAmount: sdk.NewCoins(sdk.NewCoin("azkme", sdk.NewInt(1000000000000000000))),
 	}
-	voteBroadCastResp, err := s.SendTxBlockWithoutCheckWithTxOpt(v1.NewMsgVote(s.Validator.GetAddr(), uint64(proposalID), v1.OptionYes, ""),
+	voteBroadCastResp, err := s.SendTxBlockWithoutCheckWithTxOpt(govtypesv1.NewMsgVote(s.Validator.GetAddr(), uint64(proposalID), govtypesv1.OptionYes, ""),
 		s.Validator, txOpt)
 	s.Require().NoError(err)
 	voteResp, err := s.WaitForTx(voteBroadCastResp.TxResponse.TxHash)
@@ -1769,20 +1754,20 @@ func (s *StorageTestSuite) TestUpdateStorageParams() {
 	// 3. query proposal until it is end voting period
 CheckProposalStatus:
 	for {
-		queryProposalResp, err := s.Client.Proposal(context.Background(), &v1.QueryProposalRequest{ProposalId: uint64(proposalID)})
+		queryProposalResp, err := s.Client.Proposal(context.Background(), &govtypesv1.QueryProposalRequest{ProposalId: uint64(proposalID)})
 		s.Require().NoError(err)
-		if queryProposalResp.Proposal.Status != v1.StatusVotingPeriod {
+		if queryProposalResp.Proposal.Status != govtypesv1.StatusVotingPeriod {
 			switch queryProposalResp.Proposal.Status {
-			case v1.StatusDepositPeriod:
+			case govtypesv1.StatusDepositPeriod:
 				s.T().Errorf("proposal deposit period")
 				return
-			case v1.StatusRejected:
+			case govtypesv1.StatusRejected:
 				s.T().Errorf("proposal rejected")
 				return
-			case v1.StatusPassed:
+			case govtypesv1.StatusPassed:
 				s.T().Logf("proposal passed")
 				break CheckProposalStatus
-			case v1.StatusFailed:
+			case govtypesv1.StatusFailed:
 				s.T().Errorf("proposal failed, reason %s", queryProposalResp.Proposal.FailedReason)
 				return
 			}
@@ -1874,7 +1859,7 @@ func (s *StorageTestSuite) TestMaintenanceSPCreateBucketAndObject() {
 	payloadSize := buffer.Len()
 	checksum := crypto.Keccak256(buffer.Bytes())
 	expectChecksum := [][]byte{checksum, checksum, checksum, checksum, checksum, checksum, checksum}
-	contextType := "text/event-stream"
+	contextType := eventStreamType
 	msgCreateObject := storagetypes.NewMsgCreateObject(spMaintenanceAddr, bucketName, objectName, uint64(payloadSize), storagetypes.VISIBILITY_TYPE_PRIVATE, expectChecksum, contextType, storagetypes.REDUNDANCY_EC_TYPE, math.MaxUint, nil)
 	msgCreateObject.PrimarySpApproval.Sig, err = sp.ApprovalKey.Sign(msgCreateObject.GetApprovalBytes())
 	s.Require().NoError(err)
@@ -1899,11 +1884,11 @@ func (s *StorageTestSuite) TestMaintenanceSPCreateBucketAndObject() {
 	s.Require().Equal(queryHeadObjectResponse.ObjectInfo.ContentType, contextType)
 
 	// SealObject
-	gvgId := gvg.Id
+	gvgID := gvg.Id
 	msgSealObject := storagetypes.NewMsgSealObject(sp.SealKey.GetAddr(), bucketName, objectName, gvg.Id, nil)
 	secondarySigs := make([][]byte, 0)
 	secondarySPBlsPubKeys := make([]bls.PublicKey, 0)
-	blsSignHash := storagetypes.NewSecondarySpSealObjectSignDoc(s.GetChainID(), gvgId, queryHeadObjectResponse.ObjectInfo.Id, storagetypes.GenerateHash(queryHeadObjectResponse.ObjectInfo.Checksums[:])).GetBlsSignHash()
+	blsSignHash := storagetypes.NewSecondarySpSealObjectSignDoc(s.GetChainID(), gvgID, queryHeadObjectResponse.ObjectInfo.Id, storagetypes.GenerateHash(queryHeadObjectResponse.ObjectInfo.Checksums)).GetBlsSignHash()
 	// every secondary sp signs the checksums
 	for _, spID := range gvg.SecondarySpIds {
 		sig, err := core.BlsSignAndVerify(s.StorageProviders[spID], blsSignHash)
@@ -1974,7 +1959,7 @@ func (s *StorageTestSuite) TestMaintenanceSPCreateBucketAndObject() {
 	s.Require().Equal(sptypes.STATUS_IN_SERVICE, spResp.StorageProvider.Status)
 }
 
-//func (s *StorageTestSuite) TestRejectMigrateBucket() {
+// func (s *StorageTestSuite) TestRejectMigrateBucket() {
 //	// construct bucket and object
 //	primarySP := s.BaseSuite.PickStorageProvider()
 //	gvg, found := primarySP.GetFirstGlobalVirtualGroup()
@@ -2111,7 +2096,7 @@ func (s *StorageTestSuite) TestCreateObjectAndSetTag() {
 	payloadSize := buffer.Len()
 	checksum := crypto.Keccak256(buffer.Bytes())
 	expectChecksum := [][]byte{checksum, checksum, checksum, checksum, checksum, checksum, checksum}
-	contextType := "text/event-stream"
+	contextType := eventStreamType
 	msgCreateObject := storagetypes.NewMsgCreateObject(user.GetAddr(), bucketName, objectName, uint64(payloadSize), storagetypes.VISIBILITY_TYPE_PRIVATE, expectChecksum, contextType, storagetypes.REDUNDANCY_EC_TYPE, math.MaxUint, nil)
 	msgCreateObject.PrimarySpApproval.Sig, err = sp.ApprovalKey.Sign(msgCreateObject.GetApprovalBytes())
 	s.Require().NoError(err)
@@ -2142,11 +2127,11 @@ func (s *StorageTestSuite) TestCreateObjectAndSetTag() {
 	s.Require().Equal(*queryHeadObjectResponse.ObjectInfo.Tags, tags)
 
 	// SealObject
-	gvgId := gvg.Id
+	gvgID := gvg.Id
 	msgSealObject := storagetypes.NewMsgSealObject(sp.SealKey.GetAddr(), bucketName, objectName, gvg.Id, nil)
 	secondarySigs := make([][]byte, 0)
 	secondarySPBlsPubKeys := make([]bls.PublicKey, 0)
-	blsSignHash := storagetypes.NewSecondarySpSealObjectSignDoc(s.GetChainID(), gvgId, queryHeadObjectResponse.ObjectInfo.Id, storagetypes.GenerateHash(queryHeadObjectResponse.ObjectInfo.Checksums[:])).GetBlsSignHash()
+	blsSignHash := storagetypes.NewSecondarySpSealObjectSignDoc(s.GetChainID(), gvgID, queryHeadObjectResponse.ObjectInfo.Id, storagetypes.GenerateHash(queryHeadObjectResponse.ObjectInfo.Checksums)).GetBlsSignHash()
 	// every secondary sp signs the checksums
 	for _, spID := range gvg.SecondarySpIds {
 		sig, err := core.BlsSignAndVerify(s.StorageProviders[spID], blsSignHash)
@@ -2339,7 +2324,7 @@ func (s *StorageTestSuite) TestDeleteCreateObject_InCreatedStatus() {
 	payloadSize := buffer.Len()
 	checksum := crypto.Keccak256(buffer.Bytes())
 	expectChecksum := [][]byte{checksum, checksum, checksum, checksum, checksum, checksum, checksum}
-	contextType := "text/event-stream"
+	contextType := eventStreamType
 	msgCreateObject := storagetypes.NewMsgCreateObject(user.GetAddr(), bucketName, objectName, uint64(payloadSize), storagetypes.VISIBILITY_TYPE_PRIVATE, expectChecksum, contextType, storagetypes.REDUNDANCY_EC_TYPE, math.MaxUint, nil)
 	msgCreateObject.PrimarySpApproval.Sig, err = sp.ApprovalKey.Sign(msgCreateObject.GetApprovalBytes())
 	s.Require().NoError(err)
@@ -2445,7 +2430,7 @@ func (s *StorageTestSuite) TestDisallowChangePaymentAccount() {
 	payloadSize := buffer.Len()
 	checksum := crypto.Keccak256(buffer.Bytes())
 	expectChecksum := [][]byte{checksum, checksum, checksum, checksum, checksum, checksum, checksum}
-	contextType := "text/event-stream"
+	contextType := eventStreamType
 	msgCreateObject := storagetypes.NewMsgCreateObject(user.GetAddr(), bucketName, objectName, uint64(payloadSize),
 		storagetypes.VISIBILITY_TYPE_PRIVATE, expectChecksum, contextType, storagetypes.REDUNDANCY_EC_TYPE, math.MaxUint, nil)
 	msgCreateObject.PrimarySpApproval.Sig, err = sp.ApprovalKey.Sign(msgCreateObject.GetApprovalBytes())
@@ -2467,12 +2452,12 @@ func (s *StorageTestSuite) TestDisallowChangePaymentAccount() {
 	s.SendTxBlockWithExpectErrorString(msgUpdateBucketInfo, user, "has unseald objects")
 
 	// SealObject
-	gvgId := gvg.Id
-	msgSealObject := storagetypes.NewMsgSealObject(sp.SealKey.GetAddr(), bucketName, objectName, gvgId, nil)
+	gvgID := gvg.Id
+	msgSealObject := storagetypes.NewMsgSealObject(sp.SealKey.GetAddr(), bucketName, objectName, gvgID, nil)
 
 	secondarySigs := make([][]byte, 0)
 	secondarySPBlsPubKeys := make([]bls.PublicKey, 0)
-	blsSignHash := storagetypes.NewSecondarySpSealObjectSignDoc(s.GetChainID(), gvgId, queryHeadObjectResponse.ObjectInfo.Id, storagetypes.GenerateHash(queryHeadObjectResponse.ObjectInfo.Checksums[:])).GetBlsSignHash()
+	blsSignHash := storagetypes.NewSecondarySpSealObjectSignDoc(s.GetChainID(), gvgID, queryHeadObjectResponse.ObjectInfo.Id, storagetypes.GenerateHash(queryHeadObjectResponse.ObjectInfo.Checksums)).GetBlsSignHash()
 	// every secondary sp signs the checksums
 	for _, spID := range gvg.SecondarySpIds {
 		sig, err := core.BlsSignAndVerify(s.StorageProviders[spID], blsSignHash)
@@ -2569,7 +2554,7 @@ func (s *StorageTestSuite) TestCreateObjectByDelegatedAgents() {
 		buffer.WriteString(fmt.Sprintf("[%05d] %s\n", i, line))
 	}
 	payloadSize := buffer.Len()
-	contextType := "text/event-stream"
+	contextType := eventStreamType
 	msgDelegateCreateObject := storagetypes.NewMsgDelegateCreateObject(
 		sp.OperatorKey.GetAddr(),
 		bucketOwner.GetAddr(),
@@ -2596,11 +2581,11 @@ func (s *StorageTestSuite) TestCreateObjectByDelegatedAgents() {
 	checksum := crypto.Keccak256(buffer.Bytes())
 	expectChecksum := [][]byte{checksum, checksum, checksum, checksum, checksum, checksum, checksum}
 
-	gvgId := gvg.Id
+	gvgID := gvg.Id
 	msgSealObject := storagetypes.NewMsgSealObjectV2(sp.SealKey.GetAddr(), bucketName, objectName, gvg.Id, nil, expectChecksum)
 	secondarySigs := make([][]byte, 0)
 	secondarySPBlsPubKeys := make([]bls.PublicKey, 0)
-	blsSignHash := storagetypes.NewSecondarySpSealObjectSignDoc(s.GetChainID(), gvgId, headObjectResp.ObjectInfo.Id, storagetypes.GenerateHash(expectChecksum[:])).GetBlsSignHash()
+	blsSignHash := storagetypes.NewSecondarySpSealObjectSignDoc(s.GetChainID(), gvgID, headObjectResp.ObjectInfo.Id, storagetypes.GenerateHash(expectChecksum)).GetBlsSignHash()
 	// every secondary sp signs the checksums
 	for _, spID := range gvg.SecondarySpIds {
 		sig, err := core.BlsSignAndVerify(s.StorageProviders[spID], blsSignHash)
@@ -2638,7 +2623,7 @@ func (s *StorageTestSuite) TestCreateObjectByDelegatedAgents() {
 
 	// every secondary sp signs the checksums
 	newSecondarySigs := make([][]byte, 0)
-	newBlsSignHash := storagetypes.NewSecondarySpSealObjectSignDoc(s.GetChainID(), gvgId, headObjectResp.ObjectInfo.Id, storagetypes.GenerateHash(newExpectChecksum[:])).GetBlsSignHash()
+	newBlsSignHash := storagetypes.NewSecondarySpSealObjectSignDoc(s.GetChainID(), gvgID, headObjectResp.ObjectInfo.Id, storagetypes.GenerateHash(newExpectChecksum)).GetBlsSignHash()
 	for _, spID := range gvg.SecondarySpIds {
 		sig, err := core.BlsSignAndVerify(s.StorageProviders[spID], newBlsSignHash)
 		s.Require().NoError(err)

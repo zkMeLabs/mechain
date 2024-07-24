@@ -12,9 +12,6 @@ import (
 	moduletestutil "github.com/cosmos/cosmos-sdk/types/module/testutil"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	"github.com/golang/mock/gomock"
-	"github.com/stretchr/testify/suite"
-
 	"github.com/evmos/evmos/v12/testutil/sample"
 	"github.com/evmos/evmos/v12/x/challenge"
 	paymenttypes "github.com/evmos/evmos/v12/x/payment/types"
@@ -22,6 +19,8 @@ import (
 	"github.com/evmos/evmos/v12/x/storage/keeper"
 	"github.com/evmos/evmos/v12/x/storage/types"
 	virtualgroupmoduletypes "github.com/evmos/evmos/v12/x/virtualgroup/types"
+	"github.com/stretchr/testify/suite"
+	"go.uber.org/mock/gomock"
 )
 
 type TestSuite struct {
@@ -48,7 +47,7 @@ func (s *TestSuite) SetupTest() {
 	testCtx := testutil.DefaultContextWithDB(s.T(), key, storetypes.NewTransientStoreKey("transient_test"))
 	header := testCtx.Ctx.BlockHeader()
 	header.Time = time.Now()
-	upgradeChecker := func(ctx sdk.Context, name string) bool {
+	upgradeChecker := func(_ sdk.Context, _ string) bool {
 		return true
 	}
 	testCtx = testutil.TestContext{
@@ -66,7 +65,7 @@ func (s *TestSuite) SetupTest() {
 	crossChainKeeper := types.NewMockCrossChainKeeper(ctrl)
 	paymentKeeper := types.NewMockPaymentKeeper(ctrl)
 	virtualGroupKeeper := types.NewMockVirtualGroupKeeper(ctrl)
-
+	evmKeeper := types.NewMockEVMKeeper(ctrl)
 	s.storageKeeper = keeper.NewKeeper(
 		encCfg.Codec,
 		key,
@@ -77,6 +76,7 @@ func (s *TestSuite) SetupTest() {
 		permissionKeeper,
 		crossChainKeeper,
 		virtualGroupKeeper,
+		evmKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
@@ -161,7 +161,7 @@ func (s *TestSuite) TestGetBucketReadBill() {
 	// empty bucket, zero read quota
 	bucketInfo := &types.BucketInfo{
 		Owner:                      "",
-		BucketName:                 "bucketname",
+		BucketName:                 "bucket_name",
 		Id:                         sdk.NewUint(1),
 		PaymentAddress:             sample.RandAccAddress().String(),
 		GlobalVirtualGroupFamilyId: gvgFamily.Id,
@@ -175,7 +175,7 @@ func (s *TestSuite) TestGetBucketReadBill() {
 	// empty bucket
 	bucketInfo = &types.BucketInfo{
 		Owner:                      "",
-		BucketName:                 "bucketname",
+		BucketName:                 "bucket_name",
 		Id:                         sdk.NewUint(1),
 		PaymentAddress:             sample.RandAccAddress().String(),
 		GlobalVirtualGroupFamilyId: gvgFamily.Id,
@@ -223,7 +223,7 @@ func (s *TestSuite) TestGetBucketReadStoreBill() {
 	// none empty bucket
 	bucketInfo := &types.BucketInfo{
 		Owner:                      "",
-		BucketName:                 "bucketname",
+		BucketName:                 "bucket_name",
 		Id:                         sdk.NewUint(1),
 		PaymentAddress:             sample.RandAccAddress().String(),
 		GlobalVirtualGroupFamilyId: gvgFamily.Id,

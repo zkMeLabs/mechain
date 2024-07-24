@@ -3,7 +3,6 @@ package storage
 import (
 	"encoding/base64"
 	"errors"
-
 	"time"
 
 	"github.com/ethereum/go-ethereum/common"
@@ -115,7 +114,7 @@ func (c *Contract) UpdateBucketInfo(ctx sdk.Context, evm *vm.EVM, contract *vm.C
 	if args.ChargedReadQuota.Int64() == -1 {
 		msg.ChargedReadQuota = nil
 	} else {
-		msg.ChargedReadQuota = &mechaincommon.UInt64Value{Value: uint64(args.ChargedReadQuota.Uint64())}
+		msg.ChargedReadQuota = &mechaincommon.UInt64Value{Value: args.ChargedReadQuota.Uint64()}
 	}
 	if err := msg.ValidateBasic(); err != nil {
 		return nil, err
@@ -144,7 +143,7 @@ func (c *Contract) CreateObject(ctx sdk.Context, evm *vm.EVM, contract *vm.Contr
 	if err := types.ParseMethodArgs(method, &args, contract.Input[4:]); err != nil {
 		return nil, err
 	}
-	var expectChecksums [][]byte
+	expectChecksums := make([][]byte, 0)
 	for _, checksum := range args.ExpectChecksums {
 		checksumBytes, err := base64.StdEncoding.DecodeString(checksum)
 		if err != nil {
@@ -203,7 +202,7 @@ func (c *Contract) SealObject(ctx sdk.Context, evm *vm.EVM, contract *vm.Contrac
 		Operator:                    args.SealAddress.String(),
 		BucketName:                  args.BucketName,
 		ObjectName:                  args.ObjectName,
-		GlobalVirtualGroupId:        args.GlobalVirtualGroupId,
+		GlobalVirtualGroupId:        args.GlobalVirtualGroupID,
 		SecondarySpBlsAggSignatures: secondarySpBlsAggSignatures,
 	}
 	if err := msg.ValidateBasic(); err != nil {
@@ -256,7 +255,7 @@ func (c *Contract) SealObjectV2(ctx sdk.Context, evm *vm.EVM, contract *vm.Contr
 	if err != nil {
 		return nil, err
 	}
-	var expectChecksums [][]byte
+	expectChecksums := make([][]byte, 0)
 	for _, checksum := range args.ExpectChecksums {
 		checksumBytes, err := base64.StdEncoding.DecodeString(checksum)
 		if err != nil {
@@ -268,7 +267,7 @@ func (c *Contract) SealObjectV2(ctx sdk.Context, evm *vm.EVM, contract *vm.Contr
 		Operator:                    args.SealAddress.String(),
 		BucketName:                  args.BucketName,
 		ObjectName:                  args.ObjectName,
-		GlobalVirtualGroupId:        args.GlobalVirtualGroupId,
+		GlobalVirtualGroupId:        args.GlobalVirtualGroupID,
 		SecondarySpBlsAggSignatures: secondarySpBlsAggSignatures,
 		ExpectChecksums:             expectChecksums,
 	}

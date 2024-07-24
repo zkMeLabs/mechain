@@ -123,15 +123,15 @@ func (k Keeper) GetGroupMemberByID(ctx sdk.Context, groupMemberID math.Uint) (*t
 func (k Keeper) updatePolicy(ctx sdk.Context, policy, newPolicy *types.Policy) *types.Policy {
 	store := ctx.KVStore(k.storeKey)
 
-	policyIdBz := policy.Id.Bytes()
+	policyIDBz := policy.Id.Bytes()
 	switch {
 	case policy.ExpirationTime == nil && newPolicy.ExpirationTime != nil:
-		store.Set(types.PolicyPrefixQueue(newPolicy.ExpirationTime, policyIdBz), []byte{})
+		store.Set(types.PolicyPrefixQueue(newPolicy.ExpirationTime, policyIDBz), []byte{})
 	case policy.ExpirationTime != nil && newPolicy.ExpirationTime == nil:
-		store.Delete(types.PolicyPrefixQueue(policy.ExpirationTime, policyIdBz))
+		store.Delete(types.PolicyPrefixQueue(policy.ExpirationTime, policyIDBz))
 	case policy.ExpirationTime != nil && newPolicy.ExpirationTime != nil && !policy.ExpirationTime.Equal(*newPolicy.ExpirationTime):
-		store.Delete(types.PolicyPrefixQueue(policy.ExpirationTime, policyIdBz))
-		store.Set(types.PolicyPrefixQueue(newPolicy.ExpirationTime, policyIdBz), []byte{})
+		store.Delete(types.PolicyPrefixQueue(policy.ExpirationTime, policyIDBz))
+		store.Set(types.PolicyPrefixQueue(newPolicy.ExpirationTime, policyIDBz), []byte{})
 	}
 
 	policy.Statements = newPolicy.Statements
@@ -143,7 +143,8 @@ func (k Keeper) updatePolicy(ctx sdk.Context, policy, newPolicy *types.Policy) *
 func (k Keeper) PutPolicy(ctx sdk.Context, policy *types.Policy) (math.Uint, error) {
 	store := ctx.KVStore(k.storeKey)
 	var newPolicy *types.Policy
-	if policy.Principal.Type == types.PRINCIPAL_TYPE_GNFD_ACCOUNT {
+	switch policy.Principal.Type {
+	case types.PRINCIPAL_TYPE_GNFD_ACCOUNT:
 		policyKey := types.GetPolicyForAccountKey(policy.ResourceId, policy.ResourceType,
 			policy.Principal.MustGetAccountAddress(), true)
 		bz := store.Get(policyKey)
@@ -163,7 +164,7 @@ func (k Keeper) PutPolicy(ctx sdk.Context, policy *types.Policy) (math.Uint, err
 				store.Set(types.PolicyPrefixQueue(newPolicy.ExpirationTime, policy.Id.Bytes()), []byte{})
 			}
 		}
-	} else if policy.Principal.Type == types.PRINCIPAL_TYPE_GNFD_GROUP {
+	case types.PRINCIPAL_TYPE_GNFD_GROUP:
 		policyGroupKey := types.GetPolicyForGroupKey(policy.ResourceId, policy.ResourceType)
 		bz := store.Get(policyGroupKey)
 		if bz != nil {
@@ -211,7 +212,7 @@ func (k Keeper) PutPolicy(ctx sdk.Context, policy *types.Policy) (math.Uint, err
 				store.Set(types.PolicyPrefixQueue(newPolicy.ExpirationTime, policy.Id.Bytes()), []byte{})
 			}
 		}
-	} else {
+	default:
 		return math.ZeroUint(), types.ErrInvalidPrincipal.Wrap("Unknown principal type.")
 	}
 
@@ -307,7 +308,9 @@ func (k Keeper) DeletePolicy(ctx sdk.Context, principal *types.Principal, resour
 	store := ctx.KVStore(k.storeKey)
 
 	var policyID math.Uint
-	if principal.Type == types.PRINCIPAL_TYPE_GNFD_ACCOUNT {
+	switch principal.Type {
+
+	case types.PRINCIPAL_TYPE_GNFD_ACCOUNT:
 		accAddr := sdk.MustAccAddressFromHex(principal.Value)
 		policy, found := k.GetPolicyForAccount(ctx, resourceID, resourceType, accAddr)
 		if found {
@@ -318,7 +321,7 @@ func (k Keeper) DeletePolicy(ctx sdk.Context, principal *types.Principal, resour
 			}
 			policyID = policy.Id
 		}
-	} else if principal.Type == types.PRINCIPAL_TYPE_GNFD_GROUP {
+	case types.PRINCIPAL_TYPE_GNFD_GROUP:
 		groupID, err := principal.GetGroupID()
 		if err != nil {
 			return math.ZeroUint(), err
@@ -356,7 +359,7 @@ func (k Keeper) DeletePolicy(ctx sdk.Context, principal *types.Principal, resour
 				}
 			}
 		}
-	} else {
+	default:
 		return math.ZeroUint(), types.ErrInvalidPrincipal.Wrap("Unknown principal type.")
 	}
 	// emit DeletePolicy Event
@@ -382,20 +385,20 @@ func (k Keeper) ForceDeleteAccountPolicyForResource(ctx sdk.Context, maxDelete, 
 		if deletedTotal >= maxDelete {
 			return deletedTotal, false
 		}
-		policyId := k.policySeq.DecodeSequence(iterator.Value())
-		policy, _ := k.GetPolicyByID(ctx, policyId)
+		policyID := k.policySeq.DecodeSequence(iterator.Value())
+		policy, _ := k.GetPolicyByID(ctx, policyID)
 		if policy != nil && policy.ExpirationTime != nil {
 			// delete the policy expire queue
 			store.Delete(types.PolicyPrefixQueue(policy.ExpirationTime, policy.Id.Bytes()))
 		}
 		// delete mapping policyId -> policy
-		store.Delete(types.GetPolicyByIDKey(policyId))
+		store.Delete(types.GetPolicyByIDKey(policyID))
 		// delete mapping policyKey -> policyId
 		resourceAccountsPolicyStore.Delete(iterator.Key())
 
 		// emit DeletePolicy Event
 		_ = ctx.EventManager().EmitTypedEvents(&types.EventDeletePolicy{
-			PolicyId: policyId,
+			PolicyId: policyID,
 		})
 		deletedTotal++
 	}
@@ -420,17 +423,17 @@ func (k Keeper) ForceDeleteGroupPolicyForResource(ctx sdk.Context, maxDelete, de
 				store.Set(policyForGroupKey, k.cdc.MustMarshal(&types.PolicyGroup{Items: remainingPolicies}))
 				return deletedTotal, false
 			}
-			policyId := policyGroup.Items[i].PolicyId
-			policy, _ := k.GetPolicyByID(ctx, policyId)
+			policyID := policyGroup.Items[i].PolicyId
+			policy, _ := k.GetPolicyByID(ctx, policyID)
 			if policy != nil && policy.ExpirationTime != nil {
 				// delete the policy expire queue
 				store.Delete(types.PolicyPrefixQueue(policy.ExpirationTime, policy.Id.Bytes()))
 			}
 			// delete mapping policyId -> policy
-			store.Delete(types.GetPolicyByIDKey(policyId))
+			store.Delete(types.GetPolicyByIDKey(policyID))
 
 			_ = ctx.EventManager().EmitTypedEvents(&types.EventDeletePolicy{
-				PolicyId: policyId,
+				PolicyId: policyID,
 			})
 			deletedTotal++
 		}
@@ -440,9 +443,9 @@ func (k Keeper) ForceDeleteGroupPolicyForResource(ctx sdk.Context, maxDelete, de
 }
 
 // ForceDeleteGroupMembers deletes group members when user deletes a group
-func (k Keeper) ForceDeleteGroupMembers(ctx sdk.Context, maxDelete, deletedTotal uint64, groupId math.Uint) (uint64, bool) {
+func (k Keeper) ForceDeleteGroupMembers(ctx sdk.Context, maxDelete, deletedTotal uint64, groupID math.Uint) (uint64, bool) {
 	store := ctx.KVStore(k.storeKey)
-	groupMembersPrefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.GroupMembersPrefix(groupId))
+	groupMembersPrefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.GroupMembersPrefix(groupID))
 	iter := groupMembersPrefixStore.Iterator(nil, nil)
 	defer iter.Close()
 	for ; iter.Valid(); iter.Next() {
@@ -479,8 +482,8 @@ func (k Keeper) ExistGroupPolicyForResource(ctx sdk.Context, resourceType resour
 	return store.Has(policyForGroupKey) && store.Get(policyForGroupKey) != nil
 }
 
-func (k Keeper) ExistGroupMemberForGroup(ctx sdk.Context, groupId math.Uint) bool {
-	groupMembersPrefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.GroupMembersPrefix(groupId))
+func (k Keeper) ExistGroupMemberForGroup(ctx sdk.Context, groupID math.Uint) bool {
+	groupMembersPrefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.GroupMembersPrefix(groupID))
 	iter := groupMembersPrefixStore.Iterator(nil, nil)
 	defer iter.Close()
 	return iter.Valid()
@@ -501,13 +504,13 @@ func (k Keeper) RemoveExpiredPolicies(ctx sdk.Context) {
 		}
 		store.Delete(iterator.Key())
 
-		// delete policyId -> policy
-		policyId := types.ParsePolicyIdFromQueueKey(iterator.Key())
+		// delete policyID -> policy
+		policyID := types.ParsePolicyIDFromQueueKey(iterator.Key())
 		var policy types.Policy
-		k.cdc.MustUnmarshal(store.Get(types.GetPolicyByIDKey(policyId)), &policy)
+		k.cdc.MustUnmarshal(store.Get(types.GetPolicyByIDKey(policyID)), &policy)
 
-		store.Delete(types.GetPolicyByIDKey(policyId))
-		ctx.EventManager().EmitTypedEvents(&types.EventDeletePolicy{PolicyId: policyId}) //nolint: errcheck
+		store.Delete(types.GetPolicyByIDKey(policyID))
+		ctx.EventManager().EmitTypedEvents(&types.EventDeletePolicy{PolicyId: policyID}) //nolint: errcheck
 		count++
 
 		// 1. the policy is an account policy, delete policyKey -> policyId.
@@ -524,7 +527,7 @@ func (k Keeper) RemoveExpiredPolicies(ctx sdk.Context) {
 				policyGroup := types.PolicyGroup{}
 				k.cdc.MustUnmarshal(bz, &policyGroup)
 				for i := 0; i < len(policyGroup.Items); i++ {
-					if policyGroup.Items[i].PolicyId.Equal(policyId) {
+					if policyGroup.Items[i].PolicyId.Equal(policyID) {
 						policyGroup.Items = append(policyGroup.Items[:i], policyGroup.Items[i+1:]...)
 						break
 					}
