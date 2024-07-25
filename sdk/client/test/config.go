@@ -10,6 +10,6 @@ const (
 	TestValAddr2   = "0x8b7Df76E1b5161B773BD7D16BC15cb238921383E"
 	TestGRPCAddr   = "localhost:9090"
 	TestRPCAddr    = "http://0.0.0.0:26657"
-	TestChainID    = "mechain_1000000-121"
+	TestChainID    = "mechain_5151-121"
 	TestTokenName  = "azkme"
 )
