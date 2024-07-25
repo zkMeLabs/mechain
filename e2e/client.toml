@@ -6,7 +6,7 @@
 ###############################################################################
 
 # The network chain ID
-chain-id = "mechain_5600-121"
+chain-id = "mechain_5151-1"
 # The keyring's backend, where the keys are stored (os|file|kwallet|pass|test|memory)
 keyring-backend = "test"
 # CLI output format (text|json)
