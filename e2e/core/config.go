@@ -40,8 +40,8 @@ func InitE2eConfig() *Config {
 	config := &Config{
 		GrpcAddr:             "localhost:9090",
 		TendermintAddr:       "http://127.0.0.1:26657",
-		ChainID:              "mechain_1000000-121",
-		Denom:                "azkme",
+		ChainID:              "mechain_5151-1",
+		Denom:                "ame",
 		ValidatorMnemonic:    ParseValidatorMnemonic(0),
 		ValidatorBlsMnemonic: ParseValidatorBlsMnemonic(0),
 		RelayerMnemonic:      ParseRelayerMnemonic(0),

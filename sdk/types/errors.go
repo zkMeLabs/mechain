@@ -8,7 +8,7 @@ var (
 	ErrKeyManagerNotInit     = errors.New("key manager is not initialized yet ")
 	ErrChainIDNotSet         = errors.New("chainID is not set yet ")
 	ErrSimulatedGasPrice     = errors.New("simulated gas price is 0 ")
-	ErrFeeAmountNotValid     = errors.New("fee Amount coin should only be azkme")
+	ErrFeeAmountNotValid     = errors.New("fee Amount coin should only be ame")
 	ErrGasInfoNotProvided    = errors.New("gas limit and(or) Fee Amount missing in txOpt")
 	ErrRPCAddressNotProvided = errors.New("rpc address is not provided")
 )

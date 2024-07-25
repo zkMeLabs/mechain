@@ -278,7 +278,7 @@ const main = async function () {
                 "@type": "/cosmos.crypto.ed25519.PubKey",
                 key: "YJcd/+duDs3rxJ1PkwbC5BQytO6yK60RC0XVHA594ck=",
               },
-              value: { denom: "azkme", amount: "100000000000000000000" },
+              value: { denom: "ame", amount: "100000000000000000000" },
               from: "0xbf657D0ef7b48167657A703Ed8Fd063F075246D7",
               relayer_address: "0xbf657D0ef7b48167657A703Ed8Fd063F075246D7",
               challenger_address: "0xbf657D0ef7b48167657A703Ed8Fd063F075246D7",

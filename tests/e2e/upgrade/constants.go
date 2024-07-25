@@ -3,7 +3,7 @@ package upgrade
 // The constants used in the upgrade tests are defined here
 const (
 	// the defaultChainID used for testing
-	defaultChainID = "mechain_1000000-1"
+	defaultChainID = "mechain_5151-1"
 
 	// LocalVersionTag defines the docker image ImageTag when building locally
 	LocalVersionTag = "latest"

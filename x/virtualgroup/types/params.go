@@ -13,7 +13,7 @@ import (
 
 const (
 	// DefaultDepositDenom Dafault deposit denom
-	DefaultDepositDenom = "azkme"
+	DefaultDepositDenom = "ame"
 )
 
 var (

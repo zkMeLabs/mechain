@@ -52,7 +52,7 @@ func TestParseChainID(t *testing.T) {
 			"invalid eip155 chain-id, cannot invalid base", "evmos_0x212-1", true, nil,
 		},
 		{
-			"invalid eip155 chain-id, non-integer", "evmos_mechain_1000000-1", true, nil,
+			"invalid eip155 chain-id, non-integer", "evmos_mechain_5151-1", true, nil,
 		},
 		{
 			"invalid epoch, undefined", "evmos_-", true, nil,

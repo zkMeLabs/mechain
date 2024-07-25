@@ -2,10 +2,8 @@
   "app": {
     "prefix": "mc",
     "chain_name": "mechain",
-    "chain_id": "mechain_1000000-1",
-    "denoms": [
-      "azkme"
-    ],
+    "chain_id": "mechain_5151-1",
+    "denoms": ["ame"],
     "port": {
       "api.address": 1317,
       "rosetta.address": 8080,
@@ -16,12 +14,12 @@
       "json-rpc.metrics-address": 6065
     },
     "cfg": {
-      "minimum-gas-prices": "\"0azkme\"",
+      "minimum-gas-prices": "\"0ame\"",
       "pruning": "\"nothing\"",
       "api.swagger": "true",
       "api.enabled-unsafe-cors": "true",
       "rosetta.enable": "false",
-      "rosetta.denom-to-suggest": "\"0azkme\"",
+      "rosetta.denom-to-suggest": "\"0ame\"",
       "grpc.enable": "true",
       "grpc-web.enable": "true",
       "grpc-web.enable-unsafe-cors": "true",

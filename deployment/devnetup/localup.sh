@@ -104,31 +104,31 @@ function generate_genesis() {
 	for ((i = 0; i < ${size}; i++)); do
 		for addr in "${addrs[@]}"; do
 			# preallocate funds for testing purposes.
-			${bin} add-genesis-account "$addr" "${GENESIS_ACCOUNT_BALANCE}"${STAKING_BOND_DENOM} --home "${workspace}"/.local/validator${i}
+			${bin} add-genesis-account "$addr" "${GENESIS_ACCOUNT_BALANCE}""${STAKING_BOND_DENOM}" --home "${workspace}"/.local/validator${i}
 		done
 
 		for validator_addr in "${validator_addrs[@]}"; do
 			# init genesis account in genesis state
-			${bin} add-genesis-account "$validator_addr" "${GENESIS_ACCOUNT_BALANCE}"${STAKING_BOND_DENOM} --home "${workspace}"/.local/validator${i}
+			${bin} add-genesis-account "$validator_addr" "${GENESIS_ACCOUNT_BALANCE}""${STAKING_BOND_DENOM}" --home "${workspace}"/.local/validator${i}
 		done
 
 		for deletgator_addr in "${deletgator_addrs[@]}"; do
 			# init genesis account in genesis state
-			${bin} add-genesis-account "$deletgator_addr" "${GENESIS_ACCOUNT_BALANCE}"${STAKING_BOND_DENOM} --home "${workspace}"/.local/validator${i}
+			${bin} add-genesis-account "$deletgator_addr" "${GENESIS_ACCOUNT_BALANCE}""${STAKING_BOND_DENOM}" --home "${workspace}"/.local/validator${i}
 		done
 
 		for relayer_addr in "${relayer_addrs[@]}"; do
 			# init genesis account in genesis state
-			${bin} add-genesis-account "$relayer_addr" "${GENESIS_ACCOUNT_BALANCE}"${STAKING_BOND_DENOM} --home "${workspace}"/.local/validator${i}
+			${bin} add-genesis-account "$relayer_addr" "${GENESIS_ACCOUNT_BALANCE}""${STAKING_BOND_DENOM}" --home "${workspace}"/.local/validator${i}
 		done
 
 		for challenger_addr in "${challenger_addrs[@]}"; do
 			# init genesis account in genesis state
-			${bin} add-genesis-account "$challenger_addr" "${GENESIS_ACCOUNT_BALANCE}"${STAKING_BOND_DENOM} --home "${workspace}"/.local/validator${i}
+			${bin} add-genesis-account "$challenger_addr" "${GENESIS_ACCOUNT_BALANCE}""${STAKING_BOND_DENOM}" --home "${workspace}"/.local/validator${i}
 		done
 
 		devaccount_addr=$(${bin} keys show devaccount -a --keyring-backend test --home "${workspace}"/.local/validator${i})
-		${bin} add-genesis-account "${devaccount_addr}" "${GENESIS_ACCOUNT_BALANCE}"${STAKING_BOND_DENOM} --home "${workspace}"/.local/validator${i}
+		${bin} add-genesis-account "${devaccount_addr}" "${GENESIS_ACCOUNT_BALANCE}""${STAKING_BOND_DENOM}" --home "${workspace}"/.local/validator${i}
 		rm -rf "${workspace}"/.local/validator${i}/config/gentx/
 
 		validatorAddr=${validator_addrs[$i]}
@@ -172,7 +172,7 @@ function generate_genesis() {
 		if [ "$i" -gt 0 ]; then
 			cp "${workspace}"/.local/validator0/config/genesis.json "${workspace}"/.local/validator${i}/config/
 		fi
-		sed -i -e "s/minimum-gas-prices = \"0azkme\"/minimum-gas-prices = \"5000000000${BASIC_DENOM}\"/g" "${workspace}"/.local/*/config/app.toml
+		sed -i -e "s/minimum-gas-prices = \"0ame\"/minimum-gas-prices = \"5000000000${BASIC_DENOM}\"/g" "${workspace}"/.local/*/config/app.toml
 		sed -i -e "s/\"stake\"/\"${BASIC_DENOM}\"/g" "${workspace}"/.local/validator${i}/config/genesis.json
 		#sed -i -e "s/\"no_base_fee\": false/\"no_base_fee\": true/g" ${workspace}/.local/*/config/genesis.json
 		sed -i -e "s/\"denom_metadata\": \[\]/\"denom_metadata\": \[${NATIVE_COIN_DESC}\]/g" "${workspace}"/.local/validator${i}/config/genesis.json
@@ -253,12 +253,12 @@ function generate_sp_genesis {
 		spapproval_addr=("$(${bin} keys show sp${i}_approval -a --keyring-backend test --home "${workspace}"/.local/sp${i})")
 		spgc_addr=("$(${bin} keys show sp${i}_gc -a --keyring-backend test --home "${workspace}"/.local/sp${i})")
 		spmaintenance_addr=("$(${bin} keys show sp${i}_maintenance -a --keyring-backend test --home "${workspace}"/.local/sp${i})")
-		${bin} add-genesis-account "$spoperator_addr" "${GENESIS_ACCOUNT_BALANCE}"${STAKING_BOND_DENOM} --home "${workspace}"/.local/validator0
-		${bin} add-genesis-account "$spfund_addr" "${GENESIS_ACCOUNT_BALANCE}"${STAKING_BOND_DENOM} --home "${workspace}"/.local/validator0
-		${bin} add-genesis-account "$spseal_addr" "${GENESIS_ACCOUNT_BALANCE}"${STAKING_BOND_DENOM} --home "${workspace}"/.local/validator0
-		${bin} add-genesis-account "$spapproval_addr" "${GENESIS_ACCOUNT_BALANCE}"${STAKING_BOND_DENOM} --home "${workspace}"/.local/validator0
-		${bin} add-genesis-account "$spgc_addr" "${GENESIS_ACCOUNT_BALANCE}"${STAKING_BOND_DENOM} --home "${workspace}"/.local/validator0
-		${bin} add-genesis-account "$spmaintenance_addr" "${GENESIS_ACCOUNT_BALANCE}"${STAKING_BOND_DENOM} --home "${workspace}"/.local/validator0
+		${bin} add-genesis-account "$spoperator_addr" "${GENESIS_ACCOUNT_BALANCE}""${STAKING_BOND_DENOM}" --home "${workspace}"/.local/validator0
+		${bin} add-genesis-account "$spfund_addr" "${GENESIS_ACCOUNT_BALANCE}""${STAKING_BOND_DENOM}" --home "${workspace}"/.local/validator0
+		${bin} add-genesis-account "$spseal_addr" "${GENESIS_ACCOUNT_BALANCE}""${STAKING_BOND_DENOM}" --home "${workspace}"/.local/validator0
+		${bin} add-genesis-account "$spapproval_addr" "${GENESIS_ACCOUNT_BALANCE}""${STAKING_BOND_DENOM}" --home "${workspace}"/.local/validator0
+		${bin} add-genesis-account "$spgc_addr" "${GENESIS_ACCOUNT_BALANCE}""${STAKING_BOND_DENOM}" --home "${workspace}"/.local/validator0
+		${bin} add-genesis-account "$spmaintenance_addr" "${GENESIS_ACCOUNT_BALANCE}""${STAKING_BOND_DENOM}" --home "${workspace}"/.local/validator0
 	done
 
 	rm -rf "${workspace}"/.local/gensptx
@@ -275,7 +275,7 @@ function generate_sp_genesis {
 		spmaintenance_addr=("$(${bin} keys show sp${i}_maintenance -a --keyring-backend test --home "${workspace}"/.local/sp${i})")
 		validator0Addr="$(${bin} keys show validator0 -a --keyring-backend test --home "${workspace}"/.local/validator0)"
 		# create bond storage provider tx
-		${bin} spgentx "${SP_MIN_DEPOSIT_AMOUNT}"${STAKING_BOND_DENOM} \
+		${bin} spgentx "${SP_MIN_DEPOSIT_AMOUNT}""${STAKING_BOND_DENOM}" \
 			--home "${workspace}"/.local/sp${i} \
 			--creator="${spoperator_addr}" \
 			--operator-address="${spoperator_addr}" \
@@ -291,7 +291,7 @@ function generate_sp_genesis {
 			--moniker="sp${i}" \
 			--details="detail_sp${i}" \
 			--website="http://website" \
-			--endpoint="http://154.48.244.33:$((${STOREAGE_PROVIDER_ADDRESS_PORT_START} + ${i}))" \
+			--endpoint="http://154.48.244.45:$((${STOREAGE_PROVIDER_ADDRESS_PORT_START} + ${i}))" \
 			--node tcp://localhost:$((${VALIDATOR_RPC_PORT_START} + ${i})) \
 			--node-id "sp${i}" \
 			--ip 0.0.0.0 \

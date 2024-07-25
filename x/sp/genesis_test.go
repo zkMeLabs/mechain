@@ -40,7 +40,7 @@ func TestGenesis(t *testing.T) {
 
 	accountKeeperAcc := authtypes.NewEmptyModuleAccount(types.ModuleName)
 	accountKeeper.EXPECT().GetModuleAccount(gomock.Any(), types.ModuleName).Return(accountKeeperAcc)
-	bankKeeper.EXPECT().GetAllBalances(gomock.Any(), gomock.Any()).Return(sdk.NewCoins(sdk.NewCoin("azkme", sdkmath.NewInt(100000000000000))))
+	bankKeeper.EXPECT().GetAllBalances(gomock.Any(), gomock.Any()).Return(sdk.NewCoins(sdk.NewCoin("ame", sdkmath.NewInt(100000000000000))))
 
 	operatorAddr, _, err := testutil.GenerateCoinKey(hd.Secp256k1, encCfg.Codec)
 	require.NoError(t, err)
