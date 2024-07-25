@@ -1,6 +1,8 @@
 module github.com/evmos/evmos/v12
 
-go 1.20
+go 1.21
+
+toolchain go1.22.4
 
 require (
 	cosmossdk.io/api v0.4.0
