@@ -5,7 +5,6 @@
 *.swl
 *.swm
 *.swn
-.vscode
 .idea
 *.pyc
 *.exe
