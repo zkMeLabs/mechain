@@ -25,6 +25,6 @@ jobs:
             go.sum
             tests/e2e/*
       - name: Test E2E
+        if: env.GIT_DIFF
         run: |
           make test-e2e
-        if: env.GIT_DIFF
