@@ -349,7 +349,7 @@ benchmark:
 ###############################################################################
 
 lint:
-	golangci-lint run --out-format=tab
+	golangci-lint run --new-from-rev=HEAD~1
 	solhint contracts/**/*.sol
 
 lint-contracts:

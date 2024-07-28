@@ -1,43 +1,45 @@
 run:
   tests: true
   timeout: 5m
-  concurrency: 4
+
+output:
+  formats:
+    - format: tab
+      path: stdout
 
 linters:
   enable:
+    - asciicheck
     - dogsled
-    # - dupl
     - errcheck
+    - exportloopref
+    - exportloopref
     - goconst
     - gocritic
     - gofumpt
-    - revive
+    - gomodguard
     - gosec
     - gosimple
     - govet
     - ineffassign
-    # - lll TODO: enable
+    - lll
     - misspell
     - nakedret
+    - nolintlint
     - prealloc
-    - exportloopref
+    - revive
     - staticcheck
     - stylecheck
     - typecheck
     - unconvert
     - unparam
     - unused
-    - nolintlint
-    - asciicheck
-    - exportloopref
-    - gofumpt
-    - gomodguard
-  disable:
-    - depguard
 
 linters-settings:
   dogsled:
     max-blank-identifiers: 3
+  lll:
+    line-length: 400
   misspell:
     locale: US
   nolintlint:
