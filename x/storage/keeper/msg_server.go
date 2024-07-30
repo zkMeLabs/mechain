@@ -532,7 +532,7 @@ func (k msgServer) MirrorBucket(goCtx context.Context, msg *types.MsgMirrorBucke
 	}
 
 	mirrorPackage := types.MirrorBucketSynPackage{
-		ID:    bucketInfo.Id.BigInt(),
+		Id:    bucketInfo.Id.BigInt(),
 		Owner: owner,
 	}
 

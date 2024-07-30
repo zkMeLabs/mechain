@@ -253,18 +253,18 @@ const (
 )
 
 type MirrorBucketSynPackage struct {
-	ID    *big.Int
+	Id    *big.Int //nolint
 	Owner sdk.AccAddress
 }
 
 type GeneralMirrorSynPackageStruct struct {
-	ID    *big.Int
+	Id    *big.Int //nolint
 	Owner common.Address
 }
 
 type MirrorBucketAckPackage struct {
 	Status uint8
-	ID     *big.Int
+	Id     *big.Int //nolint
 }
 
 var (
@@ -289,7 +289,7 @@ var (
 
 func (pkg *MirrorBucketSynPackage) Serialize() ([]byte, error) {
 	return generalMirrorSynPackageArgs.Pack(&GeneralMirrorSynPackageStruct{
-		SafeBigInt(pkg.ID),
+		SafeBigInt(pkg.Id),
 		common.BytesToAddress(pkg.Owner),
 	})
 }
@@ -315,7 +315,7 @@ func DeserializeMirrorBucketSynPackage(serializedPackage []byte) (interface{}, e
 	}
 
 	tp := MirrorBucketSynPackage{
-		pkgStruct.ID,
+		pkgStruct.Id,
 		pkgStruct.Owner.Bytes(),
 	}
 	return &tp, nil
@@ -324,7 +324,7 @@ func DeserializeMirrorBucketSynPackage(serializedPackage []byte) (interface{}, e
 func (pkg *MirrorBucketAckPackage) Serialize() ([]byte, error) {
 	return generalMirrorAckPackageArgs.Pack(&MirrorBucketAckPackage{
 		pkg.Status,
-		SafeBigInt(pkg.ID),
+		SafeBigInt(pkg.Id),
 	})
 }
 
@@ -367,7 +367,7 @@ func DeserializeMirrorObjectSynPackage(serializedPackage []byte) (interface{}, e
 	}
 
 	tp := MirrorObjectSynPackage{
-		pkgStruct.ID,
+		pkgStruct.Id,
 		pkgStruct.Owner.Bytes(),
 	}
 	return &tp, nil
@@ -419,7 +419,7 @@ func DeserializeMirrorGroupSynPackage(serializedPackage []byte) (interface{}, er
 	}
 
 	tp := MirrorGroupSynPackage{
-		pkgStruct.ID,
+		pkgStruct.Id,
 		pkgStruct.Owner.Bytes(),
 	}
 	return &tp, nil

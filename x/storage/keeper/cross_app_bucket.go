@@ -135,9 +135,9 @@ func (app *BucketApp) ExecuteSynPackage(ctx sdk.Context, appCtx *sdk.CrossChainA
 }
 
 func (app *BucketApp) handleMirrorBucketAckPackage(ctx sdk.Context, appCtx *sdk.CrossChainAppContext, ackPackage *types.MirrorBucketAckPackage) sdk.ExecuteResult {
-	bucketInfo, found := app.storageKeeper.GetBucketInfoById(ctx, math.NewUintFromBigInt(ackPackage.ID))
+	bucketInfo, found := app.storageKeeper.GetBucketInfoById(ctx, math.NewUintFromBigInt(ackPackage.Id))
 	if !found {
-		app.storageKeeper.Logger(ctx).Error("bucket does not exist", "bucket id", ackPackage.ID.String())
+		app.storageKeeper.Logger(ctx).Error("bucket does not exist", "bucket id", ackPackage.Id.String())
 		return sdk.ExecuteResult{
 			Err: types.ErrNoSuchBucket,
 		}
@@ -171,9 +171,9 @@ func (app *BucketApp) handleMirrorBucketAckPackage(ctx sdk.Context, appCtx *sdk.
 }
 
 func (app *BucketApp) handleMirrorBucketFailAckPackage(ctx sdk.Context, appCtx *sdk.CrossChainAppContext, mirrorBucketPackage *types.MirrorBucketSynPackage) sdk.ExecuteResult {
-	bucketInfo, found := app.storageKeeper.GetBucketInfoById(ctx, math.NewUintFromBigInt(mirrorBucketPackage.ID))
+	bucketInfo, found := app.storageKeeper.GetBucketInfoById(ctx, math.NewUintFromBigInt(mirrorBucketPackage.Id))
 	if !found {
-		app.storageKeeper.Logger(ctx).Error("bucket does not exist", "bucket id", mirrorBucketPackage.ID.String())
+		app.storageKeeper.Logger(ctx).Error("bucket does not exist", "bucket id", mirrorBucketPackage.Id.String())
 		return sdk.ExecuteResult{
 			Err: types.ErrNoSuchBucket,
 		}
