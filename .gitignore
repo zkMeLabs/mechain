@@ -92,3 +92,4 @@ deployment/localup/config.json
 deployment/localup/.local
 deployment/devnetup/.local
 sp.json
+.vscode/launch.json
