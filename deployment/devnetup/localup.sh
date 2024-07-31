@@ -8,7 +8,6 @@ source "${workspace}"/.env
 source "${workspace}"/utils.sh
 devaccount_prikey=f78a036930ce63791ea6ea20072986d8c3f16a6811f6a2583b0787c45086f769
 validator0_prikey=e54bff83fc945cba77ca3e45d69adc5b57ad8db6073736c8422692abecfb5fe2
-validator0_bls_prikey=0ba9b81687a74dad22dac0a05be70f05d924628a5e0e33a716d447faa1852c7d
 relayer0_prikey=3c7ea76ddb53539174caae1dd960b308981933bd6e95196556ba29063200df9c
 sp0_prikey=ebbeb28b89bc7ec5da6441ed70452cc413f96ea33a7c790aba06810ae441b776
 
@@ -31,7 +30,6 @@ function init() {
 		if [ "$i" -eq 0 ]; then
 			${bin} keys import devaccount ${devaccount_prikey} --secp256k1-private-key --keyring-backend test --home "${workspace}"/.local/validator0
 			${bin} keys import validator0 ${validator0_prikey} --secp256k1-private-key --keyring-backend test --home "${workspace}"/.local/validator0
-			${bin} keys import validator_bls0 ${validator0_bls_prikey} --secp256k1-private-key --keyring-backend test --home "${workspace}"/.local/validator0
 			${bin} keys import relayer0 ${relayer0_prikey} --secp256k1-private-key --keyring-backend test --home "${workspace}"/.local/relayer0
 			${bin} keys show devaccount --keyring-backend test --home "${workspace}"/.local/validator0 >"${workspace}"/.local/validator0/devaccount_info 2>&1
 			${bin} keys show validator0 --keyring-backend test --home "${workspace}"/.local/validator0 >"${workspace}"/.local/validator0/info 2>&1
@@ -40,6 +38,7 @@ function init() {
 			${bin} keys add validator${i} --keyring-backend test --home "${workspace}"/.local/validator${i} >"${workspace}"/.local/validator${i}/info 2>&1
 			${bin} keys add relayer${i} --keyring-backend test --home "${workspace}"/.local/relayer${i} >"${workspace}"/.local/relayer${i}/relayer_info 2>&1
 		fi
+		${bin} keys add validator_bls${i} --keyring-backend test --home "${workspace}"/.local/validator${i} --algo eth_bls >"${workspace}"/.local/validator${i}/bls_info 2>&1
 		${bin} keys add validator_delegator${i} --keyring-backend test --home "${workspace}"/.local/validator${i} >"${workspace}"/.local/validator${i}/delegator_info 2>&1
 		${bin} keys add challenger${i} --keyring-backend test --home "${workspace}"/.local/challenger${i} >"${workspace}"/.local/challenger${i}/challenger_info 2>&1
 	done
