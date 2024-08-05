@@ -127,8 +127,8 @@ function generate_genesis() {
 			${bin} add-genesis-account "$challenger_addr" "${GENESIS_ACCOUNT_BALANCE}""${STAKING_BOND_DENOM}" --home "${workspace}"/.local/validator${i}
 		done
 
-		devaccount_addr=$(${bin} keys show devaccount -a --keyring-backend test --home "${workspace}"/.local/validator${i})
-		${bin} add-genesis-account "${devaccount_addr}" "${GENESIS_ACCOUNT_BALANCE}""${STAKING_BOND_DENOM}" --home "${workspace}"/.local/validator${i}
+		devaccount_addr=$(${bin} keys show devaccount -a --keyring-backend test --home "${workspace}"/.local/validator0)
+		${bin} add-genesis-account "${devaccount_addr}" "${GENESIS_ACCOUNT_BALANCE}""${STAKING_BOND_DENOM}" --home "${workspace}"/.local/validator0
 		rm -rf "${workspace}"/.local/validator${i}/config/gentx/
 
 		validatorAddr=${validator_addrs[$i]}
