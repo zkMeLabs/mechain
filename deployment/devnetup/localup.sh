@@ -167,7 +167,7 @@ function generate_genesis() {
 	# generate sp to genesis
 	generate_sp_genesis "$size" "$sp_size"
 
-	persistent_peers=$(joinByString ',' "${node_ids}")
+	persistent_peers=$(joinByString ',' ${node_ids})
 	for ((i = 0; i < ${size}; i++)); do
 		if [ "$i" -gt 0 ]; then
 			cp "${workspace}"/.local/validator0/config/genesis.json "${workspace}"/.local/validator${i}/config/
