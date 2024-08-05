@@ -138,7 +138,6 @@ function generate_genesis() {
 		blsKey="$(${bin} keys show validator_bls${i} --keyring-backend test --home "${workspace}"/.local/validator${i} --output json | jq -r .pubkey_hex)"
 		blsProof="$(${bin} keys sign "${blsKey}" --from validator_bls${i} --keyring-backend test --home "${workspace}"/.local/validator${i})"
 
-		echo +++++++ "${blsKey}"
 		# create bond validator tx
 		${bin} gentx "${STAKING_BOND_AMOUNT}${STAKING_BOND_DENOM}" "$validatorAddr" "$deletgatorAddr" "$relayerAddr" "$challengerAddr" "$blsKey" "$blsProof" \
 			--home "${workspace}"/.local/validator${i} \
