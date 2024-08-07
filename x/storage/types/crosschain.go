@@ -17,6 +17,7 @@ const (
 	BucketChannel     = "bucket"
 	ObjectChannel     = "object"
 	GroupChannel      = "group"
+	ZkmeSBTChannel    = "zkmesbt"
 	PermissionChannel = "permission"
 	ExecutorChannel   = "executor"
 
@@ -25,6 +26,11 @@ const (
 	GroupChannelID      sdk.ChannelID = 6
 	PermissionChannelID sdk.ChannelID = 7
 	ExecutorChannelID   sdk.ChannelID = 9
+	ZkmeSBTChannelId    sdk.ChannelID = 10
+
+	// zkmesbt operation types
+
+	// OperationMirrorZkmeSBT uint8 = 5
 
 	// bucket operation types
 
@@ -141,6 +147,13 @@ var (
 				DeserializeDeletePolicySynPackage,
 			},
 		},
+		// ZkmeSBTChannelId: {
+		// 	OperationMirrorZkmeSBT: {
+		// 		DeserializeMirrorZkmeSBTSynPackage,
+		// 		DeserializeMirrorZkmeSBTAckPackage,
+		// 		DeserializeMirrorZkmeSBTSynPackage,
+		// 	},
+		// },
 	}
 
 	// DeserializeFuncMapV2 used after Pampas upgrade
@@ -210,6 +223,19 @@ var (
 		},
 	}
 )
+
+// func DeserializeMirrorZkmeSBTSynPackage(serializedPackage []byte) (interface{}, error) {
+// 	pkgStruct, err := deserializeMirrorSynPackage(serializedPackage)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+
+// 	tp := MirrorGroupSynPackage{
+// 		pkgStruct.Id,
+// 		pkgStruct.Owner.Bytes(),
+// 	}
+// 	return &tp, nil
+// }
 
 func DeserializeCrossChainPackage(rawPack []byte, channelID sdk.ChannelID, packageType sdk.CrossChainPackageType) (interface{}, error) {
 	if packageType >= 3 {
