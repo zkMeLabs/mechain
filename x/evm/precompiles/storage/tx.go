@@ -21,6 +21,7 @@ import (
 
 const (
 	CreateBucketMethodName     = "createBucket"
+	DeleteBucketMethodName     = "deleteBucket"
 	CreateObjectMethodName     = "createObject"
 	SealObjectMethodName       = "sealObject"
 	SealObjectV2MethodName     = "sealObjectV2"
@@ -35,6 +36,7 @@ const (
 
 func (c *Contract) registerTx() {
 	c.registerMethod(CreateBucketMethodName, 60_000, c.CreateBucket, "CreateBucket")
+	c.registerMethod(DeleteBucketMethodName, 60_000, c.DeleteBucket, "DeleteBucket")
 	c.registerMethod(CreateObjectMethodName, 60_000, c.CreateObject, "CreateObject")
 	c.registerMethod(SealObjectMethodName, 100_000, c.SealObject, "SealObject")
 	c.registerMethod(SealObjectV2MethodName, 100_000, c.SealObjectV2, "SealObjectV2")
@@ -129,6 +131,45 @@ func (c *Contract) UpdateBucketInfo(ctx sdk.Context, evm *vm.EVM, contract *vm.C
 		common.BytesToHash(bucketNameHash),
 		common.BytesToHash(args.PaymentAddress.Bytes()),
 	}, args.Visibility); err != nil {
+		return nil, err
+	}
+	return method.Outputs.Pack(true)
+}
+
+func (c *Contract) DeleteBucket(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
+	if readonly {
+		return nil, errors.New("delete bucket method readonly")
+	}
+
+	method := GetAbiMethod(DeleteBucketMethodName)
+
+	var args DeleteBucketArgs
+	err := types.ParseMethodArgs(method, &args, contract.Input[4:])
+	if err != nil {
+		return nil, err
+	}
+
+	msg := &storagetypes.MsgDeleteBucket{
+		Operator:   contract.Caller().String(),
+		BucketName: args.BucketName,
+	}
+
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
+
+	server := storagekeeper.NewMsgServerImpl(c.storageKeeper)
+	_, err = server.DeleteBucket(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
+
+	// add log
+	if err := c.AddLog(
+		evm,
+		GetAbiEvent(c.events[DeleteBucketMethodName]),
+		[]common.Hash{common.BytesToHash(contract.Caller().Bytes())},
+	); err != nil {
 		return nil, err
 	}
 	return method.Outputs.Pack(true)
