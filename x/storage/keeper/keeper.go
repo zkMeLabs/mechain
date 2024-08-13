@@ -192,6 +192,22 @@ func (k Keeper) CreateBucket(
 	}); err != nil {
 		return sdkmath.Uint{}, err
 	}
+
+	// Mint bucket nft token and send to receiver
+	_, err = k.CallEVM(
+		ctx,
+		contracts.ERC721NonTransferableContract.ABI,
+		contracts.BucketControlHubAddress,
+		contracts.BucketERC721TokenAddress,
+		true,
+		"mint",
+		ecommon.HexToAddress(bucketInfo.Owner),
+		bucketInfo.Id.BigInt(),
+	)
+	if err != nil {
+		return sdkmath.ZeroUint(), err
+	}
+
 	return bucketInfo.Id, nil
 }
 
@@ -279,6 +295,18 @@ func (k Keeper) doDeleteBucket(ctx sdk.Context, operator sdk.AccAddress, bucketI
 
 	// delete bucket flow rate limit status
 	k.deleteBucketFlowRateLimitStatus(ctx, bucketInfo.BucketName, bucketInfo.Id)
+
+	if _, err := k.CallEVM(
+		ctx,
+		contracts.ERC721NonTransferableContract.ABI,
+		contracts.BucketControlHubAddress,
+		contracts.BucketERC721TokenAddress,
+		true,
+		"burn",
+		bucketInfo.Id.BigInt(),
+	); err != nil {
+		return err
+	}
 
 	return nil
 }
@@ -943,7 +971,7 @@ func (k Keeper) SealObject(
 		ctx,
 		contracts.ERC721NonTransferableContract.ABI,
 		contracts.ObjectControlHubAddress,
-		contracts.ERC721NonTransferableAddress,
+		contracts.ObjectERC721TokenAddress,
 		true,
 		"mint",
 		ecommon.HexToAddress(objectInfo.Owner),
@@ -1468,6 +1496,22 @@ func (k Keeper) CreateGroup(
 	}); err != nil {
 		return sdkmath.ZeroUint(), err
 	}
+
+	// Mint group nft token and send to receiver
+	_, err := k.CallEVM(
+		ctx,
+		contracts.ERC721NonTransferableContract.ABI,
+		contracts.GroupControlHubAddress,
+		contracts.GroupERC721TokenAddress,
+		true,
+		"mint",
+		ecommon.HexToAddress(groupInfo.Owner),
+		groupInfo.Id.BigInt(),
+	)
+	if err != nil {
+		return sdkmath.ZeroUint(), err
+	}
+
 	return groupInfo.Id, nil
 }
 
@@ -1536,6 +1580,19 @@ func (k Keeper) DeleteGroup(ctx sdk.Context, operator sdk.AccAddress, groupName 
 	}); err != nil {
 		return err
 	}
+
+	if _, err := k.CallEVM(
+		ctx,
+		contracts.ERC721NonTransferableContract.ABI,
+		contracts.GroupControlHubAddress,
+		contracts.GroupERC721TokenAddress,
+		true,
+		"burn",
+		groupInfo.Id.BigInt(),
+	); err != nil {
+		return err
+	}
+
 	return nil
 }
 

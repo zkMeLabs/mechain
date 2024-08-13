@@ -92,6 +92,23 @@ func (c *Contract) CreateBucket(ctx sdk.Context, evm *vm.EVM, contract *vm.Contr
 	); err != nil {
 		return nil, err
 	}
+
+	bucketInfo, found := c.storageKeeper.GetBucketInfo(ctx, args.BucketName)
+	if found {
+		if err := c.AddOtherLog(
+			evm,
+			GetAbiEvent("Transfer"),
+			contracts.BucketERC721TokenAddress,
+			[]common.Hash{
+				common.BytesToHash(common.HexToAddress(gtypes.EmptyEvmAddress).Bytes()),
+				common.BytesToHash(common.HexToAddress(bucketInfo.Owner).Bytes()),
+				common.BytesToHash(bucketInfo.Id.Bytes()),
+			},
+		); err != nil {
+			return nil, err
+		}
+	}
+
 	return method.Outputs.Pack(true)
 }
 
@@ -269,7 +286,7 @@ func (c *Contract) SealObject(ctx sdk.Context, evm *vm.EVM, contract *vm.Contrac
 		if err := c.AddOtherLog(
 			evm,
 			GetAbiEvent("Transfer"),
-			contracts.ERC721NonTransferableAddress,
+			contracts.ObjectERC721TokenAddress,
 			[]common.Hash{
 				common.BytesToHash(common.HexToAddress(gtypes.EmptyEvmAddress).Bytes()),
 				common.BytesToHash(common.HexToAddress(objectInfo.Owner).Bytes()),
@@ -394,6 +411,24 @@ func (c *Contract) CreateGroup(ctx sdk.Context, evm *vm.EVM, contract *vm.Contra
 	); err != nil {
 		return nil, err
 	}
+
+	address := sdk.MustAccAddressFromHex(contract.Caller().String())
+	groupInfo, found := c.storageKeeper.GetGroupInfo(ctx, address, args.GroupName)
+	if found {
+		if err := c.AddOtherLog(
+			evm,
+			GetAbiEvent("Transfer"),
+			contracts.GroupERC721TokenAddress,
+			[]common.Hash{
+				common.BytesToHash(common.HexToAddress(gtypes.EmptyEvmAddress).Bytes()),
+				common.BytesToHash(common.HexToAddress(groupInfo.Owner).Bytes()),
+				common.BytesToHash(groupInfo.Id.Bytes()),
+			},
+		); err != nil {
+			return nil, err
+		}
+	}
+
 	return method.Outputs.Pack(true)
 }
 
