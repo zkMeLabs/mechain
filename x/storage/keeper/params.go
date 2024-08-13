@@ -37,6 +37,18 @@ func (k Keeper) MirrorBucketRelayerFee(ctx sdk.Context, destChainID sdk.ChainID)
 		relayerFeeParam = params.BscMirrorBucketRelayerFee
 	case k.crossChainKeeper.GetDestOpChainID() == destChainID:
 		relayerFeeParam = params.OpMirrorBucketRelayerFee
+	case k.crossChainKeeper.GetDestPolygonChainID() == destChainID:
+		relayerFeeParam = params.PolygonMirrorBucketRelayerFee
+	case k.crossChainKeeper.GetDestScrollChainID() == destChainID:
+		relayerFeeParam = params.ScrollMirrorBucketRelayerFee
+	case k.crossChainKeeper.GetDestLineaChainID() == destChainID:
+		relayerFeeParam = params.LineaMirrorBucketRelayerFee
+	case k.crossChainKeeper.GetDestMantleChainID() == destChainID:
+		relayerFeeParam = params.MantleMirrorBucketRelayerFee
+	case k.crossChainKeeper.GetDestArbitrumChainID() == destChainID:
+		relayerFeeParam = params.ArbitrumMirrorBucketRelayerFee
+	case k.crossChainKeeper.GetDestOptimismChainID() == destChainID:
+		relayerFeeParam = params.OptimismMirrorBucketRelayerFee
 	default:
 		panic(fmt.Sprintf("chain id(%d) is not supported", destChainID))
 	}
@@ -58,6 +70,18 @@ func (k Keeper) MirrorBucketAckRelayerFee(ctx sdk.Context, destChainID sdk.Chain
 		relayerFeeParam = params.BscMirrorBucketAckRelayerFee
 	case k.crossChainKeeper.GetDestOpChainID() == destChainID:
 		relayerFeeParam = params.OpMirrorBucketAckRelayerFee
+	case k.crossChainKeeper.GetDestPolygonChainID() == destChainID:
+		relayerFeeParam = params.PolygonMirrorBucketAckRelayerFee
+	case k.crossChainKeeper.GetDestScrollChainID() == destChainID:
+		relayerFeeParam = params.ScrollMirrorBucketAckRelayerFee
+	case k.crossChainKeeper.GetDestLineaChainID() == destChainID:
+		relayerFeeParam = params.LineaMirrorBucketAckRelayerFee
+	case k.crossChainKeeper.GetDestMantleChainID() == destChainID:
+		relayerFeeParam = params.MantleMirrorBucketAckRelayerFee
+	case k.crossChainKeeper.GetDestArbitrumChainID() == destChainID:
+		relayerFeeParam = params.ArbitrumMirrorBucketAckRelayerFee
+	case k.crossChainKeeper.GetDestOptimismChainID() == destChainID:
+		relayerFeeParam = params.OptimismMirrorBucketAckRelayerFee
 	default:
 		panic(fmt.Sprintf("chain id(%d) is not supported", destChainID))
 	}
@@ -79,6 +103,18 @@ func (k Keeper) MirrorObjectRelayerFee(ctx sdk.Context, destChainID sdk.ChainID)
 		relayerFeeParam = params.BscMirrorObjectRelayerFee
 	case k.crossChainKeeper.GetDestOpChainID() == destChainID:
 		relayerFeeParam = params.OpMirrorObjectRelayerFee
+	case k.crossChainKeeper.GetDestPolygonChainID() == destChainID:
+		relayerFeeParam = params.PolygonMirrorObjectRelayerFee
+	case k.crossChainKeeper.GetDestScrollChainID() == destChainID:
+		relayerFeeParam = params.ScrollMirrorObjectRelayerFee
+	case k.crossChainKeeper.GetDestLineaChainID() == destChainID:
+		relayerFeeParam = params.LineaMirrorObjectRelayerFee
+	case k.crossChainKeeper.GetDestMantleChainID() == destChainID:
+		relayerFeeParam = params.MantleMirrorObjectRelayerFee
+	case k.crossChainKeeper.GetDestArbitrumChainID() == destChainID:
+		relayerFeeParam = params.ArbitrumMirrorObjectRelayerFee
+	case k.crossChainKeeper.GetDestOptimismChainID() == destChainID:
+		relayerFeeParam = params.OptimismMirrorObjectRelayerFee
 	default:
 		panic(fmt.Sprintf("chain id(%d) is not supported", destChainID))
 	}
@@ -100,6 +136,18 @@ func (k Keeper) MirrorObjectAckRelayerFee(ctx sdk.Context, destChainID sdk.Chain
 		relayerFeeParam = params.BscMirrorObjectAckRelayerFee
 	case k.crossChainKeeper.GetDestOpChainID() == destChainID:
 		relayerFeeParam = params.OpMirrorObjectAckRelayerFee
+	case k.crossChainKeeper.GetDestPolygonChainID() == destChainID:
+		relayerFeeParam = params.PolygonMirrorObjectAckRelayerFee
+	case k.crossChainKeeper.GetDestScrollChainID() == destChainID:
+		relayerFeeParam = params.ScrollMirrorObjectAckRelayerFee
+	case k.crossChainKeeper.GetDestLineaChainID() == destChainID:
+		relayerFeeParam = params.LineaMirrorObjectAckRelayerFee
+	case k.crossChainKeeper.GetDestMantleChainID() == destChainID:
+		relayerFeeParam = params.MantleMirrorObjectAckRelayerFee
+	case k.crossChainKeeper.GetDestArbitrumChainID() == destChainID:
+		relayerFeeParam = params.ArbitrumMirrorObjectAckRelayerFee
+	case k.crossChainKeeper.GetDestOptimismChainID() == destChainID:
+		relayerFeeParam = params.OptimismMirrorObjectAckRelayerFee
 	default:
 		panic(fmt.Sprintf("chain id(%d) is not supported", destChainID))
 
@@ -120,6 +168,18 @@ func (k Keeper) MirrorGroupRelayerFee(ctx sdk.Context, destChainID sdk.ChainID) 
 		relayerFeeParam = params.BscMirrorGroupRelayerFee
 	case k.crossChainKeeper.GetDestOpChainID() == destChainID:
 		relayerFeeParam = params.OpMirrorGroupRelayerFee
+	case k.crossChainKeeper.GetDestPolygonChainID() == destChainID:
+		relayerFeeParam = params.PolygonMirrorGroupRelayerFee
+	case k.crossChainKeeper.GetDestScrollChainID() == destChainID:
+		relayerFeeParam = params.ScrollMirrorGroupRelayerFee
+	case k.crossChainKeeper.GetDestLineaChainID() == destChainID:
+		relayerFeeParam = params.LineaMirrorGroupRelayerFee
+	case k.crossChainKeeper.GetDestMantleChainID() == destChainID:
+		relayerFeeParam = params.MantleMirrorGroupRelayerFee
+	case k.crossChainKeeper.GetDestArbitrumChainID() == destChainID:
+		relayerFeeParam = params.ArbitrumMirrorGroupRelayerFee
+	case k.crossChainKeeper.GetDestOptimismChainID() == destChainID:
+		relayerFeeParam = params.OptimismMirrorGroupRelayerFee
 	default:
 		panic(fmt.Sprintf("chain id(%d) is not supported", destChainID))
 
@@ -142,6 +202,18 @@ func (k Keeper) MirrorGroupAckRelayerFee(ctx sdk.Context, destChainID sdk.ChainI
 		relayerFeeParam = params.BscMirrorGroupAckRelayerFee
 	case k.crossChainKeeper.GetDestOpChainID() == destChainID:
 		relayerFeeParam = params.OpMirrorGroupAckRelayerFee
+	case k.crossChainKeeper.GetDestPolygonChainID() == destChainID:
+		relayerFeeParam = params.PolygonMirrorGroupAckRelayerFee
+	case k.crossChainKeeper.GetDestScrollChainID() == destChainID:
+		relayerFeeParam = params.ScrollMirrorGroupAckRelayerFee
+	case k.crossChainKeeper.GetDestLineaChainID() == destChainID:
+		relayerFeeParam = params.LineaMirrorGroupAckRelayerFee
+	case k.crossChainKeeper.GetDestMantleChainID() == destChainID:
+		relayerFeeParam = params.MantleMirrorGroupAckRelayerFee
+	case k.crossChainKeeper.GetDestArbitrumChainID() == destChainID:
+		relayerFeeParam = params.ArbitrumMirrorGroupAckRelayerFee
+	case k.crossChainKeeper.GetDestOptimismChainID() == destChainID:
+		relayerFeeParam = params.OptimismMirrorGroupAckRelayerFee
 	default:
 		panic(fmt.Sprintf("chain id(%d) is not supported", destChainID))
 	}

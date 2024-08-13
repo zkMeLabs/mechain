@@ -1041,6 +1041,12 @@ func (app *Evmos) initModules(_ sdk.Context) {
 func (app *Evmos) initCrossChain() {
 	app.CrossChainKeeper.SetSrcChainID(sdk.ChainID(app.appConfig.CrossChain.SrcChainId))
 	app.CrossChainKeeper.SetDestBscChainID(sdk.ChainID(app.appConfig.CrossChain.DestBscChainId))
+	app.CrossChainKeeper.SetDestPolygonChainID(sdk.ChainID(app.appConfig.CrossChain.DestPolygonChainId))
+	app.CrossChainKeeper.SetDestScrollChainID(sdk.ChainID(app.appConfig.CrossChain.DestScrollChainId))
+	app.CrossChainKeeper.SetDestLineaChainID(sdk.ChainID(app.appConfig.CrossChain.DestLineaChainId))
+	app.CrossChainKeeper.SetDestMantleChainID(sdk.ChainID(app.appConfig.CrossChain.DestMantleChainId))
+	app.CrossChainKeeper.SetDestArbitrumChainID(sdk.ChainID(app.appConfig.CrossChain.DestArbitrumChainId))
+	app.CrossChainKeeper.SetDestOptimismChainID(sdk.ChainID(app.appConfig.CrossChain.DestOptimismChainId))
 }
 
 func (app *Evmos) initBridge() {

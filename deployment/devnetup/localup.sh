@@ -185,6 +185,12 @@ function generate_genesis() {
 		sed -i -e "s/src-chain-id = 1/src-chain-id = ${SRC_CHAIN_ID}/g" "${workspace}"/.local/validator${i}/config/app.toml
 		sed -i -e "s/dest-bsc-chain-id = 2/dest-bsc-chain-id = ${DEST_CHAIN_ID}/g" "${workspace}"/.local/validator${i}/config/app.toml
 		sed -i -e "s/dest-op-chain-id = 3/dest-op-chain-id = ${DEST_OP_CHAIN_ID}/g" "${workspace}"/.local/validator${i}/config/app.toml
+		sed -i -e "s/dest-polygon-chain-id = 4/dest-polygon-chain-id = ${DEST_POLYGON_CHAIN_ID}/g" "${workspace}"/.local/validator${i}/config/app.toml
+		sed -i -e "s/dest-scroll-chain-id = 5/dest-scroll-chain-id = ${DEST_SCROLL_CHAIN_ID}/g" "${workspace}"/.local/validator${i}/config/app.toml
+		sed -i -e "s/dest-linea-chain-id = 6/dest-linea-chain-id = ${DEST_LINEA_CHAIN_ID}/g" "${workspace}"/.local/validator${i}/config/app.toml
+		sed -i -e "s/dest-mantle-chain-id = 7/dest-mantle-chain-id = ${DEST_MANTLE_CHAIN_ID}/g" "${workspace}"/.local/validator${i}/config/app.toml
+		sed -i -e "s/dest-arbitrum-chain-id = 8/dest-arbitrum-chain-id = ${DEST_ARBITRUM_CHAIN_ID}/g" "${workspace}"/.local/validator${i}/config/app.toml
+		sed -i -e "s/dest-optimism-chain-id = 9/dest-optimism-chain-id = ${DEST_OPTIMISM_CHAIN_ID}/g" "${workspace}"/.local/validator${i}/config/app.toml
 		sed -i -e "s/snapshot-keep-recent = 2/snapshot-keep-recent = ${SNAPSHOT_KEEP_RECENT}/g" "${workspace}"/.local/validator${i}/config/app.toml
 		sed -i -e "s/enabled-unsafe-cors = false/enabled-unsafe-cors = true/g" "${workspace}"/.local/validator${i}/config/app.toml
 		sed -i -e "s/eth,net,web3/eth,txpool,personal,net,debug,web3/g" "${workspace}"/.local/validator${i}/config/app.toml

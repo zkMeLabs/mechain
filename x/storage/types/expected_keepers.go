@@ -84,6 +84,12 @@ type PermissionKeeper interface {
 type CrossChainKeeper interface {
 	GetDestBscChainID() sdktypes.ChainID
 	GetDestOpChainID() sdktypes.ChainID
+	GetDestPolygonChainID() sdktypes.ChainID
+	GetDestScrollChainID() sdktypes.ChainID
+	GetDestLineaChainID() sdktypes.ChainID
+	GetDestMantleChainID() sdktypes.ChainID
+	GetDestArbitrumChainID() sdktypes.ChainID
+	GetDestOptimismChainID() sdktypes.ChainID
 
 	CreateRawIBCPackageWithFee(ctx sdktypes.Context, chainID sdktypes.ChainID, channelID sdktypes.ChannelID, packageType sdktypes.CrossChainPackageType,
 		packageLoad []byte, relayerFee *big.Int, ackRelayerFee *big.Int,

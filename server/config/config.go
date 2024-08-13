@@ -85,9 +85,15 @@ const (
 	// DefaultMaxOpenConnections represents the amount of open connections (unlimited = 0)
 	DefaultMaxOpenConnections = 0
 
-	DefaultSrcChainID     = 1
-	DefaultDestBscChainID = 2
-	DefaultDestOpChainID  = 3
+	DefaultSrcChainID          = 1
+	DefaultDestBscChainID      = 2
+	DefaultDestOpChainID       = 3
+	DefaultDestPolygonChainID  = 4
+	DefaultDestScrollChainID   = 5
+	DefaultDestLineaChainID    = 6
+	DefaultDestMantleChainID   = 7
+	DefaultDestArbitrumChainID = 8
+	DefaultDestOptimismChainID = 9
 )
 
 var evmTracers = []string{"json", "markdown", "struct", "access_list"}
@@ -164,9 +170,15 @@ type TLSConfig struct {
 }
 
 type CrossChainConfig struct {
-	SrcChainId     uint32 `mapstructure:"src-chain-id"`      //nolint
-	DestBscChainId uint32 `mapstructure:"dest-bsc-chain-id"` //nolint
-	DestOpChainId  uint32 `mapstructure:"dest-op-chain-id"`  //nolint
+	SrcChainId          uint32 `mapstructure:"src-chain-id"`           //nolint
+	DestBscChainId      uint32 `mapstructure:"dest-bsc-chain-id"`      //nolint
+	DestOpChainId       uint32 `mapstructure:"dest-op-chain-id"`       //nolint
+	DestPolygonChainId  uint32 `mapstructure:"dest-polygon-chain-id"`  //nolint
+	DestScrollChainId   uint32 `mapstructure:"dest-scroll-chain-id"`   //nolint
+	DestLineaChainId    uint32 `mapstructure:"dest-linea-chain-id"`    //nolint
+	DestMantleChainId   uint32 `mapstructure:"dest-mantle-chain-id"`   //nolint
+	DestArbitrumChainId uint32 `mapstructure:"dest-arbitrum-chain-id"` //nolint
+	DestOptimismChainId uint32 `mapstructure:"dest-optimism-chain-id"` //nolint
 }
 
 type PaymentCheckConfig struct {
@@ -381,9 +393,15 @@ func (c TLSConfig) Validate() error {
 // DefaultCrossChainConfig returns the default CrossChain configuration
 func DefaultCrossChainConfig() *CrossChainConfig {
 	return &CrossChainConfig{
-		SrcChainId:     DefaultSrcChainID,
-		DestBscChainId: DefaultDestBscChainID,
-		DestOpChainId:  DefaultDestOpChainID,
+		SrcChainId:          DefaultSrcChainID,
+		DestBscChainId:      DefaultDestBscChainID,
+		DestOpChainId:       DefaultDestOpChainID,
+		DestPolygonChainId:  DefaultDestPolygonChainID,
+		DestScrollChainId:   DefaultDestScrollChainID,
+		DestLineaChainId:    DefaultDestLineaChainID,
+		DestMantleChainId:   DefaultDestMantleChainID,
+		DestArbitrumChainId: DefaultDestArbitrumChainID,
+		DestOptimismChainId: DefaultDestOptimismChainID,
 	}
 }
 
@@ -440,9 +458,15 @@ func GetConfig(v *viper.Viper) (AppConfig, error) {
 			KeyPath:         v.GetString("tls.key-path"),
 		},
 		CrossChain: CrossChainConfig{
-			SrcChainId:     v.GetUint32("cross-chain.src-chain-id"),
-			DestBscChainId: v.GetUint32("cross-chain.dest-bsc-chain-id"),
-			DestOpChainId:  v.GetUint32("cross-chain.dest-op-chain-id"),
+			SrcChainId:          v.GetUint32("cross-chain.src-chain-id"),
+			DestBscChainId:      v.GetUint32("cross-chain.dest-bsc-chain-id"),
+			DestOpChainId:       v.GetUint32("cross-chain.dest-op-chain-id"),
+			DestPolygonChainId:  v.GetUint32("cross-chain.dest-polygon-chain-id"),
+			DestScrollChainId:   v.GetUint32("cross-chain.dest-scroll-chain-id"),
+			DestLineaChainId:    v.GetUint32("cross-chain.dest-linea-chain-id"),
+			DestMantleChainId:   v.GetUint32("cross-chain.dest-mantle-chain-id"),
+			DestArbitrumChainId: v.GetUint32("cross-chain.dest-arbitrum-chain-id"),
+			DestOptimismChainId: v.GetUint32("cross-chain.dest-optimism-chain-id"),
 		},
 		PaymentCheck: PaymentCheckConfig{
 			Enabled:  v.GetBool("payment-check.enabled"),

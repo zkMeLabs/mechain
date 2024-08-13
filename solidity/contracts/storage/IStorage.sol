@@ -19,7 +19,13 @@ enum SourceType {
     Origin,
     MirrorPending,
     BscCrossChain,
-    OpCrossChain
+    OpCrossChain,
+    PolygonCrossChain,
+    ScrollCrossChain,
+    LineaCrossChain,
+    MantleCrossChain,
+    ArbitrumCrossChain,
+    OptimismCrossChain
 }
 
 // BucketStatus represents the status of a bucket. After a user successfully
@@ -181,7 +187,6 @@ interface IStorage {
         uint64 chargedReadQuota
     ) external returns (bool success);
 
-
     /**
      * @dev updateBucketInfo defines a method for update a bucket.
      */
@@ -192,7 +197,7 @@ interface IStorage {
         int128 chargedReadQuota
     ) external returns (bool success);
 
-	/**
+    /**
      * @dev deleteBucket defines a method for delete a bucket.
      */
     function deleteBucket(
@@ -372,7 +377,7 @@ interface IStorage {
         uint8 visibility
     );
 
-	/**
+    /**
      * @dev DeleteBucket defines an Event emitted when a user delete a bucket
      */
     event DeleteBucket(address indexed creator);
@@ -380,10 +385,7 @@ interface IStorage {
     /**
      * @dev CreateObject defines an Event emitted when a user create a object
      */
-    event CreateObject(
-        address indexed creator,
-        uint256 id
-    );
+    event CreateObject(address indexed creator, uint256 id);
 
     /**
      * @dev Transfer defines an Event emitted when a transfer a object nft
@@ -397,18 +399,12 @@ interface IStorage {
     /**
      * @dev SealObject defines an Event emitted when a user seal a object
      */
-    event SealObject(
-        address indexed creator,
-        address indexed sealAddress
-    );
+    event SealObject(address indexed creator, address indexed sealAddress);
 
     /**
      * @dev SealObjectV2 defines an Event emitted when a user seal a object with IsAgentUpload
      */
-    event SealObjectV2(
-        address indexed creator,
-        address indexed sealAddress
-    );
+    event SealObjectV2(address indexed creator, address indexed sealAddress);
 
     /**
      * @dev UpdateObjectInfo defines an Event emitted when a user update object visibility
@@ -418,10 +414,7 @@ interface IStorage {
     /**
      * @dev CreateGroup defines an Event emitted when a user create a group
      */
-    event CreateGroup(
-        address indexed creator,
-        uint256 id
-    );
+    event CreateGroup(address indexed creator, uint256 id);
 
     /**
      * @dev UpdateGroup defines an Event emitted when a user update a group's member
