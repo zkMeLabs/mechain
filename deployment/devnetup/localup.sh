@@ -167,7 +167,7 @@ function generate_genesis() {
 	# generate sp to genesis
 	generate_sp_genesis "$size" "$sp_size"
 
-	persistent_peers=$(joinByString ',' ${node_ids})
+	persistent_peers=$(joinByString ',' "${node_ids}")
 	for ((i = 0; i < ${size}; i++)); do
 		if [ "$i" -gt 0 ]; then
 			cp "${workspace}"/.local/validator0/config/genesis.json "${workspace}"/.local/validator${i}/config/
@@ -178,7 +178,7 @@ function generate_genesis() {
 		sed -i -e "s/\"denom_metadata\": \[\]/\"denom_metadata\": \[${NATIVE_COIN_DESC}\]/g" "${workspace}"/.local/validator${i}/config/genesis.json
 		sed -i -e "s/seeds = \"[^\"]*\"/seeds = \"\"/g" "${workspace}"/.local/validator${i}/config/config.toml
 		sed -i -e "s/persistent_peers = \".*\"/persistent_peers = \"${persistent_peers}\"/g" "${workspace}"/.local/validator${i}/config/config.toml
-		sed -i -e "s/timeout_commit = \"3s\"/timeout_commit = \"1s\"/g" "${workspace}"/.local/validator${i}/config/config.toml
+		# sed -i -e "s/timeout_commit = \"3s\"/timeout_commit = \"1s\"/g" "${workspace}"/.local/validator${i}/config/config.toml
 		sed -i -e "s/addr_book_strict = true/addr_book_strict = false/g" "${workspace}"/.local/validator${i}/config/config.toml
 		sed -i -e "s/allow_duplicate_ip = false/allow_duplicate_ip = true/g" "${workspace}"/.local/validator${i}/config/config.toml
 		sed -i -e "s/snapshot-interval = 0/snapshot-interval = ${SNAPSHOT_INTERVAL}/g" "${workspace}"/.local/validator${i}/config/app.toml
