@@ -270,9 +270,9 @@ func (app *GroupApp) handleCreateGroupSynPackage(ctx sdk.Context, appCtx *sdk.Cr
 }
 
 func (app *GroupApp) handleMirrorGroupAckPackage(ctx sdk.Context, appCtx *sdk.CrossChainAppContext, ackPackage *types.MirrorGroupAckPackage) sdk.ExecuteResult {
-	groupInfo, found := app.storageKeeper.GetGroupInfoById(ctx, math.NewUintFromBigInt(ackPackage.ID))
+	groupInfo, found := app.storageKeeper.GetGroupInfoById(ctx, math.NewUintFromBigInt(ackPackage.Id))
 	if !found {
-		app.storageKeeper.Logger(ctx).Error("group does not exist", "group id", ackPackage.ID.String())
+		app.storageKeeper.Logger(ctx).Error("group does not exist", "group id", ackPackage.Id.String())
 		return sdk.ExecuteResult{
 			Err: types.ErrNoSuchGroup,
 		}

@@ -22,7 +22,7 @@ func (s *TestSuite) TestAckMirrorGroup() {
 	app := keeper.NewGroupApp(storageKeeper)
 	ackPackage := types.MirrorGroupAckPackage{
 		Status: types.StatusSuccess,
-		ID:     big.NewInt(10),
+		Id:     big.NewInt(10),
 	}
 
 	serializedAckPackage, err := ackPackage.Serialize()
