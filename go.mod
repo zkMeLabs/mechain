@@ -24,6 +24,7 @@ require (
 	github.com/ethereum/go-ethereum v1.11.5
 	github.com/evmos/evmos-ledger-go v0.3.0-rc0
 	github.com/ghodss/yaml v1.0.0
+	github.com/gogo/protobuf v1.3.3
 	github.com/golang/mock v1.6.0
 	github.com/golang/protobuf v1.5.3
 	github.com/gorilla/mux v1.8.0
@@ -44,11 +45,15 @@ require (
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.16.0
 	github.com/stretchr/testify v1.8.4
+	github.com/tendermint/tendermint v0.35.9
+	github.com/tidwall/gjson v1.14.4
+	github.com/tidwall/sjson v1.2.5
 	github.com/tyler-smith/go-bip39 v1.1.0
 	go.opencensus.io v0.24.0
 	go.uber.org/mock v0.4.0
 	golang.org/x/exp v0.0.0-20230711153332-06a737ee72cb
 	golang.org/x/net v0.27.0
+	golang.org/x/text v0.16.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20231012201019-e917dd12ba7a
 	google.golang.org/grpc v1.59.0
 	google.golang.org/protobuf v1.31.0
@@ -65,7 +70,7 @@ require (
 	github.com/99designs/go-keychain v0.0.0-20191008050251-8e49817e8af4 // indirect
 	github.com/99designs/keyring v1.2.1 // indirect
 	github.com/Azure/go-ansiterm v0.0.0-20230124172434-306776ec8161 // indirect
-	github.com/ChainSafe/go-schnorrkel v0.0.0-20200405005733-88cbf1b4c40d // indirect
+	github.com/ChainSafe/go-schnorrkel v1.0.0 // indirect
 	github.com/Microsoft/go-winio v0.6.2 // indirect
 	github.com/Nvveen/Gotty v0.0.0-20120604004816-cd527374f1e5 // indirect
 	github.com/StackExchange/wmi v1.2.1 // indirect
@@ -119,7 +124,6 @@ require (
 	github.com/go-viper/mapstructure/v2 v2.0.0 // indirect
 	github.com/godbus/dbus v0.0.0-20190726142602-4481cbc300e2 // indirect
 	github.com/gogo/googleapis v1.4.1 // indirect
-	github.com/gogo/protobuf v1.3.3 // indirect
 	github.com/golang/glog v1.1.2 // indirect
 	github.com/golang/snappy v0.0.5-0.20220116011046-fa5810519dcb // indirect
 	github.com/google/btree v1.1.2 // indirect
@@ -196,10 +200,8 @@ require (
 	github.com/tendermint/go-amino v0.16.0 // indirect
 	github.com/thomaso-mirodin/intmath v0.0.0-20160323211736-5dc6d854e46e // indirect
 	github.com/tidwall/btree v1.6.0 // indirect
-	github.com/tidwall/gjson v1.14.4 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.0 // indirect
-	github.com/tidwall/sjson v1.2.5 // indirect
 	github.com/tklauser/go-sysconf v0.3.11 // indirect
 	github.com/tklauser/numcpus v0.6.0 // indirect
 	github.com/urfave/cli/v2 v2.25.7 // indirect
@@ -218,7 +220,6 @@ require (
 	golang.org/x/sync v0.7.0 // indirect
 	golang.org/x/sys v0.22.0 // indirect
 	golang.org/x/term v0.22.0 // indirect
-	golang.org/x/text v0.16.0 // indirect
 	golang.org/x/tools v0.23.0 // indirect
 	google.golang.org/genproto v0.0.0-20231016165738-49dd2c1f3d0b // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20231016165738-49dd2c1f3d0b // indirect
@@ -239,6 +240,7 @@ replace (
 	github.com/cometbft/cometbft-db => github.com/bnb-chain/greenfield-cometbft-db v0.8.1-alpha.1
 	// use Cosmos-SDK fork to enable Ledger functionality
 	github.com/cosmos/cosmos-sdk => github.com/zkMeLabs/mechain-cosmos-sdk v0.0.0-20240722072054-a692e90dceb7
+	// cosmossdk.io/simapp => github.com/zkMeLabs/mechain-cosmos-sdk/simapp v0.0.0-20240807063740-07874047aecf
 	github.com/cosmos/iavl => github.com/bnb-chain/greenfield-iavl v0.20.1
 	github.com/cosmos/ibc-go/v7 => github.com/zkMeLabs/mechain-ibc-go v0.0.0-20240722073438-a0d1a6577104
 	// use Evmos geth fork
@@ -250,4 +252,7 @@ replace (
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
 	// replace broken goleveldb
 	github.com/syndtr/goleveldb => github.com/syndtr/goleveldb v1.0.1-0.20210819022825-2ae1ddf74ef7
+	// use cometbft
+	github.com/tendermint/tendermint => github.com/cometbft/cometbft v0.37.2
+
 )
