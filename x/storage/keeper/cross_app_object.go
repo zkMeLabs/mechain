@@ -119,9 +119,9 @@ func (app *ObjectApp) ExecuteSynPackage(ctx sdk.Context, appCtx *sdk.CrossChainA
 func (app *ObjectApp) handleMirrorObjectAckPackage(ctx sdk.Context, appCtx *sdk.CrossChainAppContext, ackPackage *types.MirrorObjectAckPackage) sdk.ExecuteResult {
 	app.storageKeeper.Logger(ctx).Error("received mirror object ack package ")
 
-	objectInfo, found := app.storageKeeper.GetObjectInfoById(ctx, math.NewUintFromBigInt(ackPackage.ID))
+	objectInfo, found := app.storageKeeper.GetObjectInfoById(ctx, math.NewUintFromBigInt(ackPackage.Id))
 	if !found {
-		app.storageKeeper.Logger(ctx).Error("object does not exist", "object id", ackPackage.ID.String())
+		app.storageKeeper.Logger(ctx).Error("object does not exist", "object id", ackPackage.Id.String())
 		return sdk.ExecuteResult{
 			Err: types.ErrNoSuchObject,
 		}

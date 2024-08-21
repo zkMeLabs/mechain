@@ -20,7 +20,7 @@ func (s *TestSuite) TestAckMirrorObject() {
 	app := keeper.NewObjectApp(storageKeeper)
 	ackPackage := types.MirrorObjectAckPackage{
 		Status: types.StatusSuccess,
-		ID:     big.NewInt(10),
+		Id:     big.NewInt(10),
 	}
 
 	serializedAckPackage, err := ackPackage.Serialize()

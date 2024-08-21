@@ -54,6 +54,78 @@ message Params {
   string op_mirror_group_relayer_fee = 22;
   // Relayer fee for the ACK or FAIL_ACK package of the mirror object tx to op chain
   string op_mirror_group_ack_relayer_fee = 23;
+  // relayer fee for the mirror bucket tx to polygon chain
+  string polygon_mirror_bucket_relayer_fee = 24;
+  // relayer fee for the ACK or FAIL_ACK package of the mirror bucket tx to polygon chain
+  string polygon_mirror_bucket_ack_relayer_fee = 25;
+  // relayer fee for the mirror object tx to polygon chain
+  string polygon_mirror_object_relayer_fee = 26;
+  // Relayer fee for the ACK or FAIL_ACK package of the mirror object tx to polygon chain
+  string polygon_mirror_object_ack_relayer_fee = 27;
+  // relayer fee for the mirror object tx to polygon chain
+  string polygon_mirror_group_relayer_fee = 28;
+  // Relayer fee for the ACK or FAIL_ACK package of the mirror object tx to polygon chain
+  string polygon_mirror_group_ack_relayer_fee = 29;
+  // relayer fee for the mirror bucket tx to scroll chain
+  string scroll_mirror_bucket_relayer_fee = 30;
+  // relayer fee for the ACK or FAIL_ACK package of the mirror bucket tx to scroll chain
+  string scroll_mirror_bucket_ack_relayer_fee = 31;
+  // relayer fee for the mirror object tx to scroll chain
+  string scroll_mirror_object_relayer_fee = 32;
+  // Relayer fee for the ACK or FAIL_ACK package of the mirror object tx to scroll chain
+  string scroll_mirror_object_ack_relayer_fee = 33;
+  // relayer fee for the mirror object tx to scroll chain
+  string scroll_mirror_group_relayer_fee = 34;
+  // Relayer fee for the ACK or FAIL_ACK package of the mirror object tx to scroll chain
+  string scroll_mirror_group_ack_relayer_fee = 35;
+  // relayer fee for the mirror bucket tx to linea chain
+  string linea_mirror_bucket_relayer_fee = 36;
+  // relayer fee for the ACK or FAIL_ACK package of the mirror bucket tx to linea chain
+  string linea_mirror_bucket_ack_relayer_fee = 37;
+  // relayer fee for the mirror object tx to linea chain
+  string linea_mirror_object_relayer_fee = 38;
+  // Relayer fee for the ACK or FAIL_ACK package of the mirror object tx to linea chain
+  string linea_mirror_object_ack_relayer_fee = 39;
+  // relayer fee for the mirror object tx to linea chain
+  string linea_mirror_group_relayer_fee = 40;
+  // Relayer fee for the ACK or FAIL_ACK package of the mirror object tx to linea chain
+  string linea_mirror_group_ack_relayer_fee = 41;
+  // relayer fee for the mirror bucket tx to mantle chain
+  string mantle_mirror_bucket_relayer_fee = 42;
+  // relayer fee for the ACK or FAIL_ACK package of the mirror bucket tx to mantle chain
+  string mantle_mirror_bucket_ack_relayer_fee = 43;
+  // relayer fee for the mirror object tx to mantle chain
+  string mantle_mirror_object_relayer_fee = 44;
+  // Relayer fee for the ACK or FAIL_ACK package of the mirror object tx to mantle chain
+  string mantle_mirror_object_ack_relayer_fee = 45;
+  // relayer fee for the mirror object tx to mantle chain
+  string mantle_mirror_group_relayer_fee = 46;
+  // Relayer fee for the ACK or FAIL_ACK package of the mirror object tx to mantle chain
+  string mantle_mirror_group_ack_relayer_fee = 47;
+  // relayer fee for the mirror bucket tx to arbitrum chain
+  string arbitrum_mirror_bucket_relayer_fee = 48;
+  // relayer fee for the ACK or FAIL_ACK package of the mirror bucket tx to arbitrum chain
+  string arbitrum_mirror_bucket_ack_relayer_fee = 49;
+  // relayer fee for the mirror object tx to arbitrum chain
+  string arbitrum_mirror_object_relayer_fee = 50;
+  // Relayer fee for the ACK or FAIL_ACK package of the mirror object tx to arbitrum chain
+  string arbitrum_mirror_object_ack_relayer_fee = 51;
+  // relayer fee for the mirror object tx to arbitrum chain
+  string arbitrum_mirror_group_relayer_fee = 52;
+  // Relayer fee for the ACK or FAIL_ACK package of the mirror object tx to arbitrum chain
+  string arbitrum_mirror_group_ack_relayer_fee = 53;
+  // relayer fee for the mirror bucket tx to optimism chain
+  string optimism_mirror_bucket_relayer_fee = 54;
+  // relayer fee for the ACK or FAIL_ACK package of the mirror bucket tx to optimism chain
+  string optimism_mirror_bucket_ack_relayer_fee = 55;
+  // relayer fee for the mirror object tx to optimism chain
+  string optimism_mirror_object_relayer_fee = 56;
+  // Relayer fee for the ACK or FAIL_ACK package of the mirror object tx to optimism chain
+  string optimism_mirror_object_ack_relayer_fee = 57;
+  // relayer fee for the mirror object tx to optimism chain
+  string optimism_mirror_group_relayer_fee = 58;
+  // Relayer fee for the ACK or FAIL_ACK package of the mirror object tx to optimism chain
+  string optimism_mirror_group_ack_relayer_fee = 59;
 }
 
 // VersionedParams defines the parameters for the storage module with multi version, each version store with different timestamp.

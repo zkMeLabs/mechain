@@ -2461,15 +2461,26 @@ func (k Keeper) GetSourceTypeByChainId(ctx sdk.Context, chainId sdk.ChainID) (st
 		return 0, storagetypes.ErrChainNotSupported
 	}
 
-	if chainId == k.crossChainKeeper.GetDestBscChainID() {
+	switch chainId {
+	case k.crossChainKeeper.GetDestBscChainID():
 		return storagetypes.SOURCE_TYPE_BSC_CROSS_CHAIN, nil
-	}
-
-	if chainId == k.crossChainKeeper.GetDestOpChainID() {
+	case k.crossChainKeeper.GetDestOpChainID():
 		return storagetypes.SOURCE_TYPE_OP_CROSS_CHAIN, nil
+	case k.crossChainKeeper.GetDestPolygonChainID():
+		return storagetypes.SOURCE_TYPE_POLYGON_CROSS_CHAIN, nil
+	case k.crossChainKeeper.GetDestScrollChainID():
+		return storagetypes.SOURCE_TYPE_SCROLL_CROSS_CHAIN, nil
+	case k.crossChainKeeper.GetDestLineaChainID():
+		return storagetypes.SOURCE_TYPE_LINEA_CROSS_CHAIN, nil
+	case k.crossChainKeeper.GetDestMantleChainID():
+		return storagetypes.SOURCE_TYPE_MANTLE_CROSS_CHAIN, nil
+	case k.crossChainKeeper.GetDestArbitrumChainID():
+		return storagetypes.SOURCE_TYPE_ARBITRUM_CROSS_CHAIN, nil
+	case k.crossChainKeeper.GetDestOptimismChainID():
+		return storagetypes.SOURCE_TYPE_OPTIMISM_CROSS_CHAIN, nil
+	default:
+		return 0, storagetypes.ErrChainNotSupported
 	}
-
-	return 0, storagetypes.ErrChainNotSupported
 }
 
 func (k Keeper) SetTag(ctx sdk.Context, operator sdk.AccAddress, grn types.GRN, tags *storagetypes.ResourceTags) error {

@@ -376,7 +376,7 @@ type MirrorObjectSynPackage struct {
 
 type MirrorObjectAckPackage struct {
 	Status uint8
-	ID     *big.Int
+	Id     *big.Int
 }
 
 func (pkg *MirrorObjectSynPackage) Serialize() ([]byte, error) {
@@ -402,7 +402,7 @@ func DeserializeMirrorObjectSynPackage(serializedPackage []byte) (interface{}, e
 func (pkg *MirrorObjectAckPackage) Serialize() ([]byte, error) {
 	return generalMirrorAckPackageArgs.Pack(&MirrorObjectAckPackage{
 		pkg.Status,
-		SafeBigInt(pkg.ID),
+		SafeBigInt(pkg.Id),
 	})
 }
 
@@ -428,7 +428,7 @@ type MirrorGroupSynPackage struct {
 
 type MirrorGroupAckPackage struct {
 	Status uint8
-	ID     *big.Int
+	Id     *big.Int
 }
 
 func (pkg *MirrorGroupSynPackage) Serialize() ([]byte, error) {
@@ -454,7 +454,7 @@ func DeserializeMirrorGroupSynPackage(serializedPackage []byte) (interface{}, er
 func (pkg *MirrorGroupAckPackage) Serialize() ([]byte, error) {
 	return generalMirrorAckPackageArgs.Pack(&MirrorGroupAckPackage{
 		pkg.Status,
-		SafeBigInt(pkg.ID),
+		SafeBigInt(pkg.Id),
 	})
 }
 

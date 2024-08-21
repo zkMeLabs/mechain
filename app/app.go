@@ -1041,6 +1041,12 @@ func (app *Evmos) initModules(_ sdk.Context) {
 func (app *Evmos) initCrossChain() {
 	app.CrossChainKeeper.SetSrcChainID(sdk.ChainID(app.appConfig.CrossChain.SrcChainId))
 	app.CrossChainKeeper.SetDestBscChainID(sdk.ChainID(app.appConfig.CrossChain.DestBscChainId))
+	app.CrossChainKeeper.SetDestPolygonChainID(sdk.ChainID(app.appConfig.CrossChain.DestPolygonChainId))
+	app.CrossChainKeeper.SetDestScrollChainID(sdk.ChainID(app.appConfig.CrossChain.DestScrollChainId))
+	app.CrossChainKeeper.SetDestLineaChainID(sdk.ChainID(app.appConfig.CrossChain.DestLineaChainId))
+	app.CrossChainKeeper.SetDestMantleChainID(sdk.ChainID(app.appConfig.CrossChain.DestMantleChainId))
+	app.CrossChainKeeper.SetDestArbitrumChainID(sdk.ChainID(app.appConfig.CrossChain.DestArbitrumChainId))
+	app.CrossChainKeeper.SetDestOptimismChainID(sdk.ChainID(app.appConfig.CrossChain.DestOptimismChainId))
 }
 
 func (app *Evmos) initBridge() {
@@ -1153,6 +1159,55 @@ func (app *Evmos) InitChainer(ctx sdk.Context, req abci.RequestInitChain) abci.R
 	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestBscChainId), storagemoduletypes.ObjectChannelID, sdk.ChannelAllow)
 	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestBscChainId), storagemoduletypes.GroupChannelID, sdk.ChannelAllow)
 	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestBscChainId), storagemoduletypes.ZkmeSBTChannelId, sdk.ChannelAllow)
+
+	// support polygon
+	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestPolygonChainId), bridgemoduletypes.TransferOutChannelID, sdk.ChannelAllow)
+	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestPolygonChainId), bridgemoduletypes.TransferInChannelID, sdk.ChannelAllow)
+	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestPolygonChainId), bridgemoduletypes.SyncParamsChannelID, sdk.ChannelAllow)
+	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestPolygonChainId), storagemoduletypes.BucketChannelID, sdk.ChannelAllow)
+	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestPolygonChainId), storagemoduletypes.ObjectChannelID, sdk.ChannelAllow)
+	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestPolygonChainId), storagemoduletypes.GroupChannelID, sdk.ChannelAllow)
+	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestPolygonChainId), storagemoduletypes.ZkmeSBTChannelId, sdk.ChannelAllow)
+
+	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestScrollChainId), bridgemoduletypes.TransferOutChannelID, sdk.ChannelAllow)
+	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestScrollChainId), bridgemoduletypes.TransferInChannelID, sdk.ChannelAllow)
+	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestScrollChainId), bridgemoduletypes.SyncParamsChannelID, sdk.ChannelAllow)
+	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestScrollChainId), storagemoduletypes.BucketChannelID, sdk.ChannelAllow)
+	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestScrollChainId), storagemoduletypes.ObjectChannelID, sdk.ChannelAllow)
+	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestScrollChainId), storagemoduletypes.GroupChannelID, sdk.ChannelAllow)
+	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestScrollChainId), storagemoduletypes.ZkmeSBTChannelId, sdk.ChannelAllow)
+
+	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestLineaChainId), bridgemoduletypes.TransferOutChannelID, sdk.ChannelAllow)
+	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestLineaChainId), bridgemoduletypes.TransferInChannelID, sdk.ChannelAllow)
+	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestLineaChainId), bridgemoduletypes.SyncParamsChannelID, sdk.ChannelAllow)
+	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestLineaChainId), storagemoduletypes.BucketChannelID, sdk.ChannelAllow)
+	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestLineaChainId), storagemoduletypes.ObjectChannelID, sdk.ChannelAllow)
+	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestLineaChainId), storagemoduletypes.GroupChannelID, sdk.ChannelAllow)
+	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestLineaChainId), storagemoduletypes.ZkmeSBTChannelId, sdk.ChannelAllow)
+
+	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestMantleChainId), bridgemoduletypes.TransferOutChannelID, sdk.ChannelAllow)
+	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestMantleChainId), bridgemoduletypes.TransferInChannelID, sdk.ChannelAllow)
+	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestMantleChainId), bridgemoduletypes.SyncParamsChannelID, sdk.ChannelAllow)
+	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestMantleChainId), storagemoduletypes.BucketChannelID, sdk.ChannelAllow)
+	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestMantleChainId), storagemoduletypes.ObjectChannelID, sdk.ChannelAllow)
+	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestMantleChainId), storagemoduletypes.GroupChannelID, sdk.ChannelAllow)
+	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestMantleChainId), storagemoduletypes.ZkmeSBTChannelId, sdk.ChannelAllow)
+
+	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestArbitrumChainId), bridgemoduletypes.TransferOutChannelID, sdk.ChannelAllow)
+	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestArbitrumChainId), bridgemoduletypes.TransferInChannelID, sdk.ChannelAllow)
+	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestArbitrumChainId), bridgemoduletypes.SyncParamsChannelID, sdk.ChannelAllow)
+	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestArbitrumChainId), storagemoduletypes.BucketChannelID, sdk.ChannelAllow)
+	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestArbitrumChainId), storagemoduletypes.ObjectChannelID, sdk.ChannelAllow)
+	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestArbitrumChainId), storagemoduletypes.GroupChannelID, sdk.ChannelAllow)
+	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestArbitrumChainId), storagemoduletypes.ZkmeSBTChannelId, sdk.ChannelAllow)
+
+	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestOptimismChainId), bridgemoduletypes.TransferOutChannelID, sdk.ChannelAllow)
+	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestOptimismChainId), bridgemoduletypes.TransferInChannelID, sdk.ChannelAllow)
+	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestOptimismChainId), bridgemoduletypes.SyncParamsChannelID, sdk.ChannelAllow)
+	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestOptimismChainId), storagemoduletypes.BucketChannelID, sdk.ChannelAllow)
+	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestOptimismChainId), storagemoduletypes.ObjectChannelID, sdk.ChannelAllow)
+	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestOptimismChainId), storagemoduletypes.GroupChannelID, sdk.ChannelAllow)
+	app.CrossChainKeeper.SetChannelSendPermission(ctx, sdk.ChainID(app.appConfig.CrossChain.DestOptimismChainId), storagemoduletypes.ZkmeSBTChannelId, sdk.ChannelAllow)
 
 	return app.mm.InitGenesis(ctx, app.appCodec, genesisState)
 }
