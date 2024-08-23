@@ -1556,10 +1556,10 @@ github.com/zkMeLabs/mechain-cosmos-sdk/math v0.0.0-20240821015333-b9a61ee4d0d5 h
 github.com/zkMeLabs/mechain-cosmos-sdk/math v0.0.0-20240821015333-b9a61ee4d0d5/go.mod h1:An0MllWJY6PxibUpnwGk8jOm+a/qIxlKmL5Zyp9NnaM=
 github.com/zkMeLabs/mechain-cosmos-sdk/simapp v0.0.0-20240821015333-b9a61ee4d0d5 h1:gwtxd2UxXSu0yzOXEhGTJJOedRtHH2s66TKddrnD7fE=
 github.com/zkMeLabs/mechain-cosmos-sdk/simapp v0.0.0-20240821015333-b9a61ee4d0d5/go.mod h1:NkkIfKhBhs1y3XnEzkLk2S4jH0QKBCTwUjQYXH46LcA=
-github.com/zkMeLabs/mechain-ibc-go v0.0.0-20240819085730-65fde43f148a h1:7iTMTIOp+TYd0j67aAe/NcVSUItvJsmyl3Mp06AaF0Y=
-github.com/zkMeLabs/mechain-ibc-go v0.0.0-20240819085730-65fde43f148a/go.mod h1:Rg64sT+wa3/g4rqAmjx/vwzW+rtjIqnp9hifPnFRi00=
-github.com/zkMeLabs/mechain-ledger-go v0.0.0-20240819090215-b8f7d5ceb762 h1:Y337Fdf12NrhVtR3s20z7MNIbw3E2naxjcWljcjHj9g=
-github.com/zkMeLabs/mechain-ledger-go v0.0.0-20240819090215-b8f7d5ceb762/go.mod h1:4SEdbGrcrjgBqZPy+lGrPjs+x8eXU2UfeBlUQ4jli0E=
+github.com/zkMeLabs/mechain-ibc-go v0.0.0-20240823060230-12e998e3fb1c h1:7Z2sD4688J1BR1O2SK7n+0cwIXuimAhHod2mniHrt2s=
+github.com/zkMeLabs/mechain-ibc-go v0.0.0-20240823060230-12e998e3fb1c/go.mod h1:8HoqyD0kdEAybKWQ9YUO54+m8B2NkBdKiZwDlKSgus4=
+github.com/zkMeLabs/mechain-ledger-go v0.0.0-20240823061402-ac77cd870592 h1:MCwGOJOhbkosyLdCqaPtAdCEK/HvwegTlAPbZy7xsWQ=
+github.com/zkMeLabs/mechain-ledger-go v0.0.0-20240823061402-ac77cd870592/go.mod h1:mWugNiDfEqaIKNKioMPlzPhsdzChf3zvKlzgv4WNeCY=
 github.com/zondax/hid v0.9.1 h1:gQe66rtmyZ8VeGFcOpbuH3r7erYtNEAezCAYu8LdkJo=
 github.com/zondax/hid v0.9.1/go.mod h1:l5wttcP0jwtdLjqjMMWFVEE7d1zO0jvSPA9OPZxWpEM=
 github.com/zondax/ledger-go v0.14.1 h1:Pip65OOl4iJ84WTpA4BKChvOufMhhbxED3BaihoZN4c=
