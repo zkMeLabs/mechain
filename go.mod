@@ -240,10 +240,10 @@ replace (
 	// use Cosmos-SDK fork to enable Ledger functionality
 	github.com/cosmos/cosmos-sdk => github.com/zkMeLabs/mechain-cosmos-sdk v0.0.0-20240821015333-b9a61ee4d0d5
 	github.com/cosmos/iavl => github.com/bnb-chain/greenfield-iavl v0.20.1
-	github.com/cosmos/ibc-go/v7 => github.com/zkMeLabs/mechain-ibc-go v0.0.0-20240819085730-65fde43f148a
+	github.com/cosmos/ibc-go/v7 => github.com/zkMeLabs/mechain-ibc-go v0.0.0-20240823060230-12e998e3fb1c
 	// use Evmos geth fork
 	github.com/ethereum/go-ethereum => github.com/evmos/go-ethereum v1.10.26-evmos-rc2
-	github.com/evmos/evmos-ledger-go => github.com/zkMeLabs/mechain-ledger-go v0.0.0-20240819090215-b8f7d5ceb762
+	github.com/evmos/evmos-ledger-go => github.com/zkMeLabs/mechain-ledger-go v0.0.0-20240823061402-ac77cd870592
 	// Security Advisory https://github.com/advisories/GHSA-h395-qcrw-5vmq
 	github.com/gin-gonic/gin => github.com/gin-gonic/gin v1.9.1
 	// use cosmos flavored protobufs
