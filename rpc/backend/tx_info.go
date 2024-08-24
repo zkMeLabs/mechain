@@ -87,7 +87,7 @@ func (b *Backend) GetTransactionByHash(txHash common.Hash) (*rpctypes.RPCTransac
 	baseFee, err := b.BaseFee(blockRes)
 	if err != nil {
 		// handle the error for pruned node.
-		b.logger.Error("failed to fetch Base Fee from prunned block. Check node prunning configuration", "height", blockRes.Height, "error", err)
+		b.logger.Error("failed to fetch Base Fee from pruned block. Check node pruning configuration", "height", blockRes.Height, "error", err)
 	}
 
 	height := uint64(res.Height)    //#nosec G701 -- checked for int overflow already
@@ -121,7 +121,7 @@ func (b *Backend) getTransactionByHashPending(txHash common.Hash) (*rpctypes.RPC
 
 		if msg.Hash == hexTx {
 			// use zero block values since it's not included in a block yet
-			rpctx, err := rpctypes.NewTransactionFromMsg(
+			rpcTx, err := rpctypes.NewTransactionFromMsg(
 				msg,
 				common.Hash{},
 				uint64(0),
@@ -132,7 +132,7 @@ func (b *Backend) getTransactionByHashPending(txHash common.Hash) (*rpctypes.RPC
 			if err != nil {
 				return nil, err
 			}
-			return rpctx, nil
+			return rpcTx, nil
 		}
 	}
 
@@ -247,7 +247,7 @@ func (b *Backend) GetTransactionReceipt(hash common.Hash) (map[string]interface{
 		"blockNumber":      hexutil.Uint64(res.Height),
 		"transactionIndex": hexutil.Uint64(res.EthTxIndex),
 
-		// sender and receiver (contract or EOA) addreses
+		// sender and receiver (contract or EOA) addresses
 		"from": from,
 		"to":   txData.GetTo(),
 		"type": hexutil.Uint(ethMsg.AsTransaction().Type()),
@@ -266,7 +266,7 @@ func (b *Backend) GetTransactionReceipt(hash common.Hash) (map[string]interface{
 		baseFee, err := b.BaseFee(blockRes)
 		if err != nil {
 			// tolerate the error for pruned node.
-			b.logger.Error("fetch basefee failed, node is pruned?", "height", res.Height, "error", err)
+			b.logger.Error("fetch baseFee failed, node is pruned?", "height", res.Height, "error", err)
 		} else {
 			receipt["effectiveGasPrice"] = hexutil.Big(*dynamicTx.EffectiveGasPrice(baseFee))
 		}
@@ -419,7 +419,7 @@ func (b *Backend) GetTransactionByBlockAndIndex(block *tmrpctypes.ResultBlock, i
 	baseFee, err := b.BaseFee(blockRes)
 	if err != nil {
 		// handle the error for pruned node.
-		b.logger.Error("failed to fetch Base Fee from prunned block. Check node prunning configuration", "height", block.Block.Height, "error", err)
+		b.logger.Error("failed to fetch Base Fee from pruned block. Check node pruning configuration", "height", block.Block.Height, "error", err)
 	}
 
 	height := uint64(block.Block.Height) // #nosec G701 -- checked for int overflow already
