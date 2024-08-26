@@ -60,3 +60,4 @@ issues:
   exclude-files:
     - ".*\\.pb\\.go$"
     - ".*\\.pb\\.gw\\.go$"
+    - x/storage/
