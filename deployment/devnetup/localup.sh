@@ -167,7 +167,7 @@ function generate_genesis() {
 	# generate sp to genesis
 	generate_sp_genesis "$size" "$sp_size"
 
-	persistent_peers=$(joinByString ',' ${node_ids})
+	persistent_peers=$(joinByString ',' "${node_ids}")
 	for ((i = 0; i < ${size}; i++)); do
 		if [ "$i" -gt 0 ]; then
 			cp "${workspace}"/.local/validator0/config/genesis.json "${workspace}"/.local/validator${i}/config/
@@ -193,6 +193,7 @@ function generate_genesis() {
 		sed -i -e "s/dest-optimism-chain-id = 9/dest-optimism-chain-id = ${DEST_OPTIMISM_CHAIN_ID}/g" "${workspace}"/.local/validator${i}/config/app.toml
 		sed -i -e "s/snapshot-keep-recent = 2/snapshot-keep-recent = ${SNAPSHOT_KEEP_RECENT}/g" "${workspace}"/.local/validator${i}/config/app.toml
 		sed -i -e "s/enabled-unsafe-cors = false/enabled-unsafe-cors = true/g" "${workspace}"/.local/validator${i}/config/app.toml
+		sed -i -e "s/pruning = \"default\"/pruning = \"nothing\"/g" "${workspace}"/.local/validator${i}/config/app.toml
 		sed -i -e "s/eth,net,web3/eth,txpool,personal,net,debug,web3/g" "${workspace}"/.local/validator${i}/config/app.toml
 		sed -i -e "s/\"reserve_time\": \"15552000\"/\"reserve_time\": \"60\"/g" "${workspace}"/.local/validator${i}/config/genesis.json
 		sed -i -e "s/\"forced_settle_time\": \"86400\"/\"forced_settle_time\": \"30\"/g" "${workspace}"/.local/validator${i}/config/genesis.json
