@@ -178,7 +178,7 @@ function generate_genesis() {
 		sed -i -e "s/\"denom_metadata\": \[\]/\"denom_metadata\": \[${NATIVE_COIN_DESC}\]/g" "${workspace}"/.local/validator${i}/config/genesis.json
 		sed -i -e "s/seeds = \"[^\"]*\"/seeds = \"\"/g" "${workspace}"/.local/validator${i}/config/config.toml
 		sed -i -e "s/persistent_peers = \".*\"/persistent_peers = \"${persistent_peers}\"/g" "${workspace}"/.local/validator${i}/config/config.toml
-		# sed -i -e "s/timeout_commit = \"3s\"/timeout_commit = \"1s\"/g" "${workspace}"/.local/validator${i}/config/config.toml
+		sed -i -e "s/timeout_commit = \"3s\"/timeout_commit = \"1s\"/g" "${workspace}"/.local/validator${i}/config/config.toml
 		sed -i -e "s/addr_book_strict = true/addr_book_strict = false/g" "${workspace}"/.local/validator${i}/config/config.toml
 		sed -i -e "s/allow_duplicate_ip = false/allow_duplicate_ip = true/g" "${workspace}"/.local/validator${i}/config/config.toml
 		sed -i -e "s/snapshot-interval = 0/snapshot-interval = ${SNAPSHOT_INTERVAL}/g" "${workspace}"/.local/validator${i}/config/app.toml
@@ -193,6 +193,7 @@ function generate_genesis() {
 		sed -i -e "s/dest-optimism-chain-id = 9/dest-optimism-chain-id = ${DEST_OPTIMISM_CHAIN_ID}/g" "${workspace}"/.local/validator${i}/config/app.toml
 		sed -i -e "s/snapshot-keep-recent = 2/snapshot-keep-recent = ${SNAPSHOT_KEEP_RECENT}/g" "${workspace}"/.local/validator${i}/config/app.toml
 		sed -i -e "s/enabled-unsafe-cors = false/enabled-unsafe-cors = true/g" "${workspace}"/.local/validator${i}/config/app.toml
+		sed -i -e "s/pruning = \"default\"/pruning = \"nothing\"/g" "${workspace}"/.local/validator${i}/config/app.toml
 		sed -i -e "s/eth,net,web3/eth,txpool,personal,net,debug,web3/g" "${workspace}"/.local/validator${i}/config/app.toml
 		sed -i -e "s/\"reserve_time\": \"15552000\"/\"reserve_time\": \"60\"/g" "${workspace}"/.local/validator${i}/config/genesis.json
 		sed -i -e "s/\"forced_settle_time\": \"86400\"/\"forced_settle_time\": \"30\"/g" "${workspace}"/.local/validator${i}/config/genesis.json
