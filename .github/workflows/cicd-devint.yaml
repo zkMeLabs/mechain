@@ -1,0 +1,94 @@
+# For developer testing
+name: Build Docker
+on:
+  push:
+    branches:
+      - cicd
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    if: false
+    steps:
+      # References: https://github.com/actions/checkout
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: 'cicd'
+
+      # References: https://docs.autonity.org/node-operators/install-aut/#troubleshooting
+      - name: Compile and Docker Build
+        run: make build-docker
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2.2.0
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          logout: false
+
+      # todo: using docker/build-push-action, Reference: https://github.com/marketplace/actions/build-and-push-docker-images
+      - name: Push to Docker Hub
+        run: make push-docker
+
+      - name: Upload build files
+        uses: actions/upload-artifact@v2
+        with:
+          name: binary-package
+          path: build/
+
+      - name: Upload deployment files
+        uses: actions/upload-artifact@v2
+        with:
+          name: deployment-files
+          path: deployment/
+
+
+  regenerate-configuration:
+    runs-on: ubuntu-latest
+    if: false
+    needs: build-and-push
+    steps:
+      - name: Download build files
+        uses: actions/download-artifact@v2
+        with:
+          name: binary-package
+          path: build/
+
+      - name: Download deployment files
+        uses: actions/download-artifact@v2
+        with:
+          name: deployment-files
+          path: deployment/
+
+      - name: generate-configuration
+        uses: kostya-ten/ssh-server-deploy@v4
+        with:
+          host: ${{ secrets.DEVINT_SERVER_HOST }}
+          username: ${{ secrets.DEVINT_SERVER_USERNAME }}
+          password: ${{ secrets.DEVINT_SERVER_PASSWORD }}
+          scp_source: ./
+          scp_target: ~/mechain/
+          script: |
+            pwd
+            ls -la
+            ls -la ~/mechain/
+            bash ./mechain/deployment/devint/localup.sh init 2 8
+            bash ./mechain/deployment/devint/localup.sh generate 2 8
+            mv ./mechain/deployment/devint/ /data/mechain/devint/
+
+
+  deploying-with-docker:
+    runs-on: ubuntu-latest
+    needs: []
+      # - build-and-push
+      # - regenerate-configuration
+    steps:
+      - name: deploy
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DEVINT_SERVER_HOST }}
+          username: ${{ secrets.DEVINT_SERVER_USERNAME }}
+          password: ${{ secrets.DEVINT_SERVER_PASSWORD }}
+          script: |
+            bash /data/mechain/devint/localup.sh restart 2 8

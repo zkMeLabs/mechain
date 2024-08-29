@@ -2,8 +2,8 @@ FROM golang:1.22.4-bullseye AS build-env
 
 WORKDIR /go/src/github.com/zkmelabs
 
-RUN apt-get update -y
-RUN apt-get install git -y
+ENV CGO_CFLAGS="-O -D__BLST_PORTABLE__"
+ENV CGO_CFLAGS_ALLOW="-O -D__BLST_PORTABLE__"
 
 COPY . .
 
@@ -17,7 +17,5 @@ RUN apt-get install ca-certificates jq -y
 WORKDIR /root
 
 COPY --from=build-env /go/src/github.com/zkmelabs/build/mechaind /usr/bin/mechaind
-
-EXPOSE 26656 26657 1317 9090 8545 8546
 
 CMD ["mechaind"]
