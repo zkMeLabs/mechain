@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
-basedir=$(
-	cd $(dirname "$0") || exit
-	pwd
-)
+basedir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
 workspace=${basedir}
+
 source "${workspace}"/.env
 source "${workspace}"/utils.sh
 devaccount_prikey=f78a036930ce63791ea6ea20072986d8c3f16a6811f6a2583b0787c45086f769
@@ -374,10 +372,10 @@ function export_sps {
 CMD=$1
 SIZE=3
 SP_SIZE=3
-if [ ! -z "$2" ] && [ "$2" -gt "0" ]; then
+if [ -n "$2" ] && [ "$2" -gt 0 ]; then
 	SIZE=$2
 fi
-if [ ! -z "$3" ] && [ "$3" -gt "0" ]; then
+if [ -n "$3" ] && [ "$3" -gt 0 ]; then
 	SP_SIZE=$3
 fi
 
