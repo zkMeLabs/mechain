@@ -15,7 +15,7 @@ import (
 // SP params default values
 const (
 	// Default deposit denom
-	DefaultDepositDenom = "ame"
+	DefaultDepositDenom = "azkme"
 	// DefaultNumOfHistoricalBlocksForMaintenanceRecords The oldest block from current will be kept of for SP maintenance records
 	DefaultNumOfHistoricalBlocksForMaintenanceRecords = 864000
 	// DefaultMaintenanceDurationQuota is the total allowed time for a SP to be in Maintenance mode within DefaultNumOfHistoricalBlocksForMaintenanceRecords

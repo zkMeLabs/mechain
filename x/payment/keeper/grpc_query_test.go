@@ -78,7 +78,7 @@ func TestDynamicBalanceQuery(t *testing.T) {
 
 	deepKeepers.AccountKeeper.EXPECT().HasAccount(gomock.Any(), gomock.Any()).
 		Return(true).AnyTimes()
-	bankBalance := sdk.NewCoin("ame", sdkmath.NewInt(1000))
+	bankBalance := sdk.NewCoin("azkme", sdkmath.NewInt(1000))
 
 	deepKeepers.BankKeeper.EXPECT().GetBalance(gomock.Any(), gomock.Any(), gomock.Any()).
 		Return(bankBalance).AnyTimes()
