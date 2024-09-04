@@ -1,0 +1,13 @@
+
+- address: 0xee5D155f1499FCF065EfCa23F9035943C144aB2C
+  name: challenger1
+  pubkey: '{"@type":"/cosmos.crypto.eth.ethsecp256k1.PubKey","key":"Ai4CBf+4KWOHNrl1BmfBH08aLBvLIHdzpDiFUfOybh+j"}'
+  pubkey_hex: 022e0205ffb829638736b9750667c11f4f1a2c1bcb207773a4388551f3b26e1fa3
+  type: local
+
+
+**Important** write this mnemonic phrase in a safe place.
+It is the only way to recover your account if you ever forget your password.
+
+mosquito guide sibling drip distance know eagle orbit sausage cloud swamp define client limit solution industry area rapid chest tortoise differ blossom guard turtle
+

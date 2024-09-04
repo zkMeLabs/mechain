@@ -1,0 +1,6 @@
+- address: 0xCCbbEdFF276Fc4BBa811239C06201ebC2F2BA695
+  name: relayer0
+  pubkey: '{"@type":"/cosmos.crypto.eth.ethsecp256k1.PubKey","key":"A1v0YlWRTx939oSa2OgSQMKiWEnvg1kZQX92arumzEtV"}'
+  pubkey_hex: 035bf46255914f1f77f6849ad8e81240c2a25849ef835919417f766abba6cc4b55
+  type: local
+

@@ -41,13 +41,12 @@ function init() {
 		${bin} keys add challenger${i} --keyring-backend test --home "${workspace}"/.local/challenger${i} >"${workspace}"/.local/challenger${i}/challenger_info 2>&1
 	done
 
-	# add sp account
+	# add sp accounts
 	sp_size=1
 	if [ $# -eq 2 ]; then
 		sp_size=$2
 	fi
 	for ((i = 0; i < ${sp_size}; i++)); do
-		#create sp and sp fund account
 		mkdir -p "${workspace}"/.local/sp${i}
 		if [ "$i" -eq 0 ]; then
 			${bin} keys import sp0 ${sp0_prikey} --secp256k1-private-key --keyring-backend test --home "${workspace}"/.local/sp${i}
@@ -62,7 +61,6 @@ function init() {
 		${bin} keys add sp${i}_gc --keyring-backend test --home "${workspace}"/.local/sp${i} >"${workspace}"/.local/sp${i}/gc_info 2>&1
 		${bin} keys add sp${i}_maintenance --keyring-backend test --home "${workspace}"/.local/sp${i} >"${workspace}"/.local/sp${i}/maintenance_info 2>&1
 	done
-
 }
 
 function generate_genesis() {

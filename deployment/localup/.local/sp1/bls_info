@@ -1,0 +1,13 @@
+
+- address: 0x807da1d275f75283cb7284c00f68fA7fF09590d1
+  name: sp1_bls
+  pubkey: '{"@type":"/cosmos.crypto.eth.bls.PubKey","key":"lPk9YVnctTPve/XNbqNV+k0ZEvMBAQUlrFylCYB9odJ191KDy3KEwA9o+n/wlZDR"}'
+  pubkey_hex: 94f93d6159dcb533ef7bf5cd6ea355fa4d1912f301010525ac5ca509807da1d275f75283cb7284c00f68fa7ff09590d1
+  type: local
+
+
+**Important** write this mnemonic phrase in a safe place.
+It is the only way to recover your account if you ever forget your password.
+
+spare lunch forum any tortoise daring dish nerve opinion basket pet mosquito extend account capable broken cat slide media genuine liberty fragile warfare minor
+

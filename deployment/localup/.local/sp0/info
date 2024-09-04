@@ -1,0 +1,6 @@
+- address: 0xc1A979b06dF9221749571eFD6d9DC99cCFCa82A2
+  name: sp0
+  pubkey: '{"@type":"/cosmos.crypto.eth.ethsecp256k1.PubKey","key":"A0ftbmq5TCutMY9vJhbL8QfYZnjJfFrv070X9sFoREGm"}'
+  pubkey_hex: 0347ed6e6ab94c2bad318f6f2616cbf107d86678c97c5aefd3bd17f6c1684441a6
+  type: local
+

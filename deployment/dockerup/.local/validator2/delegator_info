@@ -1,0 +1,13 @@
+
+- address: 0xB47F978F55574FEf7815Aa12F88EDD505dFF5b26
+  name: validator_delegator2
+  pubkey: '{"@type":"/cosmos.crypto.eth.ethsecp256k1.PubKey","key":"AmJxAGJzrr1CqVXyCz4+QxblHe3qYDzHosJzlNOBvn2A"}'
+  pubkey_hex: 026271006273aebd42a955f20b3e3e4316e51dedea603cc7a2c27394d381be7d80
+  type: local
+
+
+**Important** write this mnemonic phrase in a safe place.
+It is the only way to recover your account if you ever forget your password.
+
+paddle rather drill bring depth yard ticket athlete estate prepare arena private pride blood strong blouse immense erosion rhythm consider general super wisdom duty
+

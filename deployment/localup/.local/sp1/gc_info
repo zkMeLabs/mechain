@@ -1,0 +1,13 @@
+
+- address: 0xd35AdA94201CFcBDc05F4c75Bbf991b7f26Dc36c
+  name: sp1_gc
+  pubkey: '{"@type":"/cosmos.crypto.eth.ethsecp256k1.PubKey","key":"AlMdSm3m2pvRbYK/pkNylqB91r9jxytJo1LuAhVxUjOs"}'
+  pubkey_hex: 02531d4a6de6da9bd16d82bfa6437296a07dd6bf63c72b49a352ee0215715233ac
+  type: local
+
+
+**Important** write this mnemonic phrase in a safe place.
+It is the only way to recover your account if you ever forget your password.
+
+cradle pupil gauge verify runway shoot evoke give coast crane strong salt market worry office fat pill clean apology kick manage all asset inject
+

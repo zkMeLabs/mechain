@@ -1,0 +1,13 @@
+
+- address: 0x0546940FCd95aE0dbc7E1D56Ac85c3Ae85DA568D
+  name: sp4_seal
+  pubkey: '{"@type":"/cosmos.crypto.eth.ethsecp256k1.PubKey","key":"AjgZH7vQFrB1vFa8ZuGG7UnBgdn/4rbAsaSLnl70N1+0"}'
+  pubkey_hex: 0238191fbbd016b075bc56bc66e186ed49c181d9ffe2b6c0b1a48b9e5ef4375fb4
+  type: local
+
+
+**Important** write this mnemonic phrase in a safe place.
+It is the only way to recover your account if you ever forget your password.
+
+bind jump cloud satisfy misery fiscal island rare receive battle core around mountain into section wrong name supreme sister you galaxy video alert zebra
+

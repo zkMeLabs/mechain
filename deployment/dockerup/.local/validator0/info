@@ -1,0 +1,6 @@
+- address: 0xbf657D0ef7b48167657A703Ed8Fd063F075246D7
+  name: validator0
+  pubkey: '{"@type":"/cosmos.crypto.eth.ethsecp256k1.PubKey","key":"A50rbJg3TMPACbzE5Ujg0clx+d4udBAtggqEQiB7v9Sc"}'
+  pubkey_hex: 039d2b6c98374cc3c009bcc4e548e0d1c971f9de2e74102d820a8442207bbfd49c
+  type: local
+

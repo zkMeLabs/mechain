@@ -1,0 +1,13 @@
+
+- address: 0xf5a6ABA0731Bbef8C8d048687350eAE17fD3b4c5
+  name: sp3_bls
+  pubkey: '{"@type":"/cosmos.crypto.eth.bls.PubKey","key":"qCOq/FeLfqx/IaDKWR3ZvW+sggb8sxHzFpuo6vWmq6BzG774yNBIaHNQ6uF/07TF"}'
+  pubkey_hex: a823aafc578b7eac7f21a0ca591dd9bd6fac8206fcb311f3169ba8eaf5a6aba0731bbef8c8d048687350eae17fd3b4c5
+  type: local
+
+
+**Important** write this mnemonic phrase in a safe place.
+It is the only way to recover your account if you ever forget your password.
+
+armed pudding caution funny body toilet under frequent since snake execute awful token observe ability step album love cute move type finger metal wedding
+

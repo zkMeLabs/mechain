@@ -1,0 +1,13 @@
+
+- address: 0xFe9190Ea1766899c1A2746F8fF261aB3b39E0b76
+  name: sp5_gc
+  pubkey: '{"@type":"/cosmos.crypto.eth.ethsecp256k1.PubKey","key":"AgVVunzJ6Fts9daFVSYZxLTHrXY12prfNyviiM62YlVl"}'
+  pubkey_hex: 020555ba7cc9e85b6cf5d685552619c4b4c7ad7635da9adf372be288ceb6625565
+  type: local
+
+
+**Important** write this mnemonic phrase in a safe place.
+It is the only way to recover your account if you ever forget your password.
+
+poem wrap boil shell warfare foil boil mail update junk visual seek crisp evidence amazing empty six direct wild milk civil tourist place mistake
+

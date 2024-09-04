@@ -1,63 +1,112 @@
-version: '3'
-
 services:
   node0:
-    container_name: evmosnode0
-    image: "evmos/node"
+    container_name: mechaind-validator-0
+    image: "zkmelabs/mechain"
     ports:
       - "26656-26657:26656-26657"
+      # - "28750:${VALIDATOR_ADDRESS_PORT_START}"
+      # - "27750:${VALIDATOR_P2P_PORT_START}"
+      # - "9090:${VALIDATOR_GRPC_PORT_START}"
+      # - "1317:${VALIDATOR_GRPC_WEB_PORT_START}"
+      # - "26657:${VALIDATOR_RPC_PORT_START}"
     volumes:
-      - ./build/node0/evmosd:/evmos:Z
-    command:
-      - /evmosd start --home /evmos
-    networks:
-      localnet:
-        ipv4_address: 192.167.10.2
+      - ./deployment/localup/.local/validator0:/mechain:Z
+    command: >
+      /usr/bin/mechaind start --home /mechain
+      --keyring-backend test
+      --api.enabled-unsafe-cors true
+      --address 127.0.0.1:${VALIDATOR_ADDRESS_PORT_START}
+      --grpc.address 127.0.0.1:${VALIDATOR_GRPC_PORT_START}
+      --p2p.laddr tcp://127.0.0.1:${VALIDATOR_P2P_PORT_START}
+      --p2p.external-address 127.0.0.1:${VALIDATOR_P2P_PORT_START}
+      --rpc.laddr tcp://127.0.0.1:${VALIDATOR_RPC_PORT_START}
+      --rpc.unsafe true
+      --log_format json
 
-  node1:
-    container_name: evmosnode1
-    image: "evmos/node"
-    ports:
-      - "26659-26660:26656-26657"
-    volumes:
-      - ./build/node1/evmosd:/evmos:Z
-    command:
-      - /evmosd start --home /evmos
-    networks:
-      localnet:
-        ipv4_address: 192.167.10.3
+  # node1:
+  #   container_name: mechaind-validator-1
+  #   image: "zkmelabs/mechain"
+  #   env_file:
+  #     - ./deployment/dockerup/.env
+  #   ports:
+  #     - "26656-26657:26656-26657"
+  #     - "28751:${VALIDATOR_ADDRESS_PORT_START}"
+  #     - "27751:${VALIDATOR_P2P_PORT_START}"
+  #     - "9091:${VALIDATOR_GRPC_PORT_START}"
+  #     - "1318:${VALIDATOR_GRPC_WEB_PORT_START}"
+  #     - "26658:${VALIDATOR_RPC_PORT_START}"
 
-  node2:
-    container_name: evmosnode2
-    image: "evmos/node"
-    ports:
-      - "26661-26662:26656-26657"
-    volumes:
-      - ./build/node2/evmosd:/evmos:Z
-    command:
-      - /evmosd start --home /evmos
-    networks:
-      localnet:
-        ipv4_address: 192.167.10.4
+  #   volumes:
+  #     - ./deployment/localup/.local/validator1:/mechain:Z
+  #   command: >
+  #     /usr/bin/mechaind start --home /evmos
+  #     --keyring-backend test
+  #     --api.enabled-unsafe-cors true
+  #     --address 127.0.0.1:${VALIDATOR_ADDRESS_PORT_START}
+  #     --grpc.address 127.0.0.1:${VALIDATOR_GRPC_PORT_START}
+  #     --p2p.laddr tcp://127.0.0.1:${VALIDATOR_P2P_PORT_START}
+  #     --p2p.external-address 127.0.0.1:${VALIDATOR_P2P_PORT_START}
+  #     --rpc.laddr tcp://127.0.0.1:${VALIDATOR_RPC_PORT_START}
+  #     --rpc.unsafe true
+  #     --log_format json
+  #   networks:
+  #     localnet:
+  #       ipv4_address: 192.167.10.3
 
-  node3:
-    container_name: evmosnode3
-    image: "evmos/node"
-    ports:
-      - "26663-26664:26656-26657"
-    volumes:
-      - ./build/node3/evmosd:/evmos:Z
-    command:
-      - /evmosd start --home /evmos
-    networks:
-      localnet:
-        ipv4_address: 192.167.10.5
+  # node2:
+  #   container_name: mechaind-validator-2
+  #   image: "zkmelabs/mechain"
+  #   env_file:
+  #     - ./deployment/dockerup/.env
+  #   ports:
+  #     - "26656-26657:26656-26657"
+  #     - "28750:${VALIDATOR_ADDRESS_PORT_START}"
+  #     - "27750:${VALIDATOR_P2P_PORT_START}"
+  #     - "9090:${VALIDATOR_GRPC_PORT_START}"
+  #     - "1317:${VALIDATOR_GRPC_WEB_PORT_START}"
+  #     - "26657:${VALIDATOR_RPC_PORT_START}"
+  #   volumes:
+  #     - ./deployment/localup/.local/validator2:/mechain:Z
+  #   command: >
+  #     /usr/bin/mechaind start --home /evmos
+  #     --keyring-backend test
+  #     --api.enabled-unsafe-cors true
+  #     --address 127.0.0.1:${VALIDATOR_ADDRESS_PORT_START}
+  #     --grpc.address 127.0.0.1:${VALIDATOR_GRPC_PORT_START}
+  #     --p2p.laddr tcp://127.0.0.1:${VALIDATOR_P2P_PORT_START}
+  #     --p2p.external-address 127.0.0.1:${VALIDATOR_P2P_PORT_START}
+  #     --rpc.laddr tcp://127.0.0.1:${VALIDATOR_RPC_PORT_START}
+  #     --rpc.unsafe true
+  #     --log_format json
+  #   networks:
+  #     localnet:
+  #       ipv4_address: 192.167.10.4
 
-networks:
-  localnet:
-    driver: bridge
-    ipam:
-      driver: default
-      config:
-        -
-          subnet: 192.167.10.0/16
+  # node3:
+  #   container_name: mechaind-validator-3
+  #   image: "zkmelabs/mechain"
+  #   env_file:
+  #     - ./deployment/dockerup/.env
+  #   ports:
+  #     - "26656-26657:26656-26657"
+  #     - "28750:${VALIDATOR_ADDRESS_PORT_START}"
+  #     - "27750:${VALIDATOR_P2P_PORT_START}"
+  #     - "9090:${VALIDATOR_GRPC_PORT_START}"
+  #     - "1317:${VALIDATOR_GRPC_WEB_PORT_START}"
+  #     - "26657:${VALIDATOR_RPC_PORT_START}"
+  #   volumes:
+  #     - ./deployment/localup/.local/validator3:/mechain:Z
+  #   command: >
+  #     /usr/bin/mechaind start --home /evmos
+  #     --keyring-backend test
+  #     --api.enabled-unsafe-cors true
+  #     --address 127.0.0.1:${VALIDATOR_ADDRESS_PORT_START}
+  #     --grpc.address 127.0.0.1:${VALIDATOR_GRPC_PORT_START}
+  #     --p2p.laddr tcp://127.0.0.1:${VALIDATOR_P2P_PORT_START}
+  #     --p2p.external-address 127.0.0.1:${VALIDATOR_P2P_PORT_START}
+  #     --rpc.laddr tcp://127.0.0.1:${VALIDATOR_RPC_PORT_START}
+  #     --rpc.unsafe true
+  #     --log_format json
+  #   networks:
+  #     localnet:
+  #       ipv4_address: 192.167.10.5

@@ -1,0 +1,13 @@
+
+- address: 0x4d28019445E1c43BE212f34A8E18E7A95ddD11B6
+  name: validator2
+  pubkey: '{"@type":"/cosmos.crypto.eth.ethsecp256k1.PubKey","key":"AsWf0IfxMq9rRpaENr5Kw39ppRPV6UsFnxWfrIx390Vb"}'
+  pubkey_hex: 02c59fd087f132af6b46968436be4ac37f69a513d5e94b059f159fac8c77f7455b
+  type: local
+
+
+**Important** write this mnemonic phrase in a safe place.
+It is the only way to recover your account if you ever forget your password.
+
+cheap negative crop crystal off air duck point shell weasel myth cool distance tree economy fruit dignity ugly shock above provide stumble icon trade
+

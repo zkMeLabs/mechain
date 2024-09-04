@@ -1,0 +1,13 @@
+
+- address: 0xeA96515788165041780dC67b0F8b215A8c9254e1
+  name: sp2_seal
+  pubkey: '{"@type":"/cosmos.crypto.eth.ethsecp256k1.PubKey","key":"A8ZuhL6EA05J1LGx+DZD124tpUj5p30N0GbmTHtuqpXo"}'
+  pubkey_hex: 03c66e84be84034e49d4b1b1f83643d76e2da548f9a77d0dd066e64c7b6eaa95e8
+  type: local
+
+
+**Important** write this mnemonic phrase in a safe place.
+It is the only way to recover your account if you ever forget your password.
+
+fossil jealous unhappy antique identify pass raccoon shadow effort midnight slab vital visa laugh buzz visual trumpet draw loan reason edit broccoli dust foster
+

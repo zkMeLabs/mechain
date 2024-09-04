@@ -1,0 +1,13 @@
+
+- address: 0x9902C9EDc48ab169fa78649B84f58516938a40a0
+  name: sp0_approval
+  pubkey: '{"@type":"/cosmos.crypto.eth.ethsecp256k1.PubKey","key":"Aj17e1VppIJ/mU3GaeTinEYdGpLtv9ec2xOcqcTmhQuV"}'
+  pubkey_hex: 023d7b7b5569a4827f994dc669e4e29c461d1a92edbfd79cdb139ca9c4e6850b95
+  type: local
+
+
+**Important** write this mnemonic phrase in a safe place.
+It is the only way to recover your account if you ever forget your password.
+
+coil whale consider wheat match enough obvious high jar unit approve taste frequent time position basic sausage during room garlic problem sauce hockey okay
+

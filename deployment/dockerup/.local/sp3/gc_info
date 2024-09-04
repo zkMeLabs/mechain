@@ -1,0 +1,13 @@
+
+- address: 0x9e93884C4cc348c44E654598E5eA7F7A42e49a65
+  name: sp3_gc
+  pubkey: '{"@type":"/cosmos.crypto.eth.ethsecp256k1.PubKey","key":"AoAtQyMXotjo4TnBH95s+bkJy/C12V/NNwQZ3XxTrxnE"}'
+  pubkey_hex: 02802d432317a2d8e8e139c11fde6cf9b909cbf0b5d95fcd370419dd7c53af19c4
+  type: local
+
+
+**Important** write this mnemonic phrase in a safe place.
+It is the only way to recover your account if you ever forget your password.
+
+blouse butter cousin marine fashion version eager doctor wool hungry cable phrase gain lemon entire once finger mother icon glue boring access despair mouse
+

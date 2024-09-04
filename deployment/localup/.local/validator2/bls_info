@@ -1,0 +1,13 @@
+
+- address: 0x71Da525A7947fe53Ff7130768cF42222357EB9d2
+  name: validator_bls2
+  pubkey: '{"@type":"/cosmos.crypto.eth.bls.PubKey","key":"sCIdP+hn/xNJetd0IsIuZ+SEYqsf2opYty2DRHHaUlp5R/5T/3Ewdoz0IiI1frnS"}'
+  pubkey_hex: b0221d3fe867ff13497ad77422c22e67e48462ab1fda8a58b72d834471da525a7947fe53ff7130768cf42222357eb9d2
+  type: local
+
+
+**Important** write this mnemonic phrase in a safe place.
+It is the only way to recover your account if you ever forget your password.
+
+fish muscle artefact input exit patch weird ahead subject useful assault frog thought impact olive summer tuna surround harvest inquiry what silent top blind
+

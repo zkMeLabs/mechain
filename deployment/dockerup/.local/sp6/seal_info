@@ -1,0 +1,13 @@
+
+- address: 0x6F405aA78d53498f08e8Afa20e42ac02BD29c0b9
+  name: sp6_seal
+  pubkey: '{"@type":"/cosmos.crypto.eth.ethsecp256k1.PubKey","key":"AsvKe+aPzBL5cqvhpopIDjI2UUAvDLw+68LIkfBq4AeW"}'
+  pubkey_hex: 02cbca7be68fcc12f972abe1a68a480e323651402f0cbc3eebc2c891f06ae00796
+  type: local
+
+
+**Important** write this mnemonic phrase in a safe place.
+It is the only way to recover your account if you ever forget your password.
+
+slam exist thrive orange someone entry member trouble swift inherit frozen dog flip ordinary furnace develop half magnet peanut glare shaft senior violin eight
+

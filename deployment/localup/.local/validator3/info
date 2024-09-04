@@ -1,0 +1,13 @@
+
+- address: 0xc3B2A56A0FE35784B3EF176182cfc4a217776eB0
+  name: validator3
+  pubkey: '{"@type":"/cosmos.crypto.eth.ethsecp256k1.PubKey","key":"AhnX/EuOEF3lQ57ElwaBjsNmM6kI2J9Z/WYwGcqim0rw"}'
+  pubkey_hex: 0219d7fc4b8e105de5439ec49706818ec36633a908d89f59fd663019caa29b4af0
+  type: local
+
+
+**Important** write this mnemonic phrase in a safe place.
+It is the only way to recover your account if you ever forget your password.
+
+valve demise move elevator mad kitten judge during parrot expose ankle hedgehog ethics major brass robust mimic task maple six slam record delay shine
+

@@ -1,0 +1,13 @@
+
+- address: 0xE07913239B7287F87B63f5Ed6775fEF831529967
+  name: validator_bls1
+  pubkey: '{"@type":"/cosmos.crypto.eth.bls.PubKey","key":"lfemg5NUmMX6oFII9mFY4NdE9epVrUZ3g+FVXuB5EyObcof4e2P17Wd1/vgxUpln"}'
+  pubkey_hex: 95f7a683935498c5faa05208f66158e0d744f5ea55ad467783e1555ee07913239b7287f87b63f5ed6775fef831529967
+  type: local
+
+
+**Important** write this mnemonic phrase in a safe place.
+It is the only way to recover your account if you ever forget your password.
+
+holiday palace vote spend about famous churn turtle resource genius farm dream main frequent urge move antique refuse fatigue shove deny gather casual salt
+

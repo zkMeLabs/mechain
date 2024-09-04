@@ -1,0 +1,13 @@
+
+- address: 0x7fFc6A38B4973d2c707f24fb138CcEb762b5976E
+  name: sp1_fund
+  pubkey: '{"@type":"/cosmos.crypto.eth.ethsecp256k1.PubKey","key":"ApFC+2hANI2W3vlk7Y75imMRMAifqXhw8rjd2gmp8b5d"}'
+  pubkey_hex: 029142fb6840348d96def964ed8ef98a631130089fa97870f2b8ddda09a9f1be5d
+  type: local
+
+
+**Important** write this mnemonic phrase in a safe place.
+It is the only way to recover your account if you ever forget your password.
+
+sausage enroll sell shy alley alone thank toast winter giraffe trust key dune budget treat easily camp peasant rebel sting design smart husband shove
+
