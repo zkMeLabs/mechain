@@ -90,7 +90,6 @@ contracts/@openzeppelin/*
 # localup
 deployment/localup/.local
 
-
 # devnetup
 deployment/devnetup/.local
 

@@ -1,6 +1,0 @@
-- address: 0x00000Be6819f41400225702D32d3dd23663Dd690
-  name: devaccount
-  pubkey: '{"@type":"/cosmos.crypto.eth.ethsecp256k1.PubKey","key":"Az/O93/CZ9cUWZDccNbpeRvBTgp3HGKJbdzKaUp1Yie0"}'
-  pubkey_hex: 033fcef77fc267d7145990dc70d6e9791bc14e0a771c62896ddcca694a756227b4
-  type: local
-
