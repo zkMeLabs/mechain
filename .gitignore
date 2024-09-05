@@ -88,18 +88,14 @@ dependency-graph.png
 contracts/@openzeppelin/*
 
 # localup
-deployment/localup/nodes
 deployment/localup/.local
-deployment/localup/config.json
 
 
 # devnetup
 deployment/devnetup/.local
 
 # dockerup
-deployment/dockerup/data
-deployment/dockerup/.local/**/data/
-!deployment/dockerup/.local/**/data/*.json
+deployment/dockerup/.local
 
 # vscode
 .vscode/launch.json
