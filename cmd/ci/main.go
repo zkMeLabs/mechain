@@ -42,9 +42,9 @@ services:
       - "{{.EVMRPCPort}}:{{$.BasePorts.EVMRPCPort}}"
       - "{{.EVMWSPort}}:{{$.BasePorts.EVMWSPort}}"
     volumes:
-      - "{{$.VolumeBasePath}}/validator{{.NodeIndex}}:/mechain:Z"
+      - "{{$.VolumeBasePath}}/validator{{.NodeIndex}}:/app:Z"
     command: >
-      /usr/bin/mechaind start --home /mechain
+      /usr/bin/mechaind start --home /app
       --keyring-backend test
       --api.enabled-unsafe-cors true
       --address 0.0.0.0:{{$.BasePorts.AddressPort}}
