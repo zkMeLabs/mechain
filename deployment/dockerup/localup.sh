@@ -10,7 +10,7 @@ relayer0_prikey=3c7ea76ddb53539174caae1dd960b308981933bd6e95196556ba29063200df9c
 sp0_prikey=ebbeb28b89bc7ec5da6441ed70452cc413f96ea33a7c790aba06810ae441b776
 
 bin_name=mechaind
-bin=${workspace}/../../build/${bin_name}
+bin="$(realpath "${workspace}/../../build/${bin_name}")"
 
 function init() {
 	size=$1
@@ -278,7 +278,7 @@ function generate_sp_genesis {
 			--moniker="sp${i}" \
 			--details="detail_sp${i}" \
 			--website="http://website" \
-			--endpoint="http://devnet-sp${i}-rpc.mechain.tech${i}:$((${STOREAGE_PROVIDER_ADDRESS_PORT_START} + ${i}))" \
+			--endpoint="http://devnet-sp${i}-rpc.mechain.tech:$((${STOREAGE_PROVIDER_ADDRESS_PORT_START} + ${i}))" \
 			--node tcp://devnet-rpc.mechain.tech:$((${VALIDATOR_RPC_PORT_START})) \
 			--node-id "sp${i}" \
 			--ip 127.0.0.1 \

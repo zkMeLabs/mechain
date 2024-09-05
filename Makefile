@@ -588,14 +588,15 @@ create-contracts-json:
 	@rm -rf tmp
 
 ###############################################################################
-###                        Docker Compose                                  ###
+###                        Docker Compose                                   ###
 ###############################################################################
 # build-docker-compose-file
 build-dcf:
-	go run cmd/docker-compose/main.go
+	go run cmd/ci/main.go
 
 start-dc:
 	docker compose up -d
+	docker compose ps
 	
 stop-dc:
 	docker compose down
