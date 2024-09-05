@@ -1,13 +1,13 @@
 
-- address: 0x02710f7a9b131284eE1FA142c1B75741d1e8992f
+- address: 0xF3BA2a906BF1fCf95024CE50af9CE6F5f2681de2
   name: sp1_seal
-  pubkey: '{"@type":"/cosmos.crypto.eth.ethsecp256k1.PubKey","key":"A6Lth+pPm42lHMcQDLcjgRdXKlNCSN4r1eJq5u/4bmZT"}'
-  pubkey_hex: 03a2ed87ea4f9b8da51cc7100cb7238117572a534248de2bd5e26ae6eff86e6653
+  pubkey: '{"@type":"/cosmos.crypto.eth.ethsecp256k1.PubKey","key":"A50LJh+faiSaQ0n1Ml9dhIlYOhhscgzrcgnqS8tdKaV7"}'
+  pubkey_hex: 039d0b261f9f6a249a4349f5325f5d8489583a186c720ceb7209ea4bcb5d29a57b
   type: local
 
 
 **Important** write this mnemonic phrase in a safe place.
 It is the only way to recover your account if you ever forget your password.
 
-type scrub present cycle near smooth elevator wheat economy hunt race evil method kiss sunny combine advance foil visit expand avocado river chronic plastic
+indoor pear balance athlete key tenant lens decrease region harvest abstract west fringe angry soldier letter grief pink split quarter joy march file victory
 

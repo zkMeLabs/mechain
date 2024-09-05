@@ -1,13 +1,13 @@
 
-- address: 0x8Bd827A2DEFfDF7475BE4A4f655d31f370b363fc
+- address: 0xB6Cf22628E4Fd4cefB9299f70d3930A5200BD8BC
   name: sp4_approval
-  pubkey: '{"@type":"/cosmos.crypto.eth.ethsecp256k1.PubKey","key":"A3w27Z6rpy4k0etN0z6PGDRtVl2+hXgbdUVqZribawTW"}'
-  pubkey_hex: 037c36ed9eaba72e24d1eb4dd33e8f18346d565dbe85781b75456a66b89b6b04d6
+  pubkey: '{"@type":"/cosmos.crypto.eth.ethsecp256k1.PubKey","key":"A1OfEE+byIQkXewZWdbpgRLYvXPJGhsWxudq/miZxYEN"}'
+  pubkey_hex: 03539f104f9bc884245dec1959d6e98112d8bd73c91a1b16c6e76afe6899c5810d
   type: local
 
 
 **Important** write this mnemonic phrase in a safe place.
 It is the only way to recover your account if you ever forget your password.
 
-salt clerk urban wealth pledge matrix diet exotic twist leave sustain rich twenty school rain puppy admit lady news bubble pipe avocado soda lonely
+tuna family file identify display sun slide social midnight hat arm year alien very blue degree rent drip era caution silver flash sample better
 

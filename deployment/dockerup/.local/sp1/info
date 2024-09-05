@@ -1,13 +1,13 @@
 
-- address: 0xD32a9EDFf0DBdDB2EeCB583A422660718E1a62c5
+- address: 0x45487903D59466bF30431256Db40E6815174DFE2
   name: sp1
-  pubkey: '{"@type":"/cosmos.crypto.eth.ethsecp256k1.PubKey","key":"A0X6ldad5offgLC7Fgzd93aE/c3g5oiL7o++GI6Fg2Xe"}'
-  pubkey_hex: 0345fa95d69de687df80b0bb160cddf77684fdcde0e6888bee8fbe188e858365de
+  pubkey: '{"@type":"/cosmos.crypto.eth.ethsecp256k1.PubKey","key":"AhOXq45qmCErH//ADX2EzWtNUbvT9eJW9BZCkfy9qcPT"}'
+  pubkey_hex: 021397ab8e6a98212b1fffc00d7d84cd6b4d51bbd3f5e256f4164291fcbda9c3d3
   type: local
 
 
 **Important** write this mnemonic phrase in a safe place.
 It is the only way to recover your account if you ever forget your password.
 
-labor bird warfare elder birth voyage subject soccer cabin cost icon lock athlete pipe sketch hotel unaware rely cargo treat blade pluck tone soup
+museum lens custom other crush manage exotic neutral actor else gentle disease private summer inner oppose shallow swamp artwork funny enough glare prefer ripple
 

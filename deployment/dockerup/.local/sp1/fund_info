@@ -1,13 +1,13 @@
 
-- address: 0x7fFc6A38B4973d2c707f24fb138CcEb762b5976E
+- address: 0x0D18b41437F9c90A131021E82da47CcDc187c351
   name: sp1_fund
-  pubkey: '{"@type":"/cosmos.crypto.eth.ethsecp256k1.PubKey","key":"ApFC+2hANI2W3vlk7Y75imMRMAifqXhw8rjd2gmp8b5d"}'
-  pubkey_hex: 029142fb6840348d96def964ed8ef98a631130089fa97870f2b8ddda09a9f1be5d
+  pubkey: '{"@type":"/cosmos.crypto.eth.ethsecp256k1.PubKey","key":"A6VKpfercxaQc4MSdHWkNyEVxE5LWtMOyxMIsynwpPwP"}'
+  pubkey_hex: 03a54aa5f7ab7316907383127475a4372115c44e4b5ad30ecb1308b329f0a4fc0f
   type: local
 
 
 **Important** write this mnemonic phrase in a safe place.
 It is the only way to recover your account if you ever forget your password.
 
-sausage enroll sell shy alley alone thank toast winter giraffe trust key dune budget treat easily camp peasant rebel sting design smart husband shove
+drift fetch assume plunge unknown double scrub elevator install remember scrub lunch crowd inherit adult lucky coyote sibling prepare wish home arrow sing luxury
 

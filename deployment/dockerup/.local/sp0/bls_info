@@ -1,13 +1,13 @@
 
-- address: 0x271fB02a33b824221Adf718495404c4fF19Eca06
+- address: 0xc81441Df731C780F3c01AD5B9a8D325Debc62b95
   name: sp0_bls
-  pubkey: '{"@type":"/cosmos.crypto.eth.bls.PubKey","key":"jMp11raQw/l29wexfzf+X73NUNMETj7GXhqOeScfsCozuCQiGt9xhJVATE/xnsoG"}'
-  pubkey_hex: 8cca75d6b690c3f976f707b17f37fe5fbdcd50d3044e3ec65e1a8e79271fb02a33b824221adf718495404c4ff19eca06
+  pubkey: '{"@type":"/cosmos.crypto.eth.bls.PubKey","key":"rZxBQGJlvZmJsA8K8DPMShPSy8bWZFKY/lWv8cgUQd9zHHgPPAGtW5qNMl3rxiuV"}'
+  pubkey_hex: ad9c41406265bd9989b00f0af033cc4a13d2cbc6d6645298fe55aff1c81441df731c780f3c01ad5b9a8d325debc62b95
   type: local
 
 
 **Important** write this mnemonic phrase in a safe place.
 It is the only way to recover your account if you ever forget your password.
 
-lecture butter gaze skill harbor oil portion require present unhappy tiger marine found annual life chapter able spoon idle rose work palace squeeze can
+vendor mail inflict miss exhibit lab snack tissue apple nose number charge manual kidney misery service ring climb pen more float garbage topic swamp
 

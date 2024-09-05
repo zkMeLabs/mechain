@@ -98,7 +98,8 @@ deployment/devnetup/.local
 
 # dockerup
 deployment/dockerup/data
-
-.vscode/launch.json
 deployment/dockerup/.local/**/data/
 !deployment/dockerup/.local/**/data/*.json
+
+# vscode
+.vscode/launch.json

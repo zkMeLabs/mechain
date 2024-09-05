@@ -1,13 +1,13 @@
 
-- address: 0xfb407D73e5d91786940e931Bb618c5989d1F17b6
+- address: 0x341A499FEC1aB8b50186D461e7Aa8369B24f3b10
   name: sp2_gc
-  pubkey: '{"@type":"/cosmos.crypto.eth.ethsecp256k1.PubKey","key":"Age4jUF8XPeakTDVmICw+BqVedVMyYjBBd22Z8PL9Pz4"}'
-  pubkey_hex: 0207b88d417c5cf79a9130d59880b0f81a9579d54cc988c105ddb667c3cbf4fcf8
+  pubkey: '{"@type":"/cosmos.crypto.eth.ethsecp256k1.PubKey","key":"AgYPqGRoF8sv2xkrDxFCUvA7q7VaF1KmavEGKFISPzKw"}'
+  pubkey_hex: 02060fa8646817cb2fdb192b0f114252f03babb55a1752a66af1062852123f32b0
   type: local
 
 
 **Important** write this mnemonic phrase in a safe place.
 It is the only way to recover your account if you ever forget your password.
 
-extend impulse lava round woman soap shrimp learn matrix mushroom heavy shell decorate monkey birth just obvious mouse phone paddle barrel search oil world
+black manual junk alcohol worry car seed episode flash waste shine ramp render dumb swim oval permit lawn pelican ladder diet pistol village drum
 

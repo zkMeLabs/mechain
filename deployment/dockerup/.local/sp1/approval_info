@@ -1,13 +1,13 @@
 
-- address: 0xD54f5B3779b9AD83b0D415964054EFB5dE0b8A6b
+- address: 0xA3D43630af78Ba7E3530944fa8bFE058bC38E608
   name: sp1_approval
-  pubkey: '{"@type":"/cosmos.crypto.eth.ethsecp256k1.PubKey","key":"Atz2vnJ0VL7AEjq2Vn55XIJoyxBq7C5YdLN4cWxj4asu"}'
-  pubkey_hex: 02dcf6be727454bec0123ab6567e795c8268cb106aec2e5874b378716c63e1ab2e
+  pubkey: '{"@type":"/cosmos.crypto.eth.ethsecp256k1.PubKey","key":"A/nwldUuqxEVOQLanyqbplahH1zo3YsRFPYDzeQQwK2v"}'
+  pubkey_hex: 03f9f095d52eab11153902da9f2a9ba656a11f5ce8dd8b1114f603cde410c0adaf
   type: local
 
 
 **Important** write this mnemonic phrase in a safe place.
 It is the only way to recover your account if you ever forget your password.
 
-soldier casual amused young spike bread nice vintage crowd sort party side tonight walk nurse lounge grape motor later salt egg black lounge virtual
+turn bench plunge honey fury disagree slab three crop laugh huge badge coral february supreme marine gym gown lucky border race cattle success industry
 

@@ -13,54 +13,59 @@ type NodeConfig struct {
 	GRPCPort    int
 	GRPCWebPort int
 	RPCPort     int
+	EVMRPCPort  int
+	EVMWSPort   int
+	BasePorts   map[string]int
 }
 
 type ComposeConfig struct {
-	Version        string
 	Nodes          []NodeConfig
 	Image          string
 	VolumeBasePath string
 }
 
 const dockerComposeTemplate = `
-version: '{{.Version}}'
-
 services:
 {{- range .Nodes }}
   node{{.NodeIndex}}:
     container_name: mechaind-validator-{{.NodeIndex}}
     image: "{{$.Image}}"
     ports:
-      - "{{.AddressPort}}:{{.AddressPort}}"
-      - "{{.P2PPort}}:{{.P2PPort}}"
-      - "{{.GRPCPort}}:{{.GRPCPort}}"
-      - "{{.GRPCWebPort}}:{{.GRPCWebPort}}"
-      - "{{.RPCPort}}:{{.RPCPort}}"
+      - "{{.AddressPort}}:{{.BasePorts.VALIDATOR_ADDRESS_PORT_START}}"
+      - "{{.P2PPort}}:{{.BasePorts.VALIDATOR_P2P_PORT_START}}"
+      - "{{.GRPCPort}}:{{.BasePorts.VALIDATOR_GRPC_PORT_START}}"
+      - "{{.GRPCWebPort}}:{{.BasePorts.VALIDATOR_GRPC_WEB_PORT_START}}"
+      - "{{.RPCPort}}:{{.BasePorts.VALIDATOR_RPC_PORT_START}}"
+      - "{{.EVMRPCPort}}:{{.BasePorts.EVM_RPC_PORT_START}}"
+      - "{{.EVMWSPort}}:{{.BasePorts.EVM_WS_PORT_START}}"
     volumes:
       - "{{$.VolumeBasePath}}/validator{{.NodeIndex}}:/mechain:Z"
     command: >
       /usr/bin/mechaind start --home /mechain
       --keyring-backend test
       --api.enabled-unsafe-cors true
-      --address 127.0.0.1:{{.AddressPort}}
-      --grpc.address 127.0.0.1:{{.GRPCPort}}
-      --p2p.laddr tcp://127.0.0.1:{{.P2PPort}}
-      --p2p.external-address 127.0.0.1:{{.P2PPort}}
-      --rpc.laddr tcp://127.0.0.1:{{.RPCPort}}
+      --address 0.0.0.0:{{.BasePorts.VALIDATOR_ADDRESS_PORT_START}}
+      --grpc.address 0.0.0.0:{{.BasePorts.VALIDATOR_GRPC_PORT_START}}
+      --p2p.laddr tcp://0.0.0.0:{{.BasePorts.VALIDATOR_P2P_PORT_START}}
+      --p2p.external-address 0.0.0.0:{{.BasePorts.VALIDATOR_P2P_PORT_START}}
+      --rpc.laddr tcp://0.0.0.0:{{.BasePorts.VALIDATOR_RPC_PORT_START}}
       --rpc.unsafe true
       --log_format json
 {{- end }}
 `
 
 func main() {
-	numNodes := 4 // 可以根据需要动态调整节点数量
 	basePorts := map[string]int{
 		"VALIDATOR_ADDRESS_PORT_START":  28750,
 		"VALIDATOR_P2P_PORT_START":      27750,
 		"VALIDATOR_GRPC_PORT_START":     9090,
 		"VALIDATOR_GRPC_WEB_PORT_START": 1317,
 		"VALIDATOR_RPC_PORT_START":      26657,
+		"EVM_RPC_PORT_START":            8545,
+		"EVM_WS_PORT_START":             8546,
 	}
+
+	numNodes := 4
 
 	var nodes []NodeConfig
 	for i := 0; i < numNodes; i++ {
@@ -71,14 +76,16 @@ func main() {
 			GRPCPort:    basePorts["VALIDATOR_GRPC_PORT_START"] + i,
 			GRPCWebPort: basePorts["VALIDATOR_GRPC_WEB_PORT_START"] + i,
 			RPCPort:     basePorts["VALIDATOR_RPC_PORT_START"] + i,
+			EVMRPCPort:  basePorts["EVM_RPC_PORT_START"] + i*2,
+			EVMWSPort:   basePorts["EVM_WS_PORT_START"] + i*2,
+			BasePorts:   basePorts,
 		})
 	}
 
 	config := ComposeConfig{
-		Version:        "3",
 		Nodes:          nodes,
 		Image:          "zkmelabs/mechain",
-		VolumeBasePath: "./deployment/localup/.local",
+		VolumeBasePath: "./deployment/dockerup/.local",
 	}
 
 	file, err := os.Create("docker-compose.yml")

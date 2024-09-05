@@ -14,7 +14,7 @@ minimum-gas-prices = "0azkme"
 # nothing: all historic states will be saved, nothing will be deleted (i.e. archiving node)
 # everything: 2 latest states will be kept; pruning at 10 block intervals.
 # custom: allow pruning options to be manually specified through 'pruning-keep-recent', and 'pruning-interval'
-pruning = "default"
+pruning = "nothing"
 
 # These are applied if and only if the pruning strategy is custom.
 pruning-keep-recent = "0"
@@ -165,7 +165,7 @@ rpc-write-timeout = 0
 rpc-max-body-bytes = 1000000
 
 # EnableUnsafeCORS defines if CORS should be enabled (unsafe - use it at your own risk).
-enabled-unsafe-cors = false
+enabled-unsafe-cors = true
 
 ###############################################################################
 ###                           gRPC Configuration                            ###
@@ -216,7 +216,7 @@ enable-unsafe-cors = false
 snapshot-interval = 5000
 
 # snapshot-keep-recent specifies the number of recent snapshots to keep and serve (0 to keep all).
-snapshot-keep-recent = 2
+snapshot-keep-recent = 0
 
 ###############################################################################
 ###                         Store / State Streaming                         ###
@@ -285,7 +285,7 @@ ws-address = "127.0.0.1:8546"
 
 # API defines a list of JSON-RPC namespaces that should be enabled
 # Example: "eth,txpool,personal,net,debug,web3"
-api = "eth,net,web3"
+api = "eth,txpool,personal,net,debug,web3"
 
 # GasCap sets a cap on gas that can be used in eth_call/estimateGas (0=infinite). Default: 25,000,000.
 gas-cap = 25000000
@@ -349,23 +349,23 @@ key-path = ""
 ###############################################################################
 [cross-chain]
 # chain-id for current chain
-src-chain-id = 1
+src-chain-id = 5151
 # chain-id for bsc destination chain
-dest-bsc-chain-id = 2
+dest-bsc-chain-id = 97
 # chain-id for op bnb destination chain
-dest-op-chain-id = 3
+dest-op-chain-id = 5611
 # chain-id for polygon destination chain
-dest-polygon-chain-id = 4
+dest-polygon-chain-id = 137
 # chain-id for scroll destination chain
-dest-scroll-chain-id = 5
+dest-scroll-chain-id = 534352
 # chain-id for linea destination chain
-dest-linea-chain-id = 6
+dest-linea-chain-id = 59144
 # chain-id for mantle destination chain
-dest-mantle-chain-id = 7
+dest-mantle-chain-id = 5000
 # chain-id for arbitrum destination chain
-dest-arbitrum-chain-id = 8
+dest-arbitrum-chain-id = 42161
 # chain-id for optimism destination chain
-dest-optimism-chain-id = 9
+dest-optimism-chain-id = 10
 
 ###############################################################################
 ###                           PaymentCheck Config                           ###

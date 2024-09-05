@@ -1,13 +1,13 @@
 
-- address: 0x365472cb1cd485EE77b08E925808Bd16caFd60E2
+- address: 0x2C0898E45D2377fFa6D2aC52d6D01c26759125e0
   name: sp5
-  pubkey: '{"@type":"/cosmos.crypto.eth.ethsecp256k1.PubKey","key":"Az7FrwDkaQJkFDUZ2ln3PeOifDk/fc6MXfOnDckCph+t"}'
-  pubkey_hex: 033ec5af00e4690264143519da59f73de3a27c393f7dce8c5df3a70dc902a61fad
+  pubkey: '{"@type":"/cosmos.crypto.eth.ethsecp256k1.PubKey","key":"A81W9XCZu/wFp315ZXpCfAfoSiZtxjPNJn2GzGUnx92M"}'
+  pubkey_hex: 03cd56f57099bbfc05a77d79657a427c07e84a266dc633cd267d86cc6527c7dd8c
   type: local
 
 
 **Important** write this mnemonic phrase in a safe place.
 It is the only way to recover your account if you ever forget your password.
 
-flower gas stick year reflect moment leaf grit travel quantum voyage enlist success result predict course lava dove also crane snow staff senior obey
+road resist powder tuna logic use very tackle matter smart box party bike mesh early direct minor title radar because wheat donkey immune crazy
 

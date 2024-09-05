@@ -1,13 +1,13 @@
 
-- address: 0x1A891b3D4C7245e5a707e2E782a2944215f19591
+- address: 0x44bB754e9ea8813D3f1Cf084BbD4ebe2Bad8b1af
   name: sp3_fund
-  pubkey: '{"@type":"/cosmos.crypto.eth.ethsecp256k1.PubKey","key":"Ak7pa3Gt1b+jLrwDav3XGnIE/bBrl7OYGJBfXVXSwmAs"}'
-  pubkey_hex: 024ee96b71add5bfa32ebc036afdd71a7204fdb06b97b39818905f5d55d2c2602c
+  pubkey: '{"@type":"/cosmos.crypto.eth.ethsecp256k1.PubKey","key":"Aj1zTm6uYUjiErjihO84tyzmWw688vC2UG9/+qRIXlEP"}'
+  pubkey_hex: 023d734e6eae6148e212b8e284ef38b72ce65b0ebcf2f0b6506f7ffaa4485e510f
   type: local
 
 
 **Important** write this mnemonic phrase in a safe place.
 It is the only way to recover your account if you ever forget your password.
 
-loyal fury cricket bright dune parrot garden north broken oak ribbon wrestle chief weather author awful soccer lake chronic panther make promote artefact spin
+multiply lucky walk random job match crazy plastic silver crowd level amateur useless submit clump leg mango thumb museum journey flight venue another private
 

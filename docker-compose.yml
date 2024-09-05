@@ -1,112 +1,98 @@
+
 services:
   node0:
     container_name: mechaind-validator-0
     image: "zkmelabs/mechain"
     ports:
-      - "26656-26657:26656-26657"
-      # - "28750:${VALIDATOR_ADDRESS_PORT_START}"
-      # - "27750:${VALIDATOR_P2P_PORT_START}"
-      # - "9090:${VALIDATOR_GRPC_PORT_START}"
-      # - "1317:${VALIDATOR_GRPC_WEB_PORT_START}"
-      # - "26657:${VALIDATOR_RPC_PORT_START}"
+      - "28750:28750"
+      - "27750:27750"
+      - "9090:9090"
+      - "1317:1317"
+      - "26657:26657"
+      - "8545:8545"
+      - "8546:8546"
     volumes:
-      - ./deployment/localup/.local/validator0:/mechain:Z
+      - "./deployment/dockerup/.local/validator0:/mechain:Z"
     command: >
       /usr/bin/mechaind start --home /mechain
       --keyring-backend test
       --api.enabled-unsafe-cors true
-      --address 127.0.0.1:${VALIDATOR_ADDRESS_PORT_START}
-      --grpc.address 127.0.0.1:${VALIDATOR_GRPC_PORT_START}
-      --p2p.laddr tcp://127.0.0.1:${VALIDATOR_P2P_PORT_START}
-      --p2p.external-address 127.0.0.1:${VALIDATOR_P2P_PORT_START}
-      --rpc.laddr tcp://127.0.0.1:${VALIDATOR_RPC_PORT_START}
+      --address 0.0.0.0:28750
+      --grpc.address 0.0.0.0:9090
+      --p2p.laddr tcp://0.0.0.0:27750
+      --p2p.external-address 0.0.0.0:27750
+      --rpc.laddr tcp://0.0.0.0:26657
       --rpc.unsafe true
       --log_format json
-
-  # node1:
-  #   container_name: mechaind-validator-1
-  #   image: "zkmelabs/mechain"
-  #   env_file:
-  #     - ./deployment/dockerup/.env
-  #   ports:
-  #     - "26656-26657:26656-26657"
-  #     - "28751:${VALIDATOR_ADDRESS_PORT_START}"
-  #     - "27751:${VALIDATOR_P2P_PORT_START}"
-  #     - "9091:${VALIDATOR_GRPC_PORT_START}"
-  #     - "1318:${VALIDATOR_GRPC_WEB_PORT_START}"
-  #     - "26658:${VALIDATOR_RPC_PORT_START}"
-
-  #   volumes:
-  #     - ./deployment/localup/.local/validator1:/mechain:Z
-  #   command: >
-  #     /usr/bin/mechaind start --home /evmos
-  #     --keyring-backend test
-  #     --api.enabled-unsafe-cors true
-  #     --address 127.0.0.1:${VALIDATOR_ADDRESS_PORT_START}
-  #     --grpc.address 127.0.0.1:${VALIDATOR_GRPC_PORT_START}
-  #     --p2p.laddr tcp://127.0.0.1:${VALIDATOR_P2P_PORT_START}
-  #     --p2p.external-address 127.0.0.1:${VALIDATOR_P2P_PORT_START}
-  #     --rpc.laddr tcp://127.0.0.1:${VALIDATOR_RPC_PORT_START}
-  #     --rpc.unsafe true
-  #     --log_format json
-  #   networks:
-  #     localnet:
-  #       ipv4_address: 192.167.10.3
-
-  # node2:
-  #   container_name: mechaind-validator-2
-  #   image: "zkmelabs/mechain"
-  #   env_file:
-  #     - ./deployment/dockerup/.env
-  #   ports:
-  #     - "26656-26657:26656-26657"
-  #     - "28750:${VALIDATOR_ADDRESS_PORT_START}"
-  #     - "27750:${VALIDATOR_P2P_PORT_START}"
-  #     - "9090:${VALIDATOR_GRPC_PORT_START}"
-  #     - "1317:${VALIDATOR_GRPC_WEB_PORT_START}"
-  #     - "26657:${VALIDATOR_RPC_PORT_START}"
-  #   volumes:
-  #     - ./deployment/localup/.local/validator2:/mechain:Z
-  #   command: >
-  #     /usr/bin/mechaind start --home /evmos
-  #     --keyring-backend test
-  #     --api.enabled-unsafe-cors true
-  #     --address 127.0.0.1:${VALIDATOR_ADDRESS_PORT_START}
-  #     --grpc.address 127.0.0.1:${VALIDATOR_GRPC_PORT_START}
-  #     --p2p.laddr tcp://127.0.0.1:${VALIDATOR_P2P_PORT_START}
-  #     --p2p.external-address 127.0.0.1:${VALIDATOR_P2P_PORT_START}
-  #     --rpc.laddr tcp://127.0.0.1:${VALIDATOR_RPC_PORT_START}
-  #     --rpc.unsafe true
-  #     --log_format json
-  #   networks:
-  #     localnet:
-  #       ipv4_address: 192.167.10.4
-
-  # node3:
-  #   container_name: mechaind-validator-3
-  #   image: "zkmelabs/mechain"
-  #   env_file:
-  #     - ./deployment/dockerup/.env
-  #   ports:
-  #     - "26656-26657:26656-26657"
-  #     - "28750:${VALIDATOR_ADDRESS_PORT_START}"
-  #     - "27750:${VALIDATOR_P2P_PORT_START}"
-  #     - "9090:${VALIDATOR_GRPC_PORT_START}"
-  #     - "1317:${VALIDATOR_GRPC_WEB_PORT_START}"
-  #     - "26657:${VALIDATOR_RPC_PORT_START}"
-  #   volumes:
-  #     - ./deployment/localup/.local/validator3:/mechain:Z
-  #   command: >
-  #     /usr/bin/mechaind start --home /evmos
-  #     --keyring-backend test
-  #     --api.enabled-unsafe-cors true
-  #     --address 127.0.0.1:${VALIDATOR_ADDRESS_PORT_START}
-  #     --grpc.address 127.0.0.1:${VALIDATOR_GRPC_PORT_START}
-  #     --p2p.laddr tcp://127.0.0.1:${VALIDATOR_P2P_PORT_START}
-  #     --p2p.external-address 127.0.0.1:${VALIDATOR_P2P_PORT_START}
-  #     --rpc.laddr tcp://127.0.0.1:${VALIDATOR_RPC_PORT_START}
-  #     --rpc.unsafe true
-  #     --log_format json
-  #   networks:
-  #     localnet:
-  #       ipv4_address: 192.167.10.5
+  node1:
+    container_name: mechaind-validator-1
+    image: "zkmelabs/mechain"
+    ports:
+      - "28751:28750"
+      - "27751:27750"
+      - "9091:9090"
+      - "1318:1317"
+      - "26658:26657"
+      - "8547:8545"
+      - "8548:8546"
+    volumes:
+      - "./deployment/dockerup/.local/validator1:/mechain:Z"
+    command: >
+      /usr/bin/mechaind start --home /mechain
+      --keyring-backend test
+      --api.enabled-unsafe-cors true
+      --address 0.0.0.0:28750
+      --grpc.address 0.0.0.0:9090
+      --p2p.laddr tcp://0.0.0.0:27750
+      --p2p.external-address 0.0.0.0:27750
+      --rpc.laddr tcp://0.0.0.0:26657
+      --rpc.unsafe true
+      --log_format json
+  node2:
+    container_name: mechaind-validator-2
+    image: "zkmelabs/mechain"
+    ports:
+      - "28752:28750"
+      - "27752:27750"
+      - "9092:9090"
+      - "1319:1317"
+      - "26659:26657"
+      - "8549:8545"
+      - "8550:8546"
+    volumes:
+      - "./deployment/dockerup/.local/validator2:/mechain:Z"
+    command: >
+      /usr/bin/mechaind start --home /mechain
+      --keyring-backend test
+      --api.enabled-unsafe-cors true
+      --address 0.0.0.0:28750
+      --grpc.address 0.0.0.0:9090
+      --p2p.laddr tcp://0.0.0.0:27750
+      --p2p.external-address 0.0.0.0:27750
+      --rpc.laddr tcp://0.0.0.0:26657
+      --rpc.unsafe true
+      --log_format json
+  node3:
+    container_name: mechaind-validator-3
+    image: "zkmelabs/mechain"
+    ports:
+      - "28753:28750"
+      - "27753:27750"
+      - "9093:9090"
+      - "1320:1317"
+      - "26660:26657"
+      - "8551:8545"
+      - "8552:8546"
+    volumes:
+      - "./deployment/dockerup/.local/validator3:/mechain:Z"
+    command: >
+      /usr/bin/mechaind start --home /mechain
+      --keyring-backend test
+      --api.enabled-unsafe-cors true
+      --address 0.0.0.0:28750
+      --grpc.address 0.0.0.0:9090
+      --p2p.laddr tcp://0.0.0.0:27750
+      --p2p.external-address 0.0.0.0:27750
+      --rpc.laddr tcp://0.0.0.0:26657
+      --rpc.unsafe true
+      --log_format json

@@ -1,13 +1,13 @@
 
-- address: 0x725422056060F087f76d1aA0772A11002d9E57CC
+- address: 0x7D7F47BA84bDDe7B9FC6706f63Ef0C93fC47F35b
   name: sp5_bls
-  pubkey: '{"@type":"/cosmos.crypto.eth.bls.PubKey","key":"pYNqLLB5Wp3VpTlxk6DpXBcRPROERkShVduNUnJUIgVgYPCH920aoHcqEQAtnlfM"}'
-  pubkey_hex: a5836a2cb0795a9dd5a5397193a0e95c17113d13844644a155db8d52725422056060f087f76d1aa0772a11002d9e57cc
+  pubkey: '{"@type":"/cosmos.crypto.eth.bls.PubKey","key":"rcJPlWem116FfEgfayZnfVBjprINnuLv45idT31/R7qEvd57n8Zwb2PvDJP8R/Nb"}'
+  pubkey_hex: adc24f9567a6d75e857c481f6b26677d5063a6b20d9ee2efe3989d4f7d7f47ba84bdde7b9fc6706f63ef0c93fc47f35b
   type: local
 
 
 **Important** write this mnemonic phrase in a safe place.
 It is the only way to recover your account if you ever forget your password.
 
-crisp mix maple plunge place whisper grit glad clap fine eternal fatal derive culture frown banana giraffe pelican moon praise anger axis capable knee
+sock tribe give mansion cricket wedding disagree employ other stick inspire thought quick cricket brief foil song crash prevent auction hobby cute oppose stem
 

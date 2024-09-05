@@ -1,13 +1,13 @@
 
-- address: 0x6F405aA78d53498f08e8Afa20e42ac02BD29c0b9
+- address: 0xE3a17C5E6649285E10Fa981Bab098bDB7A59b37E
   name: sp6_seal
-  pubkey: '{"@type":"/cosmos.crypto.eth.ethsecp256k1.PubKey","key":"AsvKe+aPzBL5cqvhpopIDjI2UUAvDLw+68LIkfBq4AeW"}'
-  pubkey_hex: 02cbca7be68fcc12f972abe1a68a480e323651402f0cbc3eebc2c891f06ae00796
+  pubkey: '{"@type":"/cosmos.crypto.eth.ethsecp256k1.PubKey","key":"An7mtFo6Ck8qcFeG2o3IkBZ2pEYcjAjGTx/bvH/X+iIT"}'
+  pubkey_hex: 027ee6b45a3a0a4f2a705786da8dc8901676a4461c8c08c64f1fdbbc7fd7fa2213
   type: local
 
 
 **Important** write this mnemonic phrase in a safe place.
 It is the only way to recover your account if you ever forget your password.
 
-slam exist thrive orange someone entry member trouble swift inherit frozen dog flip ordinary furnace develop half magnet peanut glare shaft senior violin eight
+devote slight enter silk frame speak cube token enforce clarify input sword chest blanket lesson very cupboard tenant toast food nurse jacket inhale torch
 

@@ -145,7 +145,7 @@ function generate_genesis() {
 			--commission-rate="${COMMISSION_RATE}" \
 			--details="validator${i}" \
 			--website="http://website" \
-			--node tcp://localhost:$((${VALIDATOR_RPC_PORT_START})) \
+			--node tcp://node${i}:$((${VALIDATOR_RPC_PORT_START})) \
 			--node-id "validator${i}" \
 			--ip 127.0.0.1 \
 			--gas ""
@@ -157,11 +157,12 @@ function generate_genesis() {
 	for ((i = 0; i < ${size}; i++)); do
 		cp "${workspace}"/.local/gentx/* "${workspace}"/.local/validator${i}/config/gentx/
 		${bin} collect-gentxs --home "${workspace}"/.local/validator${i}
-		node_ids="$(${bin} tendermint show-node-id --home "${workspace}"/.local/validator${i})@127.0.0.1:$((${VALIDATOR_P2P_PORT_START})) ${node_ids}"
+		node_ids="$(${bin} tendermint show-node-id --home "${workspace}"/.local/validator${i})@node${i}:$((${VALIDATOR_P2P_PORT_START})) ${node_ids}"
 	done
 
 	# generate sp to genesis
 	generate_sp_genesis "$size" "$sp_size"
+
 	persistent_peers=$(joinByString ',' ${node_ids})
 	for ((i = 0; i < ${size}; i++)); do
 		if [ "$i" -gt 0 ]; then
@@ -208,11 +209,11 @@ function generate_genesis() {
 		sed -i -e "s/log_level = \"info\"/\log_level= \"debug\"/g" "${workspace}"/.local/validator${i}/config/config.toml
 		#echo -e '[payment-check]\nenabled = true\ninterval = 1' >> ${workspace}/.local/validator${i}/config/app.toml
 		sed -i -e "s/cors_allowed_origins = \[\]/cors_allowed_origins = \[\"*\"\]/g" "${workspace}"/.local/validator${i}/config/config.toml
-		sed -i -e "s#node = \"tcp://localhost:26657\"#node = \"tcp://localhost:$((${VALIDATOR_RPC_PORT_START}))\"#g" "${workspace}"/.local/validator${i}/config/client.toml
-		sed -i -e "/Address defines the gRPC server address to bind to/{N;s/address = \"localhost:9090\"/address = \"localhost:$((${VALIDATOR_GRPC_PORT_START}))\"/;}" "${workspace}"/.local/validator${i}/config/app.toml
-		sed -i -e "/Address defines the gRPC-web server address to bind to/{N;s/address = \"localhost:9091\"/address = \"localhost:$((${VALIDATOR_GRPC_PORT_START}))\"/;}" "${workspace}"/.local/validator${i}/config/app.toml
-		sed -i -e "/Address defines the EVM RPC HTTP server address to bind to/{N;s/address = \"127.0.0.1:8545\"/address = \"127.0.0.1:$((${EVM_SERVER_PORT_START}))\"/;}" "${workspace}"/.local/validator${i}/config/app.toml
-		sed -i -e "/Address defines the EVM WebSocket server address to bind to/{N;s/address = \"127.0.0.1:8546\"/address = \"127.0.0.1:$((${EVM_SERVER_PORT_START}))\"/;}" "${workspace}"/.local/validator${i}/config/app.toml
+		# sed -i -e "s#node = \"tcp://localhost:26657\"#node = \"tcp://localhost:$((${VALIDATOR_RPC_PORT_START}))\"#g" "${workspace}"/.local/validator${i}/config/client.toml
+		# sed -i -e "/Address defines the gRPC server address to bind to/{N;s/address = \"localhost:9090\"/address = \"localhost:$((${VALIDATOR_GRPC_PORT_START}))\"/;}" "${workspace}"/.local/validator${i}/config/app.toml
+		# sed -i -e "/Address defines the gRPC-web server address to bind to/{N;s/address = \"localhost:9091\"/address = \"localhost:$((${VALIDATOR_GRPC_PORT_START} - 1))\"/;}" "${workspace}"/.local/validator${i}/config/app.toml
+		# sed -i -e "/Address defines the EVM RPC HTTP server address to bind to/{N;s/address = \"127.0.0.1:8545\"/address = \"127.0.0.1:$((${EVM_SERVER_PORT_START}))\"/;}" "${workspace}"/.local/validator${i}/config/app.toml
+		# sed -i -e "/Address defines the EVM WebSocket server address to bind to/{N;s/address = \"127.0.0.1:8546\"/address = \"127.0.0.1:$((${EVM_SERVER_PORT_START}))\"/;}" "${workspace}"/.local/validator${i}/config/app.toml
 	done
 
 	# enable swagger API for validator0
@@ -221,27 +222,6 @@ function generate_genesis() {
 
 	# enable telemetry for validator0
 	sed -i -e "/other sinks such as Prometheus/{N;s/enable = false/enable = true/;}" "${workspace}"/.local/validator0/config/app.toml
-}
-
-function start() {
-	size=$1
-	for ((i = 0; i < ${size}; i++)); do
-		mkdir -p "${workspace}"/.local/validator${i}/logs
-		nohup "${bin}" start --home "${workspace}"/.local/validator${i} \
-			--keyring-backend test \
-			--api.enabled-unsafe-cors true \
-			--address 127.0.0.1:$((${VALIDATOR_ADDRESS_PORT_START})) \
-			--grpc.address 127.0.0.1:$((${VALIDATOR_GRPC_PORT_START})) \
-			--p2p.laddr tcp://127.0.0.1:$((${VALIDATOR_P2P_PORT_START})) \
-			--p2p.external-address 127.0.0.1:$((${VALIDATOR_P2P_PORT_START})) \
-			--rpc.laddr tcp://127.0.0.1:$((${VALIDATOR_RPC_PORT_START})) \
-			--rpc.unsafe true \
-			--log_format json >"${workspace}"/.local/validator${i}/logs/node.log &
-	done
-}
-
-function stop() {
-	ps -ef | grep ${bin_name} | grep validator | awk '{print $2}' | xargs kill
 }
 
 # create sp in genesis use genesis transaction like validator
@@ -298,8 +278,8 @@ function generate_sp_genesis {
 			--moniker="sp${i}" \
 			--details="detail_sp${i}" \
 			--website="http://website" \
-			--endpoint="http://127.0.0.1:$((${STOREAGE_PROVIDER_ADDRESS_PORT_START} + ${i}))" \
-			--node tcp://localhost:$((${VALIDATOR_RPC_PORT_START} + ${i})) \
+			--endpoint="http://devnet-sp${i}-rpc.mechain.tech${i}:$((${STOREAGE_PROVIDER_ADDRESS_PORT_START} + ${i}))" \
+			--node tcp://node${i}:$((${VALIDATOR_RPC_PORT_START})) \
 			--node-id "sp${i}" \
 			--ip 127.0.0.1 \
 			--gas "" \

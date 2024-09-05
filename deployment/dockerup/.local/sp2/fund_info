@@ -1,13 +1,13 @@
 
-- address: 0xB6635a0117D80eE410ab8A963735d6C1c4Ec96D8
+- address: 0x176f7C4394C417A172CB0113dF3CAB02B9219Ea4
   name: sp2_fund
-  pubkey: '{"@type":"/cosmos.crypto.eth.ethsecp256k1.PubKey","key":"Aou5NI4haNZkWrneznuJLuCkBLgTTCUxFJAm0YXIHzf2"}'
-  pubkey_hex: 028bb9348e2168d6645ab9dece7b892ee0a404b8134c2531149026d185c81f37f6
+  pubkey: '{"@type":"/cosmos.crypto.eth.ethsecp256k1.PubKey","key":"Arv0XHX5tOmb5tsZLVtko8g9t3yTPye5q/saSoP1i0JF"}'
+  pubkey_hex: 02bbf45c75f9b4e99be6db192d5b64a3c83db77c933f27b9abfb1a4a83f58b4245
   type: local
 
 
 **Important** write this mnemonic phrase in a safe place.
 It is the only way to recover your account if you ever forget your password.
 
-enemy option river crater defy leave truth spy dentist calm excite honey major ramp tragic spray dentist music result worth glad output blossom minor
+correct twin chapter street front wrestle keep logic coconut jump ostrich cannon consider brain surprise tide truck treat trend mystery neglect diamond input churn
 

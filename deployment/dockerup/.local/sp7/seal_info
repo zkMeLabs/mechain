@@ -1,13 +1,13 @@
 
-- address: 0x50f0782297E60Cc815C0D480D33A586f9566C8F5
+- address: 0x8af73CF52eF363F0efe9bD60e1a18989F438AE5b
   name: sp7_seal
-  pubkey: '{"@type":"/cosmos.crypto.eth.ethsecp256k1.PubKey","key":"A2Q07blCDJc2nPYOabqbLeMISzhEdOVUp9JKUButUN8k"}'
-  pubkey_hex: 036434edb9420c97369cf60e69ba9b2de3084b384474e554a7d24a501bad50df24
+  pubkey: '{"@type":"/cosmos.crypto.eth.ethsecp256k1.PubKey","key":"Ap8Kz6gFtjU4gFNtwcxttVF9XtBzKxD35kDPS074ywPF"}'
+  pubkey_hex: 029f0acfa805b6353880536dc1cc6db5517d5ed0732b10f7e640cf4b4ef8cb03c5
   type: local
 
 
 **Important** write this mnemonic phrase in a safe place.
 It is the only way to recover your account if you ever forget your password.
 
-key squirrel elevator wall grow milk disease later give gap chicken account mad agree ostrich curve lift vacant cover feel trick tape holiday manage
+chicken velvet tortoise rack avoid promote distance super render float abuse volcano much swarm trick small twenty call route soda acid virus village satisfy
 
