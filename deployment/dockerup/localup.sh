@@ -279,7 +279,7 @@ function generate_sp_genesis {
 			--details="detail_sp${i}" \
 			--website="http://website" \
 			--endpoint="http://devnet-sp${i}-rpc.mechain.tech${i}:$((${STOREAGE_PROVIDER_ADDRESS_PORT_START} + ${i}))" \
-			--node tcp://node${i}:$((${VALIDATOR_RPC_PORT_START})) \
+			--node tcp://devnet-rpc.mechain.tech:$((${VALIDATOR_RPC_PORT_START})) \
 			--node-id "sp${i}" \
 			--ip 127.0.0.1 \
 			--gas "" \
