@@ -86,11 +86,19 @@ dependency-graph.png
 
 # OpenZeppelin contracts
 contracts/@openzeppelin/*
+
+# localup
 deployment/localup/nodes
-deployment/localup/.localdeployment/localup/mechaind
+deployment/localup/.local
 deployment/localup/config.json
 
+
+# devnetup
 deployment/devnetup/.local
+
+# dockerup
 deployment/dockerup/data
-sp.json
+
 .vscode/launch.json
+deployment/dockerup/.local/**/data/
+!deployment/dockerup/.local/**/data/*.json
