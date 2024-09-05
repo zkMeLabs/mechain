@@ -586,3 +586,18 @@ create-contracts-json:
 		mv $(TMP_JSON) $(COMPILED_DIR)/$${c}.json ;\
 	done
 	@rm -rf tmp
+
+###############################################################################
+###                        Docker Compose                                  ###
+###############################################################################
+# build-docker-compose-file
+build-dcf:
+	go run cmd/docker-compose/main.go
+
+start-dc:
+	docker compose up -d
+
+stop-dc:
+	docker compose down
+
+.PHONY: build-dcf start-dc stop-dc
