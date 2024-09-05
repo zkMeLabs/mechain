@@ -596,7 +596,7 @@ build-dcf:
 
 start-dc:
 	docker compose up -d
-
+	
 stop-dc:
 	docker compose down
 
