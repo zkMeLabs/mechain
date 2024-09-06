@@ -12,9 +12,9 @@ services:
       - "8545:8545"
       - "8546:8546"
     volumes:
-      - "./deployment/dockerup/.local/validator0:/mechain:Z"
+      - "./deployment/dockerup/.local/validator0:/app:Z"
     command: >
-      /usr/bin/mechaind start --home /mechain
+      /usr/bin/mechaind start --home /app
       --keyring-backend test
       --api.enabled-unsafe-cors true
       --address 0.0.0.0:28750
@@ -36,9 +36,9 @@ services:
       - "8547:8545"
       - "8548:8546"
     volumes:
-      - "./deployment/dockerup/.local/validator1:/mechain:Z"
+      - "./deployment/dockerup/.local/validator1:/app:Z"
     command: >
-      /usr/bin/mechaind start --home /mechain
+      /usr/bin/mechaind start --home /app
       --keyring-backend test
       --api.enabled-unsafe-cors true
       --address 0.0.0.0:28750
@@ -60,9 +60,9 @@ services:
       - "8549:8545"
       - "8550:8546"
     volumes:
-      - "./deployment/dockerup/.local/validator2:/mechain:Z"
+      - "./deployment/dockerup/.local/validator2:/app:Z"
     command: >
-      /usr/bin/mechaind start --home /mechain
+      /usr/bin/mechaind start --home /app
       --keyring-backend test
       --api.enabled-unsafe-cors true
       --address 0.0.0.0:28750
@@ -84,9 +84,9 @@ services:
       - "8551:8545"
       - "8552:8546"
     volumes:
-      - "./deployment/dockerup/.local/validator3:/mechain:Z"
+      - "./deployment/dockerup/.local/validator3:/app:Z"
     command: >
-      /usr/bin/mechaind start --home /mechain
+      /usr/bin/mechaind start --home /app
       --keyring-backend test
       --api.enabled-unsafe-cors true
       --address 0.0.0.0:28750
