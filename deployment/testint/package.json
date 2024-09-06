@@ -1,0 +1,25 @@
+{
+  "name": "deploy",
+  "version": "1.0.0",
+  "description": "a javascript for deploy node",
+  "main": "index.js",
+  "scripts": {
+    "start": "node dev --v=1 --c",
+    "start4v": "node dev --v=4 --c",
+    "stop": "node dev --stop=all",
+    "restart": "node dev --c --k"
+  },
+  "repository": {
+    "type": "https",
+    "url": "https://github.com/luchenqun/evmos-deploy.git"
+  },
+  "type": "module",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@quarix/address-converter": "^0.1.8",
+    "ethers": "^6.9.0",
+    "fs-extra": "^10.0.0",
+    "yargs": "^17.5.1"
+  }
+}
