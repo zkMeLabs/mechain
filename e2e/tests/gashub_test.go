@@ -111,7 +111,7 @@ func (s *GashubTestSuite) TestUpdateGasHubParams() {
 		Params:    updatedParams,
 	}
 
-	proposal, err := govtypesv1.NewMsgSubmitProposal([]sdk.Msg{msgUpdateParams}, sdk.NewCoins(sdk.NewCoin("azkme", sdk.NewInt(1000000000000000000))),
+	proposal, err := govtypesv1.NewMsgSubmitProposal([]sdk.Msg{msgUpdateParams}, sdk.NewCoins(sdk.NewCoin("ame", sdk.NewInt(1000000000000000000))),
 		s.Validator.GetAddr().String(), "", "update GasHub params", "Test update GasHub params")
 	s.Require().NoError(err)
 	txBroadCastResp, err := s.SendTxBlockWithoutCheck(proposal, s.Validator)
@@ -141,7 +141,7 @@ func (s *GashubTestSuite) TestUpdateGasHubParams() {
 	txOpt := &types.TxOption{
 		Mode:      &mode,
 		Memo:      "",
-		FeeAmount: sdk.NewCoins(sdk.NewCoin("azkme", sdk.NewInt(1000000000000000000))),
+		FeeAmount: sdk.NewCoins(sdk.NewCoin("ame", sdk.NewInt(1000000000000000000))),
 	}
 	voteBroadCastResp, err := s.SendTxBlockWithoutCheckWithTxOpt(govtypesv1.NewMsgVote(s.Validator.GetAddr(), uint64(proposalID), govtypesv1.OptionYes, ""),
 		s.Validator, txOpt)

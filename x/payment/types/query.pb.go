@@ -898,7 +898,7 @@ type QueryDynamicBalanceResponse struct {
 	StreamRecord StreamRecord `protobuf:"bytes,2,opt,name=stream_record,json=streamRecord,proto3" json:"stream_record"`
 	// the timestamp of the current block
 	CurrentTimestamp int64 `protobuf:"varint,3,opt,name=current_timestamp,json=currentTimestamp,proto3" json:"current_timestamp,omitempty"`
-	// bank_balance is the azkme balance of the bank module
+	// bank_balance is the ame balance of the bank module
 	BankBalance github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,4,opt,name=bank_balance,json=bankBalance,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"bank_balance"`
 	// available_balance is bank balance + static balance
 	AvailableBalance github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,5,opt,name=available_balance,json=availableBalance,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"available_balance"`

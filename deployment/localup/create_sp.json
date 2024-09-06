@@ -17,7 +17,7 @@
       "maintenance_address": "0xbE03316B1D7c3FCB69136e47e02442d6Fb3396dB",
       "endpoint": "https://www.greenfield.io",
       "deposit": {
-        "denom": "azkme",
+        "denom": "ame",
         "amount": "10000000000000000000000"
       },
       "read_price": "0.087",
