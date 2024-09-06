@@ -3,12 +3,13 @@ name: Build Docker
 on:
   push:
     branches:
+      - develop
       - cicd
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-    if: false
+    if: true
     steps:
       # References: https://github.com/actions/checkout
       - name: Checkout
@@ -31,35 +32,12 @@ jobs:
       - name: Push to Docker Hub
         run: make push-docker
 
-      - name: Upload build files
-        uses: actions/upload-artifact@v2
-        with:
-          name: binary-package
-          path: build/
-
-      - name: Upload deployment files
-        uses: actions/upload-artifact@v2
-        with:
-          name: deployment-files
-          path: deployment/
-
 
   regenerate-configuration:
     runs-on: ubuntu-latest
     if: false
     needs: build-and-push
     steps:
-      - name: Download build files
-        uses: actions/download-artifact@v2
-        with:
-          name: binary-package
-          path: build/
-
-      - name: Download deployment files
-        uses: actions/download-artifact@v2
-        with:
-          name: deployment-files
-          path: deployment/
 
       - name: generate-configuration
         uses: kostya-ten/ssh-server-deploy@v4
@@ -80,9 +58,7 @@ jobs:
 
   deploying-with-docker:
     runs-on: ubuntu-latest
-    needs: []
-      # - build-and-push
-      # - regenerate-configuration
+    needs: build-and-push
     steps:
       - name: deploy
         uses: appleboy/ssh-action@v1.0.3
