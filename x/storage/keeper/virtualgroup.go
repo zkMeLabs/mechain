@@ -2,8 +2,8 @@ package keeper
 
 import (
 	"cosmossdk.io/math"
+	"github.com/0xPolygon/polygon-edge/bls"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/prysmaticlabs/prysm/crypto/bls"
 
 	gnfdtypes "github.com/evmos/evmos/v12/types"
 	"github.com/evmos/evmos/v12/x/storage/types"
@@ -115,13 +115,13 @@ func (k Keeper) RebindingVirtualGroup(ctx sdk.Context, bucketInfo *types.BucketI
 }
 
 func (k Keeper) VerifyGVGSecondarySPsBlsSignature(ctx sdk.Context, gvg *vgtypes.GlobalVirtualGroup, signHash [32]byte, signature []byte) error {
-	secondarySpBlsPubKeys := make([]bls.PublicKey, 0, len(gvg.SecondarySpIds))
+	secondarySpBlsPubKeys := make([]*bls.PublicKey, 0, len(gvg.SecondarySpIds))
 	for _, spID := range gvg.GetSecondarySpIds() {
 		secondarySp, found := k.spKeeper.GetStorageProvider(ctx, spID)
 		if !found {
 			panic("should not happen")
 		}
-		spBlsPubKey, err := bls.PublicKeyFromBytes(secondarySp.BlsKey)
+		spBlsPubKey, err := bls.UnmarshalPublicKey(secondarySp.BlsKey)
 		if err != nil {
 			return types.ErrInvalidBlsPubKey.Wrapf("BLS public key converts failed: %v", err)
 		}

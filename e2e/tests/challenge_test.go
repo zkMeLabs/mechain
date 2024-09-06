@@ -13,6 +13,7 @@ import (
 	"time"
 
 	sdkmath "cosmossdk.io/math"
+	"github.com/0xPolygon/polygon-edge/bls"
 	"github.com/bits-and-blooms/bitset"
 	ctypes "github.com/cometbft/cometbft/rpc/core/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -20,7 +21,6 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	govtypesv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
-	"github.com/prysmaticlabs/prysm/crypto/bls"
 	"github.com/stretchr/testify/suite"
 
 	"github.com/ethereum/go-ethereum/crypto"
@@ -112,14 +112,14 @@ func (s *ChallengeTestSuite) createObject(sp *core.StorageProvider) (string, str
 	msgSealObject := storagetypes.NewMsgSealObject(sp.SealKey.GetAddr(), bucketName, objectName, gvg.Id, nil)
 
 	secondarySigs := make([][]byte, 0)
-	secondarySPBlsPubKeys := make([]bls.PublicKey, 0)
+	secondarySPBlsPubKeys := make([]*bls.PublicKey, 0)
 	blsSignHash := storagetypes.NewSecondarySpSealObjectSignDoc(s.GetChainID(), gvgID, queryHeadObjectResponse.ObjectInfo.Id, storagetypes.GenerateHash(queryHeadObjectResponse.ObjectInfo.Checksums)).GetBlsSignHash()
 	// every secondary sp signs the checksums
 	for _, gvgID := range gvg.SecondarySpIds {
 		sig, err := core.BlsSignAndVerify(s.StorageProviders[gvgID], blsSignHash)
 		s.Require().NoError(err)
 		secondarySigs = append(secondarySigs, sig)
-		pk, err := bls.PublicKeyFromBytes(s.StorageProviders[gvgID].BlsKey.PubKey().Bytes())
+		pk, err := bls.UnmarshalPublicKey(s.StorageProviders[gvgID].BlsKey.PubKey().Bytes())
 		s.Require().NoError(err)
 		secondarySPBlsPubKeys = append(secondarySPBlsPubKeys, pk)
 	}

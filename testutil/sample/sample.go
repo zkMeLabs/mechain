@@ -4,11 +4,12 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 
+	"github.com/0xPolygon/polygon-edge/bls"
 	"github.com/cometbft/cometbft/crypto/tmhash"
+	"github.com/cometbft/cometbft/votepool"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/eth/ethsecp256k1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/prysmaticlabs/prysm/crypto/bls"
 )
 
 func RandAccAddress() sdk.AccAddress {
@@ -49,19 +50,20 @@ func RandStr(length int) []byte {
 }
 
 func RandBlsPubKey() []byte {
-	blsPrivKey, _ := bls.RandKey()
+	blsPrivKey, _ := bls.GenerateBlsKey()
 	return blsPrivKey.PublicKey().Marshal()
 }
 
 func RandBlsPubKeyHex() string {
-	blsPrivKey, _ := bls.RandKey()
+	blsPrivKey, _ := bls.GenerateBlsKey()
 	return hex.EncodeToString(blsPrivKey.PublicKey().Marshal())
 }
 
 func RandBlsPubKeyAndBlsProofBz() ([]byte, []byte) {
-	blsPriv, _ := bls.RandKey()
+	blsPriv, _ := bls.GenerateBlsKey()
 	blsPubKeyBz := blsPriv.PublicKey().Marshal()
-	blsProofBz := blsPriv.Sign(tmhash.Sum(blsPubKeyBz)).Marshal()
+	blsProof, _ := blsPriv.Sign(tmhash.Sum(blsPubKeyBz), votepool.DST)
+	blsProofBz, _ := blsProof.Marshal()
 	return blsPubKeyBz, blsProofBz
 }
 

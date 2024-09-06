@@ -26,8 +26,9 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/0xPolygon/polygon-edge/bls"
+	"github.com/cometbft/cometbft/votepool"
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/prysmaticlabs/prysm/crypto/bls"
 
 	tmconfig "github.com/cometbft/cometbft/config"
 	"github.com/cometbft/cometbft/crypto/tmhash"
@@ -326,10 +327,11 @@ func initTestnetFiles(
 		})
 
 		valTokens := sdk.TokensFromConsensusPower(100, evmostypes.PowerReduction)
-		blsSecretKey, _ := bls.RandKey()
+		blsSecretKey, _ := bls.GenerateBlsKey()
 		blsPk := hex.EncodeToString(blsSecretKey.PublicKey().Marshal())
-		blsProofBuf := blsSecretKey.Sign(tmhash.Sum(blsSecretKey.PublicKey().Marshal()))
-		blsProof := hex.EncodeToString(blsProofBuf.Marshal())
+		blsProofBuf, _ := blsSecretKey.Sign(tmhash.Sum(blsSecretKey.PublicKey().Marshal()), votepool.DST)
+		blsProofBufBts, _ := blsProofBuf.Marshal()
+		blsProof := hex.EncodeToString(blsProofBufBts)
 		createValMsg, err := stakingtypes.NewMsgCreateValidator(
 			addr,
 			valPubKeys[i],

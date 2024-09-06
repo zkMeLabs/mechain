@@ -4,10 +4,11 @@ import (
 	"fmt"
 
 	"cosmossdk.io/errors"
+	"github.com/0xPolygon/polygon-edge/bls"
 	"github.com/bits-and-blooms/bitset"
+	"github.com/cometbft/cometbft/votepool"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	"github.com/prysmaticlabs/prysm/crypto/bls"
 
 	"github.com/evmos/evmos/v12/x/challenge/types"
 )
@@ -32,14 +33,14 @@ func (k Keeper) verifySignature(ctx sdk.Context, signedMsg BlsSignedMsg, validat
 	}
 
 	signedChallengers := make([]string, 0, validatorsBitSet.Count())
-	votedPubKeys := make([]bls.PublicKey, 0, validatorsBitSet.Count())
+	votedPubKeys := make([]*bls.PublicKey, 0, validatorsBitSet.Count())
 	for index, val := range validators {
 		if !validatorsBitSet.Test(uint(index)) {
 			continue
 		}
 
 		signedChallengers = append(signedChallengers, val.ChallengerAddress)
-		votePubKey, err := bls.PublicKeyFromBytes(val.BlsKey)
+		votePubKey, err := bls.UnmarshalPublicKey(val.BlsKey)
 		if err != nil {
 			return nil, errors.Wrapf(types.ErrInvalidBlsPubKey, fmt.Sprintf("BLS public key converts failed: %v", err))
 		}
@@ -50,12 +51,13 @@ func (k Keeper) verifySignature(ctx sdk.Context, signedMsg BlsSignedMsg, validat
 		return nil, errors.Wrapf(types.ErrNotEnoughVotes, fmt.Sprintf("Not enough validators voted, need: %d, voted: %d", len(validators)*2/3, len(votedPubKeys)))
 	}
 
-	aggSig, err := bls.SignatureFromBytes(signedMsg.GetVoteAggSignature())
+	aggSig, err := bls.UnmarshalSignature(signedMsg.GetVoteAggSignature())
 	if err != nil {
 		return nil, errors.Wrapf(types.ErrInvalidVoteAggSignature, fmt.Sprintf("BLS signature converts failed: %v", err))
 	}
 
-	if !aggSig.FastAggregateVerify(votedPubKeys, signedMsg.GetBlsSignBytes(ctx.ChainID())) {
+	signedMsgBts := signedMsg.GetBlsSignBytes(ctx.ChainID())
+	if !aggSig.VerifyAggregated(votedPubKeys, signedMsgBts[:], votepool.DST) {
 		return nil, errors.Wrap(types.ErrInvalidVoteAggSignature, "Signature verify failed")
 	}
 

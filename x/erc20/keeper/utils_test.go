@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/0xPolygon/polygon-edge/bls"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/eth/ethsecp256k1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -33,7 +34,6 @@ import (
 	"github.com/evmos/evmos/v12/x/evm/statedb"
 	evmtypes "github.com/evmos/evmos/v12/x/evm/types"
 	feemarkettypes "github.com/evmos/evmos/v12/x/feemarket/types"
-	"github.com/prysmaticlabs/prysm/crypto/bls"
 	"github.com/stretchr/testify/require"
 )
 
@@ -100,7 +100,7 @@ func (suite *KeeperTestSuite) DoSetupTest(t require.TestingT) {
 
 	// Set Validator
 	valAddr := sdk.AccAddress(suite.address.Bytes())
-	blsSecretKey, _ := bls.RandKey()
+	blsSecretKey, _ := bls.GenerateBlsKey()
 	blsPk := blsSecretKey.PublicKey().Marshal()
 	validator, err := stakingtypes.NewValidator(valAddr, privCons.PubKey(), stakingtypes.Description{}, valAddr, valAddr, valAddr, blsPk)
 	require.NoError(t, err)

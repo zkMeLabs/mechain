@@ -12,6 +12,7 @@ import (
 
 	sdkmath "cosmossdk.io/math"
 	"cosmossdk.io/simapp"
+	"github.com/0xPolygon/polygon-edge/bls"
 	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cometbft/cometbft/crypto/tmhash"
 	tmjson "github.com/cometbft/cometbft/libs/json"
@@ -35,7 +36,6 @@ import (
 	evmostypes "github.com/evmos/evmos/v12/types"
 	evmtypes "github.com/evmos/evmos/v12/x/evm/types"
 	feemarkettypes "github.com/evmos/evmos/v12/x/feemarket/types"
-	"github.com/prysmaticlabs/prysm/crypto/bls"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 )
@@ -182,7 +182,7 @@ func (suite *KeeperTestSuite) SetupAppWithT(checkTx bool, t require.TestingT, ch
 	suite.app.AccountKeeper.SetAccount(suite.ctx, acc)
 
 	valAddr := sdk.AccAddress(suite.address.Bytes())
-	blsSecretKey, _ := bls.RandKey()
+	blsSecretKey, _ := bls.GenerateBlsKey()
 	blsPk := blsSecretKey.PublicKey().Marshal()
 	validator, err := stakingtypes.NewValidator(valAddr, priv.PubKey(), stakingtypes.Description{}, valAddr, valAddr, valAddr, blsPk)
 	require.NoError(t, err)

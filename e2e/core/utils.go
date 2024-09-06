@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"math/rand"
 
+	"github.com/0xPolygon/polygon-edge/bls"
 	"github.com/cometbft/cometbft/crypto"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/prysmaticlabs/prysm/crypto/bls"
 	"sigs.k8s.io/yaml"
 
 	"github.com/evmos/evmos/v12/sdk/keys"
@@ -55,7 +55,7 @@ func BlsSignAndVerify(sp *StorageProvider, signBz [32]byte) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	pubKey, err := bls.PublicKeyFromBytes(sp.BlsKey.PubKey().Bytes())
+	pubKey, err := bls.UnmarshalPublicKey(sp.BlsKey.PubKey().Bytes())
 	if err != nil {
 		return nil, err
 	}
@@ -66,15 +66,22 @@ func BlsSignAndVerify(sp *StorageProvider, signBz [32]byte) ([]byte, error) {
 	return secondarySig, nil
 }
 
-func BlsAggregateAndVerify(secondarySPBlsPubKeys []bls.PublicKey, signBz [32]byte, secondarySigs [][]byte) ([]byte, error) {
-	blsSigs, err := bls.MultipleSignaturesFromBytes(secondarySigs)
+func BlsAggregateAndVerify(secondarySPBlsPubKeys []*bls.PublicKey, signBz [32]byte, secondarySigs [][]byte) ([]byte, error) {
+	signatures := make(bls.Signatures, 0, len(secondarySigs))
+	for _, sigBts := range secondarySigs {
+		sig, err := bls.UnmarshalSignature(sigBts)
+		if err != nil {
+			return nil, err
+		}
+		signatures = append(signatures, sig)
+	}
+	blsSigs, err := signatures.Aggregate().Marshal()
 	if err != nil {
 		return nil, err
 	}
-	aggBlsSig := bls.AggregateSignatures(blsSigs).Marshal()
-	err = gnfdtypes.VerifyBlsAggSignature(secondarySPBlsPubKeys, signBz, aggBlsSig)
+	err = gnfdtypes.VerifyBlsAggSignature(secondarySPBlsPubKeys, signBz, blsSigs)
 	if err != nil {
 		return nil, err
 	}
-	return aggBlsSig, nil
+	return blsSigs, nil
 }
