@@ -149,7 +149,7 @@ function generate_genesis() {
 			--commission-rate="${COMMISSION_RATE}" \
 			--details="validator${i}" \
 			--website="http://website" \
-			--node tcp://172.17.0.1:$((${VALIDATOR_RPC_PORT_START} + ${i})) \
+			--node "tcp://mechain-validator-${i}.mechain-validator:${VALIDATOR_RPC_PORT}" \
 			--node-id "validator${i}" \
 			--ip 0.0.0.0 \
 			--gas ""
@@ -161,7 +161,7 @@ function generate_genesis() {
 	for ((i = 0; i < ${size}; i++)); do
 		cp "${workspace}"/.local/gentx/* "${workspace}"/.local/validator${i}/config/gentx/
 		${bin} collect-gentxs --home "${workspace}"/.local/validator${i}
-		node_ids="$(${bin} tendermint show-node-id --home "${workspace}"/.local/validator${i})@172.17.0.1:$((${VALIDATOR_P2P_PORT_START} + ${i})) ${node_ids}"
+		node_ids="$(${bin} tendermint show-node-id --home "${workspace}"/.local/validator${i})@mechain-validator-${i}.mechain-validator.mechain-test:26656 ${node_ids}"
 	done
 
 	# generate sp to genesis
@@ -177,6 +177,7 @@ function generate_genesis() {
 		#sed -i -e "s/\"no_base_fee\": false/\"no_base_fee\": true/g" ${workspace}/.local/*/config/genesis.json
 		sed -i -e "s/\"denom_metadata\": \[\]/\"denom_metadata\": \[${NATIVE_COIN_DESC}\]/g" "${workspace}"/.local/validator${i}/config/genesis.json
 		sed -i -e "s/proxy_app = \"tcp:\/\/127\.0\.0\.1:\(.*\)\"/proxy_app = \"tcp:\/\/0.0.0.0:\1\"/g" "${workspace}"/.local/validator${i}/config/config.toml
+		sed -i -e "s/laddr = \"tcp:\/\/127\.0\.0\.1:\(.*\)\"/laddr = \"tcp:\/\/0.0.0.0:\1\"/g" "${workspace}"/.local/validator${i}/config/config.toml
 		sed -i -e "s/seeds = \"[^\"]*\"/seeds = \"\"/g" "${workspace}"/.local/validator${i}/config/config.toml
 		sed -i -e "s/pprof_laddr = \"localhost:\(.*\)\"/pprof_laddr = \"0.0.0.0:\1\"/g" "${workspace}"/.local/validator${i}/config/config.toml
 		sed -i -e "s/persistent_peers = \".*\"/persistent_peers = \"${persistent_peers}\"/g" "${workspace}"/.local/validator${i}/config/config.toml
@@ -215,11 +216,11 @@ function generate_genesis() {
 		sed -i -e "s/log_level = \"info\"/\log_level= \"debug\"/g" "${workspace}"/.local/validator${i}/config/config.toml
 		#echo -e '[payment-check]\nenabled = true\ninterval = 1' >> ${workspace}/.local/validator${i}/config/app.toml
 		sed -i -e "s/cors_allowed_origins = \[\]/cors_allowed_origins = \[\"*\"\]/g" "${workspace}"/.local/validator${i}/config/config.toml
-		sed -i -e "s#node = \"tcp://localhost:26657\"#node = \"tcp://172.17.0.1:$((${VALIDATOR_RPC_PORT_START} + ${i}))\"#g" "${workspace}"/.local/validator${i}/config/client.toml
-		sed -i -e "/Address defines the gRPC server address to bind to/{N;s/address = \"localhost:9090\"/address = \"0.0.0.0:$((${VALIDATOR_GRPC_PORT_START} + ${i}))\"/;}" "${workspace}"/.local/validator${i}/config/app.toml
-		sed -i -e "/Address defines the gRPC-web server address to bind to/{N;s/address = \"localhost:9091\"/address = \"0.0.0.0:$((${VALIDATOR_GRPC_PORT_START} - 1 - ${i}))\"/;}" "${workspace}"/.local/validator${i}/config/app.toml
-		sed -i -e "/Address defines the EVM RPC HTTP server address to bind to/{N;s/address = \"127.0.0.1:8545\"/address = \"0.0.0.0:$((${EVM_SERVER_PORT_START} + ${i} * 2))\"/;}" "${workspace}"/.local/validator${i}/config/app.toml
-		sed -i -e "/Address defines the EVM WebSocket server address to bind to/{N;s/address = \"127.0.0.1:8546\"/address = \"0.0.0.0:$((${EVM_SERVER_PORT_START} + 1 + ${i} * 2))\"/;}" "${workspace}"/.local/validator${i}/config/app.toml
+		sed -i -e "s#node = \"tcp://localhost:26657\"#node = \"tcp://0.0.0.0:${VALIDATOR_RPC_PORT}\"#g" "${workspace}"/.local/validator${i}/config/client.toml
+		sed -i -e "/Address defines the gRPC server address to bind to/{N;s/address = \"localhost:9090\"/address = \"0.0.0.0:${VALIDATOR_GRPC_PORT}\"/;}" "${workspace}"/.local/validator${i}/config/app.toml
+		sed -i -e "/Address defines the gRPC-web server address to bind to/{N;s/address = \"localhost:9091\"/address = \"0.0.0.0:${VALIDATOR_GRPC_WEB_PORT}\"/;}" "${workspace}"/.local/validator${i}/config/app.toml
+		sed -i -e "/Address defines the EVM RPC HTTP server address to bind to/{N;s/address = \"127.0.0.1:8545\"/address = \"0.0.0.0:${EVM_RPC_HTTP_SERVER_PORT}\"/;}" "${workspace}"/.local/validator${i}/config/app.toml
+		sed -i -e "/Address defines the EVM WebSocket server address to bind to/{N;s/address = \"127.0.0.1:8546\"/address = \"0.0.0.0:${EVM_WEBSOCKET_SERVER_PORT}\"/;}" "${workspace}"/.local/validator${i}/config/app.toml
 	done
 
 	# enable swagger API for validator0
@@ -232,51 +233,10 @@ function generate_genesis() {
 
 function start() {
 	size=$1
-	docker pull kevin2025/mechain
-	for ((i = 0; i < ${size}; i++)); do
-	  if [ "$i" -eq 0 ]; then
-      docker run --name validator${i} -v /data/mechain/devint/.local/validator${i}:/root/.mechaind \
-        -p $((${VALIDATOR_ADDRESS_PORT_START} + ${i})):$((${VALIDATOR_ADDRESS_PORT_START} + ${i})) \
-        -p $((${VALIDATOR_GRPC_PORT_START} + ${i})):$((${VALIDATOR_GRPC_PORT_START} + ${i})) \
-        -p $((${VALIDATOR_P2P_PORT_START} + ${i})):$((${VALIDATOR_P2P_PORT_START} + ${i})) \
-        -p $((${VALIDATOR_RPC_PORT_START} + ${i})):$((${VALIDATOR_RPC_PORT_START} + ${i})) \
-        -p 8545:8545 \
-        -p 8546:8546 \
-        -d kevin2025/mechain ${bin_name} start --home /root/.mechaind/ \
-        --keyring-backend test \
-        --api.enabled-unsafe-cors true \
-        --address 0.0.0.0:$((${VALIDATOR_ADDRESS_PORT_START} + ${i})) \
-        --grpc.address 0.0.0.0:$((${VALIDATOR_GRPC_PORT_START} + ${i})) \
-        --p2p.laddr tcp://0.0.0.0:$((${VALIDATOR_P2P_PORT_START} + ${i})) \
-        --p2p.external-address 0.0.0.0:$((${VALIDATOR_P2P_PORT_START} + ${i})) \
-        --rpc.laddr tcp://0.0.0.0:$((${VALIDATOR_RPC_PORT_START} + ${i})) \
-        --rpc.unsafe true \
-        --log_format json
-      echo "succeed to start mechain-validator0!"
-    else
-      docker run --name validator${i} -v /data/mechain/devint/.local/validator${i}:/root/.mechaind \
-        -p $((${VALIDATOR_ADDRESS_PORT_START} + ${i})):$((${VALIDATOR_ADDRESS_PORT_START} + ${i})) \
-        -p $((${VALIDATOR_GRPC_PORT_START} + ${i})):$((${VALIDATOR_GRPC_PORT_START} + ${i})) \
-        -p $((${VALIDATOR_P2P_PORT_START} + ${i})):$((${VALIDATOR_P2P_PORT_START} + ${i})) \
-        -p $((${VALIDATOR_RPC_PORT_START} + ${i})):$((${VALIDATOR_RPC_PORT_START} + ${i})) \
-        -d kevin2025/mechain ${bin_name} start --home /root/.mechaind/ \
-        --keyring-backend test \
-        --api.enabled-unsafe-cors true \
-        --address 0.0.0.0:$((${VALIDATOR_ADDRESS_PORT_START} + ${i})) \
-        --grpc.address 0.0.0.0:$((${VALIDATOR_GRPC_PORT_START} + ${i})) \
-        --p2p.laddr tcp://0.0.0.0:$((${VALIDATOR_P2P_PORT_START} + ${i})) \
-        --p2p.external-address 0.0.0.0:$((${VALIDATOR_P2P_PORT_START} + ${i})) \
-        --rpc.laddr tcp://0.0.0.0:$((${VALIDATOR_RPC_PORT_START} + ${i})) \
-        --rpc.unsafe true \
-        --log_format json
-      echo "succeed to start mechain-validator${i}."
-    fi
-	done
 }
 
 function stop() {
-	# ps -ef | grep ${bin_name} | grep validator | awk '{print $2}' | xargs kill
-	docker rm -f $(docker ps -a | grep mechain | grep validator | awk '{print $1}')
+  echo "stop()"
 }
 
 # create sp in genesis use genesis transaction like validator
@@ -333,8 +293,8 @@ function generate_sp_genesis {
 			--moniker="sp${i}" \
 			--details="detail_sp${i}" \
 			--website="http://website" \
-			--endpoint="http://172.17.0.1:$((${STOREAGE_PROVIDER_ADDRESS_PORT_START} + ${i}))" \
-			--node tcp://172.17.0.1:$((${VALIDATOR_RPC_PORT_START} + ${i})) \
+			--endpoint="http://mechain-storage-provider-${i}.mechain-storage-provider:${STOREAGE_PROVIDER_ADDRESS_PORT}" \
+			--node "tcp://mechain-validator-0.mechain-validator:${VALIDATOR_RPC_PORT}" \
 			--node-id "sp${i}" \
 			--ip 0.0.0.0 \
 			--gas "" \
