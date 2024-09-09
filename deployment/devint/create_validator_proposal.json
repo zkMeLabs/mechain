@@ -1,0 +1,39 @@
+{
+  "messages": [
+    {
+      "@type": "/cosmos.staking.v1beta1.MsgCreateValidator",
+      "description": {
+        "moniker": "validator1",
+        "identity": "",
+        "website": "",
+        "security_contact": "",
+        "details": ""
+      },
+      "commission": {
+        "rate": "0.070000000000000000",
+        "max_rate": "1.000000000000000000",
+        "max_change_rate": "0.010000000000000000"
+      },
+      "min_self_delegation": "1",
+      "delegator_address": "0xdc21376c69f2493CFbA7cC0778e01212d2cB8BDA",
+      "validator_address": "0xc1A979b06dF9221749571eFD6d9DC99cCFCa82A2",
+      "pubkey": {
+        "@type": "/cosmos.crypto.ed25519.PubKey",
+        "key": "5zWjSxm6V8mlmOIhcJVomPOtn/zg69O3M/8Ru1DTO7o="
+      },
+      "value": {
+        "denom": "ame",
+        "amount": "10000000000000000000000000"
+      },
+      "from": "0x7b5Fe22B5446f7C62Ea27B8BD71CeF94e03f3dF2",
+      "relayer_address": "0x0DB525c556F25A9325EEC2F8BE96DAbb17852E5a",
+      "challenger_address": "0x533b6521eCe8b9c93f15De71aA0a759Caf117a06",
+      "bls_key": "a6fc34826f881a2d800fd8d6962e3feaa36b7053929329345ff95bad203e36900cee8820bbb2d536dee01659a3fbf766",
+      "bls_proof": "879f6348eda62ee7b77f829d56785e12ab2685a1769278ef8d745137e38ffc6dbd83537a5b8722c7bab408483ea7784c068d6c0e9de777a08e9cf0bd61204d1be88e99063f90c720044dbe5c22b36729c8d951ef3f680230813d0c459217da11"
+    }
+  ],
+  "metadata": "",
+  "title": "Create validator1 Validator",
+  "summary": "create validator1 validator",
+  "deposit": "1000000000000000000000000ame"
+}
