@@ -1,63 +1,109 @@
-version: '3'
 
 services:
-  node0:
-    container_name: evmosnode0
-    image: "evmos/node"
-    ports:
-      - "26656-26657:26656-26657"
-    volumes:
-      - ./build/node0/evmosd:/evmos:Z
-    command:
-      - /evmosd start --home /evmos
+  vnode-0:
+    container_name: mechaind-validator-0
+    image: "zkmelabs/mechain"
     networks:
-      localnet:
-        ipv4_address: 192.167.10.2
-
-  node1:
-    container_name: evmosnode1
-    image: "evmos/node"
+      - mechain-network
     ports:
-      - "26659-26660:26656-26657"
+      - "28750:28750"
+      - "27750:27750"
+      - "9090:9090"
+      - "1317:1317"
+      - "26657:26657"
+      - "8545:8545"
+      - "8546:8546"
     volumes:
-      - ./build/node1/evmosd:/evmos:Z
-    command:
-      - /evmosd start --home /evmos
+      - "./deployment/dockerup/.local/validator0:/app:Z"
+    command: >
+      /usr/bin/mechaind start --home /app
+      --keyring-backend test
+      --api.enabled-unsafe-cors true
+      --address 0.0.0.0:28750
+      --grpc.address 0.0.0.0:9090
+      --p2p.laddr tcp://0.0.0.0:27750
+      --p2p.external-address 0.0.0.0:27750
+      --rpc.laddr tcp://0.0.0.0:26657
+      --rpc.unsafe true
+      --log_format json
+  vnode-1:
+    container_name: mechaind-validator-1
+    image: "zkmelabs/mechain"
     networks:
-      localnet:
-        ipv4_address: 192.167.10.3
-
-  node2:
-    container_name: evmosnode2
-    image: "evmos/node"
+      - mechain-network
     ports:
-      - "26661-26662:26656-26657"
+      - "28751:28750"
+      - "27751:27750"
+      - "9091:9090"
+      - "1318:1317"
+      - "26658:26657"
+      - "8547:8545"
+      - "8548:8546"
     volumes:
-      - ./build/node2/evmosd:/evmos:Z
-    command:
-      - /evmosd start --home /evmos
+      - "./deployment/dockerup/.local/validator1:/app:Z"
+    command: >
+      /usr/bin/mechaind start --home /app
+      --keyring-backend test
+      --api.enabled-unsafe-cors true
+      --address 0.0.0.0:28750
+      --grpc.address 0.0.0.0:9090
+      --p2p.laddr tcp://0.0.0.0:27750
+      --p2p.external-address 0.0.0.0:27750
+      --rpc.laddr tcp://0.0.0.0:26657
+      --rpc.unsafe true
+      --log_format json
+  vnode-2:
+    container_name: mechaind-validator-2
+    image: "zkmelabs/mechain"
     networks:
-      localnet:
-        ipv4_address: 192.167.10.4
-
-  node3:
-    container_name: evmosnode3
-    image: "evmos/node"
+      - mechain-network
     ports:
-      - "26663-26664:26656-26657"
+      - "28752:28750"
+      - "27752:27750"
+      - "9092:9090"
+      - "1319:1317"
+      - "26659:26657"
+      - "8549:8545"
+      - "8550:8546"
     volumes:
-      - ./build/node3/evmosd:/evmos:Z
-    command:
-      - /evmosd start --home /evmos
+      - "./deployment/dockerup/.local/validator2:/app:Z"
+    command: >
+      /usr/bin/mechaind start --home /app
+      --keyring-backend test
+      --api.enabled-unsafe-cors true
+      --address 0.0.0.0:28750
+      --grpc.address 0.0.0.0:9090
+      --p2p.laddr tcp://0.0.0.0:27750
+      --p2p.external-address 0.0.0.0:27750
+      --rpc.laddr tcp://0.0.0.0:26657
+      --rpc.unsafe true
+      --log_format json
+  vnode-3:
+    container_name: mechaind-validator-3
+    image: "zkmelabs/mechain"
     networks:
-      localnet:
-        ipv4_address: 192.167.10.5
-
+      - mechain-network
+    ports:
+      - "28753:28750"
+      - "27753:27750"
+      - "9093:9090"
+      - "1320:1317"
+      - "26660:26657"
+      - "8551:8545"
+      - "8552:8546"
+    volumes:
+      - "./deployment/dockerup/.local/validator3:/app:Z"
+    command: >
+      /usr/bin/mechaind start --home /app
+      --keyring-backend test
+      --api.enabled-unsafe-cors true
+      --address 0.0.0.0:28750
+      --grpc.address 0.0.0.0:9090
+      --p2p.laddr tcp://0.0.0.0:27750
+      --p2p.external-address 0.0.0.0:27750
+      --rpc.laddr tcp://0.0.0.0:26657
+      --rpc.unsafe true
+      --log_format json
 networks:
-  localnet:
-    driver: bridge
-    ipam:
-      driver: default
-      config:
-        -
-          subnet: 192.167.10.0/16
+  mechain-network:
+    external: true

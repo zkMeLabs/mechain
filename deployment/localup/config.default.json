@@ -3,7 +3,9 @@
     "prefix": "mc",
     "chain_name": "mechain",
     "chain_id": "mechain_5151-1",
-    "denoms": ["ame"],
+    "denoms": [
+      "ame"
+    ],
     "port": {
       "api.address": 1317,
       "rosetta.address": 8080,

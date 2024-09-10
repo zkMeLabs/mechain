@@ -7,13 +7,12 @@ COMMIT := $(shell git log -1 --format='%H')
 LEDGER_ENABLED ?= true
 BINDIR ?= $(GOPATH)/bin
 EVMOS_BINARY = mechaind
-EVMOS_DIR = evmos
 BUILDDIR ?= $(CURDIR)/build
 HTTPS_GIT := https://github.com/evmos/evmos.git
 DOCKER := $(shell which docker)
 NAMESPACE := zkmelabs
 PROJECT := mechain
-DOCKER_IMAGE := kevin2025/$(PROJECT)
+DOCKER_IMAGE := $(NAMESPACE)/$(PROJECT)
 COMMIT_HASH := $(shell git rev-parse --short=7 HEAD)
 DOCKER_TAG := $(COMMIT_HASH)
 # e2e env
@@ -143,16 +142,10 @@ build-reproducible: go.sum
 
 
 build-docker:
-	# TODO replace with kaniko
 	$(DOCKER) build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .
 	$(DOCKER) tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${DOCKER_IMAGE}:latest
-	# update old container
-	# $(DOCKER) rm mechain || true
-	# create a new container from the latest image
-	# $(DOCKER) create --name evmos -t -i ${DOCKER_IMAGE}:latest evmos
-	# move the binaries to the ./build directory
-	# mkdir -p ./build/
-	# $(DOCKER) cp evmos:/usr/bin/mechaind ./build/
+	$(DOCKER) tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${DOCKER_IMAGE}:${COMMIT_HASH}
+
 
 push-docker: build-docker
 	$(DOCKER) push ${DOCKER_IMAGE}:${DOCKER_TAG}
@@ -593,3 +586,19 @@ create-contracts-json:
 		mv $(TMP_JSON) $(COMPILED_DIR)/$${c}.json ;\
 	done
 	@rm -rf tmp
+
+###############################################################################
+###                        Docker Compose                                   ###
+###############################################################################
+# build-docker-compose-file
+build-dcf:
+	go run cmd/ci/main.go
+
+start-dc:
+	docker compose up -d
+	docker compose ps
+	
+stop-dc:
+	docker compose down --volumes
+
+.PHONY: build-dcf start-dc stop-dc
