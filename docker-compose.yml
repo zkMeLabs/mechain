@@ -1,8 +1,10 @@
 
 services:
-  node0:
+  vnode-0:
     container_name: mechaind-validator-0
     image: "zkmelabs/mechain"
+    networks:
+      - mechain-network
     ports:
       - "28750:28750"
       - "27750:27750"
@@ -24,9 +26,11 @@ services:
       --rpc.laddr tcp://0.0.0.0:26657
       --rpc.unsafe true
       --log_format json
-  node1:
+  vnode-1:
     container_name: mechaind-validator-1
     image: "zkmelabs/mechain"
+    networks:
+      - mechain-network
     ports:
       - "28751:28750"
       - "27751:27750"
@@ -48,9 +52,11 @@ services:
       --rpc.laddr tcp://0.0.0.0:26657
       --rpc.unsafe true
       --log_format json
-  node2:
+  vnode-2:
     container_name: mechaind-validator-2
     image: "zkmelabs/mechain"
+    networks:
+      - mechain-network
     ports:
       - "28752:28750"
       - "27752:27750"
@@ -72,9 +78,11 @@ services:
       --rpc.laddr tcp://0.0.0.0:26657
       --rpc.unsafe true
       --log_format json
-  node3:
+  vnode-3:
     container_name: mechaind-validator-3
     image: "zkmelabs/mechain"
+    networks:
+      - mechain-network
     ports:
       - "28753:28750"
       - "27753:27750"
@@ -96,3 +104,6 @@ services:
       --rpc.laddr tcp://0.0.0.0:26657
       --rpc.unsafe true
       --log_format json
+networks:
+  mechain-network:
+    external: true

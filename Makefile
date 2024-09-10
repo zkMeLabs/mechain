@@ -599,6 +599,6 @@ start-dc:
 	docker compose ps
 	
 stop-dc:
-	docker compose down
+	docker compose down --volumes
 
 .PHONY: build-dcf start-dc stop-dc

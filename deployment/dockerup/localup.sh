@@ -145,9 +145,9 @@ function generate_genesis() {
 			--commission-rate="${COMMISSION_RATE}" \
 			--details="validator${i}" \
 			--website="http://website" \
-			--node tcp://node${i}:$((${VALIDATOR_RPC_PORT_START})) \
+			--node tcp://vnode-${i}:$((${VALIDATOR_RPC_PORT_START})) \
 			--node-id "validator${i}" \
-			--ip 127.0.0.1 \
+			--ip vnode-${i} \
 			--gas ""
 		cp "${workspace}"/.local/validator${i}/config/gentx/gentx-validator${i}.json "${workspace}"/.local/gentx/
 	done
@@ -157,7 +157,7 @@ function generate_genesis() {
 	for ((i = 0; i < ${size}; i++)); do
 		cp "${workspace}"/.local/gentx/* "${workspace}"/.local/validator${i}/config/gentx/
 		${bin} collect-gentxs --home "${workspace}"/.local/validator${i}
-		node_ids="$(${bin} tendermint show-node-id --home "${workspace}"/.local/validator${i})@node${i}:$((${VALIDATOR_P2P_PORT_START})) ${node_ids}"
+		node_ids="$(${bin} tendermint show-node-id --home "${workspace}"/.local/validator${i})@vnode-${i}:$((${VALIDATOR_P2P_PORT_START})) ${node_ids}"
 	done
 
 	# generate sp to genesis
@@ -209,11 +209,11 @@ function generate_genesis() {
 		sed -i -e "s/log_level = \"info\"/\log_level= \"debug\"/g" "${workspace}"/.local/validator${i}/config/config.toml
 		#echo -e '[payment-check]\nenabled = true\ninterval = 1' >> ${workspace}/.local/validator${i}/config/app.toml
 		sed -i -e "s/cors_allowed_origins = \[\]/cors_allowed_origins = \[\"*\"\]/g" "${workspace}"/.local/validator${i}/config/config.toml
-		# sed -i -e "s#node = \"tcp://localhost:26657\"#node = \"tcp://localhost:$((${VALIDATOR_RPC_PORT_START}))\"#g" "${workspace}"/.local/validator${i}/config/client.toml
-		# sed -i -e "/Address defines the gRPC server address to bind to/{N;s/address = \"localhost:9090\"/address = \"localhost:$((${VALIDATOR_GRPC_PORT_START}))\"/;}" "${workspace}"/.local/validator${i}/config/app.toml
-		# sed -i -e "/Address defines the gRPC-web server address to bind to/{N;s/address = \"localhost:9091\"/address = \"localhost:$((${VALIDATOR_GRPC_PORT_START} - 1))\"/;}" "${workspace}"/.local/validator${i}/config/app.toml
-		# sed -i -e "/Address defines the EVM RPC HTTP server address to bind to/{N;s/address = \"127.0.0.1:8545\"/address = \"127.0.0.1:$((${EVM_SERVER_PORT_START}))\"/;}" "${workspace}"/.local/validator${i}/config/app.toml
-		# sed -i -e "/Address defines the EVM WebSocket server address to bind to/{N;s/address = \"127.0.0.1:8546\"/address = \"127.0.0.1:$((${EVM_SERVER_PORT_START}))\"/;}" "${workspace}"/.local/validator${i}/config/app.toml
+		sed -i -e "s#node = \"tcp://localhost:26657\"#node = \"tcp://0.0.0.0:$((${VALIDATOR_RPC_PORT_START}))\"#g" "${workspace}"/.local/validator${i}/config/client.toml
+		sed -i -e "/Address defines the gRPC server address to bind to/{N;s/address = \"localhost:9090\"/address = \"0.0.0.0:$((${VALIDATOR_GRPC_PORT_START}))\"/;}" "${workspace}"/.local/validator${i}/config/app.toml
+		sed -i -e "/Address defines the gRPC-web server address to bind to/{N;s/address = \"localhost:9091\"/address = \"0.0.0.0:$((${VALIDATOR_GRPC_PORT_START} - 1))\"/;}" "${workspace}"/.local/validator${i}/config/app.toml
+		sed -i -e "/Address defines the EVM RPC HTTP server address to bind to/{N;s/address = \"127.0.0.1:8545\"/address = \"0.0.0.0:$((${EVM_SERVER_PORT_START}))\"/;}" "${workspace}"/.local/validator${i}/config/app.toml
+		sed -i -e "/Address defines the EVM WebSocket server address to bind to/{N;s/address = \"127.0.0.1:8546\"/address = \"0.0.0.0:$((${EVM_SERVER_PORT_START}))\"/;}" "${workspace}"/.local/validator${i}/config/app.toml
 	done
 
 	# enable swagger API for validator0
@@ -278,10 +278,10 @@ function generate_sp_genesis {
 			--moniker="sp${i}" \
 			--details="detail_sp${i}" \
 			--website="http://website" \
-			--endpoint="http://devnet-sp${i}-rpc.mechain.tech:$((${STOREAGE_PROVIDER_ADDRESS_PORT_START} + ${i}))" \
-			--node tcp://devnet-rpc.mechain.tech:$((${VALIDATOR_RPC_PORT_START})) \
+			--endpoint="http://spnode-${i}:$((${STOREAGE_PROVIDER_ADDRESS_PORT_START}))" \
+			--node tcp://vnode-0:$((${VALIDATOR_RPC_PORT_START})) \
 			--node-id "sp${i}" \
-			--ip 127.0.0.1 \
+			--ip vnode-0 \
 			--gas "" \
 			--output-document="${workspace}"/.local/gensptx/gentx-sp${i}.json
 	done

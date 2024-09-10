@@ -30,9 +30,11 @@ type ComposeConfig struct {
 const dockerComposeTemplate = `
 services:
 {{- range .Nodes }}
-  node{{.NodeIndex}}:
+  vnode-{{.NodeIndex}}:
     container_name: mechaind-validator-{{.NodeIndex}}
     image: "{{$.Image}}"
+    networks:
+      - mechain-network
     ports:
       - "{{.AddressPort}}:{{$.BasePorts.AddressPort}}"
       - "{{.P2PPort}}:{{$.BasePorts.P2PPort}}"
@@ -55,6 +57,9 @@ services:
       --rpc.unsafe true
       --log_format json
 {{- end }}
+networks:
+  mechain-network:
+    external: true
 `
 
 func main() {
