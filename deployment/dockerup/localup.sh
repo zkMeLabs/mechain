@@ -10,7 +10,7 @@ relayer0_prikey=3c7ea76ddb53539174caae1dd960b308981933bd6e95196556ba29063200df9c
 sp0_prikey=ebbeb28b89bc7ec5da6441ed70452cc413f96ea33a7c790aba06810ae441b776
 
 bin_name=mechaind
-bin="$(realpath "${workspace}/../../build/${bin_name}")"
+bin="${bin_name}"
 
 function init() {
 	size=$1
@@ -375,28 +375,7 @@ export_sps)
 export_validator)
 	export_validator "$SIZE"
 	;;
-start)
-	echo "===== start ===="
-	start "$SIZE"
-	echo "===== end ===="
-	;;
-stop)
-	echo "===== stop ===="
-	stop
-	echo "===== end ===="
-	;;
-all)
-	echo "===== stop ===="
-	stop
-	echo "===== init ===="
-	init "$SIZE" "$SP_SIZE"
-	echo "===== generate genesis ===="
-	generate_genesis "$SIZE" "$SP_SIZE"
-	echo "===== start ===="
-	start "$SIZE"
-	echo "===== end ===="
-	;;
 *)
-	echo "Usage: localup.sh all | init | generate | start | stop | export_sps"
+	echo "Usage: localup.sh init | generate | export_sps"
 	;;
 esac

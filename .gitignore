@@ -96,6 +96,8 @@ deployment/devnetup/.local
 # dockerup
 deployment/dockerup/.local
 init_done
+relayer.yaml
+sp.json
 # vscode
 .vscode/launch.json
 

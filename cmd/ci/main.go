@@ -21,17 +21,42 @@ type NodeConfig struct {
 }
 
 type ComposeConfig struct {
-	Nodes          []NodeConfig
-	Image          string
-	VolumeBasePath string
-	BasePorts      PortConfig
+	Nodes           []NodeConfig
+	Image           string
+	BasePorts       PortConfig
+	ProjectBasePath string
 }
 
 const dockerComposeTemplate = `
 services:
+  init:
+    container_name: init-mechain
+    image: "{{$.Image}}"
+    volumes:
+      - "{{$.ProjectBasePath}}/deployment/dockerup:/workspace/deployment/dockerup:Z"
+      - "local-env:/workspace/deployment/dockerup/.local"
+    working_dir: "/workspace/deployment/dockerup"
+    command: >
+      bash -c "
+      rm -f init_done &&
+      bash localup.sh init 4 8 && 
+      bash localup.sh generate 4 8 &&
+      bash localup.sh export_validator 4 > relayer.yaml &&
+      bash localup.sh export_sps 4 8 > sp.json &&
+      touch init_done && 
+      sleep infinity
+      "
+    healthcheck:
+      test: ["CMD-SHELL", "test -f /workspace/deployment/dockerup/init_done && echo 'OK' || exit 1"]
+      interval: 10s
+      retries: 5
+    restart: "on-failure"
 {{- range .Nodes }}
   vnode-{{.NodeIndex}}:
     container_name: mechaind-validator-{{.NodeIndex}}
+    depends_on:
+      init:
+        condition: service_healthy
     image: "{{$.Image}}"
     networks:
       - mechain-network
@@ -44,9 +69,9 @@ services:
       - "{{.EVMRPCPort}}:{{$.BasePorts.EVMRPCPort}}"
       - "{{.EVMWSPort}}:{{$.BasePorts.EVMWSPort}}"
     volumes:
-      - "{{$.VolumeBasePath}}/validator{{.NodeIndex}}:/app:Z"
+      - "local-env:/app"
     command: >
-      /usr/bin/mechaind start --home /app
+      /usr/bin/mechaind start --home /app/validator{{.NodeIndex}}
       --keyring-backend test
       --api.enabled-unsafe-cors true
       --address 0.0.0.0:{{$.BasePorts.AddressPort}}
@@ -60,6 +85,8 @@ services:
 networks:
   mechain-network:
     external: true
+volumes:
+  local-env:
 `
 
 func main() {
@@ -92,10 +119,10 @@ func main() {
 	}
 
 	config := ComposeConfig{
-		Nodes:          nodes,
-		Image:          "zkmelabs/mechain",
-		VolumeBasePath: "./deployment/dockerup/.local",
-		BasePorts:      bp,
+		Nodes:           nodes,
+		Image:           "zkmelabs/mechain",
+		BasePorts:       bp,
+		ProjectBasePath: ".",
 	}
 
 	file, err := os.Create("docker-compose.yml")
