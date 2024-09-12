@@ -172,7 +172,7 @@ function generate_genesis() {
 		if [ "$i" -gt 0 ]; then
 			cp "${workspace}"/.local/validator0/config/genesis.json "${workspace}"/.local/validator${i}/config/
 		fi
-		sed -i -e "s/minimum-gas-prices = \"0ame\"/minimum-gas-prices = \"5000000000${BASIC_DENOM}\"/g" "${workspace}"/.local/*/config/app.toml
+		sed -i -e "s/minimum-gas-prices = \"0azkme\"/minimum-gas-prices = \"5000000000${BASIC_DENOM}\"/g" "${workspace}"/.local/*/config/app.toml
 		sed -i -e "s/\"stake\"/\"${BASIC_DENOM}\"/g" "${workspace}"/.local/validator${i}/config/genesis.json
 		#sed -i -e "s/\"no_base_fee\": false/\"no_base_fee\": true/g" ${workspace}/.local/*/config/genesis.json
 		sed -i -e "s/\"denom_metadata\": \[\]/\"denom_metadata\": \[${NATIVE_COIN_DESC}\]/g" "${workspace}"/.local/validator${i}/config/genesis.json
@@ -234,43 +234,43 @@ function start() {
 	size=$1
 	docker pull kevin2025/mechain
 	for ((i = 0; i < ${size}; i++)); do
-	  if [ "$i" -eq 0 ]; then
-      docker run --name validator${i} -v /data/mechain/devint/.local/validator${i}:/root/.mechaind \
-        -p $((${VALIDATOR_ADDRESS_PORT_START} + ${i})):$((${VALIDATOR_ADDRESS_PORT_START} + ${i})) \
-        -p $((${VALIDATOR_GRPC_PORT_START} + ${i})):$((${VALIDATOR_GRPC_PORT_START} + ${i})) \
-        -p $((${VALIDATOR_P2P_PORT_START} + ${i})):$((${VALIDATOR_P2P_PORT_START} + ${i})) \
-        -p $((${VALIDATOR_RPC_PORT_START} + ${i})):$((${VALIDATOR_RPC_PORT_START} + ${i})) \
-        -p 8545:8545 \
-        -p 8546:8546 \
-        -d kevin2025/mechain ${bin_name} start --home /root/.mechaind/ \
-        --keyring-backend test \
-        --api.enabled-unsafe-cors true \
-        --address 0.0.0.0:$((${VALIDATOR_ADDRESS_PORT_START} + ${i})) \
-        --grpc.address 0.0.0.0:$((${VALIDATOR_GRPC_PORT_START} + ${i})) \
-        --p2p.laddr tcp://0.0.0.0:$((${VALIDATOR_P2P_PORT_START} + ${i})) \
-        --p2p.external-address 0.0.0.0:$((${VALIDATOR_P2P_PORT_START} + ${i})) \
-        --rpc.laddr tcp://0.0.0.0:$((${VALIDATOR_RPC_PORT_START} + ${i})) \
-        --rpc.unsafe true \
-        --log_format json
-      echo "succeed to start mechain-validator0!"
-    else
-      docker run --name validator${i} -v /data/mechain/devint/.local/validator${i}:/root/.mechaind \
-        -p $((${VALIDATOR_ADDRESS_PORT_START} + ${i})):$((${VALIDATOR_ADDRESS_PORT_START} + ${i})) \
-        -p $((${VALIDATOR_GRPC_PORT_START} + ${i})):$((${VALIDATOR_GRPC_PORT_START} + ${i})) \
-        -p $((${VALIDATOR_P2P_PORT_START} + ${i})):$((${VALIDATOR_P2P_PORT_START} + ${i})) \
-        -p $((${VALIDATOR_RPC_PORT_START} + ${i})):$((${VALIDATOR_RPC_PORT_START} + ${i})) \
-        -d kevin2025/mechain ${bin_name} start --home /root/.mechaind/ \
-        --keyring-backend test \
-        --api.enabled-unsafe-cors true \
-        --address 0.0.0.0:$((${VALIDATOR_ADDRESS_PORT_START} + ${i})) \
-        --grpc.address 0.0.0.0:$((${VALIDATOR_GRPC_PORT_START} + ${i})) \
-        --p2p.laddr tcp://0.0.0.0:$((${VALIDATOR_P2P_PORT_START} + ${i})) \
-        --p2p.external-address 0.0.0.0:$((${VALIDATOR_P2P_PORT_START} + ${i})) \
-        --rpc.laddr tcp://0.0.0.0:$((${VALIDATOR_RPC_PORT_START} + ${i})) \
-        --rpc.unsafe true \
-        --log_format json
-      echo "succeed to start mechain-validator${i}."
-    fi
+		if [ "$i" -eq 0 ]; then
+			docker run --name validator${i} -v /data/mechain/devint/.local/validator${i}:/root/.mechaind \
+				-p $((${VALIDATOR_ADDRESS_PORT_START} + ${i})):$((${VALIDATOR_ADDRESS_PORT_START} + ${i})) \
+				-p $((${VALIDATOR_GRPC_PORT_START} + ${i})):$((${VALIDATOR_GRPC_PORT_START} + ${i})) \
+				-p $((${VALIDATOR_P2P_PORT_START} + ${i})):$((${VALIDATOR_P2P_PORT_START} + ${i})) \
+				-p $((${VALIDATOR_RPC_PORT_START} + ${i})):$((${VALIDATOR_RPC_PORT_START} + ${i})) \
+				-p 8545:8545 \
+				-p 8546:8546 \
+				-d kevin2025/mechain ${bin_name} start --home /root/.mechaind/ \
+				--keyring-backend test \
+				--api.enabled-unsafe-cors true \
+				--address 0.0.0.0:$((${VALIDATOR_ADDRESS_PORT_START} + ${i})) \
+				--grpc.address 0.0.0.0:$((${VALIDATOR_GRPC_PORT_START} + ${i})) \
+				--p2p.laddr tcp://0.0.0.0:$((${VALIDATOR_P2P_PORT_START} + ${i})) \
+				--p2p.external-address 0.0.0.0:$((${VALIDATOR_P2P_PORT_START} + ${i})) \
+				--rpc.laddr tcp://0.0.0.0:$((${VALIDATOR_RPC_PORT_START} + ${i})) \
+				--rpc.unsafe true \
+				--log_format json
+			echo "succeed to start mechain-validator0!"
+		else
+			docker run --name validator${i} -v /data/mechain/devint/.local/validator${i}:/root/.mechaind \
+				-p $((${VALIDATOR_ADDRESS_PORT_START} + ${i})):$((${VALIDATOR_ADDRESS_PORT_START} + ${i})) \
+				-p $((${VALIDATOR_GRPC_PORT_START} + ${i})):$((${VALIDATOR_GRPC_PORT_START} + ${i})) \
+				-p $((${VALIDATOR_P2P_PORT_START} + ${i})):$((${VALIDATOR_P2P_PORT_START} + ${i})) \
+				-p $((${VALIDATOR_RPC_PORT_START} + ${i})):$((${VALIDATOR_RPC_PORT_START} + ${i})) \
+				-d kevin2025/mechain ${bin_name} start --home /root/.mechaind/ \
+				--keyring-backend test \
+				--api.enabled-unsafe-cors true \
+				--address 0.0.0.0:$((${VALIDATOR_ADDRESS_PORT_START} + ${i})) \
+				--grpc.address 0.0.0.0:$((${VALIDATOR_GRPC_PORT_START} + ${i})) \
+				--p2p.laddr tcp://0.0.0.0:$((${VALIDATOR_P2P_PORT_START} + ${i})) \
+				--p2p.external-address 0.0.0.0:$((${VALIDATOR_P2P_PORT_START} + ${i})) \
+				--rpc.laddr tcp://0.0.0.0:$((${VALIDATOR_RPC_PORT_START} + ${i})) \
+				--rpc.unsafe true \
+				--log_format json
+			echo "succeed to start mechain-validator${i}."
+		fi
 	done
 }
 
@@ -436,13 +436,13 @@ start)
 	echo "===== end ===="
 	;;
 restart)
-  echo "===== restart ============="
-  echo "===== stop ================"
-  stop
-  echo "===== start ==============="
-  start "$SIZE"
-  echo "===== restart finished ===="
-  ;;
+	echo "===== restart ============="
+	echo "===== stop ================"
+	stop
+	echo "===== start ==============="
+	start "$SIZE"
+	echo "===== restart finished ===="
+	;;
 stop)
 	echo "===== stop ===="
 	stop

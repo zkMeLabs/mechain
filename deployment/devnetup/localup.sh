@@ -172,7 +172,7 @@ function generate_genesis() {
 		if [ "$i" -gt 0 ]; then
 			cp "${workspace}"/.local/validator0/config/genesis.json "${workspace}"/.local/validator${i}/config/
 		fi
-		sed -i -e "s/minimum-gas-prices = \"0ame\"/minimum-gas-prices = \"5000000000${BASIC_DENOM}\"/g" "${workspace}"/.local/*/config/app.toml
+		sed -i -e "s/minimum-gas-prices = \"0azkme\"/minimum-gas-prices = \"5000000000${BASIC_DENOM}\"/g" "${workspace}"/.local/*/config/app.toml
 		sed -i -e "s/\"stake\"/\"${BASIC_DENOM}\"/g" "${workspace}"/.local/validator${i}/config/genesis.json
 		#sed -i -e "s/\"no_base_fee\": false/\"no_base_fee\": true/g" ${workspace}/.local/*/config/genesis.json
 		sed -i -e "s/\"denom_metadata\": \[\]/\"denom_metadata\": \[${NATIVE_COIN_DESC}\]/g" "${workspace}"/.local/validator${i}/config/genesis.json

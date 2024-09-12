@@ -331,7 +331,7 @@ func (s *PaymentTestSuite) TestDeposit_ActiveAccount() {
 	paymentAddr := paymentAccounts.PaymentAccounts[0]
 	s.Require().Lenf(paymentAccounts.PaymentAccounts, 1, "paymentAccounts %s", core.YamlString(paymentAccounts))
 
-	// deposit ame needed
+	// deposit azkme needed
 	msgDeposit := &paymenttypes.MsgDeposit{
 		Creator: user.GetAddr().String(),
 		To:      paymentAddr,
@@ -387,7 +387,7 @@ func (s *PaymentTestSuite) TestDeposit_FromBankAccount() {
 
 	// derive payment account
 	paymentAccount := derivePaymentAccount(user.GetAddr(), 0)
-	// transfer ame to derived payment account
+	// transfer azkme to derived payment account
 	msgSend := banktypes.NewMsgSend(user.GetAddr(), paymentAccount, sdk.NewCoins(
 		sdk.NewCoin(s.Config.Denom, sdk.NewInt(1e18)),
 	))
@@ -412,13 +412,13 @@ func (s *PaymentTestSuite) TestDeposit_FromBankAccount() {
 	paymentAddr := paymentAccounts.PaymentAccounts[0]
 	s.Require().Lenf(paymentAccounts.PaymentAccounts, 1, "paymentAccounts %s", core.YamlString(paymentAccounts))
 
-	// transfer ame to payment account: should not success
+	// transfer azkme to payment account: should not success
 	msgSend = banktypes.NewMsgSend(user.GetAddr(), sdk.MustAccAddressFromHex(paymentAddr), sdk.NewCoins(
 		sdk.NewCoin(s.Config.Denom, sdk.NewInt(1e18)),
 	))
 	s.SendTxBlockWithExpectErrorString(msgSend, user, "is not allowed to receive funds")
 
-	// deposit ame needed
+	// deposit azkme needed
 	msgDeposit := &paymenttypes.MsgDeposit{
 		Creator: user.GetAddr().String(),
 		To:      paymentAddr,
@@ -477,7 +477,7 @@ func (s *PaymentTestSuite) TestDeposit_ResumeInOneBlock() {
 	paymentAddr := paymentAccounts.PaymentAccounts[0]
 	s.Require().Lenf(paymentAccounts.PaymentAccounts, 1, "paymentAccounts %s", core.YamlString(paymentAccounts))
 
-	// deposit ame needed
+	// deposit azkme needed
 	msgDeposit := &paymenttypes.MsgDeposit{
 		Creator: user.GetAddr().String(),
 		To:      paymentAddr,
@@ -594,7 +594,7 @@ func (s *PaymentTestSuite) TestDeposit_ResumeInBlocks() {
 	paymentAddr := paymentAccounts.PaymentAccounts[0]
 	s.Require().Lenf(paymentAccounts.PaymentAccounts, 1, "paymentAccounts %s", core.YamlString(paymentAccounts))
 
-	// deposit ame needed
+	// deposit azkme needed
 	msgDeposit := &paymenttypes.MsgDeposit{
 		Creator: user.GetAddr().String(),
 		To:      paymentAddr,
@@ -869,7 +869,7 @@ func (s *PaymentTestSuite) TestAutoSettle_InBlocks() {
 	paymentAddr := paymentAccounts.PaymentAccounts[0]
 	s.Require().Lenf(paymentAccounts.PaymentAccounts, 1, "paymentAccounts %s", core.YamlString(paymentAccounts))
 
-	// deposit ame needed
+	// deposit azkme needed
 	msgDeposit := &paymenttypes.MsgDeposit{
 		Creator: user.GetAddr().String(),
 		To:      paymentAddr,
@@ -966,7 +966,7 @@ func (s *PaymentTestSuite) TestWithdraw() {
 	paymentAddr := paymentAccounts.PaymentAccounts[0]
 	s.Require().Lenf(paymentAccounts.PaymentAccounts, 1, "paymentAccounts %s", core.YamlString(paymentAccounts))
 
-	// deposit ame needed
+	// deposit azkme needed
 	msgDeposit := &paymenttypes.MsgDeposit{
 		Creator: user.GetAddr().String(),
 		To:      paymentAddr,
@@ -1032,7 +1032,7 @@ func (s *PaymentTestSuite) TestWithdrawDelayed() {
 	paymentAddr := paymentAccounts.PaymentAccounts[0]
 	s.Require().Lenf(paymentAccounts.PaymentAccounts, 1, "paymentAccounts %s", core.YamlString(paymentAccounts))
 
-	// deposit ame
+	// deposit azkme
 	msgDeposit := &paymenttypes.MsgDeposit{
 		Creator: user.GetAddr().String(),
 		To:      paymentAddr,
@@ -1054,7 +1054,7 @@ func (s *PaymentTestSuite) TestWithdrawDelayed() {
 	paymentAccountStreamRecord = s.getStreamRecord(paymentAddr)
 	balance, err := s.Client.Balance(ctx, &banktypes.QueryBalanceRequest{
 		Address: userAddr,
-		Denom:   "ame",
+		Denom:   "azkme",
 	})
 	s.Require().NoError(err)
 
@@ -1075,7 +1075,7 @@ func (s *PaymentTestSuite) TestWithdrawDelayed() {
 	// balance does not increase
 	balanceAfter, err := s.Client.Balance(ctx, &banktypes.QueryBalanceRequest{
 		Address: userAddr,
-		Denom:   "ame",
+		Denom:   "azkme",
 	})
 	s.Require().NoError(err)
 	s.Require().True(balanceAfter.Balance.Amount.LTE(balance.Balance.Amount))
@@ -1095,7 +1095,7 @@ func (s *PaymentTestSuite) TestWithdrawDelayed() {
 	paymentAccountStreamRecord = s.getStreamRecord(paymentAddr)
 	balance, err = s.Client.Balance(ctx, &banktypes.QueryBalanceRequest{
 		Address: userAddr,
-		Denom:   "ame",
+		Denom:   "azkme",
 	})
 	s.Require().NoError(err)
 	s.T().Logf("balance %s", core.YamlString(balance))
@@ -1110,7 +1110,7 @@ func (s *PaymentTestSuite) TestWithdrawDelayed() {
 
 	balanceAfter, err = s.Client.Balance(ctx, &banktypes.QueryBalanceRequest{
 		Address: userAddr,
-		Denom:   "ame",
+		Denom:   "azkme",
 	})
 	s.Require().NoError(err)
 	s.T().Logf("balanceAfter %s", core.YamlString(balanceAfter))
@@ -2649,7 +2649,7 @@ func (s *PaymentTestSuite) TestUpdatePaymentParams() {
 		Params:    updatedParams,
 	}
 
-	proposal, err := govtypesv1.NewMsgSubmitProposal([]sdk.Msg{msgUpdateParams}, sdk.NewCoins(sdk.NewCoin("ame", sdk.NewInt(1000000000000000000))),
+	proposal, err := govtypesv1.NewMsgSubmitProposal([]sdk.Msg{msgUpdateParams}, sdk.NewCoins(sdk.NewCoin("azkme", sdk.NewInt(1000000000000000000))),
 		s.Validator.GetAddr().String(), "", "update Payment params", "Test update Payment params")
 	s.Require().NoError(err)
 	txBroadCastResp, err := s.SendTxBlockWithoutCheck(proposal, s.Validator)
@@ -2679,7 +2679,7 @@ func (s *PaymentTestSuite) TestUpdatePaymentParams() {
 	txOpt := &types.TxOption{
 		Mode:      &mode,
 		Memo:      "",
-		FeeAmount: sdk.NewCoins(sdk.NewCoin("ame", sdk.NewInt(1000000000000000000))),
+		FeeAmount: sdk.NewCoins(sdk.NewCoin("azkme", sdk.NewInt(1000000000000000000))),
 	}
 	voteBroadCastResp, err := s.SendTxBlockWithoutCheckWithTxOpt(govtypesv1.NewMsgVote(s.Validator.GetAddr(), uint64(proposalID), govtypesv1.OptionYes, ""),
 		s.Validator, txOpt)

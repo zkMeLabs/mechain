@@ -1404,7 +1404,7 @@ func (s *StorageTestSuite) TestExceedEachBlockLimitGC() {
 	// Create 250 Buckets
 	bucketNumber := 250
 
-	feeAmt := sdk.NewCoins(sdk.NewCoin("ame", sdk.NewInt(int64(15000000000000))))
+	feeAmt := sdk.NewCoins(sdk.NewCoin("azkme", sdk.NewInt(int64(15000000000000))))
 	txOpt := sdktype.TxOption{
 		NoSimulate: true,
 		GasLimit:   3000,

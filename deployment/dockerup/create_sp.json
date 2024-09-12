@@ -17,7 +17,7 @@
       "maintenance_address": "0xbE03316B1D7c3FCB69136e47e02442d6Fb3396dB",
       "endpoint": "https://www.greenfield.io",
       "deposit": {
-        "denom": "ame",
+        "denom": "azkme",
         "amount": "10000000000000000000000"
       },
       "read_price": "0.087",
@@ -31,5 +31,5 @@
   "title": "create sp",
   "summary": "temp",
   "metadata": "4pIMOgIGx1vZGU=",
-  "deposit": "1000000000000000000ame"
+  "deposit": "1000000000000000000azkme"
 }

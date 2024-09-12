@@ -22,7 +22,7 @@
         "key": "5zWjSxm6V8mlmOIhcJVomPOtn/zg69O3M/8Ru1DTO7o="
       },
       "value": {
-        "denom": "ame",
+        "denom": "azkme",
         "amount": "10000000000000000000000000"
       },
       "from": "0x7b5Fe22B5446f7C62Ea27B8BD71CeF94e03f3dF2",
@@ -35,5 +35,5 @@
   "metadata": "",
   "title": "Create validator1 Validator",
   "summary": "create validator1 validator",
-  "deposit": "1000000000000000000000000ame"
+  "deposit": "1000000000000000000000000azkme"
 }
