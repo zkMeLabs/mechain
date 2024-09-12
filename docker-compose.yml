@@ -1,30 +1,7 @@
 
 services:
-  init:
-    container_name: init-mechain
-    image: "zkmelabs/mechain"
-    volumes:
-      - "./deployment/dockerup:/workspace/deployment/dockerup:Z"
-      - "local-env:/workspace/deployment/dockerup/.local"
-    working_dir: "/workspace/deployment/dockerup"
-    command: >
-      bash -c "
-      rm -f init_done &&
-      bash localup.sh init 4 8 && 
-      bash localup.sh generate 4 8 &&
-      touch init_done && 
-      sleep infinity
-      "
-    healthcheck:
-      test: ["CMD-SHELL", "test -f /workspace/deployment/dockerup/init_done && echo 'OK' || exit 1"]
-      interval: 20s
-      retries: 5
-    restart: "on-failure"
   vnode-0:
     container_name: mechaind-validator-0
-    depends_on:
-      init:
-        condition: service_healthy
     image: "zkmelabs/mechain"
     networks:
       - mechain-network
@@ -37,9 +14,9 @@ services:
       - "8545:8545"
       - "8546:8546"
     volumes:
-      - "local-env:/app"
+      - "./deployment/dockerup/.local/validator0:/app:Z"
     command: >
-      /usr/bin/mechaind start --home /app/validator0
+      /usr/bin/mechaind start --home /app
       --keyring-backend test
       --api.enabled-unsafe-cors true
       --address 0.0.0.0:28750
@@ -51,9 +28,6 @@ services:
       --log_format json
   vnode-1:
     container_name: mechaind-validator-1
-    depends_on:
-      init:
-        condition: service_healthy
     image: "zkmelabs/mechain"
     networks:
       - mechain-network
@@ -66,9 +40,9 @@ services:
       - "8547:8545"
       - "8548:8546"
     volumes:
-      - "local-env:/app"
+      - "./deployment/dockerup/.local/validator1:/app:Z"
     command: >
-      /usr/bin/mechaind start --home /app/validator1
+      /usr/bin/mechaind start --home /app
       --keyring-backend test
       --api.enabled-unsafe-cors true
       --address 0.0.0.0:28750
@@ -80,9 +54,6 @@ services:
       --log_format json
   vnode-2:
     container_name: mechaind-validator-2
-    depends_on:
-      init:
-        condition: service_healthy
     image: "zkmelabs/mechain"
     networks:
       - mechain-network
@@ -95,9 +66,9 @@ services:
       - "8549:8545"
       - "8550:8546"
     volumes:
-      - "local-env:/app"
+      - "./deployment/dockerup/.local/validator2:/app:Z"
     command: >
-      /usr/bin/mechaind start --home /app/validator2
+      /usr/bin/mechaind start --home /app
       --keyring-backend test
       --api.enabled-unsafe-cors true
       --address 0.0.0.0:28750
@@ -109,9 +80,6 @@ services:
       --log_format json
   vnode-3:
     container_name: mechaind-validator-3
-    depends_on:
-      init:
-        condition: service_healthy
     image: "zkmelabs/mechain"
     networks:
       - mechain-network
@@ -124,9 +92,9 @@ services:
       - "8551:8545"
       - "8552:8546"
     volumes:
-      - "local-env:/app"
+      - "./deployment/dockerup/.local/validator3:/app:Z"
     command: >
-      /usr/bin/mechaind start --home /app/validator3
+      /usr/bin/mechaind start --home /app
       --keyring-backend test
       --api.enabled-unsafe-cors true
       --address 0.0.0.0:28750
@@ -139,5 +107,3 @@ services:
 networks:
   mechain-network:
     external: true
-volumes:
-  local-env:
