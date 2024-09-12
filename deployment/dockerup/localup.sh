@@ -353,6 +353,20 @@ function export_sps {
 	echo "${output}" | jq .
 }
 
+function clean_validator_data() {
+	size=$1
+	for ((i = 0; i < size; i++)); do
+		target_dir="${local_env}/validator${i}/data"
+
+		if [ -d "$target_dir" ]; then
+			find "$target_dir" -type d -name "*.db" -exec rm -rf {} +
+			find "$target_dir" -type d -name "*.wal" -exec rm -rf {} +
+			find "$target_dir" -type d -name "snapshots" -exec rm -rf {} +
+		else
+			echo "Directory $target_dir does not exist."
+		fi
+	done
+}
 CMD=$1
 SIZE=3
 SP_SIZE=3
@@ -381,6 +395,9 @@ export_sps)
 
 export_validator)
 	export_validator "$SIZE"
+	;;
+clean_validator_data)
+	clean_validator_data "$SIZE"
 	;;
 *)
 	echo "Usage: localup.sh init | generate | export_sps"
