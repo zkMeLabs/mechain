@@ -23,17 +23,15 @@ type NodeConfig struct {
 type ComposeConfig struct {
 	Nodes          []NodeConfig
 	Image          string
-	BasePorts      PortConfig
 	VolumeBasePath string
+	BasePorts      PortConfig
 }
 
 const dockerComposeTemplate = `
+services:
 {{- range .Nodes }}
   vnode-{{.NodeIndex}}:
     container_name: mechaind-validator-{{.NodeIndex}}
-    depends_on:
-      init:
-        condition: service_healthy
     image: "{{$.Image}}"
     networks:
       - mechain-network

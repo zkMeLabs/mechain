@@ -12,14 +12,12 @@ services:
       rm -f init_done &&
       bash localup.sh init 4 8 && 
       bash localup.sh generate 4 8 &&
-      bash localup.sh export_validator 4 > relayer.yaml &&
-      bash localup.sh export_sps 4 8 > sp.json &&
       touch init_done && 
       sleep infinity
       "
     healthcheck:
       test: ["CMD-SHELL", "test -f /workspace/deployment/dockerup/init_done && echo 'OK' || exit 1"]
-      interval: 10s
+      interval: 20s
       retries: 5
     restart: "on-failure"
   vnode-0:
