@@ -16,12 +16,12 @@
       "json-rpc.metrics-address": 6065
     },
     "cfg": {
-      "minimum-gas-prices": "\"0ame\"",
+      "minimum-gas-prices": "\"0azkme\"",
       "pruning": "\"nothing\"",
       "api.swagger": "true",
       "api.enabled-unsafe-cors": "true",
       "rosetta.enable": "false",
-      "rosetta.denom-to-suggest": "\"0ame\"",
+      "rosetta.denom-to-suggest": "\"0azkme\"",
       "grpc.enable": "true",
       "grpc-web.enable": "true",
       "grpc-web.enable-unsafe-cors": "true",

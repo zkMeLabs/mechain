@@ -243,7 +243,7 @@ func startStandAlone(ctx *server.Context, opts StartOptions) error {
 		return err
 	}
 	srvCfg := serverconfig.DefaultConfig()
-	srvCfg.MinGasPrices = "5000000000ame"
+	srvCfg.MinGasPrices = "5000000000azkme"
 	app := opts.AppCreator(ctx.Logger, db, traceWriter, "", srvCfg, ctx.Viper)
 
 	config, err := config.GetConfig(ctx.Viper)
@@ -346,7 +346,7 @@ func startInProcess(ctx *server.Context, clientCtx client.Context, opts StartOpt
 		return err
 	}
 	srvCfg := serverconfig.DefaultConfig()
-	srvCfg.MinGasPrices = "5000000000ame"
+	srvCfg.MinGasPrices = "5000000000azkme"
 	app := opts.AppCreator(ctx.Logger, db, traceWriter, "", srvCfg, ctx.Viper)
 
 	nodeKey, err := p2p.LoadOrGenNodeKey(cfg.NodeKeyFile())
