@@ -94,8 +94,8 @@ func main() {
 	config := ComposeConfig{
 		Nodes:          nodes,
 		Image:          "zkmelabs/mechain",
-		BasePorts:      bp,
 		VolumeBasePath: "./deployment/dockerup/.local",
+		BasePorts:      bp,
 	}
 
 	file, err := os.Create("docker-compose.yml")
