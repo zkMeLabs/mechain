@@ -11,5 +11,5 @@ const (
 	TestGRPCAddr   = "localhost:9090"
 	TestRPCAddr    = "http://0.0.0.0:26657"
 	TestChainID    = "mechain_5151-1"
-	TestTokenName  = "ame"
+	TestTokenName  = "azkme"
 )

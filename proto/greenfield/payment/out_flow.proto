@@ -16,7 +16,7 @@ enum OutFlowStatus {
   OUT_FLOW_STATUS_FROZEN = 1;
 }
 
-// OutFlow defines the accumulative outflow stream rate in ame
+// OutFlow defines the accumulative outflow stream rate in azkme
 // from a stream account to a Storage Provider
 message OutFlow {
   // stream account address who receives the flow, usually SP(service provider)

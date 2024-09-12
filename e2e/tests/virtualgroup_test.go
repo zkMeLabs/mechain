@@ -673,7 +673,7 @@ func (s *VirtualGroupTestSuite) TestUpdateVirtualGroupParams() {
 		Params:    updatedParams,
 	}
 
-	proposal, err := v1.NewMsgSubmitProposal([]sdk.Msg{msgUpdateParams}, sdk.NewCoins(sdk.NewCoin("ame", sdk.NewInt(1000000000000000000))),
+	proposal, err := v1.NewMsgSubmitProposal([]sdk.Msg{msgUpdateParams}, sdk.NewCoins(sdk.NewCoin("azkme", sdk.NewInt(1000000000000000000))),
 		s.Validator.GetAddr().String(), "", "update virtual group params", "Test update virtual group params")
 	s.Require().NoError(err)
 	txBroadCastResp, err := s.SendTxBlockWithoutCheck(proposal, s.Validator)
@@ -703,7 +703,7 @@ func (s *VirtualGroupTestSuite) TestUpdateVirtualGroupParams() {
 	txOpt := &types.TxOption{
 		Mode:      &mode,
 		Memo:      "",
-		FeeAmount: sdk.NewCoins(sdk.NewCoin("ame", sdk.NewInt(1000000000000000000))),
+		FeeAmount: sdk.NewCoins(sdk.NewCoin("azkme", sdk.NewInt(1000000000000000000))),
 	}
 	voteBroadCastResp, err := s.SendTxBlockWithoutCheckWithTxOpt(v1.NewMsgVote(s.Validator.GetAddr(), uint64(proposalID), v1.OptionYes, ""),
 		s.Validator, txOpt)
@@ -1094,7 +1094,7 @@ func (s *VirtualGroupTestSuite) TestSPForcedExit() {
 	govAddr := authtypes.NewModuleAddress(govtypes.ModuleName).String()
 	msgForcedExit := virtualgroupmoduletypes.NewMsgStorageProviderForcedExit(govAddr, spx.OperatorKey.GetAddr())
 
-	proposal, err := v1.NewMsgSubmitProposal([]sdk.Msg{msgForcedExit}, sdk.NewCoins(sdk.NewCoin("ame", sdk.NewInt(1000000000000000000))),
+	proposal, err := v1.NewMsgSubmitProposal([]sdk.Msg{msgForcedExit}, sdk.NewCoins(sdk.NewCoin("azkme", sdk.NewInt(1000000000000000000))),
 		s.Validator.GetAddr().String(), "", "put SP to force exit status", "put SP to force exit status")
 	s.Require().NoError(err)
 	txBroadCastResp, err := s.SendTxBlockWithoutCheck(proposal, s.Validator)
@@ -1212,7 +1212,7 @@ func (s *VirtualGroupTestSuite) updateParams(params virtualgroupmoduletypes.Para
 		Authority: govAddr,
 		Params:    params,
 	}
-	proposal, err := v1.NewMsgSubmitProposal([]sdk.Msg{msgUpdateParams}, sdk.NewCoins(sdk.NewCoin("ame", sdk.NewInt(1000000000000000000))),
+	proposal, err := v1.NewMsgSubmitProposal([]sdk.Msg{msgUpdateParams}, sdk.NewCoins(sdk.NewCoin("azkme", sdk.NewInt(1000000000000000000))),
 		s.Validator.GetAddr().String(), "", "update virtual group params", "update virtual group params")
 	s.Require().NoError(err)
 	txBroadCastResp, err := s.SendTxBlockWithoutCheck(proposal, s.Validator)

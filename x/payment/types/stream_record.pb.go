@@ -33,7 +33,7 @@ const (
 	STREAM_ACCOUNT_STATUS_ACTIVE StreamAccountStatus = 0
 	// STREAM_ACCOUNT_STATUS_FROZEN defines the frozen status of a stream account.
 	// A frozen stream account cannot be used as payment address for buckets.
-	// It can be unfrozen by depositing more ame to the stream account.
+	// It can be unfrozen by depositing more azkme to the stream account.
 	STREAM_ACCOUNT_STATUS_FROZEN StreamAccountStatus = 1
 )
 

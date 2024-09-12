@@ -4,7 +4,7 @@
     "chain_name": "mechain",
     "chain_id": "mechain_5151-1",
     "denoms": [
-      "ame"
+      "azkme"
     ],
     "port": {
       "api.address": 1317,
