@@ -22,6 +22,11 @@ const main = async function () {
     await execPromis(stopCmd, { cwd: workPath });
     await sleep(3000);
 
+    if (!fs.existsSync(path.join(workPath, '/build/mechaind'))) {
+      console.log('compile mechain');
+      await execPromis('rm -rf ./build && make build', { cwd: workPath });
+    }
+
     console.log('init mechain');
     const initCmd = `bash ./deployment/localup/localup.sh init ${validatorCount} 1`;
     await execPromis(initCmd, { cwd: workPath });
