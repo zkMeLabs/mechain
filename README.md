@@ -9,7 +9,7 @@ access, as well as linking data ownership with the massive DeFi context of the o
 Mechain operates through three core components, which distinguish it from existing centralized and decentralized
 storage systems:
 
-- It enables Ethereum-compatible addresses to create and manage data and token assets seamlessly.
+- It enables ethereum-compatible addresses to create and manage data and token assets seamlessly.
 - It provides similar API primitives and performance as popular existing Web2 cloud storage systems.
 
 These features offer a novel and innovative approach to decentralized data management and ownership in the DeFi space.
@@ -38,7 +38,7 @@ unique to the Mechain blockchain.
 
 The Mechain blockchain has two categories of states that are stored on-chain:
 
-1. The ledger of accounts and their ZKME balance
+1. The ledger of accounts and their ZKME balance.
 
 2. The metadata of the object storage system and service providers, along with the metadata of the objects stored on the
 storage system, permission and billing information pertaining to the storage system.
@@ -58,6 +58,7 @@ More advanced script and command line usage, please refer to the [Tutorial](http
 
 ## Key Modules
 
+- `x/evm`: bridges Ethereum's smart contract capabilities with Cosmos' cross-chain functionality and governance systems.
 - `x/challenge`: generate random data challenge events or accept user's data challenge requests.
 - `x/payment`: handle the billing and payment of the storage module. User fees are paid through "Stream" on Mechain,
 with a constant rate of payment from users to Storage Providers (SP) with charges applied every second of usage.
@@ -70,10 +71,10 @@ And the following modules are in cosmos-sdk:
 - `x/crosschain`: manage the cross chain packages, like store/query/update the cross chain package, channels, sequences.
 - `x/gashub`: provide a governable and predictable fee charge mechanism.
 - `x/oracle`: provide a secure runtime for cross chain packages.
-- `x/staking`:  based on the Proof-of-Stake logic. The elected validators are responsible for the security of the Mechain blockchain.
+- `x/staking`:  based on the Proof-of-Stake logic. The elected validators are responsible for the security of the mechain blockchain.
 They get involved in the governance and staking of the blockchain.
 
-Refer to the [docs](https://github.com/bnb-chain/greenfield/blob/master/docs/modules/storage-module.md) to dive deep into these modules.
+Refer to the [docs](https://todo) to dive deep into these modules.
 
 ## Running node
 
@@ -84,11 +85,10 @@ Refer to the [docs](https://github.com/bnb-chain/greenfield/blob/master/docs/mod
 
 ## Related Projects
 
-- [Mechain-Contract](https://github.com/bnb-chain/greenfield-contracts): the cross chain contract for Mechain that deployed on BSC network.
-- [Mechain-Tendermint](https://github.com/bnb-chain/greenfield-tendermint): the consensus layer of Mechain blockchain.
-- [Mechain-Storage-Provider](https://github.com/bnb-chain/greenfield-storage-provider): the storage service infrastructures provided by either organizations or individuals.
-- [Mechain-Relayer](https://github.com/bnb-chain/greenfield-relayer): the service that relay cross chain package to both chains.
-- [Mechain-Cmd](https://github.com/bnb-chain/greenfield-cmd): the most powerful command line to interact with Mechain system.
+- [mechain-Contract](https://github.com/zkMeLabs/mechain-contracts): the cross chain contract for Mechain that deployed on ethereum-compatible network.
+- [mechain-Storage-Provider](https://github.com/zkMeLabs/mechain-storage-provider): the storage service infrastructures provided by either organizations or individuals.
+- [mechain-relayer](https://github.com/zkMeLabs/mechain-relayer): the service that relay cross chain package to both chains.
+- [mechain-cmd](https://github.com/zkMeLabs/mechain-cmd): the most powerful command line to interact with Mechain system.
 - [Awesome Cosmos](https://github.com/cosmos/awesome-cosmos): Collection of Cosmos related resources which also fits Mechain.
 
 ## Contribution
@@ -110,12 +110,21 @@ efforts lighter as well as our review and merge procedures quick and simple.
 
 Once again, thank you for your willingness to contribute to the Mechain project. We look forward to working with you!
 
-## Licence
+## License
 
-The greenfield library (i.e. all code outside the `cmd` directory) is licensed under the
+The mechain library (i.e. all code outside the `cmd` directory) is licensed under the
 [GNU Lesser General Public License v3.0](https://www.gnu.org/licenses/lgpl-3.0.en.html),
 also included in our repository in the `COPYING.LESSER` file.
 
-The greenfield binaries (i.e. all code inside the `cmd` directory) is licensed under the
+The mechain binaries (i.e. all code inside the `cmd` directory) is licensed under the
 [GNU Affero General Public License v3.0](https://www.gnu.org/licenses/agpl-3.0.en.html), also
 included in our repository in the `COPYING` file.
+
+## Fork Information
+
+This project is fork from:
+
++ [greenfield](https://github.com/bnb-chain/greenfield)
++ [evmos v12](https://github.com/evmos/evmos/tree/release/v12.x.x)
+  
+Significant changes have been made to adapt the project for specific use cases, but much of the core functionality comes from the original project.
