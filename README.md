@@ -1,90 +1,121 @@
-<!--
-parent:
-  order: false
--->
+# Mechain
 
-<div align="center">
-  <h1> Evmos </h1>
-</div>
+Official Golang implementation of the Mechain Blockchain. It uses [cometbft](https://github.com/cometbft/cometbft/)
+for consensus and build on [cosmos-sdk](https://github.com/cosmos/cosmos-sdk).
 
-<div align="center">
-  <a href="https://github.com/evmos/evmos/releases/latest">
-    <img alt="Version" src="https://img.shields.io/github/tag/tharsis/evmos.svg" />
-  </a>
-  <a href="https://github.com/evmos/evmos/blob/main/LICENSE">
-    <img alt="License: Apache-2.0" src="https://img.shields.io/github/license/tharsis/evmos.svg" />
-  </a>
-  <a href="https://pkg.go.dev/github.com/evmos/evmos">
-    <img alt="GoDoc" src="https://godoc.org/github.com/evmos/evmos?status.svg" />
-  </a>
-  <a href="https://goreportcard.com/report/github.com/evmos/evmos">
-    <img alt="Go report card" src="https://goreportcard.com/badge/github.com/evmos/evmos"/>
-  </a>
-  <a href="https://bestpractices.coreinfrastructure.org/projects/5018">
-    <img alt="Lines of code" src="https://img.shields.io/tokei/lines/github/tharsis/evmos">
-  </a>
-</div>
-<div align="center">
-  <a href="https://discord.gg/evmos">
-    <img alt="Discord" src="https://img.shields.io/discord/809048090249134080.svg" />
-  </a>
-  <a href="https://github.com/evmos/evmos/actions?query=branch%3Amain+workflow%3ALint">
-    <img alt="Lint Status" src="https://github.com/evmos/evmos/actions/workflows/lint.yml/badge.svg?branch=main" />
-  </a>
-  <a href="https://codecov.io/gh/evmos/evmos">
-    <img alt="Code Coverage" src="https://codecov.io/gh/evmos/evmos/branch/main/graph/badge.svg" />
-  </a>
-  <a href="https://twitter.com/EvmosOrg">
-    <img alt="Twitter Follow Evmos" src="https://img.shields.io/twitter/follow/EvmosOrg"/>
-  </a>
-</div>
+Mechain aims to facilitate the decentralized data economy by simplifying the process of storing and managing data
+access, as well as linking data ownership with the massive DeFi context of the other EVM-compatible blockchains.
 
-Evmos is a scalable, high-throughput Proof-of-Stake blockchain
-that is fully compatible and interoperable with Ethereum.
-It's built using the [Cosmos SDK](https://github.com/cosmos/cosmos-sdk/)
-which runs on top of the [Tendermint Core](https://github.com/tendermint/tendermint) consensus engine.
+Mechain operates through three core components, which distinguish it from existing centralized and decentralized
+storage systems:
+
+- It enables Ethereum-compatible addresses to create and manage data and token assets seamlessly.
+- It provides similar API primitives and performance as popular existing Web2 cloud storage systems.
+
+These features offer a novel and innovative approach to decentralized data management and ownership in the DeFi space.
+Overall, Mechain presents a promising solution for bringing greater flexibility, control, and efficiency to users
+in the decentralized data economy.
+
+## Disclaimer
+
+**The software and related documentation are under active development, all subject to potential future change without
+notification and not ready for production use. The code and security audit have not been fully completed and not ready
+for any bug bounty. We advise you to be careful and experiment on the network at your own risk. Stay safe out there.**
+
+## Mechain Core
+
+The center of Mechain are two layers:
+
+1. A new storage-oriented blockchain, and
+2. network composed of "storage providers".
+
+This repo is the official implementation of Mechain blockchain.
+
+The blockchain of Mechain serves a dual purpose of maintaining the ledger for users as well as the storage metadata
+as common blockchain state data. The blockchain has its native token, ZKME,
+and is utilized for gas and governance functionalities. Governance is further enabled through the staking logic that is
+unique to the Mechain blockchain.
+
+The Mechain blockchain has two categories of states that are stored on-chain:
+
+1. The ledger of accounts and their ZKME balance
+
+2. The metadata of the object storage system and service providers, along with the metadata of the objects stored on the
+storage system, permission and billing information pertaining to the storage system.
+
+Transactions on the Mechain blockchain have the ability to modify the aforementioned on-chain states. These states and
+the transactions that affect them are at the core of the economic data on the Mechain platform.
+
+Users looking to create or access data on Mechain may do so by engaging with the Mechain Core Infrastructure
+through decentralized applications known as Mechain dApps. These dApps provide a user-friendly interface for
+interacting with the platform, enabling users to create and manipulate data in a secure and decentralized environment.
 
 ## Documentation
 
-Our documentation is hosted in a [separate repository](https://github.com/evmos/docs) and can be found at [docs.evmos.org](https://docs.evmos.org).
-Head over there and check it out.
+Visit our official [documentation site](https://todo) for more info.
 
-**Note**: Requires [Go 1.20+](https://golang.org/dl/)
+More advanced script and command line usage, please refer to the [Tutorial](https://todo).
 
-## Installation
+## Key Modules
 
-For prerequisites and detailed build instructions
-please read the [Installation](https://docs.evmos.org/protocol/evmos-cli) instructions.
-Once the dependencies are installed, run:
+- `x/challenge`: generate random data challenge events or accept user's data challenge requests.
+- `x/payment`: handle the billing and payment of the storage module. User fees are paid through "Stream" on Mechain,
+with a constant rate of payment from users to Storage Providers (SP) with charges applied every second of usage.
+- `x/sp`: manage the various storage providers within the network.
+- `x/storage`: users can manage their storage data through this module, like create/delete bucket, create/delete storage object.
+- `x/permission`: user can manage its resource permission through this module, like put/delete policy for storage object.
 
-```bash
-make install
-```
+And the following modules are in cosmos-sdk:
 
-Or check out the latest [release](https://github.com/evmos/evmos/releases).
+- `x/crosschain`: manage the cross chain packages, like store/query/update the cross chain package, channels, sequences.
+- `x/gashub`: provide a governable and predictable fee charge mechanism.
+- `x/oracle`: provide a secure runtime for cross chain packages.
+- `x/staking`:  based on the Proof-of-Stake logic. The elected validators are responsible for the security of the Mechain blockchain.
+They get involved in the governance and staking of the blockchain.
 
-## Quick Start
+Refer to the [docs](https://github.com/bnb-chain/greenfield/blob/master/docs/modules/storage-module.md) to dive deep into these modules.
 
-To learn how the Evmos works from a high-level perspective,
-go to the [Protocol Overview](https://docs.evmos.org/protocol) section from the documentation.
-You can also check the instructions to [Run a Node](https://docs.evmos.org/protocol/evmos-cli#run-an-evmos-node).
+## Running node
 
-## Community
+- [Interacting with the Node](https://todo)
+- [Run Local Network](https://todo)
+- [Run Node](https://todo)
+- [Become Validator](https://todo)
 
-The following chat channels and forums are a great spot to ask questions about Evmos:
+## Related Projects
 
-- [Evmos Twitter](https://twitter.com/EvmosOrg)
-- [Evmos Discord](https://discord.gg/evmos)
-- [Evmos Forum](https://commonwealth.im/evmos)
+- [Mechain-Contract](https://github.com/bnb-chain/greenfield-contracts): the cross chain contract for Mechain that deployed on BSC network.
+- [Mechain-Tendermint](https://github.com/bnb-chain/greenfield-tendermint): the consensus layer of Mechain blockchain.
+- [Mechain-Storage-Provider](https://github.com/bnb-chain/greenfield-storage-provider): the storage service infrastructures provided by either organizations or individuals.
+- [Mechain-Relayer](https://github.com/bnb-chain/greenfield-relayer): the service that relay cross chain package to both chains.
+- [Mechain-Cmd](https://github.com/bnb-chain/greenfield-cmd): the most powerful command line to interact with Mechain system.
+- [Awesome Cosmos](https://github.com/cosmos/awesome-cosmos): Collection of Cosmos related resources which also fits Mechain.
 
-## Contributing
+## Contribution
 
-Looking for a good place to start contributing?
-Check out some
-[`good first issues`](https://github.com/evmos/evmos/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22).
+Thank you for expressing your willingness to contribute to the Mechain source code. We deeply appreciate any help, no
+matter how small the fix. We welcome contributions from anyone on the internet, and we value your input.
 
-For additional instructions, standards and style guides, please refer to the [Contributing](./CONTRIBUTING.md) document.
+If you're interested in contributing to Mechain, please follow these steps:
 
-## Careers
+1. Fork the project on GitHub.
+2. Fix the issue.
+3. Commit the changes.
+4. Send a pull request for the maintainers to review and merge into the main codebase.
 
-See our open positions on [Greenhouse](https://boards.eu.greenhouse.io/evmos).
+If you're planning to submit more complex changes, we kindly suggest that you reach out to the core developers first.
+This could be done through a GitHub issue or our upcoming Discord channel. By doing so, you could ensure that your
+changes are aligned with the project's general philosophy, and you can receive valuable feedback that will make your
+efforts lighter as well as our review and merge procedures quick and simple.
+
+Once again, thank you for your willingness to contribute to the Mechain project. We look forward to working with you!
+
+## Licence
+
+The greenfield library (i.e. all code outside the `cmd` directory) is licensed under the
+[GNU Lesser General Public License v3.0](https://www.gnu.org/licenses/lgpl-3.0.en.html),
+also included in our repository in the `COPYING.LESSER` file.
+
+The greenfield binaries (i.e. all code inside the `cmd` directory) is licensed under the
+[GNU Affero General Public License v3.0](https://www.gnu.org/licenses/agpl-3.0.en.html), also
+included in our repository in the `COPYING` file.
