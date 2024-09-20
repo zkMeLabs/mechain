@@ -5,8 +5,9 @@ import (
 	"testing"
 
 	"cosmossdk.io/math"
+	"github.com/0xPolygon/polygon-edge/bls"
+	"github.com/cometbft/cometbft/votepool"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/prysmaticlabs/prysm/crypto/bls"
 	"github.com/stretchr/testify/require"
 
 	"github.com/evmos/evmos/v12/testutil/sample"
@@ -262,8 +263,9 @@ func TestMsgCopyObject_ValidateBasic(t *testing.T) {
 func TestMsgSealObject_ValidateBasic(t *testing.T) {
 	checksums := [][]byte{sample.Checksum(), sample.Checksum(), sample.Checksum(), sample.Checksum(), sample.Checksum(), sample.Checksum()}
 	blsSignDoc := NewSecondarySpSealObjectSignDoc("mechain_5151-1", 1, math.NewUint(1), GenerateHash(checksums)).GetSignBytes()
-	blsPrivKey, _ := bls.RandKey()
-	aggSig := blsPrivKey.Sign(blsSignDoc).Marshal()
+	blsPrivKey, _ := bls.GenerateBlsKey()
+	aggSig, _ := blsPrivKey.Sign(blsSignDoc, votepool.DST)
+	aggSigBts, _ := aggSig.Marshal()
 	tests := []struct {
 		name string
 		msg  MsgSealObject
@@ -275,7 +277,7 @@ func TestMsgSealObject_ValidateBasic(t *testing.T) {
 				Operator:                    sample.RandAccAddressHex(),
 				BucketName:                  testBucketName,
 				ObjectName:                  testObjectName,
-				SecondarySpBlsAggSignatures: aggSig,
+				SecondarySpBlsAggSignatures: aggSigBts,
 			},
 		},
 		{
@@ -284,7 +286,7 @@ func TestMsgSealObject_ValidateBasic(t *testing.T) {
 				Operator:                    "invalid address",
 				BucketName:                  testBucketName,
 				ObjectName:                  testObjectName,
-				SecondarySpBlsAggSignatures: aggSig,
+				SecondarySpBlsAggSignatures: aggSigBts,
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		},
@@ -294,7 +296,7 @@ func TestMsgSealObject_ValidateBasic(t *testing.T) {
 				Operator:                    sample.RandAccAddressHex(),
 				BucketName:                  "1.1.1.1",
 				ObjectName:                  testObjectName,
-				SecondarySpBlsAggSignatures: aggSig,
+				SecondarySpBlsAggSignatures: aggSigBts,
 			},
 			err: gnfderrors.ErrInvalidBucketName,
 		},
@@ -304,7 +306,7 @@ func TestMsgSealObject_ValidateBasic(t *testing.T) {
 				Operator:                    sample.RandAccAddressHex(),
 				BucketName:                  testBucketName,
 				ObjectName:                  "",
-				SecondarySpBlsAggSignatures: aggSig,
+				SecondarySpBlsAggSignatures: aggSigBts,
 			},
 			err: gnfderrors.ErrInvalidObjectName,
 		},

@@ -9,13 +9,14 @@ import (
 
 	sdkmath "cosmossdk.io/math"
 
+	"github.com/0xPolygon/polygon-edge/bls"
 	"github.com/cometbft/cometbft/crypto/tmhash"
+	"github.com/cometbft/cometbft/votepool"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/eth/eip712"
 	"github.com/cosmos/cosmos-sdk/x/auth/migrations/legacytx"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	"github.com/prysmaticlabs/prysm/crypto/bls"
 
 	"github.com/ethereum/go-ethereum/common"
 	ethtypes "github.com/ethereum/go-ethereum/core/types"
@@ -214,10 +215,11 @@ func (suite *AnteTestSuite) CreateTestEIP712MsgCreateValidator(from sdk.AccAddre
 	// Build MsgCreateValidator
 	valAddr := sdk.AccAddress(from.Bytes())
 	privEd := ed25519.GenPrivKey()
-	blsSecretKey, _ := bls.RandKey()
+	blsSecretKey, _ := bls.GenerateBlsKey()
 	blsPk := hex.EncodeToString(blsSecretKey.PublicKey().Marshal())
-	blsProofBuf := blsSecretKey.Sign(tmhash.Sum(blsSecretKey.PublicKey().Marshal()))
-	blsProof := hex.EncodeToString(blsProofBuf.Marshal())
+	blsProofBuf, _ := blsSecretKey.Sign(tmhash.Sum(blsSecretKey.PublicKey().Marshal()), votepool.DST)
+	blsProofBufBts, _ := blsProofBuf.Marshal()
+	blsProof := hex.EncodeToString(blsProofBufBts)
 	msgCreate, err := stakingtypes.NewMsgCreateValidator(
 		valAddr,
 		privEd.PubKey(),
@@ -240,10 +242,11 @@ func (suite *AnteTestSuite) CreateTestEIP712MsgCreateValidator2(from sdk.AccAddr
 	// Build MsgCreateValidator
 	valAddr := sdk.AccAddress(from.Bytes())
 	privEd := ed25519.GenPrivKey()
-	blsSecretKey, _ := bls.RandKey()
+	blsSecretKey, _ := bls.GenerateBlsKey()
 	blsPk := hex.EncodeToString(blsSecretKey.PublicKey().Marshal())
-	blsProofBuf := blsSecretKey.Sign(tmhash.Sum(blsSecretKey.PublicKey().Marshal()))
-	blsProof := hex.EncodeToString(blsProofBuf.Marshal())
+	blsProofBuf, _ := blsSecretKey.Sign(tmhash.Sum(blsSecretKey.PublicKey().Marshal()), votepool.DST)
+	blsProofBufBts, _ := blsProofBuf.Marshal()
+	blsProof := hex.EncodeToString(blsProofBufBts)
 	msgCreate, err := stakingtypes.NewMsgCreateValidator(
 		valAddr,
 		privEd.PubKey(),

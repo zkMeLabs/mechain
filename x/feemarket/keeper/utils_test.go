@@ -33,10 +33,10 @@ import (
 
 	"github.com/stretchr/testify/require"
 
+	"github.com/0xPolygon/polygon-edge/bls"
 	dbm "github.com/cometbft/cometbft-db"
 	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cometbft/cometbft/libs/log"
-	"github.com/prysmaticlabs/prysm/crypto/bls"
 )
 
 func (suite *KeeperTestSuite) SetupApp(checkTx bool, chainID string) {
@@ -70,7 +70,7 @@ func (suite *KeeperTestSuite) SetupApp(checkTx bool, chainID string) {
 	suite.app.AccountKeeper.SetAccount(suite.ctx, acc)
 
 	valAddr := sdk.AccAddress(suite.address.Bytes())
-	blsSecretKey, _ := bls.RandKey()
+	blsSecretKey, _ := bls.GenerateBlsKey()
 	blsPk := blsSecretKey.PublicKey().Marshal()
 	validator, err := stakingtypes.NewValidator(valAddr, priv.PubKey(), stakingtypes.Description{}, valAddr, valAddr, valAddr, blsPk)
 	require.NoError(t, err)

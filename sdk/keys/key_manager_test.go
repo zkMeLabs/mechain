@@ -4,7 +4,7 @@ import (
 	"encoding/hex"
 	"testing"
 
-	"github.com/prysmaticlabs/prysm/crypto/bls"
+	"github.com/0xPolygon/polygon-edge/bls"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -28,9 +28,10 @@ func TestCreateKeyManagerFromMnemonic(t *testing.T) {
 }
 
 func TestCreateBlsKeyManagerFromPrivateKeyHex(t *testing.T) {
-	blsPrivKey, _ := bls.RandKey()
+	blsPrivKey, _ := bls.GenerateBlsKey()
 	blsPubKey := hex.EncodeToString(blsPrivKey.PublicKey().Marshal())
-	km, err := NewBlsPrivateKeyManager(hex.EncodeToString(blsPrivKey.Marshal()))
+	blsPrivKeyBts, _ := blsPrivKey.Marshal()
+	km, err := NewBlsPrivateKeyManager(hex.EncodeToString(blsPrivKeyBts))
 	assert.NoError(t, err)
 	assert.Equal(t, blsPubKey, hex.EncodeToString(km.PubKey().Bytes()))
 }

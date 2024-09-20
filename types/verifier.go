@@ -4,11 +4,12 @@ import (
 	"bytes"
 
 	"cosmossdk.io/errors"
+	"github.com/0xPolygon/polygon-edge/bls"
+	"github.com/cometbft/cometbft/votepool"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	ethcrypto "github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/crypto/secp256k1"
-	"github.com/prysmaticlabs/prysm/crypto/bls"
 
 	gnfderrors "github.com/evmos/evmos/v12/types/errors"
 )
@@ -50,23 +51,23 @@ func VerifySignature(sigAccAddress sdk.AccAddress, sigHash []byte, sig []byte) e
 	return nil
 }
 
-func VerifyBlsSignature(blsPubKey bls.PublicKey, sigHash [32]byte, blsSig []byte) error {
-	sig, err := bls.SignatureFromBytes(blsSig)
+func VerifyBlsSignature(blsPubKey *bls.PublicKey, sigHash [32]byte, blsSig []byte) error {
+	sig, err := bls.UnmarshalSignature(blsSig)
 	if err != nil {
 		return errors.Wrapf(gnfderrors.ErrInvalidBlsSignature, "BLS signature conversion failed: %v", err)
 	}
-	if !sig.Verify(blsPubKey, sigHash[:]) {
+	if !sig.Verify(blsPubKey, sigHash[:], votepool.DST) {
 		return errors.Wrapf(gnfderrors.ErrInvalidBlsSignature, "signature verification failed")
 	}
 	return nil
 }
 
-func VerifyBlsAggSignature(blsPubKeys []bls.PublicKey, sigHash [32]byte, blsAggSig []byte) error {
-	aggSig, err := bls.SignatureFromBytes(blsAggSig)
+func VerifyBlsAggSignature(blsPubKeys []*bls.PublicKey, sigHash [32]byte, blsAggSig []byte) error {
+	aggSig, err := bls.UnmarshalSignature(blsAggSig)
 	if err != nil {
 		return errors.Wrapf(gnfderrors.ErrInvalidBlsSignature, "BLS signature conversion failed: %v", err)
 	}
-	if !aggSig.FastAggregateVerify(blsPubKeys, sigHash) {
+	if !aggSig.VerifyAggregated(blsPubKeys, sigHash[:], votepool.DST) {
 		return errors.Wrapf(gnfderrors.ErrInvalidBlsSignature, "aggregated signature verification failed")
 	}
 	return nil

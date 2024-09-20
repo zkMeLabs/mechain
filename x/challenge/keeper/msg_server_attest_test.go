@@ -4,10 +4,11 @@ import (
 	"testing"
 
 	"cosmossdk.io/math"
+	"github.com/0xPolygon/polygon-edge/bls"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
+	"github.com/cometbft/cometbft/votepool"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/golang/mock/gomock"
-	"github.com/prysmaticlabs/prysm/crypto/bls"
 	"github.com/stretchr/testify/require"
 
 	"github.com/evmos/evmos/v12/testutil/sample"
@@ -25,7 +26,7 @@ func (s *TestSuite) TestAttest_Invalid() {
 
 	validSubmitter := sample.RandAccAddress()
 
-	blsKey, _ := bls.RandKey()
+	blsKey, _ := bls.GenerateBlsKey()
 	historicalInfo := stakingtypes.HistoricalInfo{
 		Header: tmproto.Header{},
 		Valset: []stakingtypes.Validator{{
@@ -121,7 +122,7 @@ func (s *TestSuite) TestAttest_Heartbeat() {
 
 	validSubmitter := sample.RandAccAddress()
 
-	blsKey, _ := bls.RandKey()
+	blsKey, _ := bls.GenerateBlsKey()
 	historicalInfo := stakingtypes.HistoricalInfo{
 		Header: tmproto.Header{},
 		Valset: []stakingtypes.Validator{{
@@ -180,8 +181,8 @@ func (s *TestSuite) TestAttest_Heartbeat() {
 	}
 	toSign := attestMsg.GetBlsSignBytes(s.ctx.ChainID())
 
-	voteAggSignature := blsKey.Sign(toSign[:])
-	attestMsg.VoteAggSignature = voteAggSignature.Marshal()
+	voteAggSignature, _ := blsKey.Sign(toSign[:], votepool.DST)
+	attestMsg.VoteAggSignature, _ = voteAggSignature.Marshal()
 
 	_, err := s.msgServer.Attest(s.ctx, attestMsg)
 	require.NoError(s.T(), err)
@@ -209,7 +210,7 @@ func (s *TestSuite) TestAttest_Normal() {
 
 	validSubmitter := sample.RandAccAddress()
 
-	blsKey, _ := bls.RandKey()
+	blsKey, _ := bls.GenerateBlsKey()
 	historicalInfo := stakingtypes.HistoricalInfo{
 		Header: tmproto.Header{},
 		Valset: []stakingtypes.Validator{{
@@ -268,8 +269,8 @@ func (s *TestSuite) TestAttest_Normal() {
 		VoteValidatorSet:  []uint64{1},
 	}
 	toSign1 := attestMsg1.GetBlsSignBytes(s.ctx.ChainID())
-	voteAggSignature1 := blsKey.Sign(toSign1[:])
-	attestMsg1.VoteAggSignature = voteAggSignature1.Marshal()
+	voteAggSignature1, _ := blsKey.Sign(toSign1[:], votepool.DST)
+	attestMsg1.VoteAggSignature, _ = voteAggSignature1.Marshal()
 	_, err := s.msgServer.Attest(s.ctx, attestMsg1)
 	require.NoError(s.T(), err)
 
@@ -298,8 +299,8 @@ func (s *TestSuite) TestAttest_Normal() {
 		VoteValidatorSet:  []uint64{1},
 	}
 	toSign2 := attestMsg2.GetBlsSignBytes(s.ctx.ChainID())
-	voteAggSignature2 := blsKey.Sign(toSign2[:])
-	attestMsg2.VoteAggSignature = voteAggSignature2.Marshal()
+	voteAggSignature2, _ := blsKey.Sign(toSign2[:], votepool.DST)
+	attestMsg2.VoteAggSignature, _ = voteAggSignature2.Marshal()
 	_, err = s.msgServer.Attest(s.ctx, attestMsg2)
 	require.NoError(s.T(), err)
 
@@ -326,8 +327,8 @@ func (s *TestSuite) TestAttest_Normal() {
 		VoteValidatorSet:  []uint64{1},
 	}
 	toSign3 := attestMsg3.GetBlsSignBytes(s.ctx.ChainID())
-	voteAggSignature3 := blsKey.Sign(toSign3[:])
-	attestMsg3.VoteAggSignature = voteAggSignature3.Marshal()
+	voteAggSignature3, _ := blsKey.Sign(toSign3[:], votepool.DST)
+	attestMsg3.VoteAggSignature, _ = voteAggSignature3.Marshal()
 	_, err = s.msgServer.Attest(s.ctx, attestMsg3)
 	require.Error(s.T(), err)
 }

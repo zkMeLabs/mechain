@@ -6,13 +6,14 @@ import (
 	"time"
 
 	"cosmossdk.io/errors"
+	"github.com/0xPolygon/polygon-edge/bls"
 	"github.com/cometbft/cometbft/crypto/tmhash"
+	"github.com/cometbft/cometbft/votepool"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	gnfderrors "github.com/evmos/evmos/v12/types/errors"
 	"github.com/evmos/evmos/v12/x/sp/types"
-	"github.com/prysmaticlabs/prysm/crypto/bls"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -372,15 +373,15 @@ func (k msgServer) checkBlsProof(blsPk []byte, sig string) error {
 	if len(blsProof) != sdk.BLSSignatureLength {
 		return gnfderrors.ErrInvalidBlsSignature
 	}
-	signature, err := bls.SignatureFromBytes(blsProof)
+	signature, err := bls.UnmarshalSignature(blsProof)
 	if err != nil {
 		return gnfderrors.ErrInvalidBlsSignature
 	}
-	blsPubKey, err := bls.PublicKeyFromBytes(blsPk)
+	blsPubKey, err := bls.UnmarshalPublicKey(blsPk)
 	if err != nil {
 		return types.ErrStorageProviderInvalidBlsKey
 	}
-	if !signature.Verify(blsPubKey, tmhash.Sum(blsPk)) {
+	if !signature.Verify(blsPubKey, tmhash.Sum(blsPk), votepool.DST) {
 		return sdkerrors.ErrorInvalidSigner.Wrapf("check bls proof failed.")
 	}
 	return nil

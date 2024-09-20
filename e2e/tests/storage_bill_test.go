@@ -9,9 +9,9 @@ import (
 	"time"
 
 	sdkmath "cosmossdk.io/math"
+	"github.com/0xPolygon/polygon-edge/bls"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	"github.com/prysmaticlabs/prysm/crypto/bls"
 
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/evmos/evmos/v12/e2e/core"
@@ -214,14 +214,14 @@ func (s *PaymentTestSuite) TestStorageBill_Smoke() {
 	gvgID := gvg.Id
 	msgSealObject := storagetypes.NewMsgSealObject(sp.SealKey.GetAddr(), bucketName, objectName, gvg.Id, nil)
 	secondarySigs := make([][]byte, 0)
-	secondarySPBlsPubKeys := make([]bls.PublicKey, 0)
+	secondarySPBlsPubKeys := make([]*bls.PublicKey, 0)
 	blsSignHash := storagetypes.NewSecondarySpSealObjectSignDoc(s.GetChainID(), gvgID, queryHeadObjectResponse.ObjectInfo.Id, storagetypes.GenerateHash(expectChecksum)).GetBlsSignHash()
 	// every secondary sp signs the checksums
 	for _, spID := range gvg.SecondarySpIds {
 		sig, err := core.BlsSignAndVerify(s.StorageProviders[spID], blsSignHash)
 		s.Require().NoError(err)
 		secondarySigs = append(secondarySigs, sig)
-		pk, err := bls.PublicKeyFromBytes(s.StorageProviders[spID].BlsKey.PubKey().Bytes())
+		pk, err := bls.UnmarshalPublicKey(s.StorageProviders[spID].BlsKey.PubKey().Bytes())
 		s.Require().NoError(err)
 		secondarySPBlsPubKeys = append(secondarySPBlsPubKeys, pk)
 	}
@@ -2194,12 +2194,12 @@ func (s *PaymentTestSuite) NewMigrateBucket(srcSP, dstSP *core.StorageProvider, 
 	for _, gvgMapping := range gvgMappings {
 		migrationBucketSignHash := storagetypes.NewSecondarySpMigrationBucketSignDoc(s.GetChainID(), bucketID, dstSP.Info.Id, gvgMapping.SrcGlobalVirtualGroupId, gvgMapping.DstGlobalVirtualGroupId).GetBlsSignHash()
 		secondarySigs := make([][]byte, 0)
-		secondarySPBlsPubKeys := make([]bls.PublicKey, 0)
+		secondarySPBlsPubKeys := make([]*bls.PublicKey, 0)
 		for _, ssp := range secondarySPs {
 			sig, err := core.BlsSignAndVerify(ssp, migrationBucketSignHash)
 			s.Require().NoError(err)
 			secondarySigs = append(secondarySigs, sig)
-			pk, err := bls.PublicKeyFromBytes(ssp.BlsKey.PubKey().Bytes())
+			pk, err := bls.UnmarshalPublicKey(ssp.BlsKey.PubKey().Bytes())
 			s.Require().NoError(err)
 			secondarySPBlsPubKeys = append(secondarySPBlsPubKeys, pk)
 		}
@@ -2370,7 +2370,7 @@ func (s *PaymentTestSuite) TestStorageBill_UpdateObject() {
 	gvgID := gvg.Id
 	msgSealObject := storagetypes.NewMsgSealObject(sp.SealKey.GetAddr(), bucketName, objectName, gvg.Id, nil)
 	secondarySigs := make([][]byte, 0)
-	secondarySPBlsPubKeys := make([]bls.PublicKey, 0)
+	secondarySPBlsPubKeys := make([]*bls.PublicKey, 0)
 	blsSignHash := storagetypes.NewSecondarySpSealObjectSignDoc(s.GetChainID(), gvgID, queryHeadObjectResponse.ObjectInfo.Id, storagetypes.GenerateHash(queryHeadObjectResponse.ObjectInfo.Checksums)).GetBlsSignHash()
 
 	// every secondary sp signs the checksums
@@ -2378,7 +2378,7 @@ func (s *PaymentTestSuite) TestStorageBill_UpdateObject() {
 		sig, err := core.BlsSignAndVerify(s.StorageProviders[spID], blsSignHash)
 		s.Require().NoError(err)
 		secondarySigs = append(secondarySigs, sig)
-		pk, err := bls.PublicKeyFromBytes(s.StorageProviders[spID].BlsKey.PubKey().Bytes())
+		pk, err := bls.UnmarshalPublicKey(s.StorageProviders[spID].BlsKey.PubKey().Bytes())
 		s.Require().NoError(err)
 		secondarySPBlsPubKeys = append(secondarySPBlsPubKeys, pk)
 	}
@@ -2534,14 +2534,14 @@ func (s *PaymentTestSuite) TestStorageBill_UpdateObject() {
 	blsSignHash = storagetypes.NewSecondarySpSealObjectSignDoc(s.GetChainID(), gvgID, queryHeadObjectResponse.ObjectInfo.Id, storagetypes.GenerateHash(queryHeadShadowObjectResponse.ObjectInfo.Checksums)).GetBlsSignHash()
 	msgSealObject = storagetypes.NewMsgSealObject(sp.SealKey.GetAddr(), bucketName, objectName, gvg.Id, nil)
 	secondarySigs = make([][]byte, 0)
-	secondarySPBlsPubKeys = make([]bls.PublicKey, 0)
+	secondarySPBlsPubKeys = make([]*bls.PublicKey, 0)
 
 	// every secondary sp signs the checksums
 	for _, spID := range gvg.SecondarySpIds {
 		sig, err := core.BlsSignAndVerify(s.StorageProviders[spID], blsSignHash)
 		s.Require().NoError(err)
 		secondarySigs = append(secondarySigs, sig)
-		pk, err := bls.PublicKeyFromBytes(s.StorageProviders[spID].BlsKey.PubKey().Bytes())
+		pk, err := bls.UnmarshalPublicKey(s.StorageProviders[spID].BlsKey.PubKey().Bytes())
 		s.Require().NoError(err)
 		secondarySPBlsPubKeys = append(secondarySPBlsPubKeys, pk)
 	}

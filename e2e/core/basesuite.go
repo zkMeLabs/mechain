@@ -13,6 +13,7 @@ import (
 	"time"
 
 	sdkmath "cosmossdk.io/math"
+	"github.com/0xPolygon/polygon-edge/bls"
 	"github.com/cometbft/cometbft/crypto/tmhash"
 	tmlog "github.com/cometbft/cometbft/libs/log"
 	sdkClient "github.com/cosmos/cosmos-sdk/client"
@@ -25,7 +26,6 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	gov "github.com/cosmos/cosmos-sdk/x/gov/types"
 	govtypesv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
-	"github.com/prysmaticlabs/prysm/crypto/bls"
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/suite"
 	"golang.org/x/exp/slices"
@@ -312,11 +312,12 @@ func (s *BaseSuite) GenAndChargeAccounts(n int, balance int64) (accounts []keys.
 }
 
 func (s *BaseSuite) GenRandomBlsKeyManager() keys.KeyManager {
-	blsPrivKey, err := bls.RandKey()
+	blsPrivKey, err := bls.GenerateBlsKey()
 	if err != nil {
 		panic("failed to init bls key")
 	}
-	km, err := keys.NewBlsPrivateKeyManager(hex.EncodeToString(blsPrivKey.Marshal()))
+	blsPrivKeyBts, _ := blsPrivKey.Marshal()
+	km, err := keys.NewBlsPrivateKeyManager(hex.EncodeToString(blsPrivKeyBts))
 	if err != nil {
 		panic("failed to init bls key manager")
 	}
@@ -647,14 +648,14 @@ func (s *BaseSuite) CreateObject(user keys.KeyManager, primarySP *StorageProvide
 	msgSealObject := storagetypes.NewMsgSealObject(primarySP.SealKey.GetAddr(), bucketName, objectName, gvg.Id, nil)
 
 	secondarySigs := make([][]byte, 0)
-	secondarySPBlsPubKeys := make([]bls.PublicKey, 0)
+	secondarySPBlsPubKeys := make([]*bls.PublicKey, 0)
 	blsSignHash := storagetypes.NewSecondarySpSealObjectSignDoc(s.GetChainID(), gvgID, queryHeadObjectResponse.ObjectInfo.Id, storagetypes.GenerateHash(queryHeadObjectResponse.ObjectInfo.Checksums)).GetBlsSignHash()
 	// every secondary sp signs the checksums
 	for _, spID := range gvg.SecondarySpIds {
 		sig, err := BlsSignAndVerify(s.StorageProviders[spID], blsSignHash)
 		s.Require().NoError(err)
 		secondarySigs = append(secondarySigs, sig)
-		pk, err := bls.PublicKeyFromBytes(s.StorageProviders[spID].BlsKey.PubKey().Bytes())
+		pk, err := bls.UnmarshalPublicKey(s.StorageProviders[spID].BlsKey.PubKey().Bytes())
 		s.Require().NoError(err)
 		secondarySPBlsPubKeys = append(secondarySPBlsPubKeys, pk)
 		if s.StorageProviders[spID].Info.Id != primarySP.Info.Id {

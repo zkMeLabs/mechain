@@ -45,8 +45,8 @@ import (
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	tmversion "github.com/cometbft/cometbft/proto/tendermint/version"
 
+	"github.com/0xPolygon/polygon-edge/bls"
 	"github.com/cometbft/cometbft/version"
-	"github.com/prysmaticlabs/prysm/crypto/bls"
 )
 
 type EvmTestSuite struct {
@@ -157,7 +157,7 @@ func (suite *EvmTestSuite) DoSetupTest(t require.TestingT) {
 	suite.app.AccountKeeper.SetAccount(suite.ctx, acc)
 
 	valAddr := sdk.AccAddress(address.Bytes())
-	blsSecretKey, _ := bls.RandKey()
+	blsSecretKey, _ := bls.GenerateBlsKey()
 	blsPk := blsSecretKey.PublicKey().Marshal()
 	validator, err := stakingtypes.NewValidator(valAddr, priv.PubKey(), stakingtypes.Description{}, valAddr, valAddr, valAddr, blsPk)
 	require.NoError(t, err)

@@ -4,10 +4,11 @@ import (
 	"encoding/hex"
 
 	"cosmossdk.io/errors"
+	"github.com/0xPolygon/polygon-edge/bls"
 	"github.com/cometbft/cometbft/crypto/tmhash"
+	"github.com/cometbft/cometbft/votepool"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/prysmaticlabs/prysm/crypto/bls"
 
 	gnfderrors "github.com/evmos/evmos/v12/types/errors"
 )
@@ -381,7 +382,7 @@ func validateBlsKeyAndProof(blsKey, blsProof string) error {
 	if err != nil || len(blsPk) != sdk.BLSPubKeyLength {
 		return errors.Wrapf(sdkerrors.ErrInvalidPubKey, "invalid bls pub key")
 	}
-	blsPubKey, err := bls.PublicKeyFromBytes(blsPk)
+	blsPubKey, err := bls.UnmarshalPublicKey(blsPk)
 	if err != nil {
 		return errors.Wrapf(sdkerrors.ErrInvalidPubKey, "invalid bls pub key")
 	}
@@ -389,11 +390,11 @@ func validateBlsKeyAndProof(blsKey, blsProof string) error {
 	if err != nil || len(bp) != sdk.BLSSignatureLength {
 		return errors.Wrapf(gnfderrors.ErrInvalidBlsSignature, "invalid bls sig")
 	}
-	sig, err := bls.SignatureFromBytes(bp)
+	sig, err := bls.UnmarshalSignature(bp)
 	if err != nil {
 		return errors.Wrapf(sdkerrors.ErrorInvalidSigner, "invalid bls signature")
 	}
-	if !sig.Verify(blsPubKey, tmhash.Sum(blsPk)) {
+	if !sig.Verify(blsPubKey, tmhash.Sum(blsPk), votepool.DST) {
 		return sdkerrors.ErrorInvalidSigner.Wrapf("check bls proof failed.")
 	}
 	return nil

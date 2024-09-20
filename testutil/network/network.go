@@ -33,6 +33,7 @@ import (
 	"time"
 
 	"cosmossdk.io/math"
+	"github.com/0xPolygon/polygon-edge/bls"
 	dbm "github.com/cometbft/cometbft-db"
 	tmcfg "github.com/cometbft/cometbft/config"
 	"github.com/cometbft/cometbft/crypto/tmhash"
@@ -41,9 +42,9 @@ import (
 	tmrand "github.com/cometbft/cometbft/libs/rand"
 	"github.com/cometbft/cometbft/node"
 	tmclient "github.com/cometbft/cometbft/rpc/client"
+	"github.com/cometbft/cometbft/votepool"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
-	"github.com/prysmaticlabs/prysm/crypto/bls"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
 
@@ -445,10 +446,11 @@ func New(l Logger, baseDir string, cfg Config) (*Network, error) {
 			return nil, err
 		}
 
-		blsSecretKey, _ := bls.RandKey()
+		blsSecretKey, _ := bls.GenerateBlsKey()
 		blsPk := hex.EncodeToString(blsSecretKey.PublicKey().Marshal())
-		blsProofBuf := blsSecretKey.Sign(tmhash.Sum(blsSecretKey.PublicKey().Marshal()))
-		blsProof := hex.EncodeToString(blsProofBuf.Marshal())
+		blsProofBuf, _ := blsSecretKey.Sign(tmhash.Sum(blsSecretKey.PublicKey().Marshal()), votepool.DST)
+		blsProofBufBts, _ := blsProofBuf.Marshal()
+		blsProof := hex.EncodeToString(blsProofBufBts)
 		createValMsg, err := stakingtypes.NewMsgCreateValidator(
 			addr,
 			valPubKeys[i],

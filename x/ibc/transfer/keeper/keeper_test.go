@@ -38,13 +38,13 @@ import (
 	"github.com/evmos/evmos/v12/contracts"
 	"github.com/evmos/evmos/v12/x/erc20/types"
 
+	"github.com/0xPolygon/polygon-edge/bls"
 	capabilitytypes "github.com/cosmos/cosmos-sdk/x/capability/types"
 	transfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
 	clienttypes "github.com/cosmos/ibc-go/v7/modules/core/02-client/types"
 	channeltypes "github.com/cosmos/ibc-go/v7/modules/core/04-channel/types"
 	porttypes "github.com/cosmos/ibc-go/v7/modules/core/05-port/types"
 	"github.com/cosmos/ibc-go/v7/modules/core/exported"
-	"github.com/prysmaticlabs/prysm/crypto/bls"
 )
 
 type KeeperTestSuite struct {
@@ -118,7 +118,7 @@ func (suite *KeeperTestSuite) DoSetupTest(t require.TestingT) {
 
 	// Set Validator
 	valAddr := sdk.AccAddress(suite.address.Bytes())
-	blsSecretKey, _ := bls.RandKey()
+	blsSecretKey, _ := bls.GenerateBlsKey()
 	blsPk := blsSecretKey.PublicKey().Marshal()
 	validator, err := stakingtypes.NewValidator(valAddr, privCons.PubKey(), stakingtypes.Description{}, valAddr, valAddr, valAddr, blsPk)
 	require.NoError(t, err)
