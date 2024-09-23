@@ -56,14 +56,14 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         with:
           name: linux
-          path: ./build/bin/mechaind
+          path: ./build/mechaind
 
       - name: Upload MacOS Build
         uses: actions/upload-artifact@v4
         if: matrix.os == 'macos-latest'
         with:
           name: macos
-          path: ./build/bin/mechaind
+          path: ./build/mechaind
 
   release:
     name: Release
