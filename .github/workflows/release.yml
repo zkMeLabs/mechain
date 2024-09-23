@@ -57,6 +57,7 @@ jobs:
         with:
           name: linux
           path: ./build/mechaind
+          overwrite: true
 
       - name: Upload MacOS Build
         uses: actions/upload-artifact@v4
@@ -64,6 +65,7 @@ jobs:
         with:
           name: macos
           path: ./build/mechaind
+          overwrite: true
 
   release:
     name: Release
