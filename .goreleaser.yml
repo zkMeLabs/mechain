@@ -11,42 +11,82 @@ gomod:
     - GOSUMDB=sum.golang.org
 
 builds:
-  - id: mechain
+  - id: "mechaind-darwin"
     main: ./cmd/mechaind
     binary: bin/mechaind
+    env:
+      - CGO_ENABLED=1
+      - CC=o64-clang
+      - CXX=o64-clang++
+    goos:
+      - darwin
+    goarch:
+      - amd64
     flags:
       - -tags=cgo
     ldflags:
-      - -s -w -X github.com/cosmos/cosmos-sdk/version.Name=mechain \
-        -X github.com/cosmos/cosmos-sdk/version.AppName=mechaind \
-        -X github.com/cosmos/cosmos-sdk/version.Version={{.Version}} \
-        -X github.com/cosmos/cosmos-sdk/version.Commit={{.Commit}}
+      - -s -w -X github.com/cosmos/cosmos-sdk/version.Name=evmos -X github.com/cosmos/cosmos-sdk/version.AppName=mechaind -X github.com/cosmos/cosmos-sdk/version.Version={{.Version}} -X github.com/cosmos/cosmos-sdk/version.Commit={{.Commit}}
+  - id: "mechaind-darwin-arm64"
+    main: ./cmd/mechaind
+    binary: bin/mechaind
     env:
       - CGO_ENABLED=1
-      - >-
-        {{- if eq .Os "darwin" }}
-          {{- if eq .Arch "amd64" }} CC=oa64-clang CXX=oa64-clang++ {{- end }}
-          {{- if eq .Arch "arm64" }} CC=oa64-clang CXX=oa64-clang++ {{- end }}
-        {{- else if eq .Os "windows" }}
-          {{- if eq .Arch "amd64" }} CC=x86_64-w64-mingw32-gcc CXX=x86_64-w64-mingw32-g++ {{- end }}
-        {{- else if eq .Os "linux" }}
-          {{- if eq .Arch "amd64" }} CC=x86_64-linux-gnu-gcc CXX=x86_64-linux-gnu-g++ {{- end }}
-          {{- if eq .Arch "arm64" }} CC=aarch64-linux-gnu-gcc CXX=aarch64-linux-gnu-gcc {{- end }}
-        {{- end }}
+      - CC=oa64-clang
+      - CXX=oa64-clang++
+    goos:
+      - darwin
+    goarch:
+      - arm64
+    flags:
+      - -tags=cgo
+    ldflags:
+      - -s -w -X github.com/cosmos/cosmos-sdk/version.Name=evmos -X github.com/cosmos/cosmos-sdk/version.AppName=mechaind -X github.com/cosmos/cosmos-sdk/version.Version={{.Version}} -X github.com/cosmos/cosmos-sdk/version.Commit={{.Commit}}
+  - id: "mechaind-linux"
+    main: ./cmd/mechaind
+    binary: bin/mechaind
+    env:
+      - CGO_ENABLED=1
+      - CC=gcc
+      - CXX=g++
     goos:
       - linux
-      # - windows
-      # - darwin
     goarch:
       - amd64
-      # - arm64
-    goamd64:
-      - v3
-    ignore:
-      - goos: linux
-        goarch: arm
-      - goos: windows
-        goarch: arm64
+    flags:
+      - -tags=cgo
+    ldflags:
+      - -s -w -X github.com/cosmos/cosmos-sdk/version.Name=evmos -X github.com/cosmos/cosmos-sdk/version.AppName=mechaind -X github.com/cosmos/cosmos-sdk/version.Version={{.Version}} -X github.com/cosmos/cosmos-sdk/version.Commit={{.Commit}}
+  - id: "mechaind-linux-arm64"
+    main: ./cmd/mechaind
+    binary: bin/mechaind
+    env:
+      - CGO_ENABLED=1
+      - CC=aarch64-linux-gnu-gcc
+      - CXX=aarch64-linux-gnu-g++
+    goos:
+      - linux
+    goarch:
+      - arm64
+    flags:
+      - -tags=cgo
+    ldflags:
+      - -s -w -X github.com/cosmos/cosmos-sdk/version.Name=evmos -X github.com/cosmos/cosmos-sdk/version.AppName=mechaind -X github.com/cosmos/cosmos-sdk/version.Version={{.Version}} -X github.com/cosmos/cosmos-sdk/version.Commit={{.Commit}}
+  - id: "mechaind-windows"
+    main: ./cmd/mechaind
+    binary: bin/mechaind
+    env:
+      - CGO_ENABLED=1
+      - CC=x86_64-w64-mingw32-gcc
+      - CXX=x86_64-w64-mingw32-g++
+    goos:
+      - windows
+    goarch:
+      - amd64
+    flags:
+      - -tags=cgo
+      - -buildmode=exe
+    ldflags:
+      - -s -w -X github.com/cosmos/cosmos-sdk/version.Name=evmos -X github.com/cosmos/cosmos-sdk/version.AppName=mechaind -X github.com/cosmos/cosmos-sdk/version.Version={{.Version}} -X github.com/cosmos/cosmos-sdk/version.Commit={{.Commit}}
 
 archives:
   - format: tar.gz
