@@ -1,104 +1,74 @@
+version: 2
+
 before:
   hooks:
     - go mod download
 
+gomod:
+  proxy: true
+  env:
+    - GOPROXY=https://proxy.golang.org,direct
+    - GOSUMDB=sum.golang.org
+
 builds:
-  - id: "evmosd-darwin"
-    main: ./cmd/evmosd
-    binary: bin/evmosd
-    env:
-      - CGO_ENABLED=1
-      - CC=o64-clang
-      - CXX=o64-clang++
-    goos:
-      - darwin
-    goarch:
-      - amd64
+  - id: mechain
+    main: ./cmd/mechaind
+    binary: bin/mechaind
     flags:
       - -tags=cgo
     ldflags:
-      - -s -w -X github.com/cosmos/cosmos-sdk/version.Name=evmos -X github.com/cosmos/cosmos-sdk/version.AppName=evmosd -X github.com/cosmos/cosmos-sdk/version.Version={{.Version}} -X github.com/cosmos/cosmos-sdk/version.Commit={{.Commit}}
-  - id: "evmosd-darwin-arm64"
-    main: ./cmd/evmosd
-    binary: bin/evmosd
+      - -s -w -X github.com/cosmos/cosmos-sdk/version.Name=mechain \
+        -X github.com/cosmos/cosmos-sdk/version.AppName=mechaind \
+        -X github.com/cosmos/cosmos-sdk/version.Version={{.Version}} \
+        -X github.com/cosmos/cosmos-sdk/version.Commit={{.Commit}}
     env:
       - CGO_ENABLED=1
-      - CC=oa64-clang
-      - CXX=oa64-clang++
-    goos:
-      - darwin
-    goarch:
-      - arm64
-    flags:
-      - -tags=cgo
-    ldflags:
-      - -s -w -X github.com/cosmos/cosmos-sdk/version.Name=evmos -X github.com/cosmos/cosmos-sdk/version.AppName=evmosd -X github.com/cosmos/cosmos-sdk/version.Version={{.Version}} -X github.com/cosmos/cosmos-sdk/version.Commit={{.Commit}}
-  - id: "evmosd-linux"
-    main: ./cmd/evmosd
-    binary: bin/evmosd
-    env:
-      - CGO_ENABLED=1
-      - CC=gcc
-      - CXX=g++
+      - >-
+        {{- if eq .Os "darwin" }}
+          {{- if eq .Arch "amd64" }} CC=oa64-clang CXX=oa64-clang++ {{- end }}
+          {{- if eq .Arch "arm64" }} CC=oa64-clang CXX=oa64-clang++ {{- end }}
+        {{- else if eq .Os "windows" }}
+          {{- if eq .Arch "amd64" }} CC=x86_64-w64-mingw32-gcc CXX=x86_64-w64-mingw32-g++ {{- end }}
+        {{- else if eq .Os "linux" }}
+          {{- if eq .Arch "amd64" }} CC=x86_64-linux-gnu-gcc CXX=x86_64-linux-gnu-g++ {{- end }}
+          {{- if eq .Arch "arm64" }} CC=aarch64-linux-gnu-gcc CXX=aarch64-linux-gnu-gcc {{- end }}
+        {{- end }}
     goos:
       - linux
+      # - windows
+      # - darwin
     goarch:
       - amd64
-    flags:
-      - -tags=cgo
-    ldflags:
-      - -s -w -X github.com/cosmos/cosmos-sdk/version.Name=evmos -X github.com/cosmos/cosmos-sdk/version.AppName=evmosd -X github.com/cosmos/cosmos-sdk/version.Version={{.Version}} -X github.com/cosmos/cosmos-sdk/version.Commit={{.Commit}}
-  - id: "evmosd-linux-arm64"
-    main: ./cmd/evmosd
-    binary: bin/evmosd
-    env:
-      - CGO_ENABLED=1
-      - CC=aarch64-linux-gnu-gcc
-      - CXX=aarch64-linux-gnu-g++
-    goos:
-      - linux
-    goarch:
-      - arm64
-    flags:
-      - -tags=cgo
-    ldflags:
-      - -s -w -X github.com/cosmos/cosmos-sdk/version.Name=evmos -X github.com/cosmos/cosmos-sdk/version.AppName=evmosd -X github.com/cosmos/cosmos-sdk/version.Version={{.Version}} -X github.com/cosmos/cosmos-sdk/version.Commit={{.Commit}}
-  - id: "evmosd-windows"
-    main: ./cmd/evmosd
-    binary: bin/evmosd
-    env:
-      - CGO_ENABLED=1
-      - CC=x86_64-w64-mingw32-gcc
-      - CXX=x86_64-w64-mingw32-g++
-    goos:
-      - windows
-    goarch:
-      - amd64
-    flags:
-      - -tags=cgo
-      - -buildmode=exe
-    ldflags:
-      - -s -w -X github.com/cosmos/cosmos-sdk/version.Name=evmos -X github.com/cosmos/cosmos-sdk/version.AppName=evmosd -X github.com/cosmos/cosmos-sdk/version.Version={{.Version}} -X github.com/cosmos/cosmos-sdk/version.Commit={{.Commit}}
+      # - arm64
+    goamd64:
+      - v3
+    ignore:
+      - goos: linux
+        goarch: arm
+      - goos: windows
+        goarch: arm64
 
 archives:
-  - name_template: '{{ .ProjectName }}_{{ .Version }}_{{- title .Os }}_{{ .Arch }}'
+  - format: tar.gz
+    name_template: >-
+      {{ .ProjectName }}_{{ .Os }}_{{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}i386
+      {{- else }}{{ .Arch }}{{ end }}
     format_overrides:
       - goos: windows
         format: zip
-    builds:
-      - evmosd-darwin
-      - evmosd-darwin-arm64
-      - evmosd-windows
-      - evmosd-linux
-      - evmosd-linux-arm64
-  
-checksum:
-  name_template: 'checksums.txt'
+    files:
+      - src: asset/configs/mainnet_config
+        dst: mainnet_config
+      - src: asset/configs/testnet_config
+        dst: testnet_config
+
 changelog:
   sort: asc
   filters:
     exclude:
-      - '^docs:'
-      - '^test:'
-snapshot:
-  name_template: "{{ .Tag }}-next"
+      - "^docs:"
+      - "^test:"
+
+checksum:
+  name_template: "checksums.txt"

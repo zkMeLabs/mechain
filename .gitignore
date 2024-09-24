@@ -101,3 +101,5 @@ sp.json
 # vscode
 .vscode/launch.json
 
+
+dist/

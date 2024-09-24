@@ -499,7 +499,7 @@ localnet-show-logstream:
 ###############################################################################
 
 PACKAGE_NAME:=github.com/evmos/evmos
-GOLANG_CROSS_VERSION  = v1.20
+GOLANG_CROSS_VERSION:=v1.22
 GOPATH ?= '$(HOME)/go'
 release-dry-run:
 	docker run \
@@ -511,7 +511,8 @@ release-dry-run:
 		-v ${GOPATH}/pkg:/go/pkg \
 		-w /go/src/$(PACKAGE_NAME) \
 		ghcr.io/goreleaser/goreleaser-cross:${GOLANG_CROSS_VERSION} \
-		--clean --skip-validate --skip-publish --snapshot
+		--clean --snapshot --skip=validate --skip=publish
+
 
 release:
 	@if [ ! -f ".release-env" ]; then \
@@ -526,7 +527,7 @@ release:
 		-v /var/run/docker.sock:/var/run/docker.sock \
 		-v `pwd`:/go/src/$(PACKAGE_NAME) \
 		-w /go/src/$(PACKAGE_NAME) \
-		ghcr.io/goreleaser/goreleaser-cross:${GOLANG_CROSS_VERSION} \
+		goreleaser/goreleaser \
 		release --clean --skip-validate
 
 .PHONY: release-dry-run release
