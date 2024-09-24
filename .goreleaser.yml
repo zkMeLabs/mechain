@@ -90,3 +90,6 @@ changelog:
 
 checksum:
   name_template: "checksums.txt"
+
+release:
+  replace_existing_artifacts: true
