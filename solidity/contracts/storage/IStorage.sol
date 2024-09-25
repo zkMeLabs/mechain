@@ -59,18 +59,6 @@ struct Tag {
     string value;
 }
 
-// Approval is the signature information returned by the Primary Storage Provider (SP) to the user
-// after allowing them to create a bucket or object, which is then used for verification on the chain
-// to ensure agreement between the Primary SP and the user.
-struct Approval {
-    // expiredHeight is the block height at which the signature expires.
-    uint64 expiredHeight;
-    // globalVirtualGroupFamilyId is the family id that stored.
-    uint32 globalVirtualGroupFamilyId;
-    // The signature needs to conform to the EIP 712 specification.
-    bytes sig;
-}
-
 struct BucketInfo {
     // owner is the account address of bucket creator, it is also the bucket owner.
     address owner;
@@ -174,6 +162,12 @@ struct GroupMember {
     int64 expirationTime;
 }
 
+struct GVGMapping {
+    uint32 srcGlobalVirtualGroupId;
+    uint32 dstGlobalVirtualGroupId;
+    bytes secondarySpBlsSignature;
+}
+
 interface IStorage {
     /**
      * @dev createBucket defines a method for create a bucket.
@@ -205,6 +199,30 @@ interface IStorage {
     ) external returns (bool success);
 
     /**
+     * @dev discontinueBucket defines a method for discontinue a bucket.
+     */
+    function discontinueBucket(
+        string memory bucketName,
+        string memory reason
+    ) external returns (bool success);
+
+    /**
+     * @dev completeMigrateBucket defines a method for complete migrate a bucket.
+     */
+    function completeMigrateBucket(
+        string memory bucketName,
+        uint32 gvgFamilyId,
+        GVGMapping[] memory gvgMapping
+    ) external returns (bool success);
+
+    /**
+     * @dev rejectMigrateBucket defines a method for reject migrate a bucket.
+     */
+    function rejectMigrateBucket(
+        string memory bucketName
+    ) external returns (bool success);
+
+    /**
      * @dev createObject defines a method for create a object.
      */
     function createObject(
@@ -223,7 +241,13 @@ interface IStorage {
      */
     function listBuckets(
         PageRequest calldata pagination
-    ) external view returns (BucketInfo[] memory bucketInfos, PageResponse calldata pageResponse);
+    )
+        external
+        view
+        returns (
+            BucketInfo[] memory bucketInfos,
+            PageResponse calldata pageResponse
+        );
 
     /**
      * @dev listObjects queries all the objects.
@@ -231,7 +255,13 @@ interface IStorage {
     function listObjects(
         PageRequest calldata pagination,
         string memory bucketName
-    ) external view returns (ObjectInfo[] memory objectInfos, PageResponse calldata pageResponse);
+    )
+        external
+        view
+        returns (
+            ObjectInfo[] memory objectInfos,
+            PageResponse calldata pageResponse
+        );
 
     /**
      * @dev listGroups queries all the groups.
@@ -239,7 +269,13 @@ interface IStorage {
     function listGroups(
         PageRequest calldata pagination,
         address groupOwner
-    ) external view returns (GroupInfo[] memory groupInfos, PageResponse calldata pageResponse);
+    )
+        external
+        view
+        returns (
+            GroupInfo[] memory groupInfos,
+            PageResponse calldata pageResponse
+        );
 
     /**
      * @dev sealObject defines a method for seal a object.
@@ -265,12 +301,46 @@ interface IStorage {
     ) external returns (bool success);
 
     /**
+     * @dev rejectSealObject defines a method for reject seal a object.
+     */
+    function rejectSealObject(
+        string memory bucketName,
+        string memory objectName
+    ) external returns (bool success);
+
+    /**
+     * @dev delegateCreateObject defines a method for delegate create a object.
+     */
+    function delegateCreateObject(
+        string memory creator,
+        string memory bucketName,
+        string memory objectName,
+        uint64 payloadSize,
+        string memory contentType,
+        VisibilityType visibility,
+        string[] memory expectChecksums,
+        RedundancyType redundancyType
+    ) external returns (bool success);
+
+    /**
      * @dev updateObjectInfo defines a method for update object visibility.
      */
     function updateObjectInfo(
         string memory bucketName,
         string memory objectName,
         VisibilityType visibility
+    ) external returns (bool success);
+
+    /**
+     * @dev delegateUpdateObjectContent defines a method for delegate update a object content.
+     */
+    function delegateUpdateObjectContent(
+        string memory updater,
+        string memory bucketName,
+        string memory objectName,
+        uint64 payloadSize,
+        string memory contentType,
+        string[] memory expectChecksums
     ) external returns (bool success);
 
     /**
@@ -286,7 +356,13 @@ interface IStorage {
      */
     function headBucket(
         string memory bucketName
-    ) external view returns (BucketInfo memory bucketInfo, BucketExtraInfo memory bucketExtraInfo);
+    )
+        external
+        view
+        returns (
+            BucketInfo memory bucketInfo,
+            BucketExtraInfo memory bucketExtraInfo
+        );
 
     /**
      * @dev headGroup queries the group's info.
@@ -347,15 +423,26 @@ interface IStorage {
     function headObject(
         string memory bucketName,
         string memory objectName
-    ) external view returns (ObjectInfo memory objectInfo, GlobalVirtualGroup memory globalVirtualGroup);
+    )
+        external
+        view
+        returns (
+            ObjectInfo memory objectInfo,
+            GlobalVirtualGroup memory globalVirtualGroup
+        );
 
     /**
      * @dev headObjectById queries the object's info.
      */
     function headObjectById(
         string memory objectId
-    ) external view returns (ObjectInfo memory objectInfo, GlobalVirtualGroup memory globalVirtualGroup);
-
+    )
+        external
+        view
+        returns (
+            ObjectInfo memory objectInfo,
+            GlobalVirtualGroup memory globalVirtualGroup
+        );
 
     /**
      * @dev CreateBucket defines an Event emitted when a user create a bucket
@@ -383,6 +470,21 @@ interface IStorage {
     event DeleteBucket(address indexed creator);
 
     /**
+     * @dev DiscontinueBucket defines an Event emitted when a user discontinue a bucket
+     */
+    event DiscontinueBucket(address indexed creator);
+
+    /**
+     * @dev CompleteMigrateBucket defines an Event emitted when a user complete migrate a bucket
+     */
+    event CompleteMigrateBucket(address indexed creator);
+
+    /**
+     * @dev RejectMigrateBucket defines an Event emitted when a user reject migrate a bucket
+     */
+    event RejectMigrateBucket(address indexed operator);
+
+    /**
      * @dev CreateObject defines an Event emitted when a user create a object
      */
     event CreateObject(address indexed creator, uint256 id);
@@ -407,9 +509,30 @@ interface IStorage {
     event SealObjectV2(address indexed creator, address indexed sealAddress);
 
     /**
+     * @dev RejectSealObject defines an Event emitted when a sp reject seal a object
+     */
+    event RejectSealObject(address indexed creator, string indexed objectName);
+
+    /**
+     * @dev DelegateCreateObject defines an Event emitted when a user delegate create a object
+     */
+    event DelegateCreateObject(
+        address indexed creator,
+        string indexed objectName
+    );
+
+    /**
      * @dev UpdateObjectInfo defines an Event emitted when a user update object visibility
      */
     event UpdateObjectInfo(address indexed creator);
+
+    /**
+     * @dev DelegateUpdateObjectContent defines an Event emitted when a user delegate update a object content
+     */
+    event DelegateUpdateObjectContent(
+        address indexed operator,
+        string indexed objectName
+    );
 
     /**
      * @dev CreateGroup defines an Event emitted when a user create a group

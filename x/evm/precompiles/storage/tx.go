@@ -3,6 +3,7 @@ package storage
 import (
 	"encoding/base64"
 	"errors"
+	"strings"
 	"time"
 
 	"github.com/ethereum/go-ethereum/common"
@@ -20,26 +21,38 @@ import (
 )
 
 const (
-	CreateBucketMethodName     = "createBucket"
-	DeleteBucketMethodName     = "deleteBucket"
-	CreateObjectMethodName     = "createObject"
-	SealObjectMethodName       = "sealObject"
-	SealObjectV2MethodName     = "sealObjectV2"
-	UpdateObjectInfoMethodName = "updateObjectInfo"
-	CreateGroupMethodName      = "createGroup"
-	UpdateGroupMethodName      = "updateGroup"
-	DeleteGroupMethodName      = "deleteGroup"
-	RenewGroupMemberMethodName = "renewGroupMember"
-	SetTagForGroupMethodName   = "setTagForGroup"
-	UpdateBucketInfoMethodName = "updateBucketInfo"
+	CreateBucketMethodName                = "createBucket"
+	DeleteBucketMethodName                = "deleteBucket"
+	DiscontinueBucketMethodName           = "discontinueBucket"
+	CompleteMigrateBucketMethodName       = "completeMigrateBucket"
+	RejectMigrateBucketMethodName         = "rejectMigrateBucket"
+	CreateObjectMethodName                = "createObject"
+	SealObjectMethodName                  = "sealObject"
+	SealObjectV2MethodName                = "sealObjectV2"
+	RejectSealObjectMethodName            = "rejectSealObject"
+	DelegateCreateObjectMethodName        = "delegateCreateObject"
+	DelegateUpdateObjectContentMethodName = "delegateUpdateObjectContent"
+	UpdateObjectInfoMethodName            = "updateObjectInfo"
+	CreateGroupMethodName                 = "createGroup"
+	UpdateGroupMethodName                 = "updateGroup"
+	DeleteGroupMethodName                 = "deleteGroup"
+	RenewGroupMemberMethodName            = "renewGroupMember"
+	SetTagForGroupMethodName              = "setTagForGroup"
+	UpdateBucketInfoMethodName            = "updateBucketInfo"
 )
 
 func (c *Contract) registerTx() {
 	c.registerMethod(CreateBucketMethodName, 60_000, c.CreateBucket, "CreateBucket")
 	c.registerMethod(DeleteBucketMethodName, 60_000, c.DeleteBucket, "DeleteBucket")
+	c.registerMethod(DiscontinueBucketMethodName, 60_000, c.DiscontinueBucket, "DiscontinueBucket")
+	c.registerMethod(CompleteMigrateBucketMethodName, 60_000, c.CompleteMigrateBucket, "CompleteMigrateBucket")
+	c.registerMethod(RejectMigrateBucketMethodName, 60_000, c.RejectMigrateBucket, "RejectMigrateBucket")
 	c.registerMethod(CreateObjectMethodName, 60_000, c.CreateObject, "CreateObject")
 	c.registerMethod(SealObjectMethodName, 100_000, c.SealObject, "SealObject")
 	c.registerMethod(SealObjectV2MethodName, 100_000, c.SealObjectV2, "SealObjectV2")
+	c.registerMethod(RejectSealObjectMethodName, 100_000, c.RejectSealObject, "RejectSealObject")
+	c.registerMethod(DelegateCreateObjectMethodName, 100_000, c.DelegateCreateObject, "DelegateCreateObject")
+	c.registerMethod(DelegateUpdateObjectContentMethodName, 100_000, c.DelegateUpdateObjectContent, "DelegateUpdateObjectContent")
 	c.registerMethod(UpdateObjectInfoMethodName, 60_000, c.UpdateObjectInfo, "UpdateObjectInfo")
 	c.registerMethod(CreateGroupMethodName, 60_000, c.CreateGroup, "CreateGroup")
 	c.registerMethod(UpdateGroupMethodName, 60_000, c.UpdateGroup, "UpdateGroup")
@@ -185,6 +198,142 @@ func (c *Contract) DeleteBucket(ctx sdk.Context, evm *vm.EVM, contract *vm.Contr
 	if err := c.AddLog(
 		evm,
 		GetAbiEvent(c.events[DeleteBucketMethodName]),
+		[]common.Hash{common.BytesToHash(contract.Caller().Bytes())},
+	); err != nil {
+		return nil, err
+	}
+	return method.Outputs.Pack(true)
+}
+
+func (c *Contract) DiscontinueBucket(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
+	if readonly {
+		return nil, errors.New("discontinue bucket method readonly")
+	}
+
+	method := GetAbiMethod(DiscontinueBucketMethodName)
+
+	var args DiscontinueBucketArgs
+	err := types.ParseMethodArgs(method, &args, contract.Input[4:])
+	if err != nil {
+		return nil, err
+	}
+
+	msg := &storagetypes.MsgDiscontinueBucket{
+		Operator:   contract.Caller().String(),
+		BucketName: args.BucketName,
+		Reason:     strings.TrimSpace(args.Reason),
+	}
+
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
+
+	server := storagekeeper.NewMsgServerImpl(c.storageKeeper)
+	_, err = server.DiscontinueBucket(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
+
+	// add log
+	if err := c.AddLog(
+		evm,
+		GetAbiEvent(c.events[DiscontinueBucketMethodName]),
+		[]common.Hash{
+			common.BytesToHash(contract.Caller().Bytes()),
+			common.BytesToHash([]byte(args.BucketName)),
+		},
+	); err != nil {
+		return nil, err
+	}
+	return method.Outputs.Pack(true)
+}
+
+func (c *Contract) CompleteMigrateBucket(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
+	if readonly {
+		return nil, errors.New("complete migrate bucket method readonly")
+	}
+
+	method := GetAbiMethod(CompleteMigrateBucketMethodName)
+
+	var args CompleteMigrateBucketArgs
+	err := types.ParseMethodArgs(method, &args, contract.Input[4:])
+	if err != nil {
+		return nil, err
+	}
+	gvgMappings := make([]*storagetypes.GVGMapping, 0)
+	if args.GvgMappings != nil {
+		for _, gvgMapping := range args.GvgMappings {
+			gvgMappings = append(gvgMappings, &storagetypes.GVGMapping{
+				SrcGlobalVirtualGroupId: gvgMapping.SrcGlobalVirtualGroupId,
+				DstGlobalVirtualGroupId: gvgMapping.DstGlobalVirtualGroupId,
+				SecondarySpBlsSignature: gvgMapping.SecondarySpBlsSignature,
+			})
+		}
+	}
+
+	msg := &storagetypes.MsgCompleteMigrateBucket{
+		Operator:                   contract.Caller().String(),
+		BucketName:                 args.BucketName,
+		GlobalVirtualGroupFamilyId: args.GlobalVirtualGroupFamilyId,
+		GvgMappings:                gvgMappings,
+	}
+
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
+
+	server := storagekeeper.NewMsgServerImpl(c.storageKeeper)
+	_, err = server.CompleteMigrateBucket(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
+
+	// add log
+	if err := c.AddLog(
+		evm,
+		GetAbiEvent(c.events[CompleteMigrateBucketMethodName]),
+		[]common.Hash{
+			common.BytesToHash(contract.Caller().Bytes()),
+			common.BytesToHash([]byte(args.BucketName)),
+		},
+	); err != nil {
+		return nil, err
+	}
+	return method.Outputs.Pack(true)
+}
+
+func (c *Contract) RejectMigrateBucket(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
+	if readonly {
+		return nil, errors.New("reject migrate bucket method readonly")
+	}
+
+	method := GetAbiMethod(RejectMigrateBucketMethodName)
+
+	var args RejectMigrateBucketArgs
+	err := types.ParseMethodArgs(method, &args, contract.Input[4:])
+	if err != nil {
+		return nil, err
+	}
+
+	msg := &storagetypes.MsgRejectMigrateBucket{
+		Operator:   contract.Caller().String(),
+		BucketName: args.BucketName,
+	}
+
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
+
+	server := storagekeeper.NewMsgServerImpl(c.storageKeeper)
+	_, err = server.RejectMigrateBucket(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
+
+	// add log
+	if err := c.AddLog(
+		evm,
+		GetAbiEvent(c.events[RejectMigrateBucketMethodName]),
 		[]common.Hash{common.BytesToHash(contract.Caller().Bytes())},
 	); err != nil {
 		return nil, err
@@ -346,6 +495,140 @@ func (c *Contract) SealObjectV2(ctx sdk.Context, evm *vm.EVM, contract *vm.Contr
 	); err != nil {
 		return nil, err
 	}
+	return method.Outputs.Pack(true)
+}
+
+func (c *Contract) RejectSealObject(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
+	if readonly {
+		return nil, errors.New("reject seal object method readonly")
+	}
+	method := GetAbiMethod(RejectSealObjectMethodName)
+	var args RejectSealObjectArgs
+	if err := types.ParseMethodArgs(method, &args, contract.Input[4:]); err != nil {
+		return nil, err
+	}
+
+	msg := &storagetypes.MsgRejectSealObject{
+		Operator:   contract.Caller().String(),
+		BucketName: args.BucketName,
+		ObjectName: args.ObjectName,
+	}
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
+	server := storagekeeper.NewMsgServerImpl(c.storageKeeper)
+	if _, err := server.RejectSealObject(ctx, msg); err != nil {
+		return nil, err
+	}
+	if err := c.AddLog(
+		evm,
+		GetAbiEvent(c.events[RejectSealObjectMethodName]),
+		[]common.Hash{
+			common.BytesToHash(contract.Caller().Bytes()),
+			common.BytesToHash([]byte(args.ObjectName)),
+		},
+	); err != nil {
+		return nil, err
+	}
+
+	return method.Outputs.Pack(true)
+}
+
+func (c *Contract) DelegateCreateObject(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
+	if readonly {
+		return nil, errors.New("delegate create object method readonly")
+	}
+	method := GetAbiMethod(DelegateCreateObjectMethodName)
+	var args DelegateCreateObjectArgs
+	if err := types.ParseMethodArgs(method, &args, contract.Input[4:]); err != nil {
+		return nil, err
+	}
+	expectChecksums := make([][]byte, 0)
+	for _, checksum := range args.ExpectChecksums {
+		checksumBytes, err := base64.StdEncoding.DecodeString(checksum)
+		if err != nil {
+			return nil, err
+		}
+		expectChecksums = append(expectChecksums, checksumBytes)
+	}
+
+	msg := &storagetypes.MsgDelegateCreateObject{
+		Operator:        contract.Caller().String(),
+		Creator:         args.Creator,
+		BucketName:      args.BucketName,
+		ObjectName:      args.ObjectName,
+		PayloadSize:     args.PayloadSize,
+		ContentType:     args.ContentType,
+		Visibility:      storagetypes.VisibilityType(args.Visibility),
+		ExpectChecksums: expectChecksums,
+		RedundancyType:  storagetypes.RedundancyType(args.RedundancyType),
+	}
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
+	server := storagekeeper.NewMsgServerImpl(c.storageKeeper)
+	if _, err := server.DelegateCreateObject(ctx, msg); err != nil {
+		return nil, err
+	}
+	if err := c.AddLog(
+		evm,
+		GetAbiEvent(c.events[DelegateCreateObjectMethodName]),
+		[]common.Hash{
+			common.BytesToHash(contract.Caller().Bytes()),
+			common.BytesToHash([]byte(args.ObjectName)),
+		},
+	); err != nil {
+		return nil, err
+	}
+
+	return method.Outputs.Pack(true)
+}
+
+func (c *Contract) DelegateUpdateObjectContent(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
+	if readonly {
+		return nil, errors.New("delegate update object content method readonly")
+	}
+	method := GetAbiMethod(DelegateUpdateObjectContentMethodName)
+	var args DelegateUpdateObjectContentArgs
+	if err := types.ParseMethodArgs(method, &args, contract.Input[4:]); err != nil {
+		return nil, err
+	}
+	expectChecksums := make([][]byte, 0)
+	for _, checksum := range args.ExpectChecksums {
+		checksumBytes, err := base64.StdEncoding.DecodeString(checksum)
+		if err != nil {
+			return nil, err
+		}
+		expectChecksums = append(expectChecksums, checksumBytes)
+	}
+
+	msg := &storagetypes.MsgDelegateUpdateObjectContent{
+		Operator:        contract.Caller().String(),
+		Updater:         args.Updater,
+		BucketName:      args.BucketName,
+		ObjectName:      args.ObjectName,
+		PayloadSize:     args.PayloadSize,
+		ContentType:     args.ContentType,
+		ExpectChecksums: expectChecksums,
+	}
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
+	server := storagekeeper.NewMsgServerImpl(c.storageKeeper)
+	if _, err := server.DelegateUpdateObjectContent(ctx, msg); err != nil {
+		return nil, err
+	}
+	if err := c.AddLog(
+		evm,
+		GetAbiEvent(c.events[DelegateUpdateObjectContentMethodName]),
+		[]common.Hash{
+			common.BytesToHash(contract.Caller().Bytes()),
+			common.BytesToHash([]byte(args.ObjectName)),
+		},
+	); err != nil {
+		return nil, err
+	}
+
 	return method.Outputs.Pack(true)
 }
 

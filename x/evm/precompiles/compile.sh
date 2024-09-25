@@ -75,7 +75,7 @@ create_directories() {
 
 # Generate ABI and bytecode files, and use abigen to generate Go wrapper code
 generate_abigen() {
-  local contracts=(IBank IStorage IVirtualGroup)
+  local contracts=(IBank IStorage IVirtualGroup IStorageProvider)
 
   for contract in "${contracts[@]}"; do
     echo "===> Ethereum ABI wrapper code generator: $contract"

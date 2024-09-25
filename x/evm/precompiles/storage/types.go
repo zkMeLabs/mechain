@@ -106,6 +106,36 @@ func (args *DeleteBucketArgs) Validate() error {
 	return nil
 }
 
+type DiscontinueBucketArgs struct {
+	BucketName string `abi:"bucketName"`
+	Reason     string `abi:"reason"`
+}
+
+// Validate DiscontinueBucketArgs args
+func (args *DiscontinueBucketArgs) Validate() error {
+	return nil
+}
+
+type CompleteMigrateBucketArgs struct {
+	BucketName                 string       `abi:"bucketName"`
+	GlobalVirtualGroupFamilyId uint32       `abi:"globalVirtualGroupFamilyId"`
+	GvgMappings                []GVGMapping `abi:"gvgMappings"`
+}
+
+// Validate CompleteMigrateBucketArgs args
+func (args *CompleteMigrateBucketArgs) Validate() error {
+	return nil
+}
+
+type RejectMigrateBucketArgs struct {
+	BucketName string `abi:"bucketName"`
+}
+
+// Validate RejectMigrateBucketArgs args
+func (args *RejectMigrateBucketArgs) Validate() error {
+	return nil
+}
+
 type CreateObjectArgs struct {
 	BucketName        string       `abi:"bucketName"`
 	ObjectName        string       `abi:"objectName"`
@@ -156,6 +186,47 @@ type SealObjectV2Args struct {
 
 // Validate SealObjectV2Args args
 func (args *SealObjectV2Args) Validate() error {
+	return nil
+}
+
+type RejectSealObjectArgs struct {
+	BucketName string `abi:"bucketName"`
+	ObjectName string `abi:"objectName"`
+}
+
+// Validate RejectSealObjectArgs args
+func (args *RejectSealObjectArgs) Validate() error {
+	return nil
+}
+
+type DelegateCreateObjectArgs struct {
+	Creator         string   `abi:"creator"`
+	BucketName      string   `abi:"bucketName"`
+	ObjectName      string   `abi:"objectName"`
+	PayloadSize     uint64   `abi:"payloadSize"`
+	ContentType     string   `abi:"contentType"`
+	Visibility      uint8    `abi:"visibility"`
+	ExpectChecksums []string `abi:"expectChecksums"`
+	RedundancyType  uint8    `abi:"redundancyType"`
+}
+
+// Validate DelegateCreateObjectArgs args
+func (args *DelegateCreateObjectArgs) Validate() error {
+	return nil
+}
+
+type DelegateUpdateObjectContentArgs struct {
+	Operator        string   `abi:"operator"`
+	Updater         string   `abi:"updater"`
+	BucketName      string   `abi:"bucketName"`
+	ObjectName      string   `abi:"objectName"`
+	PayloadSize     uint64   `abi:"payloadSize"`
+	ContentType     string   `abi:"contentType"`
+	ExpectChecksums []string `abi:"expectChecksums"`
+}
+
+// Validate DelegateUpdateObjectContentArgs args
+func (args *DelegateUpdateObjectContentArgs) Validate() error {
 	return nil
 }
 
