@@ -23,7 +23,7 @@ VALIDATOR_ADDR=$($MECHAIND_CMD keys show validator -a --keyring-backend test --h
 DELEGATOR_ADDR=$($MECHAIND_CMD keys show delegator -a --keyring-backend test --home "$CONFIG_PATH")
 RELAYER_ADDR=$($MECHAIND_CMD keys show validator_relayer -a --keyring-backend test --home "$CONFIG_PATH")
 CHALLENGER_ADDR=$($MECHAIND_CMD keys show validator_challenger -a --keyring-backend test --home "$CONFIG_PATH")
-VALIDATOR_BLS=$($MECHAIND_CMD keys show validator_bls --keyring-backend test --home "$CONFIG_PATH" --output json --output-document a.json | jq -r '.pubkey_hex')
+VALIDATOR_BLS=$($MECHAIND_CMD keys show validator_bls --keyring-backend test --home "$CONFIG_PATH" --output json | jq -r '.pubkey_hex')
 VALIDATOR_BLS_PROOF=$($MECHAIND_CMD tx sign ${VALIDATOR_BLS} --keyring-backend test --home "$CONFIG_PATH" --from validator_bls --output json | jq -r '.signature')
 VALIDATOR_NODE_PUB_KEY=$(cat ${CONFIG_PATH}/config/priv_validator_key.json | jq -r '.pub_key.value')
 
