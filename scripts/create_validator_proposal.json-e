@@ -1,0 +1,39 @@
+{
+  "messages": [
+    {
+      "@type": "/cosmos.staking.v1beta1.MsgCreateValidator",
+      "description": {
+        "moniker": "${NODE_NAME}",
+        "identity": "",
+        "website": "",
+        "security_contact": "",
+        "details": ""
+      },
+      "commission": {
+        "rate": "0.070000000000000000",
+        "max_rate": "1.000000000000000000",
+        "max_change_rate": "0.010000000000000000"
+      },
+      "min_self_delegation": "1000000000000000000000",
+      "delegator_address": "${DELEGATOR_ADDR}",
+      "validator_address": "${VALIDATOR_ADDR}",
+      "pubkey": {
+        "@type": "/cosmos.crypto.ed25519.PubKey",
+        "key": "${VALIDATOR_NODE_PUB_KEY}"
+      },
+      "value": {
+        "denom": "BNB",
+        "amount": "1000000000000000000000"
+      },
+      "from": "0x7b5Fe22B5446f7C62Ea27B8BD71CeF94e03f3dF2",
+      "relayer_address": "${RELAYER_ADDR}",
+      "challenger_address": "${CHALLENGER_ADDR}",
+      "bls_key": "${VALIDATOR_BLS}",
+      "bls_proof": "${VALIDATOR_BLS_PROOF}"
+    }
+  ],
+  "metadata": "",
+  "title": "Create ${NODE_NAME} Validator",
+  "summary": "create ${NODE_NAME} validator",
+  "deposit": "1000000000000000000BNB"
+}
