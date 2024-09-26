@@ -56,7 +56,7 @@ function client_toml() {
 function genesis() {
     echo "copy genesis.json..."
     home=$1
-    cp $SCRIPT_DIR/genesis.json $home/config/genesis.json
+    cp $SCRIPT_DIR/config/genesis.json $home/config/genesis.json
 }
 
 function start() {
