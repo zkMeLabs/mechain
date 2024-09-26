@@ -66,7 +66,9 @@ function grant() {
     home=$1
     VALIDATOR_ADDR=$($MECHAIND_CMD keys show validator -a --keyring-backend test --home "$home")
     DELEGATOR_ADDR=$($MECHAIND_CMD keys show delegator -a --keyring-backend test --home "$home")
-    $MECHAIND_CMD tx authz grant 0x7b5Fe22B5446f7C62Ea27B8BD71CeF94e03f3dF2 generic --msg-type=/cosmos.staking.v1beta1.MsgDelegate --gas="600000" --gas-prices="10000000000azkme" --from=${DELEGATOR_ADDR} --home=$home --keyring-backend=test --broadcast-mode sync -y
+    $MECHAIND_CMD tx authz grant 0x7b5Fe22B5446f7C62Ea27B8BD71CeF94e03f3dF2 generic \
+        --msg-type=/cosmos.staking.v1beta1.MsgDelegate --gas="600000" --gas-prices="10000000000azkme" \
+        --from=${DELEGATOR_ADDR} --home=$home --keyring-backend=test --broadcast-mode sync -y
 }
 
 function proposal() {
@@ -74,7 +76,8 @@ function proposal() {
     home=$1
     VALIDATOR_ADDR=$($MECHAIND_CMD keys show validator -a --keyring-backend test --home "$home")
     DELEGATOR_ADDR=$($MECHAIND_CMD keys show delegator -a --keyring-backend test --home "$home")
-    $MECHAIND_CMD tx staking create-validator $OUTPUT_FILE --home $home --keyring-backend test --chain-id $CHAIN_ID --from ${DELEGATOR_ADDR} --node tcp://localhost:26657 -b sync --gas "200000000" --fees "100000000000000000000azkme" --yes
+    # echo $MECHAIND_CMD tx staking create-validator $OUTPUT_FILE --home $home --keyring-backend test --chain-id $CHAIN_ID --from ${DELEGATOR_ADDR} --node tcp://localhost:26657 -b sync --gas "200000000" --fees "100000000000000000000azkme" --yes
+    $MECHAIND_CMD tx gov submit-proposal $OUTPUT_FILE --gas="600000" --gas-prices="10000000000azkme" --from=${DELEGATOR_ADDR} --home=$home --keyring-backend=test --broadcast-mode sync -y
 }
 
 function query_proposal() {
