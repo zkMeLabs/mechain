@@ -49,6 +49,10 @@ function generate() {
     fi
     echo VALIDATOR_ADDR: $VALIDATOR_ADDR
     echo DELEGATOR_ADDR: $DELEGATOR_ADDR
+
+    echo "send tokens..."
+    echo "mechaind tx bank send validator0 $VALIDATOR_ADDR 10000000000000000000000000azkme --home /app/validator0 --keyring-backend test --node http://localhost:26657 -y --fees 6000000azkme"
+    echo "mechaind tx bank send validator0 $DELEGATOR_ADDR 10000000000000000000000000azkme --home /app/validator0 --keyring-backend test --node http://localhost:26657 -y --fees 6000000azkme"
 }
 
 function balance() {
@@ -95,14 +99,10 @@ function create() {
 function query_proposal() {
     echo "query proposal..."
     tx_hash=$(grep 'txhash' ${home}/create.log | awk '{print $2}')
-    proposal_id=$($MECHAIND_CMD q tx $tx_hash --home /app --output json | jq '.logs[] | .events[] | select(.type == "submit_proposal") | .attributes[] | select(.key == "proposal_id") | .value | tonumber')
+    $MECHAIND_CMD q tx $tx_hash --home /app --output json >${SCRIPT_DIR}/tx.json
+    proposal_id=$(jq '.logs[] | .events[] | select(.type == "submit_proposal") | .attributes[] | select(.key == "proposal_id") | .value | tonumber' ${SCRIPT_DIR}/tx.json)
+    echo $proposal_id
     echo "curl -s http://127.0.0.1:1317/cosmos/gov/v1/proposals/$proposal_id | jq"
-}
-
-function vote() {
-    home=$1
-    mechaind tx gov vote 1 yes --from=validator0 --chain-id=$CHAIN_ID --keyring-backend=test --gas-prices=10000azkme -y --home $home
-
 }
 
 function clean() {
@@ -143,11 +143,6 @@ create)
 query_proposal)
     echo "===== query proposal ===="
     query_proposal
-    echo "===== end ===="
-    ;;
-vote)
-    echo "===== start ===="
-    vote $home
     echo "===== end ===="
     ;;
 clean)

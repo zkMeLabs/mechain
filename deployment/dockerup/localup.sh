@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
-workspace=${SCRIPT_DIR}
-local_env=${workspace}/.local
+SP_DIR=$(realpath "${SCRIPT_DIR}/../../../mechain-storage-provider/")
+RELAY_DIR=$(realpath "${SCRIPT_DIR}/../../../mechain-relayer/")
+local_env=${SCRIPT_DIR}/../.local
 
-source "${workspace}"/.env
-source "${workspace}"/utils.sh
+source "${SCRIPT_DIR}"/.env
+source "${SCRIPT_DIR}"/utils.sh
 devaccount_prikey=f78a036930ce63791ea6ea20072986d8c3f16a6811f6a2583b0787c45086f769
 
-bin="$(realpath "${workspace}/../../build/mechaind")"
+bin="mechaind"
 
 function init() {
 	size=$1
@@ -369,16 +370,42 @@ function clean_validator_data() {
 }
 
 function copy_genesis() {
-	echo cp "${local_env}/validator0/config/genesis.json" "${SCRIPT_DIR}"
+	cp "${local_env}/validator0/config/genesis.json" "${SCRIPT_DIR}/genesis.json"
 }
 
 function persistent_peers() {
-	grep -i "persistent_peers" "${local_env}/validator0/config/config.toml" | cut -d '=' -f2 | tr -d '" '
+	persistent_peers=$(awk -F'=' '/persistent_peers/ {gsub(/"| /, "", $2); gsub(/0s/, "", $2); print $2}' "${local_env}/validator0/config/config.toml")
+	echo ${persistent_peers} >${SCRIPT_DIR}/persistent_peers.txt
+}
+
+function copy_sp_relayer() {
+	cp "${SCRIPT_DIR}/sp.json" "${SP_DIR}"
+	cp "${SCRIPT_DIR}/validator.json" "${RELAY_DIR}"
+}
+
+function change_persistent_peers() {
+	persistent_peers=$(cat ${SCRIPT_DIR}/persistent_peers.txt)
+	sed -i -e "s/PERSISTENT_PEERS=\".*\"/PERSISTENT_PEERS=\"${persistent_peers}\"/g" "${SCRIPT_DIR}/.env"
+}
+
+function vote() {
+	proposal_id=$1
+	size=$2
+	for ((i = 0; i < ${size}; i++)); do
+		mechaind tx gov vote $proposal_id yes --from=validator${i} --chain-id=$CHAIN_ID \
+			--keyring-backend=test --gas-prices=10000azkme -y --home "${local_env}/validator${i}"
+	done
+}
+
+function list_validators() {
+	echo "list validators..."
+	curl -s http://vnode-0:1317/cosmos/staking/v1beta1/validators | jq '.pagination.total'
 }
 
 CMD=$1
 SIZE=3
 SP_SIZE=3
+PROPOSAL_ID=$3
 if [ -n "$2" ] && [ "$2" -gt 0 ]; then
 	SIZE=$2
 fi
@@ -413,6 +440,21 @@ copy_genesis)
 	;;
 persistent_peers)
 	persistent_peers
+	;;
+
+backup)
+	change_persistent_peers
+	copy_sp_relayer
+	;;
+vote)
+	echo "===== start ===="
+	vote $PROPOSAL_ID $SIZE
+	echo "===== end ===="
+	;;
+list_validators)
+	echo "===== list validators ===="
+	list_validators
+	echo "===== end ===="
 	;;
 *)
 	echo "Usage: localup.sh init | generate | export_sps"
