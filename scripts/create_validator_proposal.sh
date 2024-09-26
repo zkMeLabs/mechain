@@ -4,12 +4,11 @@ SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
 
 source $SCRIPT_DIR/.env
 
-TEMPLATE_FILE="$SCRIPT_DIR/create_validator_proposal.json-e"
-OUTPUT_FILE="$SCRIPT_DIR/create_validator_proposal.json"
+TEMPLATE_FILE="$SCRIPT_DIR/create_validator_proposal.json"
+OUTPUT_FILE="$SCRIPT_DIR/proposal.json"
 MECHAIND_CMD="mechaind"
 
-
-function proposal() {
+function generate() {
     home=$1
     echo "add keys..."
     $MECHAIND_CMD keys add validator --keyring-backend test --home "$home" >${home}/validator_info 2>&1
@@ -48,13 +47,29 @@ function proposal() {
     else
         echo "Error: Failed to create create_validator_proposal.json."
     fi
+    echo VALIDATOR_ADDR: $VALIDATOR_ADDR
+    echo DELEGATOR_ADDR: $DELEGATOR_ADDR
+}
 
-    # $MECHAIND_CMD tx authz grant 0x7b5Fe22B5446f7C62Ea27B8BD71CeF94e03f3dF2 generic --msg-type=/cosmos.staking.v1beta1.MsgDelegate --gas="600000" --gas-prices="10000000000azkme"  --from=${VALIDATOR_ADDR} --home=$home --keyring-backend=test --broadcast-mode sync -y
-    $MECHAIND_CMD tx bank send validator0 ${VALIDATOR_ADDR} 10000000000000000000000000azkme --home $home --keyring-backend test --node http://localhost:26657 -y --fees 6000000azkme
+function balance() {
+    home=$1
+    VALIDATOR_ADDR=$($MECHAIND_CMD keys show validator -a --keyring-backend test --home "$home")
+    $MECHAIND_CMD query bank balances $VALIDATOR_ADDR --home $home
+}
+
+function grant() {
+    echo "grant..."
+    home=$1
+    VALIDATOR_ADDR=$($MECHAIND_CMD keys show validator -a --keyring-backend test --home "$home")
+    $MECHAIND_CMD tx authz grant 0x7b5Fe22B5446f7C62Ea27B8BD71CeF94e03f3dF2 generic --msg-type=/cosmos.staking.v1beta1.MsgDelegate --gas="600000" --gas-prices="10000000000azkme" --from=${VALIDATOR_ADDR} --home=$home --keyring-backend=test --broadcast-mode sync -y
+}
+
+function proposal() {
     echo "create proposal..."
-    # cat $OUTPUT_FILE
-    # echo $VALIDATOR_ADDR
-    # $MECHAIND_CMD tx staking create-validator $OUTPUT_FILE --home $home --keyring-backend test --chain-id $CHAIN_ID --from ${VALIDATOR_ADDR} --node tcp://localhost:26657 -b sync --gas "200000000" --fees "100000000000000000000azkme" --yes
+    home=$1
+    VALIDATOR_ADDR=$($MECHAIND_CMD keys show validator -a --keyring-backend test --home "$home")
+    DELEGATOR_ADDR=$($MECHAIND_CMD keys show delegator -a --keyring-backend test --home "$home")
+    $MECHAIND_CMD tx staking create-validator $OUTPUT_FILE --home $home --keyring-backend test --chain-id $CHAIN_ID --from ${VALIDATOR_ADDR} --node tcp://localhost:26657 -b sync --gas "200000000" --fees "100000000000000000000azkme" --yes
 }
 
 function vote() {
@@ -65,19 +80,33 @@ function vote() {
 }
 
 function clean() {
-    rm $OUTPUT_FILE 
+    rm $OUTPUT_FILE
     rm -r $home/keyring-test
 }
-
 
 CMD=$1
 SIZE=$2
 home=$2
 
 case ${CMD} in
+generate)
+    echo "===== generate ===="
+    clean $home
+    generate $home
+    echo "===== end ===="
+    ;;
+balance)
+    echo "===== balance ===="
+    balance $home
+    echo "===== end ===="
+    ;;
+grant)
+    echo "===== grant ===="
+    grant $home
+    echo "===== end ===="
+    ;;
 proposal)
     echo "===== init ===="
-    clean $home
     proposal $home
     echo "===== end ===="
     ;;
