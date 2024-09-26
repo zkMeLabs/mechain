@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-basedir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
-workspace=${basedir}
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+workspace=${SCRIPT_DIR}
 local_env=${workspace}/.local
 
 source "${workspace}"/.env
@@ -367,6 +367,15 @@ function clean_validator_data() {
 		fi
 	done
 }
+
+function copy_genesis() {
+	echo cp "${local_env}/validator0/config/genesis.json" "${SCRIPT_DIR}"
+}
+
+function persistent_peers() {
+	grep -i "persistent_peers" "${local_env}/validator0/config/config.toml" | cut -d '=' -f2 | tr -d '" '
+}
+
 CMD=$1
 SIZE=3
 SP_SIZE=3
@@ -398,6 +407,12 @@ export_validator)
 	;;
 clean_validator_data)
 	clean_validator_data "$SIZE"
+	;;
+copy_genesis)
+	copy_genesis
+	;;
+persistent_peers)
+	persistent_peers
 	;;
 *)
 	echo "Usage: localup.sh init | generate | export_sps"
