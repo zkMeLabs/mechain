@@ -101,7 +101,6 @@ function query_proposal() {
     tx_hash=$(grep 'txhash' ${home}/create.log | awk '{print $2}')
     $MECHAIND_CMD q tx $tx_hash --home /app --output json >${SCRIPT_DIR}/tx.json
     proposal_id=$(jq '.logs[] | .events[] | select(.type == "submit_proposal") | .attributes[] | select(.key == "proposal_id") | .value | tonumber' ${SCRIPT_DIR}/tx.json)
-    echo $proposal_id
     echo "curl -s http://127.0.0.1:1317/cosmos/gov/v1/proposals/$proposal_id | jq"
 }
 
