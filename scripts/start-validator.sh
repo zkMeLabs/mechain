@@ -6,7 +6,7 @@ source $SCRIPT_DIR/.env
 function init() {
     echo "init chain..."
     home=$1
-    mechaind init $NODE_NAME --chain-id $CHAIN_ID --default-denom $BASIC_DENOM --home $home
+    mechaind init $MONIKER_NAME --chain-id $CHAIN_ID --default-denom $BASIC_DENOM --home $home
 }
 
 function config_toml() {
