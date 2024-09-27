@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
-basedir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
-workspace=${basedir}
-local_env=${workspace}/.local
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+SP_DIR=$(realpath "${SCRIPT_DIR}/../../../mechain-storage-provider/")
+RELAY_DIR=$(realpath "${SCRIPT_DIR}/../../../mechain-relayer/")
+local_env=${SCRIPT_DIR}/../.local
 
-source "${workspace}"/.env
-source "${workspace}"/utils.sh
+source "${SCRIPT_DIR}"/.env
+source "${SCRIPT_DIR}"/utils.sh
 devaccount_prikey=f78a036930ce63791ea6ea20072986d8c3f16a6811f6a2583b0787c45086f769
 
-bin="$(realpath "${workspace}/../../build/mechaind")"
+bin="mechaind"
 
 function init() {
 	size=$1
@@ -202,7 +203,7 @@ function generate_genesis() {
 		sed -i -e "s/\"attestation_inturn_interval\": \"120\"/\"attestation_inturn_interval\": \"10\"/g" "${local_env}/validator${i}/config/genesis.json"
 		sed -i -e "s/\"discontinue_confirm_period\": \"604800\"/\"discontinue_confirm_period\": \"5\"/g" "${local_env}/validator${i}/config/genesis.json"
 		sed -i -e "s/\"discontinue_deletion_max\": \"100\"/\"discontinue_deletion_max\": \"2\"/g" "${local_env}/validator${i}/config/genesis.json"
-		sed -i -e "s/\"voting_period\": \"30s\"/\"voting_period\": \"5s\"/g" ${local_env}/validator${i}/config/genesis.json
+		sed -i -e "s/\"voting_period\": \"60s\"/\"voting_period\": \"600s\"/g" ${local_env}/validator${i}/config/genesis.json
 		sed -i -e "s/\"update_global_price_interval\": \"0\"/\"update_global_price_interval\": \"1\"/g" "${local_env}/validator${i}/config/genesis.json"
 		sed -i -e "s/\"update_price_disallowed_days\": 2/\"update_price_disallowed_days\": 0/g" "${local_env}/validator${i}/config/genesis.json"
 		#sed -i -e "s/\"community_tax\": \"0.020000000000000000\"/\"community_tax\": \"0\"/g" ${local_env}/validator${i}/config/genesis.json
@@ -367,9 +368,44 @@ function clean_validator_data() {
 		fi
 	done
 }
+
+function copy_genesis() {
+	cp "${local_env}/validator0/config/genesis.json" "${SCRIPT_DIR}/genesis.json"
+}
+
+function persistent_peers() {
+	persistent_peers=$(awk -F'=' '/persistent_peers/ {gsub(/"| /, "", $2); gsub(/0s/, "", $2); print $2}' "${local_env}/validator0/config/config.toml")
+	echo ${persistent_peers} >${SCRIPT_DIR}/persistent_peers.txt
+}
+
+function copy_sp_relayer() {
+	cp "${SCRIPT_DIR}/sp.json" "${SP_DIR}"
+	cp "${SCRIPT_DIR}/validator.json" "${RELAY_DIR}"
+}
+
+function change_persistent_peers() {
+	persistent_peers=$(cat ${SCRIPT_DIR}/persistent_peers.txt)
+	sed -i -e "s/PERSISTENT_PEERS=\".*\"/PERSISTENT_PEERS=\"${persistent_peers}\"/g" "${SCRIPT_DIR}/.env"
+}
+
+function vote() {
+	proposal_id=$1
+	size=$2
+	for ((i = 0; i < ${size}; i++)); do
+		mechaind tx gov vote $proposal_id yes --from=validator${i} --chain-id=$CHAIN_ID \
+			--keyring-backend=test --gas-prices=10000azkme -y --home "${local_env}/validator${i}"
+	done
+}
+
+function list_validators() {
+	echo "list validators..."
+	curl -s http://vnode-0:1317/cosmos/staking/v1beta1/validators | jq '.pagination.total'
+}
+
 CMD=$1
 SIZE=3
 SP_SIZE=3
+PROPOSAL_ID=$3
 if [ -n "$2" ] && [ "$2" -gt 0 ]; then
 	SIZE=$2
 fi
@@ -398,6 +434,27 @@ export_validator)
 	;;
 clean_validator_data)
 	clean_validator_data "$SIZE"
+	;;
+copy_genesis)
+	copy_genesis
+	;;
+persistent_peers)
+	persistent_peers
+	;;
+
+backup)
+	change_persistent_peers
+	copy_sp_relayer
+	;;
+vote)
+	echo "===== start ===="
+	vote $PROPOSAL_ID $SIZE
+	echo "===== end ===="
+	;;
+list_validators)
+	echo "===== list validators ===="
+	list_validators
+	echo "===== end ===="
 	;;
 *)
 	echo "Usage: localup.sh init | generate | export_sps"

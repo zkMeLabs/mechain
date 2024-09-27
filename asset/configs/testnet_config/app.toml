@@ -144,10 +144,10 @@ global-labels = [
 [api]
 
 # Enable defines if the API server should be enabled.
-enable = true
+enable = false
 
 # Swagger defines if swagger documentation should automatically be registered.
-swagger = true
+swagger = false
 
 # Address defines the API server to listen on.
 address = "tcp://localhost:1317"
@@ -177,7 +177,7 @@ enabled-unsafe-cors = true
 enable = true
 
 # Address defines the gRPC server address to bind to.
-address = "localhost:9090"
+address = "0.0.0.0:9090"
 
 # MaxRecvMsgSize defines the max message size in bytes the server can receive.
 # The default value is 10MB.
@@ -198,7 +198,7 @@ max-send-msg-size = "2147483647"
 enable = true
 
 # Address defines the gRPC-web server address to bind to.
-address = "localhost:9089"
+address = "0.0.0.0:9089"
 
 # EnableUnsafeCORS defines if CORS should be enabled (unsafe - use it at your own risk).
 enable-unsafe-cors = false
@@ -278,10 +278,10 @@ max-tx-gas-wanted = 0
 enable = true
 
 # Address defines the EVM RPC HTTP server address to bind to.
-address = "127.0.0.1:8545"
+address = "0.0.0.0:8545"
 
 # Address defines the EVM WebSocket server address to bind to.
-ws-address = "127.0.0.1:8546"
+ws-address = "0.0.0.0:8545"
 
 # API defines a list of JSON-RPC namespaces that should be enabled
 # Example: "eth,txpool,personal,net,debug,web3"

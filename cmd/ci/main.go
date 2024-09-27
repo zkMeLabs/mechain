@@ -21,17 +21,48 @@ type NodeConfig struct {
 }
 
 type ComposeConfig struct {
+	NodeSize       int
+	SPSize         int
 	Nodes          []NodeConfig
 	Image          string
-	VolumeBasePath string
+	DeploymentPath string
 	BasePorts      PortConfig
 }
 
 const dockerComposeTemplate = `
 services:
+  init:
+    container_name: init-mechain
+    image: "{{$.Image}}"
+    networks:
+      - mechain-network    
+    volumes:
+      - "{{$.DeploymentPath}}:/app/scripts:rw"
+      - local-env:/app/.local
+    working_dir: "/app/scripts"
+    command: >
+      bash -c "
+      rm -f init_done &&
+      bash localup.sh init {{$.NodeSize}} {{$.SPSize}} &&
+      bash localup.sh generate {{$.NodeSize}} {{$.SPSize}} &&
+      bash localup.sh copy_genesis &&
+       bash localup.sh persistent_peers &&
+      bash localup.sh export_validator 4 > validator.json &&
+      bash localup.sh export_sps {{$.NodeSize}} {{$.SPSize}} > sp.json &&
+      touch init_done && 
+      sleep infinity
+      "
+    healthcheck:
+      test: ["CMD-SHELL", "test -f /app/scripts/init_done && echo 'OK' || exit 1"]
+      interval: 60s
+      retries: 10
+    restart: "on-failure"
 {{- range .Nodes }}
   vnode-{{.NodeIndex}}:
     container_name: mechaind-validator-{{.NodeIndex}}
+    depends_on:
+      init:
+        condition: service_healthy
     image: "{{$.Image}}"
     networks:
       - mechain-network
@@ -44,9 +75,9 @@ services:
       - "{{.EVMRPCPort}}:{{$.BasePorts.EVMRPCPort}}"
       - "{{.EVMWSPort}}:{{$.BasePorts.EVMWSPort}}"
     volumes:
-      - "{{$.VolumeBasePath}}/validator{{.NodeIndex}}:/app:Z"
+      - "local-env:/app:Z"
     command: >
-      /usr/bin/mechaind start --home /app
+      /usr/bin/mechaind start --home /app/validator{{.NodeIndex}}
       --keyring-backend test
       --api.enabled-unsafe-cors true
       --address 0.0.0.0:{{$.BasePorts.AddressPort}}
@@ -57,45 +88,42 @@ services:
       --rpc.unsafe true
       --log_format json
 {{- end }}
+volumes:
+  local-env:
 networks:
   mechain-network:
     external: true
 `
 
 func main() {
-	bp := PortConfig{
-		AddressPort: 28750,
-		P2PPort:     27750,
-		GRPCPort:    9090,
-		GRPCWebPort: 1317,
-		RPCPort:     26657,
-		EVMRPCPort:  8545,
-		EVMWSPort:   8546,
+	config := ComposeConfig{
+		NodeSize:       4,
+		SPSize:         3,
+		Image:          "zkmelabs/mechain",
+		DeploymentPath: "./deployment/dockerup/",
+		BasePorts: PortConfig{
+			AddressPort: 28750,
+			P2PPort:     27750,
+			GRPCPort:    9090,
+			GRPCWebPort: 1317,
+			RPCPort:     26657,
+			EVMRPCPort:  8545,
+			EVMWSPort:   8546,
+		},
 	}
-
-	numNodes := 4
-
-	var nodes []NodeConfig
-	for i := 0; i < numNodes; i++ {
-		nodes = append(nodes, NodeConfig{
+	for i := 0; i < config.NodeSize; i++ {
+		config.Nodes = append(config.Nodes, NodeConfig{
 			NodeIndex: i,
 			PortConfig: PortConfig{
-				AddressPort: bp.AddressPort + i,
-				P2PPort:     bp.P2PPort + i,
-				GRPCPort:    bp.GRPCPort + i,
-				GRPCWebPort: bp.GRPCWebPort + i,
-				RPCPort:     bp.RPCPort + i,
-				EVMRPCPort:  bp.EVMRPCPort + i*2,
-				EVMWSPort:   bp.EVMWSPort + i*2,
+				AddressPort: config.BasePorts.AddressPort + i,
+				P2PPort:     config.BasePorts.P2PPort + i,
+				GRPCPort:    config.BasePorts.GRPCPort + i,
+				GRPCWebPort: config.BasePorts.GRPCWebPort + i,
+				RPCPort:     config.BasePorts.RPCPort + i,
+				EVMRPCPort:  config.BasePorts.EVMRPCPort + i*2,
+				EVMWSPort:   config.BasePorts.EVMWSPort + i*2,
 			},
 		})
-	}
-
-	config := ComposeConfig{
-		Nodes:          nodes,
-		Image:          "zkmelabs/mechain",
-		VolumeBasePath: "./deployment/dockerup/.local",
-		BasePorts:      bp,
 	}
 
 	file, err := os.Create("docker-compose.yml")
