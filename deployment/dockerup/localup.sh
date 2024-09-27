@@ -392,14 +392,15 @@ function vote() {
 	proposal_id=$1
 	size=$2
 	for ((i = 0; i < ${size}; i++)); do
-		mechaind tx gov vote $proposal_id yes --from=validator${i} --chain-id=$CHAIN_ID \
+		${bin} tx gov vote $proposal_id yes --from=validator${i} --chain-id=$CHAIN_ID \
 			--keyring-backend=test --gas-prices=10000azkme -y --home "${local_env}/validator${i}"
 	done
 }
 
 function list_validators() {
 	echo "list validators..."
-	curl -s http://vnode-0:1317/cosmos/staking/v1beta1/validators | jq '.pagination.total'
+	# curl -s http://vnode-0:1317/cosmos/staking/v1beta1/validators | jq '.pagination.total'
+	${bin} query staking validators --node --home "${local_env}/validator${i}"
 }
 
 CMD=$1
