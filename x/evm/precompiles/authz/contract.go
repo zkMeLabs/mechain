@@ -51,7 +51,7 @@ func (c *Contract) Run(evm *vm.EVM, contract *vm.Contract, readonly bool) (ret [
 		return types.PackRetError("invalid input")
 	}
 
-	cacheCtx, commit := c.ctx.CacheContext()
+	ctx, commit := c.ctx.CacheContext()
 	snapshot := evm.StateDB.Snapshot()
 
 	method, err := GetMethodByID(contract.Input)
@@ -59,13 +59,13 @@ func (c *Contract) Run(evm *vm.EVM, contract *vm.Contract, readonly bool) (ret [
 		// parse input
 		switch method.Name {
 		case GrantMethodName:
-			ret, err = c.Grant(cacheCtx, evm, contract, readonly)
+			ret, err = c.Grant(ctx, evm, contract, readonly)
 		case GrantsMethodName:
-			ret, err = c.Grants(cacheCtx, evm, contract, readonly)
+			ret, err = c.Grants(ctx, evm, contract, readonly)
 		case GranterGrantsMethodName:
-			ret, err = c.GranterGrants(cacheCtx, evm, contract, readonly)
+			ret, err = c.GranterGrants(ctx, evm, contract, readonly)
 		case GranteeGrantsMethodName:
-			ret, err = c.GranteeGrants(cacheCtx, evm, contract, readonly)
+			ret, err = c.GranteeGrants(ctx, evm, contract, readonly)
 		default:
 			err = fmt.Errorf("method %s is not handle", method.Name)
 		}
