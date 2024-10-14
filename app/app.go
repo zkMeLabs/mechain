@@ -150,7 +150,9 @@ import (
 	evmostypes "github.com/evmos/evmos/v12/types"
 	"github.com/evmos/evmos/v12/x/evm"
 	evmkeeper "github.com/evmos/evmos/v12/x/evm/keeper"
+	precompilesauthz "github.com/evmos/evmos/v12/x/evm/precompiles/authz"
 	precompilesbank "github.com/evmos/evmos/v12/x/evm/precompiles/bank"
+	precompilesgov "github.com/evmos/evmos/v12/x/evm/precompiles/gov"
 	precompilesstorage "github.com/evmos/evmos/v12/x/evm/precompiles/storage"
 	precompilesvirtualgroup "github.com/evmos/evmos/v12/x/evm/precompiles/virtualgroup"
 	evmtypes "github.com/evmos/evmos/v12/x/evm/types"
@@ -1429,6 +1431,16 @@ func (app *Evmos) EvmPrecompiled() {
 	// bank precompile
 	precompiled[precompilesbank.GetAddress()] = func(ctx sdk.Context) vm.PrecompiledContract {
 		return precompilesbank.NewPrecompiledContract(ctx, app.BankKeeper)
+	}
+
+	// authz precompile
+	precompiled[precompilesauthz.GetAddress()] = func(ctx sdk.Context) vm.PrecompiledContract {
+		return precompilesauthz.NewPrecompiledContract(ctx, app.AuthzKeeper)
+	}
+
+	// gov precompile
+	precompiled[precompilesgov.GetAddress()] = func(ctx sdk.Context) vm.PrecompiledContract {
+		return precompilesgov.NewPrecompiledContract(ctx, app.GovKeeper, app.AccountKeeper)
 	}
 
 	// storage precompile
