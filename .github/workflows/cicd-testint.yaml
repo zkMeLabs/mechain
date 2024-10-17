@@ -1,9 +1,9 @@
-# For developer
-name: Deploy for devint
+# For tester
+name: Deploy for testint
 on:
   push:
     branches:
-      - develop
+      - main
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -32,7 +32,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: zkmelabs/mechain:develop
+          tags: zkmelabs/mechain:test
           cache-to: type=gha
           cache-from: type=gha
 
@@ -50,4 +50,4 @@ jobs:
           script: |
             cd /tmp/deploy/k8s-hk-rke2/mechain-helm-charts
             echo "${{ secrets.KUBECONFIG_DEV }}" > kubeconfig.yaml
-            helm --kubeconfig kubeconfig.yaml -n mechain-dev upgrade --install mechain-validator mechain-validator -f values_devint.yaml --wait
+            helm --kubeconfig kubeconfig.yaml -n mechain-test upgrade --install mechain-validator mechain-validator -f values_testint.yaml --wait

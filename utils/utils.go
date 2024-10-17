@@ -17,6 +17,7 @@
 package utils
 
 import (
+	"github.com/ethereum/go-ethereum/common"
 	"strings"
 
 	"github.com/cosmos/cosmos-sdk/crypto/keys/eth/ethsecp256k1"
@@ -97,4 +98,13 @@ func GetEvmosAddressFromBech32(address string) (sdk.AccAddress, error) {
 	}
 
 	return sdk.AccAddress(addressBz), nil
+}
+
+func AccAddressMustToHexAddress(accStrAddress string) common.Address {
+	ValAddress, err := sdk.AccAddressFromBech32(accStrAddress)
+	var hexAddress common.Address
+	if err == nil {
+		hexAddress = common.BytesToAddress(ValAddress)
+	}
+	return hexAddress
 }

@@ -42,6 +42,8 @@ const (
 	codeErrGasOverflow
 	codeErrInvalidAccount
 	codeErrInvalidGasLimit
+	codeErrInvalidCaller
+	codeErrReadOnly
 )
 
 var ErrPostTxProcessing = errors.New("failed to execute post processing")
@@ -91,6 +93,12 @@ var (
 
 	// ErrInvalidGasLimit returns an error if gas limit value is invalid
 	ErrInvalidGasLimit = errorsmod.Register(ModuleName, codeErrInvalidGasLimit, "invalid gas limit")
+
+	// ErrInvalidCaller returns an error if the caller is contract
+	ErrInvalidCaller = errorsmod.Register(ModuleName, codeErrInvalidCaller, "only be called directly to the precompile forbid from a smart contract")
+
+	// ErrReadOnly returns an error if the precompile contract method is readonly
+	ErrReadOnly = errorsmod.Register(ModuleName, codeErrReadOnly, "precompile contract method readonly")
 )
 
 // NewExecErrorWithReason unpacks the revert return bytes and returns a wrapped error

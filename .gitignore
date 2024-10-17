@@ -95,9 +95,23 @@ deployment/devnetup/.local
 
 # dockerup
 deployment/dockerup/.local
+deployment/dockerup/genesis.json
+deployment/dockerup/.env-e
+deployment/dockerup/persistent_peers.txt
+deployment/dockerup/sp.json
+deployment/dockerup/validator.json
+deployment/dockerup/proposal.json
+deployment/dockerup/tx.json
 init_done
-relayer.yaml
-sp.json
 # vscode
 .vscode/launch.json
 
+dist
+
+
+scripts/tx.json
+scripts/proposal.json
+scripts/proposal_status.json
+scripts/all_validators.yaml
+
+deployment/.local
