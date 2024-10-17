@@ -9,6 +9,10 @@ import (
 	"github.com/evmos/evmos/v12/types"
 )
 
+type (
+	ApprovalJSON = Approval
+)
+
 var (
 	virtualGroupAddress = common.HexToAddress(types.VirtualGroupAddress)
 	virtualGroupABI     = types.MustABIJson(IVirtualGroupMetaData.ABI)
@@ -78,11 +82,108 @@ func (args *CreateGlobalVirtualGroupArgs) Validate() error {
 	return nil
 }
 
+type DeleteGlobalVirtualGroupArgs struct {
+	// StorageProvider      string `abi:"storageProvider"`
+	GlobalVirtualGroupId uint32 `abi:"globalVirtualGroupId"`
+}
+
+// Validate DeleteGlobalVirtualGroupArgs args
+func (args *DeleteGlobalVirtualGroupArgs) Validate() error {
+	return nil
+}
+
 type GlobalVirtualGroupFamiliesArgs struct {
 	Pagination PageRequestJSON `abi:"pagination"`
 }
 
 // Validate GlobalVirtualGroupFamiliesArgs the args
 func (args *GlobalVirtualGroupFamiliesArgs) Validate() error {
+	return nil
+}
+
+type SwapOutArgs struct {
+	GlobalVirtualGroupFamilyId uint32       `abi:"globalVirtualGroupFamilyId"`
+	GlobalVirtualGroupIds      []uint32     `abi:"globalVirtualGroupIds"`
+	SuccessorSpId              uint32       `abi:"successorSpId"`
+	SuccessorSpApproval        ApprovalJSON `abi:"successorSpApproval"`
+}
+
+// Validate SwapOutArgs the args
+func (args *SwapOutArgs) Validate() error {
+	return nil
+}
+
+type CompleteSwapOutArgs struct {
+	// StorageProvider            string   `abi:"storageProvider"`
+	GlobalVirtualGroupFamilyId uint32   `abi:"globalVirtualGroupFamilyId"`
+	GlobalVirtualGroupIds      []uint32 `abi:"globalVirtualGroupIds"`
+}
+
+// Validate CompleteSwapOutArgs the args
+func (args *CompleteSwapOutArgs) Validate() error {
+	return nil
+}
+
+type SPExitArgs struct {
+	// StorageProvider string `abi:"storageProvider"`
+}
+
+// Validate SPExitArgs the args
+func (args *SPExitArgs) Validate() error {
+	return nil
+}
+
+type CompleteSPExitArgs struct {
+	StorageProvider string `abi:"storageProvider"`
+	Operator        string `abi:"operator"`
+}
+
+// Validate CompleteSPExitArgs the args
+func (args *CompleteSPExitArgs) Validate() error {
+	return nil
+}
+
+type DepositArgs struct {
+	// StorageProvider      string        `abi:"storageProvider"`
+	GlobalVirtualGroupId uint32   `abi:"globalVirtualGroupId"`
+	Deposit              CoinJSON `abi:"deposit"`
+}
+
+// Validate DepositArgs the args
+func (args *DepositArgs) Validate() error {
+	return nil
+}
+
+type ReserveSwapInArgs struct {
+	// StorageProvider            string `abi:"storageProvider"`
+	TargetSpId                 uint32 `abi:"targetSpId"`
+	GlobalVirtualGroupFamilyId uint32 `abi:"globalVirtualGroupFamilyId"`
+	GlobalVirtualGroupId       uint32 `abi:"globalVirtualGroupId"`
+}
+
+// Validate ReserveSwapInArgs the args
+func (args *ReserveSwapInArgs) Validate() error {
+	return nil
+}
+
+type CompleteSwapInArgs struct {
+	// StorageProvider            string `abi:"storageProvider"`
+	GlobalVirtualGroupFamilyId uint32 `abi:"globalVirtualGroupFamilyId"`
+	GlobalVirtualGroupId       uint32 `abi:"globalVirtualGroupId"`
+}
+
+// Validate CompleteSwapInArgs the args
+func (args *CompleteSwapInArgs) Validate() error {
+	return nil
+}
+
+type CancelSwapInArgs struct {
+	// StorageProvider            string `abi:"storageProvider"`
+	GlobalVirtualGroupFamilyId uint32 `abi:"globalVirtualGroupFamilyId"`
+	GlobalVirtualGroupId       uint32 `abi:"globalVirtualGroupId"`
+}
+
+// Validate CancelSwapInArgs the args
+func (args *CancelSwapInArgs) Validate() error {
 	return nil
 }
