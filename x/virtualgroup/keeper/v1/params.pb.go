@@ -28,7 +28,7 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 type Params struct {
 	// deposit_denom defines the staking coin denomination.
 	DepositDenom string `protobuf:"bytes,1,opt,name=deposit_denom,json=depositDenom,proto3" json:"deposit_denom,omitempty"`
-	// store price, in bnb wei per charge byte
+	// store price, in azkme wei per charge byte
 	//nolint
 	GvgStakingPerBytes github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,2,opt,name=gvg_staking_per_bytes,json=gvgStakingPerBytes,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"gvg_staking_per_bytes"`
 	// the max number of lvg which allowed in a bucket
@@ -105,11 +105,11 @@ func (m *Params) GetMaxStoreSizePerFamily() uint64 {
 }
 
 //func init() {
-//	proto.RegisterType((*Params)(nil), "greenfield.virtualgroup.Params")
+//	proto.RegisterType((*Params)(nil), "mechain.virtualgroup.Params")
 //}
 //
 //func init() {
-//	proto.RegisterFile("greenfield/virtualgroup/params.proto", fileDescriptor_d8ecf89dd5128885)
+//	proto.RegisterFile("mechain/virtualgroup/params.proto", fileDescriptor_d8ecf89dd5128885)
 //}
 
 var fileDescriptor_d8ecf89dd5128885 = []byte{

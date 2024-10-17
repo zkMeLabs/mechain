@@ -43,7 +43,7 @@ file. The following default parameters are included:
     %s
 
 Example:
-$ %s gentx 10000000000000000000000000BNB --home ./deployment/localup/.local/sp0 \
+$ %s gentx 10000000000000000000000000azkme --home ./deployment/localup/.local/sp0 \
 	--creator=0x76330E9C31D8B91a8247a9bbA2959815D3008417 \
 	--operator-address=0x76330E9C31D8B91a8247a9bbA2959815D3008417 \
 	--funding-address=0x52C30AA52788ec9C8F36C3774C1F50702BCa59b9 \

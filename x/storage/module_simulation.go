@@ -26,10 +26,10 @@ func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 	for i, acc := range simState.Accounts {
 		accs[i] = acc.Address.String()
 	}
-	greenfieldGenesis := types.GenesisState{
+	mechainGenesis := types.GenesisState{
 		Params: types.DefaultParams(),
 	}
-	simState.GenState[types.ModuleName] = simState.Cdc.MustMarshalJSON(&greenfieldGenesis)
+	simState.GenState[types.ModuleName] = simState.Cdc.MustMarshalJSON(&mechainGenesis)
 }
 
 // ProposalContents doesn't return any content functions for governance proposals

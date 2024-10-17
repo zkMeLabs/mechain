@@ -6,36 +6,36 @@ import (
 	"github.com/evmos/evmos/v12/sdk/keys"
 )
 
-// GreenfieldClientOption configures how we set up the greenfield client.
-type GreenfieldClientOption interface {
-	Apply(*GreenfieldClient)
+// MechainClientOption configures how we set up the mechain client.
+type MechainClientOption interface {
+	Apply(*MechainClient)
 }
 
-// GreenfieldClientOptionFunc defines an applied function for setting the greenfield client.
-type GreenfieldClientOptionFunc func(*GreenfieldClient)
+// MechainClientOptionFunc defines an applied function for setting the mechain client.
+type MechainClientOptionFunc func(*MechainClient)
 
 // Apply set up the option field to the client instance.
-func (f GreenfieldClientOptionFunc) Apply(client *GreenfieldClient) {
+func (f MechainClientOptionFunc) Apply(client *MechainClient) {
 	f(client)
 }
 
-// WithKeyManager returns a GreenfieldClientOption which configures a client key manager option.
-func WithKeyManager(km keys.KeyManager) GreenfieldClientOption {
-	return GreenfieldClientOptionFunc(func(client *GreenfieldClient) {
+// WithKeyManager returns a MechainClientOption which configures a client key manager option.
+func WithKeyManager(km keys.KeyManager) MechainClientOption {
+	return MechainClientOptionFunc(func(client *MechainClient) {
 		client.keyManager = km
 	})
 }
 
-// WithGrpcConnectionAndDialOption returns a GreenfieldClientOption which configures a grpc client connection with grpc dail options.
-func WithGrpcConnectionAndDialOption(grpcAddr string, opts ...grpc.DialOption) GreenfieldClientOption {
-	return GreenfieldClientOptionFunc(func(client *GreenfieldClient) {
+// WithGrpcConnectionAndDialOption returns a MechainClientOption which configures a grpc client connection with grpc dail options.
+func WithGrpcConnectionAndDialOption(grpcAddr string, opts ...grpc.DialOption) MechainClientOption {
+	return MechainClientOptionFunc(func(client *MechainClient) {
 		client.grpcConn = grpcConn(grpcAddr, opts...)
 	})
 }
 
-// WithWebSocketClient returns a GreenfieldClientOption which specify that connection is a websocket connection
-func WithWebSocketClient() GreenfieldClientOption {
-	return GreenfieldClientOptionFunc(func(client *GreenfieldClient) {
+// WithWebSocketClient returns a MechainClientOption which specify that connection is a websocket connection
+func WithWebSocketClient() MechainClientOption {
+	return MechainClientOptionFunc(func(client *MechainClient) {
 		client.useWebSocket = true
 	})
 }

@@ -2549,7 +2549,7 @@ func (k Keeper) SetTag(ctx sdk.Context, operator sdk.AccAddress, grn types.GRN, 
 		gbz := k.cdc.MustMarshal(groupInfo)
 		store.Set(storagetypes.GetGroupByIDKey(groupInfo.Id), gbz)
 	default:
-		return gnfderrors.ErrInvalidGRN.Wrap("Unknown resource type in greenfield resource name")
+		return gnfderrors.ErrInvalidGRN.Wrap("Unknown resource type in mechain resource name")
 	}
 
 	// emit Event

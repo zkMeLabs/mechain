@@ -470,7 +470,7 @@ func filterChallengeEventFromBlock(blockRes *ctypes.ResultBlockResults) []challe
 	challengeEvents := make([]challengetypes.EventStartChallenge, 0)
 
 	for _, event := range blockRes.EndBlockEvents {
-		if event.Type == "greenfield.challenge.EventStartChallenge" {
+		if event.Type == "mechain.challenge.EventStartChallenge" {
 
 			challengeIDStr, objectIDStr, redundancyIndexStr, segmentIndexStr, spOpAddress := "", "", "", "", ""
 			for _, attr := range event.Attributes {
@@ -506,7 +506,7 @@ func filterChallengeEventFromBlock(blockRes *ctypes.ResultBlockResults) []challe
 func filterChallengeEventFromTx(txRes *sdk.TxResponse) challengetypes.EventStartChallenge {
 	challengeIDStr, objIDStr, redundancyIndexStr, segmentIndexStr, spOpAddress, expiredHeightStr := "", "", "", "", "", ""
 	for _, event := range txRes.Logs[0].Events {
-		if event.Type == "greenfield.challenge.EventStartChallenge" {
+		if event.Type == "mechain.challenge.EventStartChallenge" {
 			for _, attr := range event.Attributes {
 				switch attr.Key {
 				case "challenge_id":
@@ -663,7 +663,7 @@ func (s *ChallengeTestSuite) updateParams(params challengetypes.Params) {
 
 	msgProposal, err := govtypesv1.NewMsgSubmitProposal(
 		[]sdk.Msg{msgUpdateParams},
-		sdk.Coins{sdk.NewCoin(s.BaseSuite.Config.Denom, types.NewIntFromInt64WithDecimal(100, types.DecimalBNB))},
+		sdk.Coins{sdk.NewCoin(s.BaseSuite.Config.Denom, types.NewIntFromInt64WithDecimal(100, types.DecimalZKME))},
 		validator.String(),
 		"test", "test", "test",
 	)

@@ -98,8 +98,8 @@ type VirtualGroupQueryClient = virtualgroupmoduletypes.QueryClient
 // TmClient is a type to define the tendermint service client
 type TmClient = tmservice.ServiceClient
 
-// GreenfieldClient holds all necessary information for creating/querying transactions.
-type GreenfieldClient struct {
+// MechainClient holds all necessary information for creating/querying transactions.
+type MechainClient struct {
 	// AuthQueryClient holds the auth query client.
 	AuthQueryClient
 	// AuthzQueryClient holds the authz query client.
@@ -154,29 +154,29 @@ type GreenfieldClient struct {
 	grpcConn *grpc.ClientConn
 }
 
-// NewGreenfieldClient is used to create a new GreenfieldClient structure.
-func NewGreenfieldClient(rpcAddr, chainID string, opts ...GreenfieldClientOption) (*GreenfieldClient, error) {
+// NewMechainClient is used to create a new MechainClient structure.
+func NewMechainClient(rpcAddr, chainID string, opts ...MechainClientOption) (*MechainClient, error) {
 	rpcClient, err := sdkclient.NewClientFromNode(rpcAddr)
 	if err != nil {
 		return nil, err
 	}
 
-	return newGreenfieldClient(rpcAddr, chainID, rpcClient, opts...)
+	return newMechainClient(rpcAddr, chainID, rpcClient, opts...)
 }
 
-// NewCustomGreenfieldClient is used to create a new GreenfieldClient structure, allows for setting a custom http client
-func NewCustomGreenfieldClient(rpcAddr, chainID string, customDialer func(string) (*http.Client, error), opts ...GreenfieldClientOption) (*GreenfieldClient, error) {
+// NewCustomMechainClient is used to create a new MechainClient structure, allows for setting a custom http client
+func NewCustomMechainClient(rpcAddr, chainID string, customDialer func(string) (*http.Client, error), opts ...MechainClientOption) (*MechainClient, error) {
 	rpcClient, err := sdkclient.NewCustomClientFromNode(rpcAddr, customDialer)
 	if err != nil {
 		return nil, err
 	}
 
-	return newGreenfieldClient(rpcAddr, chainID, rpcClient, opts...)
+	return newMechainClient(rpcAddr, chainID, rpcClient, opts...)
 }
 
-func newGreenfieldClient(rpcAddr, chainID string, rpcClient *rpchttp.HTTP, opts ...GreenfieldClientOption) (*GreenfieldClient, error) {
+func newMechainClient(rpcAddr, chainID string, rpcClient *rpchttp.HTTP, opts ...MechainClientOption) (*MechainClient, error) {
 	cdc := types.Codec()
-	client := &GreenfieldClient{
+	client := &MechainClient{
 		chainID: chainID,
 		codec:   cdc,
 	}
@@ -211,7 +211,7 @@ func newGreenfieldClient(rpcAddr, chainID string, rpcClient *rpchttp.HTTP, opts 
 	return client, nil
 }
 
-func setClientsConn(c *GreenfieldClient, conn grpc1.ClientConn) {
+func setClientsConn(c *MechainClient, conn grpc1.ClientConn) {
 	c.AuthQueryClient = authtypes.NewQueryClient(conn)
 	c.AuthQueryClient = authtypes.NewQueryClient(conn)
 	c.AuthzQueryClient = authztypes.NewQueryClient(conn)
@@ -235,32 +235,32 @@ func setClientsConn(c *GreenfieldClient, conn grpc1.ClientConn) {
 	c.TxClient = tx.NewServiceClient(conn)
 }
 
-// SetKeyManager sets a key manager in the GreenfieldClient structure.
-func (c *GreenfieldClient) SetKeyManager(keyManager keys.KeyManager) {
+// SetKeyManager sets a key manager in the MechainClient structure.
+func (c *MechainClient) SetKeyManager(keyManager keys.KeyManager) {
 	c.keyManager = keyManager
 }
 
-// GetKeyManager returns the key manager set in the GreenfieldClient structure.
-func (c *GreenfieldClient) GetKeyManager() (keys.KeyManager, error) {
+// GetKeyManager returns the key manager set in the MechainClient structure.
+func (c *MechainClient) GetKeyManager() (keys.KeyManager, error) {
 	if c.keyManager == nil {
 		return nil, types.ErrKeyManagerNotInit
 	}
 	return c.keyManager, nil
 }
 
-// SetChainId sets the chain ID in the GreenfieldClient structure.
-func (c *GreenfieldClient) SetChainId(id string) { //nolint
+// SetChainId sets the chain ID in the MechainClient structure.
+func (c *MechainClient) SetChainId(id string) { //nolint
 	c.chainID = id
 }
 
-// GetChainID returns the chain ID set in the GreenfieldClient structure.
-func (c *GreenfieldClient) GetChainID() (string, error) {
+// GetChainID returns the chain ID set in the MechainClient structure.
+func (c *MechainClient) GetChainID() (string, error) {
 	if c.chainID == "" {
 		return "", types.ErrChainIDNotSet
 	}
 	return c.chainID, nil
 }
 
-func (c *GreenfieldClient) GetCodec() *codec.ProtoCodec {
+func (c *MechainClient) GetCodec() *codec.ProtoCodec {
 	return c.codec
 }

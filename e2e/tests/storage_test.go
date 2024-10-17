@@ -1121,7 +1121,7 @@ func TestStorageTestSuite(t *testing.T) {
 func filterDiscontinueObjectEventFromTx(txRes *sdk.TxResponse) storagetypes.EventDiscontinueObject {
 	deleteAtStr := ""
 	for _, event := range txRes.Logs[0].Events {
-		if event.Type == "greenfield.storage.EventDiscontinueObject" {
+		if event.Type == "mechain.storage.EventDiscontinueObject" {
 			for _, attr := range event.Attributes {
 				if attr.Key == "delete_at" {
 					deleteAtStr = strings.Trim(attr.Value, `"`)
@@ -1139,7 +1139,7 @@ func filterDeleteObjectEventFromBlock(blockRes *ctypes.ResultBlockResults) []sto
 	events := make([]storagetypes.EventDeleteObject, 0)
 
 	for _, event := range blockRes.EndBlockEvents {
-		if event.Type == "greenfield.storage.EventDeleteObject" {
+		if event.Type == "mechain.storage.EventDeleteObject" {
 			objIDStr := ""
 			for _, attr := range event.Attributes {
 				if attr.Key == objectIDStr {
@@ -1158,7 +1158,7 @@ func filterDeleteObjectEventFromBlock(blockRes *ctypes.ResultBlockResults) []sto
 func filterDiscontinueBucketEventFromTx(txRes *sdk.TxResponse) storagetypes.EventDiscontinueBucket {
 	deleteAtStr := ""
 	for _, event := range txRes.Logs[0].Events {
-		if event.Type == "greenfield.storage.EventDiscontinueBucket" {
+		if event.Type == "mechain.storage.EventDiscontinueBucket" {
 			for _, attr := range event.Attributes {
 				if attr.Key == "delete_at" {
 					deleteAtStr = strings.Trim(attr.Value, `"`)
@@ -1176,7 +1176,7 @@ func filterDeleteBucketEventFromBlock(blockRes *ctypes.ResultBlockResults) []sto
 	events := make([]storagetypes.EventDeleteBucket, 0)
 
 	for _, event := range blockRes.EndBlockEvents {
-		if event.Type == "greenfield.storage.EventDeleteBucket" {
+		if event.Type == "mechain.storage.EventDeleteBucket" {
 			bucketIDStr := ""
 			for _, attr := range event.Attributes {
 				if attr.Key == "bucket_id" {
@@ -1195,7 +1195,7 @@ func filterDeleteBucketEventFromBlock(blockRes *ctypes.ResultBlockResults) []sto
 func filterDeleteBucketEventFromTx(txRes *sdk.TxResponse) storagetypes.EventDeleteBucket {
 	bucketIDStr := ""
 	for _, event := range txRes.Events {
-		if event.Type == "greenfield.storage.EventDeleteBucket" {
+		if event.Type == "mechain.storage.EventDeleteBucket" {
 			for _, attr := range event.Attributes {
 				if attr.Key == "bucket_id" {
 					bucketIDStr = strings.Trim(attr.Value, `"`)
@@ -1389,7 +1389,7 @@ func (s *StorageTestSuite) TestUpdateParams() {
 
 	msgProposal, err := govtypesv1.NewMsgSubmitProposal(
 		[]sdk.Msg{msgUpdateParams},
-		sdk.Coins{sdk.NewCoin(s.BaseSuite.Config.Denom, types.NewIntFromInt64WithDecimal(100, types.DecimalBNB))},
+		sdk.Coins{sdk.NewCoin(s.BaseSuite.Config.Denom, types.NewIntFromInt64WithDecimal(100, types.DecimalZKME))},
 		validator.String(),
 		"test", "test", "test",
 	)
@@ -2398,7 +2398,7 @@ func (s *StorageTestSuite) TestDisallowChangePaymentAccount() {
 	msgDeposit := &paymenttypes.MsgDeposit{
 		Creator: user.GetAddr().String(),
 		To:      paymentAccountAddr.String(),
-		Amount:  types.NewIntFromInt64WithDecimal(2, types.DecimalBNB),
+		Amount:  types.NewIntFromInt64WithDecimal(2, types.DecimalZKME),
 	}
 	_ = s.SendTxBlock(user, msgDeposit)
 

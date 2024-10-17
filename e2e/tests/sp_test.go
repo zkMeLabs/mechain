@@ -149,7 +149,7 @@ func (s *StorageProviderTestSuite) TestDeposit() {
 
 	deposit := sdk.Coin{
 		Denom:  s.Config.Denom,
-		Amount: types.NewIntFromInt64WithDecimal(10000, types.DecimalBNB),
+		Amount: types.NewIntFromInt64WithDecimal(10000, types.DecimalZKME),
 	}
 
 	msgDeposit := sptypes.NewMsgDeposit(
@@ -481,7 +481,7 @@ func (s *StorageProviderTestSuite) updateParams(params sptypes.Params) {
 
 	msgProposal, err := v1.NewMsgSubmitProposal(
 		[]sdk.Msg{msgUpdateParams},
-		sdk.Coins{sdk.NewCoin(s.BaseSuite.Config.Denom, types.NewIntFromInt64WithDecimal(100, types.DecimalBNB))},
+		sdk.Coins{sdk.NewCoin(s.BaseSuite.Config.Denom, types.NewIntFromInt64WithDecimal(100, types.DecimalZKME))},
 		validator.String(),
 		"test", "test", "test",
 	)
