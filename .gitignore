@@ -113,3 +113,5 @@ scripts/tx.json
 scripts/proposal.json
 scripts/proposal_status.json
 scripts/all_validators.yaml
+
+deployment/.local
