@@ -3,34 +3,40 @@ package gov
 import (
 	"encoding/json"
 	"fmt"
-	ibctransfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
-
-	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	crisistypes "github.com/cosmos/cosmos-sdk/x/crisis/types"
-	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
-	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
-	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	"github.com/evmos/evmos/v12/utils"
 	erc20types "github.com/evmos/evmos/v12/x/erc20/types"
+	gensptypes "github.com/evmos/evmos/v12/x/gensp/types"
+	paymenttypes "github.com/evmos/evmos/v12/x/payment/types"
+	permissiontypes "github.com/evmos/evmos/v12/x/permission/types"
+	sptypes "github.com/evmos/evmos/v12/x/sp/types"
+	storagetypes "github.com/evmos/evmos/v12/x/storage/types"
+	virtualgrouptypes "github.com/evmos/evmos/v12/x/virtualgroup/types"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
+	crisistypes "github.com/cosmos/cosmos-sdk/x/crisis/types"
+	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	govkeeper "github.com/cosmos/cosmos-sdk/x/gov/keeper"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	govv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 	govv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 	"github.com/cosmos/cosmos-sdk/x/params/types/proposal"
+	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
+	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
+	ibctransfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/vm"
 
+	"github.com/evmos/evmos/v12/utils"
+	bridgetypes "github.com/evmos/evmos/v12/x/bridge/types"
+	challengetypes "github.com/evmos/evmos/v12/x/challenge/types"
 	"github.com/evmos/evmos/v12/x/evm/types"
 	feemarkettypes "github.com/evmos/evmos/v12/x/feemarket/types"
-	sptypes "github.com/evmos/evmos/v12/x/sp/types"
 )
 
 const (
@@ -143,13 +149,21 @@ func (c *Contract) SubmitProposal(ctx sdk.Context, evm *vm.EVM, contract *vm.Con
 	govv1.RegisterInterfaces(interfaceRegistry)
 	crisistypes.RegisterInterfaces(interfaceRegistry)
 	ibctransfertypes.RegisterInterfaces(interfaceRegistry)
-	types.RegisterInterfaces(interfaceRegistry)
-	feemarkettypes.RegisterInterfaces(interfaceRegistry)
-	erc20types.RegisterInterfaces(interfaceRegistry)
 	upgradetypes.RegisterInterfaces(interfaceRegistry)
 	proposal.RegisterInterfaces(interfaceRegistry)
 	cryptocodec.RegisterInterfaces(interfaceRegistry)
+	types.RegisterInterfaces(interfaceRegistry)
+
+	bridgetypes.RegisterInterfaces(interfaceRegistry)
+	challengetypes.RegisterInterfaces(interfaceRegistry)
+	erc20types.RegisterInterfaces(interfaceRegistry)
+	feemarkettypes.RegisterInterfaces(interfaceRegistry)
+	gensptypes.RegisterInterfaces(interfaceRegistry)
+	paymenttypes.RegisterInterfaces(interfaceRegistry)
+	permissiontypes.RegisterInterfaces(interfaceRegistry)
 	sptypes.RegisterInterfaces(interfaceRegistry)
+	storagetypes.RegisterInterfaces(interfaceRegistry)
+	virtualgrouptypes.RegisterInterfaces(interfaceRegistry)
 
 	protoCodec := codec.NewProtoCodec(interfaceRegistry)
 

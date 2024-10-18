@@ -37,6 +37,12 @@ func (c *Contract) RequiredGas(input []byte) uint64 {
 	switch method.Name {
 	case GrantMethodName:
 		return GrantGas
+	case RevokeMethodName:
+		return RevokeGas
+	case ExecMethodName:
+		return ExecGas
+	case GrantsMethodName:
+		return GrantsGas
 	case GranterGrantsMethodName:
 		return GranterGrantsGas
 	case GranteeGrantsMethodName:
@@ -60,6 +66,10 @@ func (c *Contract) Run(evm *vm.EVM, contract *vm.Contract, readonly bool) (ret [
 		switch method.Name {
 		case GrantMethodName:
 			ret, err = c.Grant(ctx, evm, contract, readonly)
+		case RevokeMethodName:
+			ret, err = c.Revoke(ctx, evm, contract, readonly)
+		case ExecMethodName:
+			ret, err = c.Exec(ctx, evm, contract, readonly)
 		case GrantsMethodName:
 			ret, err = c.Grants(ctx, evm, contract, readonly)
 		case GranterGrantsMethodName:
