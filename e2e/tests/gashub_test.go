@@ -40,7 +40,7 @@ func (s *GashubTestSuite) TestUpdateParams() {
 	msgUpdateGasParams := gashubtypes.NewMsgSetMsgGasParams(authtypes.NewModuleAddress(govtypes.ModuleName).String(), []*gashubtypes.MsgGasParams{msgSendGasParams}, nil)
 	msgProposal, err := govtypesv1.NewMsgSubmitProposal(
 		[]sdk.Msg{msgUpdateGasParams},
-		sdk.Coins{sdk.NewCoin(s.BaseSuite.Config.Denom, types.NewIntFromInt64WithDecimal(100, types.DecimalBNB))},
+		sdk.Coins{sdk.NewCoin(s.BaseSuite.Config.Denom, types.NewIntFromInt64WithDecimal(100, types.DecimalZKME))},
 		validator.String(),
 		"test",
 		"update gas params",

@@ -82,13 +82,13 @@ func (s *TestSuite) TestCrossTransferOut() {
 	addr2, _, err := testutil.GenerateCoinKey(hd.Secp256k1, s.cdc)
 	s.Require().Nil(err, "error should be nil")
 
-	s.stakingKeeper.EXPECT().BondDenom(gomock.Any()).Return("BNB").AnyTimes()
+	s.stakingKeeper.EXPECT().BondDenom(gomock.Any()).Return("azkme").AnyTimes()
 	s.bankKeeper.EXPECT().SendCoinsFromAccountToModule(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(nil).AnyTimes()
 	s.crossChainKeeper.EXPECT().GetDestBscChainID().Return(sdk.ChainID(714)).AnyTimes()
 	s.crossChainKeeper.EXPECT().CreateRawIBCPackageWithFee(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(uint64(0), nil).AnyTimes()
 
 	msgTransferOut := types.NewMsgTransferOut(addr1.String(), addr2.String(), &sdk.Coin{
-		Denom:  "BNB",
+		Denom:  "azkme",
 		Amount: sdk.NewInt(1),
 	})
 
@@ -108,7 +108,7 @@ func (s *TestSuite) TestCrossTransferOutWrong() {
 		Amount: sdk.NewInt(1),
 	})
 
-	s.stakingKeeper.EXPECT().BondDenom(gomock.Any()).Return("BNB").AnyTimes()
+	s.stakingKeeper.EXPECT().BondDenom(gomock.Any()).Return("azkme").AnyTimes()
 
 	_, err = s.msgServer.TransferOut(s.ctx, msgTransferOut)
 	s.Require().NotNil(err, "error should not be nil")

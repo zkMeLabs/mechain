@@ -1781,7 +1781,7 @@ func (s *StorageTestSuite) UpdateParams(newParams *storagetypes.Params) {
 
 	msgProposal, err := govtypesv1.NewMsgSubmitProposal(
 		[]sdk.Msg{msgUpdateParams},
-		sdk.Coins{sdk.NewCoin(s.BaseSuite.Config.Denom, sdktype.NewIntFromInt64WithDecimal(100, sdktype.DecimalBNB))},
+		sdk.Coins{sdk.NewCoin(s.BaseSuite.Config.Denom, sdktype.NewIntFromInt64WithDecimal(100, sdktype.DecimalZKME))},
 		validator.String(),
 		"test", "test", "test",
 	)

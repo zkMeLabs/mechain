@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package mechain.payment;
+
+import "gogoproto/gogo.proto";
+import "mechain/payment/auto_settle_record.proto";
+import "mechain/payment/params.proto";
+import "mechain/payment/payment_account.proto";
+import "mechain/payment/payment_account_count.proto";
+import "mechain/payment/stream_record.proto";
+
+option go_package = "github.com/evmos/evmos/v12/x/payment/types";
+
+// GenesisState defines the payment module's genesis state.
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+  repeated StreamRecord stream_record_list = 2 [(gogoproto.nullable) = false];
+  repeated PaymentAccountCount payment_account_count_list = 3 [(gogoproto.nullable) = false];
+  repeated PaymentAccount payment_account_list = 4 [(gogoproto.nullable) = false];
+  repeated AutoSettleRecord auto_settle_record_list = 5 [(gogoproto.nullable) = false];
+}

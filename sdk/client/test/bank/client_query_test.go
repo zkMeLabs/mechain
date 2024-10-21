@@ -13,12 +13,12 @@ import (
 )
 
 func TestBankBalance(t *testing.T) {
-	client, err := gnfdclient.NewGreenfieldClient(test.TestRPCAddr, test.TestChainID)
+	client, err := gnfdclient.NewMechainClient(test.TestRPCAddr, test.TestChainID)
 	assert.NoError(t, err)
 
 	query := banktypes.QueryBalanceRequest{
 		Address: test.TestAddr,
-		Denom:   "bnb",
+		Denom:   "azkme",
 	}
 	res, err := client.BankQueryClient.Balance(context.Background(), &query)
 	assert.NoError(t, err)
@@ -30,7 +30,7 @@ func TestBankAllBalances(t *testing.T) {
 	km, err := keys.NewPrivateKeyManager("e3ac46e277677f0f103774019d03bd89c7b4b5ecc554b2650bd5d5127992c20c")
 	assert.NoError(t, err)
 	t.Log(km)
-	client, err := gnfdclient.NewGreenfieldClient(test.TestRPCAddr, test.TestChainID, gnfdclient.WithWebSocketClient())
+	client, err := gnfdclient.NewMechainClient(test.TestRPCAddr, test.TestChainID, gnfdclient.WithWebSocketClient())
 	assert.NoError(t, err)
 
 	query := banktypes.QueryAllBalancesRequest{
@@ -43,7 +43,7 @@ func TestBankAllBalances(t *testing.T) {
 }
 
 func TestBankDenomMetadata(t *testing.T) {
-	client, err := gnfdclient.NewGreenfieldClient(test.TestRPCAddr, test.TestChainID)
+	client, err := gnfdclient.NewMechainClient(test.TestRPCAddr, test.TestChainID)
 	assert.NoError(t, err)
 
 	query := banktypes.QueryDenomMetadataRequest{}
@@ -54,11 +54,11 @@ func TestBankDenomMetadata(t *testing.T) {
 }
 
 func TestBankDenomOwners(t *testing.T) {
-	client, err := gnfdclient.NewGreenfieldClient(test.TestRPCAddr, test.TestChainID)
+	client, err := gnfdclient.NewMechainClient(test.TestRPCAddr, test.TestChainID)
 	assert.NoError(t, err)
 
 	query := banktypes.QueryDenomOwnersRequest{
-		Denom: "bnb",
+		Denom: "azkme",
 	}
 	res, err := client.BankQueryClient.DenomOwners(context.Background(), &query)
 	assert.NoError(t, err)
@@ -67,7 +67,7 @@ func TestBankDenomOwners(t *testing.T) {
 }
 
 func TestBankDenomsMetadata(t *testing.T) {
-	client, err := gnfdclient.NewGreenfieldClient(test.TestRPCAddr, test.TestChainID)
+	client, err := gnfdclient.NewMechainClient(test.TestRPCAddr, test.TestChainID)
 	assert.NoError(t, err)
 
 	query := banktypes.QueryDenomsMetadataRequest{}
@@ -78,7 +78,7 @@ func TestBankDenomsMetadata(t *testing.T) {
 }
 
 func TestBankParams(t *testing.T) {
-	client, err := gnfdclient.NewGreenfieldClient(test.TestRPCAddr, test.TestChainID)
+	client, err := gnfdclient.NewMechainClient(test.TestRPCAddr, test.TestChainID)
 	assert.NoError(t, err)
 
 	query := banktypes.QueryParamsRequest{}
@@ -89,7 +89,7 @@ func TestBankParams(t *testing.T) {
 }
 
 func TestBankSpendableBalance(t *testing.T) {
-	client, err := gnfdclient.NewGreenfieldClient(test.TestRPCAddr, test.TestChainID)
+	client, err := gnfdclient.NewMechainClient(test.TestRPCAddr, test.TestChainID)
 	assert.NoError(t, err)
 
 	query := banktypes.QuerySpendableBalancesRequest{
@@ -102,11 +102,11 @@ func TestBankSpendableBalance(t *testing.T) {
 }
 
 func TestBankSupplyOf(t *testing.T) {
-	client, err := gnfdclient.NewGreenfieldClient(test.TestRPCAddr, test.TestChainID)
+	client, err := gnfdclient.NewMechainClient(test.TestRPCAddr, test.TestChainID)
 	assert.NoError(t, err)
 
 	query := banktypes.QuerySupplyOfRequest{
-		Denom: "bnb",
+		Denom: "azkme",
 	}
 	res, err := client.BankQueryClient.SupplyOf(context.Background(), &query)
 	assert.NoError(t, err)
@@ -115,7 +115,7 @@ func TestBankSupplyOf(t *testing.T) {
 }
 
 func TestBankTotalSupply(t *testing.T) {
-	client, err := gnfdclient.NewGreenfieldClient(test.TestRPCAddr, test.TestChainID)
+	client, err := gnfdclient.NewMechainClient(test.TestRPCAddr, test.TestChainID)
 	assert.NoError(t, err)
 
 	query := banktypes.QueryTotalSupplyRequest{}

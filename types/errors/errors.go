@@ -4,7 +4,7 @@ import (
 	"cosmossdk.io/errors"
 )
 
-const RootCodespace = "greenfield"
+const RootCodespace = "mechain"
 
 var (
 	ErrInvalidBucketName     = errors.Register(RootCodespace, 1000, "Invalid bucket name")
@@ -15,7 +15,7 @@ var (
 	ErrInvalidSPSignature    = errors.Register(RootCodespace, 1005, "Invalid sp signature")
 	ErrInvalidSPAddress      = errors.Register(RootCodespace, 1006, "Invalid sp address")
 	ErrInvalidPrincipal      = errors.Register(RootCodespace, 1007, "Invalid principal")
-	ErrInvalidGRN            = errors.Register(RootCodespace, 1008, "Not a standard greenfield resource name format")
+	ErrInvalidGRN            = errors.Register(RootCodespace, 1008, "Not a standard mechain resource name format")
 	ErrInvalidParameter      = errors.Register(RootCodespace, 1009, "Invalid parameter")
 	ErrInvalidVisibilityType = errors.Register(RootCodespace, 1010, "Invalid public type")
 	ErrInvalidActionType     = errors.Register(RootCodespace, 1011, "Invalid action type")
@@ -23,5 +23,5 @@ var (
 	ErrInvalidBlsSignature   = errors.Register(RootCodespace, 1013, "bls signature is invalid")
 	ErrInvalidMessage        = errors.Register(RootCodespace, 1014, "Invalid message")
 
-	ErrGRNTypeMismatch = errors.Register(RootCodespace, 2000, "Greenfield resource type mismatch")
+	ErrGRNTypeMismatch = errors.Register(RootCodespace, 2000, "Mechain resource type mismatch")
 )

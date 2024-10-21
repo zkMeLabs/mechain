@@ -24,7 +24,7 @@ func (s *TestSuite) TestTransferOutAck() {
 
 	transferOutApp := keeper.NewTransferOutApp(*s.bridgeKeeper)
 
-	s.stakingKeeper.EXPECT().BondDenom(gomock.Any()).Return("BNB").AnyTimes()
+	s.stakingKeeper.EXPECT().BondDenom(gomock.Any()).Return("azkme").AnyTimes()
 
 	// empty payload
 	result := transferOutApp.ExecuteAckPackage(s.ctx, &sdk.CrossChainAppContext{Sequence: 1}, nil)
@@ -59,7 +59,7 @@ func (s *TestSuite) TestTransferOutSynAndFailAck() {
 	transferOutApp := keeper.NewTransferOutApp(*s.bridgeKeeper)
 
 	s.crossChainKeeper.EXPECT().CreateRawIBCPackageWithFee(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(uint64(0), nil).AnyTimes()
-	s.stakingKeeper.EXPECT().BondDenom(gomock.Any()).Return("BNB").AnyTimes()
+	s.stakingKeeper.EXPECT().BondDenom(gomock.Any()).Return("azkme").AnyTimes()
 
 	// syn package
 	result := transferOutApp.ExecuteSynPackage(s.ctx, &sdk.CrossChainAppContext{Sequence: 1}, nil)
@@ -94,7 +94,7 @@ func (s *TestSuite) TestTransferIn() {
 	transferInApp := keeper.NewTransferInApp(*s.bridgeKeeper)
 
 	s.crossChainKeeper.EXPECT().CreateRawIBCPackageWithFee(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(uint64(0), nil).AnyTimes()
-	s.stakingKeeper.EXPECT().BondDenom(gomock.Any()).Return("BNB").AnyTimes()
+	s.stakingKeeper.EXPECT().BondDenom(gomock.Any()).Return("azkme").AnyTimes()
 
 	// syn package
 	// wrong payload

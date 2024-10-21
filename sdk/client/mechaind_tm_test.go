@@ -16,7 +16,7 @@ import (
 func TestTmClient(t *testing.T) {
 	km, err := keys.NewPrivateKeyManager(test.TestPrivateKey)
 	assert.NoError(t, err)
-	gnfdCli, err := NewGreenfieldClient(test.TestRPCAddr, test.TestChainID, WithKeyManager(km), WithWebSocketClient())
+	gnfdCli, err := NewMechainClient(test.TestRPCAddr, test.TestChainID, WithKeyManager(km), WithWebSocketClient())
 	assert.NoError(t, err)
 	to, err := sdk.AccAddressFromHexUnsafe(test.TestAddr)
 	assert.NoError(t, err)

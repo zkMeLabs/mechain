@@ -14,7 +14,7 @@ enum VisibilityType {
 }
 
 // SourceType represents the source of resource creation, which can
-// from Greenfield native or from a cross-chain transfer from BSC
+// from Mechain native or from a cross-chain transfer from BSC
 enum SourceType {
     Origin,
     MirrorPending,

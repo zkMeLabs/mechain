@@ -239,7 +239,7 @@ func (app *PermissionApp) getResourceOwner(ctx sdk.Context, policy *permtypes.Po
 		}
 		resOwner = sdk.MustAccAddressFromHex(groupInfo.Owner)
 	default:
-		return resOwner, gnfderrors.ErrInvalidGRN.Wrap("Unknown resource type in greenfield resource name")
+		return resOwner, gnfderrors.ErrInvalidGRN.Wrap("Unknown resource type in mechain resource name")
 	}
 	return resOwner, nil
 }

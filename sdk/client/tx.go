@@ -29,7 +29,7 @@ type TransactionClient interface {
 }
 
 // BroadcastTx signs and broadcasts a tx with simulated gas(if not provided in txOpt)
-func (c *GreenfieldClient) BroadcastTx(ctx context.Context, msgs []sdk.Msg, txOpt *types.TxOption, opts ...grpc.CallOption) (*tx.BroadcastTxResponse, error) {
+func (c *MechainClient) BroadcastTx(ctx context.Context, msgs []sdk.Msg, txOpt *types.TxOption, opts ...grpc.CallOption) (*tx.BroadcastTxResponse, error) {
 	txConfig := authtx.NewTxConfig(c.codec, []signing.SignMode{signing.SignMode_SIGN_MODE_EIP_712})
 	txBuilder := txConfig.NewTxBuilder()
 
@@ -81,7 +81,7 @@ func (c *GreenfieldClient) BroadcastTx(ctx context.Context, msgs []sdk.Msg, txOp
 }
 
 // SimulateTx simulates a tx and gets Gas info
-func (c *GreenfieldClient) SimulateTx(ctx context.Context, msgs []sdk.Msg, txOpt *types.TxOption, opts ...grpc.CallOption) (*tx.SimulateResponse, error) {
+func (c *MechainClient) SimulateTx(ctx context.Context, msgs []sdk.Msg, txOpt *types.TxOption, opts ...grpc.CallOption) (*tx.SimulateResponse, error) {
 	txConfig := authtx.NewTxConfig(c.codec, []signing.SignMode{signing.SignMode_SIGN_MODE_EIP_712})
 	txBuilder := txConfig.NewTxBuilder()
 	err := c.constructTx(ctx, msgs, txOpt, txBuilder)
@@ -99,7 +99,7 @@ func (c *GreenfieldClient) SimulateTx(ctx context.Context, msgs []sdk.Msg, txOpt
 	return simulateResponse, nil
 }
 
-func (c *GreenfieldClient) simulateTx(ctx context.Context, txBytes []byte, opts ...grpc.CallOption) (*tx.SimulateResponse, error) {
+func (c *MechainClient) simulateTx(ctx context.Context, txBytes []byte, opts ...grpc.CallOption) (*tx.SimulateResponse, error) {
 	simulateResponse, err := c.TxClient.Simulate(
 		ctx,
 		&tx.SimulateRequest{
@@ -114,7 +114,7 @@ func (c *GreenfieldClient) simulateTx(ctx context.Context, txBytes []byte, opts 
 }
 
 // SignTx signs the tx with private key and returns bytes
-func (c *GreenfieldClient) SignTx(ctx context.Context, msgs []sdk.Msg, txOpt *types.TxOption) ([]byte, error) {
+func (c *MechainClient) SignTx(ctx context.Context, msgs []sdk.Msg, txOpt *types.TxOption) ([]byte, error) {
 	txConfig := authtx.NewTxConfig(c.codec, []signing.SignMode{signing.SignMode_SIGN_MODE_EIP_712})
 	txBuilder := txConfig.NewTxBuilder()
 	if err := c.constructTxWithGasInfo(ctx, msgs, txOpt, txConfig, txBuilder); err != nil {
@@ -123,7 +123,7 @@ func (c *GreenfieldClient) SignTx(ctx context.Context, msgs []sdk.Msg, txOpt *ty
 	return c.signTx(ctx, txConfig, txBuilder, txOpt)
 }
 
-func (c *GreenfieldClient) signTx(ctx context.Context, txConfig sdkclient.TxConfig, txBuilder sdkclient.TxBuilder, txOpt *types.TxOption) ([]byte, error) {
+func (c *MechainClient) signTx(ctx context.Context, txConfig sdkclient.TxConfig, txBuilder sdkclient.TxBuilder, txOpt *types.TxOption) ([]byte, error) {
 	var km keys.KeyManager
 	var err error
 
@@ -173,7 +173,7 @@ func (c *GreenfieldClient) signTx(ctx context.Context, txConfig sdkclient.TxConf
 }
 
 // setSingerInfo gathers the signer info by doing "empty signature" hack, and inject it into txBuilder
-func (c *GreenfieldClient) setSingerInfo(ctx context.Context, txBuilder sdkclient.TxBuilder, txOpt *types.TxOption) error {
+func (c *MechainClient) setSingerInfo(ctx context.Context, txBuilder sdkclient.TxBuilder, txOpt *types.TxOption) error {
 	var km keys.KeyManager
 	var err error
 	if txOpt != nil && txOpt.OverrideKeyManager != nil {
@@ -205,7 +205,7 @@ func (c *GreenfieldClient) setSingerInfo(ctx context.Context, txBuilder sdkclien
 	return nil
 }
 
-func (c *GreenfieldClient) constructTx(ctx context.Context, msgs []sdk.Msg, txOpt *types.TxOption, txBuilder sdkclient.TxBuilder) error {
+func (c *MechainClient) constructTx(ctx context.Context, msgs []sdk.Msg, txOpt *types.TxOption, txBuilder sdkclient.TxBuilder) error {
 	for _, m := range msgs {
 		if err := m.ValidateBasic(); err != nil {
 			return err
@@ -233,7 +233,7 @@ func (c *GreenfieldClient) constructTx(ctx context.Context, msgs []sdk.Msg, txOp
 	return c.setSingerInfo(ctx, txBuilder, txOpt)
 }
 
-func (c *GreenfieldClient) constructTxWithGasInfo(ctx context.Context, msgs []sdk.Msg, txOpt *types.TxOption, txConfig sdkclient.TxConfig, txBuilder sdkclient.TxBuilder) error {
+func (c *MechainClient) constructTxWithGasInfo(ctx context.Context, msgs []sdk.Msg, txOpt *types.TxOption, txConfig sdkclient.TxConfig, txBuilder sdkclient.TxBuilder) error {
 	// construct a tx with txOpt excluding GasLimit and
 	if err := c.constructTx(ctx, msgs, txOpt, txBuilder); err != nil {
 		return err
@@ -276,7 +276,7 @@ func (c *GreenfieldClient) constructTxWithGasInfo(ctx context.Context, msgs []sd
 	return nil
 }
 
-func (c *GreenfieldClient) GetNonce(ctx context.Context) (uint64, error) {
+func (c *MechainClient) GetNonce(ctx context.Context) (uint64, error) {
 	km, err := c.GetKeyManager()
 	if err != nil {
 		return 0, err
@@ -288,7 +288,7 @@ func (c *GreenfieldClient) GetNonce(ctx context.Context) (uint64, error) {
 	return account.GetSequence(), nil
 }
 
-func (c *GreenfieldClient) GetNonceByAddr(ctx context.Context, addr sdk.AccAddress) (uint64, error) {
+func (c *MechainClient) GetNonceByAddr(ctx context.Context, addr sdk.AccAddress) (uint64, error) {
 	account, err := c.GetAccountByAddr(ctx, addr)
 	if err != nil {
 		return 0, err
@@ -296,7 +296,7 @@ func (c *GreenfieldClient) GetNonceByAddr(ctx context.Context, addr sdk.AccAddre
 	return account.GetSequence(), nil
 }
 
-func (c *GreenfieldClient) GetAccountByAddr(ctx context.Context, addr sdk.AccAddress) (authtypes.AccountI, error) {
+func (c *MechainClient) GetAccountByAddr(ctx context.Context, addr sdk.AccAddress) (authtypes.AccountI, error) {
 	acct, err := c.AuthQueryClient.Account(ctx, &authtypes.QueryAccountRequest{Address: addr.String()})
 	if err != nil {
 		return nil, err

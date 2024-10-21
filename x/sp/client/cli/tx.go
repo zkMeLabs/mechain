@@ -57,7 +57,7 @@ Where create_storagep_provider.json contains:
 {
   "messages": [
     {
-      "@type": "/greenfield.sp.MsgCreateStorageProvider",
+      "@type": "/mechain.sp.MsgCreateStorageProvider",
       "description": {
         "moniker": "sp0",
         "identity": "",
@@ -71,7 +71,7 @@ Where create_storagep_provider.json contains:
       "approval_address": "0xdCE01bfaBc7c9c0865bCCeF872493B4BE3b343E8",
       "gc_address": "0x0a1C8982C619B93bA7100411Fc58382306ab431b",
       "maintenance_address": "0xbE03316B1D7c3FCB69136e47e02442d6Fb3396dB",
-      "endpoint": "https://sp0.greenfield.io",
+      "endpoint": "https://sp0.mechain.io",
       "deposit": {
         "denom": "azkme",
         "amount": "1000000000000000000000"
@@ -87,11 +87,11 @@ Where create_storagep_provider.json contains:
   "title": "create sp for test",
   "summary": "test",
   "metadata": "4pIMOgIGx1vZGU=",
-  "deposit": "1000000000000000000BNB"
+  "deposit": "1000000000000000000azkme"
 }
 modify the related configurations as you need. Example:
-1) read_price = $0.09/1024/1024/1024/300(bnb price)*10^18/30/24/60/60 = 0.108 wei/bytes/s
-2) store_price = $0.023*(1-6*0.07)/1024/1024/1024/300(bnb price)*10^18/30/24/60/60 = 0.016 wei/bytes/s. (0.07 division for each secondary SP)
+1) read_price = $0.09/1024/1024/1024/300(azkme price)*10^18/30/24/60/60 = 0.108 wei/bytes/s
+2) store_price = $0.023*(1-6*0.07)/1024/1024/1024/300(azkme price)*10^18/30/24/60/60 = 0.016 wei/bytes/s. (0.07 division for each secondary SP)
 3) free_read_quota defines free read quota for each bucket, uint bytes.
 `, version.AppName)),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -326,7 +326,7 @@ func CmdGrantDepositAuthorization() *cobra.Command {
 			fmt.Sprintf(`create a new grant authorization to an address to execute a transaction on your behalf:
 
 Examples:
- $ %s tx %s grant [grantee address] send --spend-limit=1000bnb --SPAddress [sp address] --from=sp0_fund
+ $ %s tx %s grant [grantee address] send --spend-limit=1000azkme --SPAddress [sp address] --from=sp0_fund
 	`, version.AppName, types.ModuleName),
 		),
 		Args: cobra.ExactArgs(1),
@@ -439,9 +439,9 @@ func CreateStorageProviderMsgFlagSet(ipDefault string) (fs *flag.FlagSet, defaul
 	fsCreateStorageProvider.String(FlagEndpoint, "", "The storage provider's endpoint")
 
 	// payment
-	fsCreateStorageProvider.String(FlagReadPrice, "100", "The storage provider's read price, in bnb wei per charge byte")
+	fsCreateStorageProvider.String(FlagReadPrice, "100", "The storage provider's read price, in azkme wei per charge byte")
 	fsCreateStorageProvider.Uint64(FlagFreeReadQuota, 100000000, "The storage provider's free read quota, in byte")
-	fsCreateStorageProvider.String(FlagStorePrice, "10000", "The storage provider's store price, in bnb wei per charge byte")
+	fsCreateStorageProvider.String(FlagStorePrice, "10000", "The storage provider's store price, in azkme wei per charge byte")
 
 	return fsCreateStorageProvider, defaultsDesc
 }
