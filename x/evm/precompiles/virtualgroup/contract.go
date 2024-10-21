@@ -36,6 +36,24 @@ func (c *Contract) RequiredGas(input []byte) uint64 {
 	switch method.Name {
 	case CreateGlobalVirtualGroupMethodName:
 		return CreateGlobalVirtualGroupGas
+	case DeleteGlobalVirtualGroupMethodName:
+		return DeleteGlobalVirtualGroupGas
+	case SwapOutMethodName:
+		return SwapOutGas
+	case CompleteSwapOutMethodName:
+		return CompleteSwapOutGas
+	case SPExitMethodName:
+		return SPExitGas
+	case CompleteSPExitMethodName:
+		return CompleteSPExitGas
+	case DepositMethodName:
+		return DepositGas
+	case ReserveSwapInMethodName:
+		return ReserveSwapInGas
+	case CompleteSwapInMethodName:
+		return CompleteSwapInGas
+	case CancelSwapInMethodName:
+		return CancelSwapInGas
 	case GlobalVirtualGroupFamiliesMethodName:
 		return GlobalVirtualGroupFamiliesGas
 	default:
@@ -56,6 +74,24 @@ func (c *Contract) Run(evm *vm.EVM, contract *vm.Contract, readonly bool) (ret [
 		switch method.Name {
 		case CreateGlobalVirtualGroupMethodName:
 			ret, err = c.CreateGlobalVirtualGroup(ctx, evm, contract, readonly)
+		case DeleteGlobalVirtualGroupMethodName:
+			ret, err = c.DeleteGlobalVirtualGroup(ctx, evm, contract, readonly)
+		case SwapOutMethodName:
+			ret, err = c.SwapOut(ctx, evm, contract, readonly)
+		case CompleteSwapOutMethodName:
+			ret, err = c.CompleteSwapOut(ctx, evm, contract, readonly)
+		case SPExitMethodName:
+			ret, err = c.SPExit(ctx, evm, contract, readonly)
+		case CompleteSPExitMethodName:
+			ret, err = c.CompleteSPExit(ctx, evm, contract, readonly)
+		case DepositMethodName:
+			ret, err = c.Deposit(ctx, evm, contract, readonly)
+		case ReserveSwapInMethodName:
+			ret, err = c.ReserveSwapIn(ctx, evm, contract, readonly)
+		case CompleteSwapInMethodName:
+			ret, err = c.CompleteSwapIn(ctx, evm, contract, readonly)
+		case CancelSwapInMethodName:
+			ret, err = c.CancelSwapIn(ctx, evm, contract, readonly)
 		case GlobalVirtualGroupFamiliesMethodName:
 			ret, err = c.GlobalVirtualGroupFamilies(ctx, evm, contract, readonly)
 		}
