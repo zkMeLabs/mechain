@@ -15,7 +15,7 @@ services:
       bash localup.sh init 4 3 &&
       bash localup.sh generate 4 3 &&
       bash localup.sh copy_genesis &&
-       bash localup.sh persistent_peers &&
+      bash localup.sh persistent_peers &&
       bash localup.sh export_validator 4 > validator.json &&
       bash localup.sh export_sps 4 3 > sp.json &&
       touch init_done && 
@@ -45,7 +45,10 @@ services:
     volumes:
       - "local-env:/app:Z"
     command: >
-      /usr/bin/mechaind start --home /app/validator0
+      bash -c "
+      mkdir -p ~/.mechaind &&
+      cp -r /app/validator0/* ~/.mechaind/ && 
+      mechaind start
       --keyring-backend test
       --api.enabled-unsafe-cors true
       --address 0.0.0.0:28750
@@ -55,6 +58,7 @@ services:
       --rpc.laddr tcp://0.0.0.0:26657
       --rpc.unsafe true
       --log_format json
+      "
   vnode-1:
     container_name: mechaind-validator-1
     depends_on:
@@ -74,7 +78,10 @@ services:
     volumes:
       - "local-env:/app:Z"
     command: >
-      /usr/bin/mechaind start --home /app/validator1
+      bash -c "
+      mkdir -p ~/.mechaind &&
+      cp -r /app/validator1/* ~/.mechaind/ && 
+      mechaind start
       --keyring-backend test
       --api.enabled-unsafe-cors true
       --address 0.0.0.0:28750
@@ -84,6 +91,7 @@ services:
       --rpc.laddr tcp://0.0.0.0:26657
       --rpc.unsafe true
       --log_format json
+      "
   vnode-2:
     container_name: mechaind-validator-2
     depends_on:
@@ -103,7 +111,10 @@ services:
     volumes:
       - "local-env:/app:Z"
     command: >
-      /usr/bin/mechaind start --home /app/validator2
+      bash -c "
+      mkdir -p ~/.mechaind &&
+      cp -r /app/validator2/* ~/.mechaind/ && 
+      mechaind start
       --keyring-backend test
       --api.enabled-unsafe-cors true
       --address 0.0.0.0:28750
@@ -113,6 +124,7 @@ services:
       --rpc.laddr tcp://0.0.0.0:26657
       --rpc.unsafe true
       --log_format json
+      "
   vnode-3:
     container_name: mechaind-validator-3
     depends_on:
@@ -132,7 +144,10 @@ services:
     volumes:
       - "local-env:/app:Z"
     command: >
-      /usr/bin/mechaind start --home /app/validator3
+      bash -c "
+      mkdir -p ~/.mechaind &&
+      cp -r /app/validator3/* ~/.mechaind/ && 
+      mechaind start
       --keyring-backend test
       --api.enabled-unsafe-cors true
       --address 0.0.0.0:28750
@@ -142,6 +157,7 @@ services:
       --rpc.laddr tcp://0.0.0.0:26657
       --rpc.unsafe true
       --log_format json
+      "
 volumes:
   local-env:
 networks:
