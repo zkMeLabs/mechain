@@ -9,7 +9,7 @@ import (
 
 func TestParseDenomFromBalanceKey(t *testing.T) {
 	key, _ := hex.DecodeString("0214cf150037e47b0c53e826a2d0050de1da2c8f5caa424e42")
-	require.Equal(t, "BNB", parseDenomFromBalanceKey(key))
+	require.Equal(t, "azkme", parseDenomFromBalanceKey(key))
 }
 
 func TestParseAddressFromBalanceKey(t *testing.T) {
@@ -19,5 +19,5 @@ func TestParseAddressFromBalanceKey(t *testing.T) {
 
 func TestParseDenomFromSupplyKey(t *testing.T) {
 	key, _ := hex.DecodeString("00424e42")
-	require.Equal(t, "BNB", parseDenomFromSupplyKey(key))
+	require.Equal(t, "azkme", parseDenomFromSupplyKey(key))
 }

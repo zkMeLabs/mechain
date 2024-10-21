@@ -90,7 +90,7 @@ func (s *CLITestSuite) TestTxCmdTransferOut() {
 			append(
 				[]string{
 					"invalidAddress",
-					"1000000000000000000BNB",
+					"1000000000000000000azkme",
 				},
 				commonFlags...,
 			),
@@ -101,7 +101,7 @@ func (s *CLITestSuite) TestTxCmdTransferOut() {
 			append(
 				[]string{
 					sample.RandAccAddressHex(),
-					"1000000000000000000BNB",
+					"1000000000000000000azkme",
 				},
 				commonFlags...,
 			),

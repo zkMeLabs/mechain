@@ -329,7 +329,7 @@ func (k Keeper) getResourceOwnerAndIDFromGRN(ctx sdk.Context, grn evmtypes.GRN) 
 		resOwner = sdk.MustAccAddressFromHex(groupInfo.Owner)
 		resID = groupInfo.Id
 	default:
-		return resOwner, resID, gnfderrors.ErrInvalidGRN.Wrap("Unknown resource type in greenfield resource name")
+		return resOwner, resID, gnfderrors.ErrInvalidGRN.Wrap("Unknown resource type in mechain resource name")
 	}
 
 	return resOwner, resID, nil

@@ -99,7 +99,7 @@ func (s *BridgeTestSuite) TestGovChannel() {
 
 	msgProposal, err := govtypesv1.NewMsgSubmitProposal(
 		[]sdk.Msg{msgUpdatePermissions},
-		sdk.Coins{sdk.NewCoin(s.BaseSuite.Config.Denom, gnfdtypes.NewIntFromInt64WithDecimal(100, gnfdtypes.DecimalBNB))},
+		sdk.Coins{sdk.NewCoin(s.BaseSuite.Config.Denom, gnfdtypes.NewIntFromInt64WithDecimal(100, gnfdtypes.DecimalZKME))},
 		validator.String(),
 		"test", "test", "test",
 	)
@@ -174,7 +174,7 @@ func (s *BridgeTestSuite) TestGovChannel() {
 
 	msgProposal, err = govtypesv1.NewMsgSubmitProposal(
 		[]sdk.Msg{msgUpdatePermissions},
-		sdk.Coins{sdk.NewCoin(s.BaseSuite.Config.Denom, gnfdtypes.NewIntFromInt64WithDecimal(100, gnfdtypes.DecimalBNB))},
+		sdk.Coins{sdk.NewCoin(s.BaseSuite.Config.Denom, gnfdtypes.NewIntFromInt64WithDecimal(100, gnfdtypes.DecimalZKME))},
 		validator.String(),
 		"test", "test", "test",
 	)
@@ -233,7 +233,7 @@ func (s *BridgeTestSuite) TestUpdateBridgeParams() {
 		Params:    updatedParams,
 	}
 
-	proposal, err := govtypesv1.NewMsgSubmitProposal([]sdk.Msg{msgUpdateParams}, sdk.NewCoins(sdk.NewCoin("BNB", sdk.NewInt(1000000000000000000))),
+	proposal, err := govtypesv1.NewMsgSubmitProposal([]sdk.Msg{msgUpdateParams}, sdk.NewCoins(sdk.NewCoin("azkme", sdk.NewInt(1000000000000000000))),
 		s.Validator.GetAddr().String(), "", "update Bridge params", "Test update Bridge params")
 	s.Require().NoError(err)
 	txBroadCastResp, err := s.SendTxBlockWithoutCheck(proposal, s.Validator)
@@ -263,7 +263,7 @@ func (s *BridgeTestSuite) TestUpdateBridgeParams() {
 	txOpt := &gnfdtypes.TxOption{
 		Mode:      &mode,
 		Memo:      "",
-		FeeAmount: sdk.NewCoins(sdk.NewCoin("BNB", sdk.NewInt(1000000000000000000))),
+		FeeAmount: sdk.NewCoins(sdk.NewCoin("azkme", sdk.NewInt(1000000000000000000))),
 	}
 	voteBroadCastResp, err := s.SendTxBlockWithoutCheckWithTxOpt(govtypesv1.NewMsgVote(s.Validator.GetAddr(), uint64(proposalID), govtypesv1.OptionYes, ""),
 		s.Validator, txOpt)

@@ -75,7 +75,7 @@ var (
 
 var (
 	KeySpSlashMaxAmount     = []byte("SpSlashMaxAmount")
-	DefaultSpSlashMaxAmount = math.NewIntFromBigInt(big.NewInt(5e18)) // 5 bnb
+	DefaultSpSlashMaxAmount = math.NewIntFromBigInt(big.NewInt(5e18)) // 5 azkme
 )
 
 var (

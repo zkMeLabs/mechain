@@ -170,7 +170,7 @@ func (s *VirtualGroupTestSuite) TestBasic() {
 	msgDeposit := virtualgroupmoduletypes.MsgDeposit{
 		StorageProvider:      primarySP.FundingKey.GetAddr().String(),
 		GlobalVirtualGroupId: newGVG.Id,
-		Deposit:              sdk.NewCoin(s.Config.Denom, types.NewIntFromInt64WithDecimal(1, types.DecimalBNB)),
+		Deposit:              sdk.NewCoin(s.Config.Denom, types.NewIntFromInt64WithDecimal(1, types.DecimalZKME)),
 	}
 	s.SendTxBlock(primarySP.FundingKey, &msgDeposit)
 
@@ -185,7 +185,7 @@ func (s *VirtualGroupTestSuite) TestBasic() {
 
 	msgWithdraw := virtualgroupmoduletypes.MsgWithdraw{
 		StorageProvider:      primarySP.FundingKey.GetAddr().String(),
-		Withdraw:             sdk.NewCoin(s.Config.Denom, types.NewIntFromInt64WithDecimal(1, types.DecimalBNB)),
+		Withdraw:             sdk.NewCoin(s.Config.Denom, types.NewIntFromInt64WithDecimal(1, types.DecimalZKME)),
 		GlobalVirtualGroupId: newGVG.Id,
 	}
 	s.SendTxBlock(primarySP.FundingKey, &msgWithdraw)
@@ -224,7 +224,7 @@ func (s *VirtualGroupTestSuite) TestBasic() {
 		SecondarySpIds:  secondarySPIDs,
 		Deposit: sdk.Coin{
 			Denom:  s.Config.Denom,
-			Amount: types.NewIntFromInt64WithDecimal(1, types.DecimalBNB),
+			Amount: types.NewIntFromInt64WithDecimal(1, types.DecimalZKME),
 		},
 	}
 	s.SendTxBlockWithExpectErrorString(&msgCreateGVG, primarySP.OperatorKey, virtualgroupmoduletypes.ErrInvalidSecondarySPCount.Error())
@@ -243,7 +243,7 @@ func (s *VirtualGroupTestSuite) TestBasic() {
 		SecondarySpIds:  secondarySPIDs,
 		Deposit: sdk.Coin{
 			Denom:  s.Config.Denom,
-			Amount: types.NewIntFromInt64WithDecimal(1, types.DecimalBNB),
+			Amount: types.NewIntFromInt64WithDecimal(1, types.DecimalZKME),
 		},
 	}
 	s.SendTxBlockWithExpectErrorString(&msgCreateGVG, primarySP.OperatorKey, virtualgroupmoduletypes.ErrDuplicateSecondarySP.Error())
@@ -264,7 +264,7 @@ func (s *VirtualGroupTestSuite) TestBasic() {
 		SecondarySpIds:  secondarySPIDs,
 		Deposit: sdk.Coin{
 			Denom:  s.Config.Denom,
-			Amount: types.NewIntFromInt64WithDecimal(1, types.DecimalBNB),
+			Amount: types.NewIntFromInt64WithDecimal(1, types.DecimalZKME),
 		},
 	}
 	s.SendTxBlockWithExpectErrorString(&msgCreateGVG, primarySP.OperatorKey, virtualgroupmoduletypes.ErrDuplicateGVG.Error())
@@ -1375,7 +1375,7 @@ func (s *VirtualGroupTestSuite) TestSPExit_SwapInfo_Expired() {
 func filterSettleGVGEventFromTx(txRes *sdk.TxResponse) virtualgroupmoduletypes.EventSettleGlobalVirtualGroup {
 	idStr, amountStr := "", ""
 	for _, event := range txRes.Logs[0].Events {
-		if event.Type == "greenfield.virtualgroup.EventSettleGlobalVirtualGroup" {
+		if event.Type == "mechain.virtualgroup.EventSettleGlobalVirtualGroup" {
 			for _, attr := range event.Attributes {
 				if attr.Key == "id" {
 					idStr = strings.Trim(attr.Value, `"`)
@@ -1396,7 +1396,7 @@ func filterSettleGVGEventFromTx(txRes *sdk.TxResponse) virtualgroupmoduletypes.E
 func filterSettleGVGFamilyEventFromTx(txRes *sdk.TxResponse) virtualgroupmoduletypes.EventSettleGlobalVirtualGroupFamily {
 	idStr, spIDStr, amountStr := "", "", ""
 	for _, event := range txRes.Logs[0].Events {
-		if event.Type == "greenfield.virtualgroup.EventSettleGlobalVirtualGroupFamily" {
+		if event.Type == "mechain.virtualgroup.EventSettleGlobalVirtualGroupFamily" {
 			for _, attr := range event.Attributes {
 				switch attr.Key {
 				case "id":

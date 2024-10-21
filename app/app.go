@@ -666,7 +666,7 @@ func NewEvmos(
 	// If evidence needs to be handled for the app, set routes in router here and seal
 	app.EvidenceKeeper = *evidenceKeeper
 
-	// greenfield keeper
+	// mechain keeper
 	app.BridgeKeeper = *bridgemodulekeeper.NewKeeper(
 		appCodec,
 		keys[bridgemoduletypes.StoreKey],

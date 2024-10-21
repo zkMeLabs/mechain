@@ -119,7 +119,7 @@ func (s *KeeperTestSuite) TestSlashBasic() {
 		SealAddress:     sealAcc.String(),
 		ApprovalAddress: approvalAcc.String(),
 		BlsKey:          blsPubKey,
-		TotalDeposit:    math.NewIntWithDecimal(2010, types2.DecimalBNB),
+		TotalDeposit:    math.NewIntWithDecimal(2010, types2.DecimalZKME),
 	}
 
 	k.SetStorageProvider(ctx, sp)
@@ -131,7 +131,7 @@ func (s *KeeperTestSuite) TestSlashBasic() {
 
 	rewardInfo := types.RewardInfo{
 		Address: sample.RandAccAddressHex(),
-		Amount:  sdk.NewCoin(types2.Denom, math.NewIntWithDecimal(10, types2.DecimalBNB)),
+		Amount:  sdk.NewCoin(types2.Denom, math.NewIntWithDecimal(10, types2.DecimalZKME)),
 	}
 
 	err := k.Slash(ctx, sp.Id, []types.RewardInfo{rewardInfo})
@@ -140,5 +140,5 @@ func (s *KeeperTestSuite) TestSlashBasic() {
 	spAfterSlash, found := k.GetStorageProvider(ctx, 100)
 	require.True(s.T(), found)
 	s.T().Logf("%s", spAfterSlash.TotalDeposit.String())
-	require.True(s.T(), spAfterSlash.TotalDeposit.Equal(math.NewIntWithDecimal(2000, types2.DecimalBNB)))
+	require.True(s.T(), spAfterSlash.TotalDeposit.Equal(math.NewIntWithDecimal(2000, types2.DecimalZKME)))
 }

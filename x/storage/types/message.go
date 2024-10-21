@@ -1299,7 +1299,7 @@ func (msg *MsgPutPolicy) ValidateBasic() error {
 	var grn grn2.GRN
 	err = grn.ParseFromString(msg.Resource, true)
 	if err != nil {
-		return errors.Wrapf(gnfderrors.ErrInvalidGRN, "invalid greenfield resource name (%s)", err)
+		return errors.Wrapf(gnfderrors.ErrInvalidGRN, "invalid mechain resource name (%s)", err)
 	}
 
 	if msg.Principal == nil {
@@ -1375,7 +1375,7 @@ func (msg *MsgDeletePolicy) ValidateBasic() error {
 	var grn grn2.GRN
 	err = grn.ParseFromString(msg.Resource, false)
 	if err != nil {
-		return errors.Wrapf(gnfderrors.ErrInvalidGRN, "invalid greenfield resource name (%s)", err)
+		return errors.Wrapf(gnfderrors.ErrInvalidGRN, "invalid mechain resource name (%s)", err)
 	}
 
 	if msg.Principal == nil {
@@ -1712,7 +1712,7 @@ func (msg *MsgSetTag) ValidateBasic() error {
 	var grn grn2.GRN
 	err = grn.ParseFromString(msg.Resource, true)
 	if err != nil {
-		return errors.Wrapf(gnfderrors.ErrInvalidGRN, "invalid greenfield resource name (%s)", err)
+		return errors.Wrapf(gnfderrors.ErrInvalidGRN, "invalid mechain resource name (%s)", err)
 	}
 
 	if len(msg.Tags.GetTags()) > MaxTagCount {
