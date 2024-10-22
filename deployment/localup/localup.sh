@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
-local_env=${SCRIPT_DIR}/../.local
+local_env=${SCRIPT_DIR}/.local
 
 source ${SCRIPT_DIR}/.env
 source ${SCRIPT_DIR}/utils.sh
