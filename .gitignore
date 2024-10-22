@@ -115,3 +115,5 @@ scripts/proposal_status.json
 scripts/all_validators.yaml
 
 deployment/.local
+deployment/dockerup/send_tokens.sh
+deployment/dockerup/.env
