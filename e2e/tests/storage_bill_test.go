@@ -172,7 +172,7 @@ func (s *PaymentTestSuite) TestStorageBill_Smoke() {
 	var feePreviewEventEmitted bool
 	events := res.Result.Events
 	for _, event := range events {
-		if event.Type == "greenfield.payment.EventFeePreview" {
+		if event.Type == "mechain.payment.EventFeePreview" {
 			s.T().Logf("event %v", event)
 			feePreviewEventEmitted = true
 		}
@@ -1601,7 +1601,7 @@ func (s *PaymentTestSuite) TestStorageBill_UpdateBucketQuota() {
 	chargedReadQuota := readQuota * 1024 * 1024
 	msgUpdateBucketInfo := storagetypes.NewMsgUpdateBucketInfo(
 		user.GetAddr(), bucketName, &chargedReadQuota, user.GetAddr(), storagetypes.VISIBILITY_TYPE_PRIVATE)
-	s.reduceBNBBalance(user, s.Validator, sdkmath.NewIntWithDecimal(1, 16))
+	s.reduceZKMEBalance(user, s.Validator, sdkmath.NewIntWithDecimal(1, 16))
 	s.SendTxBlockWithExpectErrorString(msgUpdateBucketInfo, user, "apply user flows list failed")
 }
 
@@ -1882,7 +1882,7 @@ func (s *PaymentTestSuite) TestStorageBill_UpdatePaymentAddress() {
 //
 //	s.SendTxBlock(user, msgMigrationBucket)
 //	s.Require().NoError(err)
-//	s.reduceBNBBalance(user, s.Validator, sdkmath.NewIntWithDecimal(1, 1))
+//	s.reduceZKMEBalance(user, s.Validator, sdkmath.NewIntWithDecimal(1, 1))
 //
 //	s.SendTxBlockWithExpectErrorString(msgCompleteMigrationBucket, primarySP.OperatorKey, "apply stream record changes for user failed")
 //
@@ -1890,7 +1890,7 @@ func (s *PaymentTestSuite) TestStorageBill_UpdatePaymentAddress() {
 //	readPrice, primaryPrice, secondaryPrice := s.getPrices(time.Now().Unix())
 //	s.T().Logf("readPrice: %v, primaryPrice: %v,secondaryPrice: %v", readPrice, primaryPrice, secondaryPrice)
 //
-//	s.transferBNB(s.Validator, user, sdkmath.NewIntWithDecimal(10000, 18))
+//	s.transferZKME(s.Validator, user, sdkmath.NewIntWithDecimal(10000, 18))
 //
 //	s.SendTxBlock(primarySP.OperatorKey, msgCompleteMigrationBucket)
 //	streamRecordsAfter = s.getStreamRecords(streamAddresses0)
@@ -2085,7 +2085,7 @@ func (s *PaymentTestSuite) TestStorageBill_UpdatePaymentAddress() {
 //	readRate := readPrice.MulInt(sdkmath.NewIntFromUint64(bucketChargedReadQuota)).TruncateInt()
 //	readTaxRate := params.VersionedParams.ValidatorTaxRate.MulInt(readRate).TruncateInt()
 //	readTotalRate := readRate.Add(readTaxRate)
-//	paymentAccountBNBNeeded := readTotalRate.Mul(sdkmath.NewIntFromUint64(reserveTime))
+//	paymentAccountZKMENeeded := readTotalRate.Mul(sdkmath.NewIntFromUint64(reserveTime))
 //
 //	// create payment account and deposit
 //	msgCreatePaymentAccount := &paymenttypes.MsgCreatePaymentAccount{
@@ -2102,7 +2102,7 @@ func (s *PaymentTestSuite) TestStorageBill_UpdatePaymentAddress() {
 //	msgDeposit := &paymenttypes.MsgDeposit{
 //		Creator: user.GetAddr().String(),
 //		To:      paymentAddr,
-//		Amount:  paymentAccountBNBNeeded,
+//		Amount:  paymentAccountZKMENeeded,
 //	}
 //	_ = s.SendTxBlock(user, msgDeposit)
 //
@@ -2274,7 +2274,7 @@ func (s *PaymentTestSuite) updateBucket(user keys.KeyManager, bucketName, paymen
 	return headObjectResponse.BucketInfo, err
 }
 
-func (s *PaymentTestSuite) reduceBNBBalance(user, to keys.KeyManager, leftBalance sdkmath.Int) {
+func (s *PaymentTestSuite) reduceZKMEBalance(user, to keys.KeyManager, leftBalance sdkmath.Int) {
 	queryBalanceRequest := banktypes.QueryBalanceRequest{Denom: s.Config.Denom, Address: user.GetAddr().String()}
 	queryBalanceResponse, err := s.Client.BankQueryClient.Balance(context.Background(), &queryBalanceRequest)
 	s.Require().NoError(err)
@@ -2287,9 +2287,9 @@ func (s *PaymentTestSuite) reduceBNBBalance(user, to keys.KeyManager, leftBalanc
 	gasLimit := simulateResponse.GasInfo.GetGasUsed()
 	gasPrice, err := sdk.ParseCoinNormalized(simulateResponse.GasInfo.GetMinGasPrice())
 	s.Require().NoError(err)
-	sendBNBAmount := queryBalanceResponse.Balance.Amount.Sub(gasPrice.Amount.Mul(sdk.NewInt(int64(gasLimit)))).Sub(leftBalance)
+	sendZKMEAmount := queryBalanceResponse.Balance.Amount.Sub(gasPrice.Amount.Mul(sdk.NewInt(int64(gasLimit)))).Sub(leftBalance)
 	msgSend.Amount = sdk.NewCoins(
-		sdk.NewCoin(s.Config.Denom, sendBNBAmount),
+		sdk.NewCoin(s.Config.Denom, sendZKMEAmount),
 	)
 	s.SendTxBlock(user, msgSend)
 	queryBalanceResponse, err = s.Client.BankQueryClient.Balance(context.Background(), &queryBalanceRequest)
@@ -2297,7 +2297,7 @@ func (s *PaymentTestSuite) reduceBNBBalance(user, to keys.KeyManager, leftBalanc
 	s.T().Logf("balance: %v", queryBalanceResponse.Balance.Amount)
 }
 
-// func (s *PaymentTestSuite) transferBNB(from, to keys.KeyManager, amount sdkmath.Int) {
+// func (s *PaymentTestSuite) transferZKME(from, to keys.KeyManager, amount sdkmath.Int) {
 //	msgSend := banktypes.NewMsgSend(from.GetAddr(), to.GetAddr(), sdk.NewCoins(
 //		sdk.NewCoin(s.Config.Denom, amount),
 //	))

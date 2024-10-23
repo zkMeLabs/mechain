@@ -20,7 +20,7 @@ import (
 func TestSendTokenSucceedWithSimulatedGas(t *testing.T) {
 	km, err := keys.NewPrivateKeyManager(test.TestPrivateKey)
 	assert.NoError(t, err)
-	gnfdCli, err := NewGreenfieldClient(test.TestRPCAddr, test.TestChainID, WithKeyManager(km))
+	gnfdCli, err := NewMechainClient(test.TestRPCAddr, test.TestChainID, WithKeyManager(km))
 	assert.NoError(t, err)
 	to, err := sdk.AccAddressFromHexUnsafe(test.TestAddr)
 	assert.NoError(t, err)
@@ -34,7 +34,7 @@ func TestSendTokenSucceedWithSimulatedGas(t *testing.T) {
 func TestSendTokenWithTxOptionSucceed(t *testing.T) {
 	km, err := keys.NewPrivateKeyManager(test.TestPrivateKey)
 	assert.NoError(t, err)
-	gnfdCli, err := NewGreenfieldClient(test.TestRPCAddr, test.TestChainID, WithKeyManager(km))
+	gnfdCli, err := NewMechainClient(test.TestRPCAddr, test.TestChainID, WithKeyManager(km))
 	assert.NoError(t, err)
 	to, err := sdk.AccAddressFromHexUnsafe(test.TestAddr)
 	assert.NoError(t, err)
@@ -61,7 +61,7 @@ func TestSendTokenWithTxOptionSucceed(t *testing.T) {
 func TestErrorOutWhenGasInfoNotFullProvided(t *testing.T) {
 	km, err := keys.NewPrivateKeyManager(test.TestPrivateKey)
 	assert.NoError(t, err)
-	gnfdCli, err := NewGreenfieldClient(test.TestRPCAddr, test.TestChainID, WithKeyManager(km))
+	gnfdCli, err := NewMechainClient(test.TestRPCAddr, test.TestChainID, WithKeyManager(km))
 	assert.NoError(t, err)
 	to, err := sdk.AccAddressFromHexUnsafe(test.TestAddr)
 	assert.NoError(t, err)
@@ -82,7 +82,7 @@ func TestErrorOutWhenGasInfoNotFullProvided(t *testing.T) {
 func TestSimulateTx(t *testing.T) {
 	km, err := keys.NewPrivateKeyManager(test.TestPrivateKey)
 	assert.NoError(t, err)
-	gnfdCli, err := NewGreenfieldClient(test.TestRPCAddr, test.TestChainID, WithKeyManager(km))
+	gnfdCli, err := NewMechainClient(test.TestRPCAddr, test.TestChainID, WithKeyManager(km))
 	assert.NoError(t, err)
 	to, err := sdk.AccAddressFromHexUnsafe(test.TestAddr)
 	assert.NoError(t, err)
@@ -95,7 +95,7 @@ func TestSimulateTx(t *testing.T) {
 func TestSendTokenWithCustomizedNonce(t *testing.T) {
 	km, err := keys.NewPrivateKeyManager(test.TestPrivateKey)
 	assert.NoError(t, err)
-	gnfdCli, err := NewGreenfieldClient(test.TestRPCAddr, test.TestChainID, WithKeyManager(km))
+	gnfdCli, err := NewMechainClient(test.TestRPCAddr, test.TestChainID, WithKeyManager(km))
 	assert.NoError(t, err)
 	to, err := sdk.AccAddressFromHexUnsafe(test.TestAddr)
 	assert.NoError(t, err)
@@ -122,7 +122,7 @@ func TestSendTokenWithCustomizedNonce(t *testing.T) {
 func TestSendTxWithGrpcConn(t *testing.T) {
 	km, err := keys.NewPrivateKeyManager(test.TestPrivateKey)
 	assert.NoError(t, err)
-	gnfdCli, err := NewGreenfieldClient("", test.TestChainID, WithKeyManager(km), WithGrpcConnectionAndDialOption(test.TestGRPCAddr, grpc.WithTransportCredentials(insecure.NewCredentials())))
+	gnfdCli, err := NewMechainClient("", test.TestChainID, WithKeyManager(km), WithGrpcConnectionAndDialOption(test.TestGRPCAddr, grpc.WithTransportCredentials(insecure.NewCredentials())))
 	assert.NoError(t, err)
 	to, err := sdk.AccAddressFromHexUnsafe(test.TestAddr)
 	assert.NoError(t, err)
@@ -147,7 +147,7 @@ func TestSendTokenWithOverrideAccount(t *testing.T) {
 	// which is not being used to send tx
 	km, err := keys.NewPrivateKeyManager("2a3f0f19fbcb057e053696879207324c24f601ab47db92676cc4958ea9089761")
 	assert.NoError(t, err)
-	gnfdCli, err := NewGreenfieldClient(test.TestRPCAddr, test.TestChainID, WithKeyManager(km))
+	gnfdCli, err := NewMechainClient(test.TestRPCAddr, test.TestChainID, WithKeyManager(km))
 	assert.NoError(t, err)
 
 	km2, err := keys.NewPrivateKeyManager(test.TestPrivateKey)
@@ -179,7 +179,7 @@ func TestSendTokenWithOverrideAccount(t *testing.T) {
 func TestSendTXViaWebsocketClient(t *testing.T) {
 	km, err := keys.NewPrivateKeyManager(test.TestPrivateKey)
 	assert.NoError(t, err)
-	gnfdCli, err := NewGreenfieldClient(test.TestRPCAddr, test.TestChainID, WithKeyManager(km), WithWebSocketClient())
+	gnfdCli, err := NewMechainClient(test.TestRPCAddr, test.TestChainID, WithKeyManager(km), WithWebSocketClient())
 	assert.NoError(t, err)
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()

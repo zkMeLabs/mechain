@@ -163,11 +163,11 @@ func (m *VersionedParams) GetReserveTime() uint64 {
 }
 
 //func init() {
-//	proto.RegisterType((*Params)(nil), "greenfield.payment.Params")
-//	proto.RegisterType((*VersionedParams)(nil), "greenfield.payment.VersionedParams")
+//	proto.RegisterType((*Params)(nil), "mechain.payment.Params")
+//	proto.RegisterType((*VersionedParams)(nil), "mechain.payment.VersionedParams")
 //}
 //
-//func init() { proto.RegisterFile("greenfield/payment/params.proto", fileDescriptor_bd7d37632356c8f4) }
+//func init() { proto.RegisterFile("mechain/payment/params.proto", fileDescriptor_bd7d37632356c8f4) }
 
 var fileDescriptor_bd7d37632356c8f4 = []byte{
 	// 509 bytes of a gzipped FileDescriptorProto

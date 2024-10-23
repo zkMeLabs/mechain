@@ -1,0 +1,16 @@
+syntax = "proto3";
+package mechain.resource;
+
+import "cosmos_proto/cosmos.proto";
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/evmos/evmos/v12/types/resource";
+
+enum ResourceType {
+  option (gogoproto.goproto_enum_prefix) = false;
+
+  RESOURCE_TYPE_UNSPECIFIED = 0;
+  RESOURCE_TYPE_BUCKET = 1;
+  RESOURCE_TYPE_OBJECT = 2;
+  RESOURCE_TYPE_GROUP = 3;
+}

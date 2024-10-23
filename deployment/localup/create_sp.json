@@ -1,7 +1,7 @@
 {
   "messages": [
     {
-      "@type": "/greenfield.sp.MsgCreateStorageProvider",
+      "@type": "/mechain.sp.MsgCreateStorageProvider",
       "description": {
         "moniker": "sp0",
         "identity": "",
@@ -15,7 +15,7 @@
       "approval_address": "0x8FEe9d987Ce29Dd7e9A6aF5eb9d8AA5f98a367b1",
       "gc_address": "0x9c024772c932b3E6748AbE50C4e895086Be18249",
       "maintenance_address": "0xbE03316B1D7c3FCB69136e47e02442d6Fb3396dB",
-      "endpoint": "https://www.greenfield.io",
+      "endpoint": "https://www.mechain.io",
       "deposit": {
         "denom": "azkme",
         "amount": "10000000000000000000000"

@@ -717,7 +717,22 @@
           "amount": "35000000000000000000000000000"
         }
       ],
-      "denom_metadata": [{"description":"The native staking token of the Mechain.","denom_units":[{"denom":"azkme","exponent":0,"aliases":["wei"]}],"base":"azkme","display":"azkme"}],
+      "denom_metadata": [
+        {
+          "description": "The native staking token of the Mechain.",
+          "denom_units": [
+            {
+              "denom": "azkme",
+              "exponent": 0,
+              "aliases": [
+                "wei"
+              ]
+            }
+          ],
+          "base": "azkme",
+          "display": "azkme"
+        }
+      ],
       "send_enabled": []
     },
     "bridge": {
@@ -949,37 +964,37 @@
           }
         },
         {
-          "msg_type_url": "/greenfield.bridge.MsgUpdateParams",
+          "msg_type_url": "/mechain.bridge.MsgUpdateParams",
           "fixed_type": {
             "fixed_gas": "0"
           }
         },
         {
-          "msg_type_url": "/greenfield.sp.MsgUpdateParams",
+          "msg_type_url": "/mechain.sp.MsgUpdateParams",
           "fixed_type": {
             "fixed_gas": "0"
           }
         },
         {
-          "msg_type_url": "/greenfield.storage.MsgUpdateParams",
+          "msg_type_url": "/mechain.storage.MsgUpdateParams",
           "fixed_type": {
             "fixed_gas": "0"
           }
         },
         {
-          "msg_type_url": "/greenfield.payment.MsgUpdateParams",
+          "msg_type_url": "/mechain.payment.MsgUpdateParams",
           "fixed_type": {
             "fixed_gas": "0"
           }
         },
         {
-          "msg_type_url": "/greenfield.challenge.MsgUpdateParams",
+          "msg_type_url": "/mechain.challenge.MsgUpdateParams",
           "fixed_type": {
             "fixed_gas": "0"
           }
         },
         {
-          "msg_type_url": "/greenfield.permission.MsgUpdateParams",
+          "msg_type_url": "/mechain.permission.MsgUpdateParams",
           "fixed_type": {
             "fixed_gas": "0"
           }
@@ -1099,301 +1114,301 @@
           }
         },
         {
-          "msg_type_url": "/greenfield.bridge.MsgTransferOut",
+          "msg_type_url": "/mechain.bridge.MsgTransferOut",
           "fixed_type": {
             "fixed_gas": "1200"
           }
         },
         {
-          "msg_type_url": "/greenfield.sp.MsgCreateStorageProvider",
+          "msg_type_url": "/mechain.sp.MsgCreateStorageProvider",
           "fixed_type": {
             "fixed_gas": "2000000"
           }
         },
         {
-          "msg_type_url": "/greenfield.sp.MsgDeposit",
+          "msg_type_url": "/mechain.sp.MsgDeposit",
           "fixed_type": {
             "fixed_gas": "1200"
           }
         },
         {
-          "msg_type_url": "/greenfield.sp.MsgEditStorageProvider",
+          "msg_type_url": "/mechain.sp.MsgEditStorageProvider",
           "fixed_type": {
             "fixed_gas": "2000000"
           }
         },
         {
-          "msg_type_url": "/greenfield.sp.MsgUpdateSpStoragePrice",
+          "msg_type_url": "/mechain.sp.MsgUpdateSpStoragePrice",
           "fixed_type": {
             "fixed_gas": "2000000"
           }
         },
         {
-          "msg_type_url": "/greenfield.sp.MsgUpdateStorageProviderStatus",
+          "msg_type_url": "/mechain.sp.MsgUpdateStorageProviderStatus",
           "fixed_type": {
             "fixed_gas": "1200"
           }
         },
         {
-          "msg_type_url": "/greenfield.storage.MsgCreateBucket",
+          "msg_type_url": "/mechain.storage.MsgCreateBucket",
           "fixed_type": {
             "fixed_gas": "2400"
           }
         },
         {
-          "msg_type_url": "/greenfield.storage.MsgDeleteBucket",
+          "msg_type_url": "/mechain.storage.MsgDeleteBucket",
           "fixed_type": {
             "fixed_gas": "1200"
           }
         },
         {
-          "msg_type_url": "/greenfield.storage.MsgMirrorBucket",
+          "msg_type_url": "/mechain.storage.MsgMirrorBucket",
           "fixed_type": {
             "fixed_gas": "1200"
           }
         },
         {
-          "msg_type_url": "/greenfield.storage.MsgUpdateBucketInfo",
+          "msg_type_url": "/mechain.storage.MsgUpdateBucketInfo",
           "fixed_type": {
             "fixed_gas": "1200"
           }
         },
         {
-          "msg_type_url": "/greenfield.storage.MsgCreateObject",
+          "msg_type_url": "/mechain.storage.MsgCreateObject",
           "fixed_type": {
             "fixed_gas": "1200"
           }
         },
         {
-          "msg_type_url": "/greenfield.storage.MsgSealObject",
+          "msg_type_url": "/mechain.storage.MsgSealObject",
           "fixed_type": {
             "fixed_gas": "120"
           }
         },
         {
-          "msg_type_url": "/greenfield.storage.MsgMirrorObject",
+          "msg_type_url": "/mechain.storage.MsgMirrorObject",
           "fixed_type": {
             "fixed_gas": "1200"
           }
         },
         {
-          "msg_type_url": "/greenfield.storage.MsgRejectSealObject",
+          "msg_type_url": "/mechain.storage.MsgRejectSealObject",
           "fixed_type": {
             "fixed_gas": "12000"
           }
         },
         {
-          "msg_type_url": "/greenfield.storage.MsgDeleteObject",
+          "msg_type_url": "/mechain.storage.MsgDeleteObject",
           "fixed_type": {
             "fixed_gas": "1200"
           }
         },
         {
-          "msg_type_url": "/greenfield.storage.MsgCopyObject",
+          "msg_type_url": "/mechain.storage.MsgCopyObject",
           "fixed_type": {
             "fixed_gas": "1200"
           }
         },
         {
-          "msg_type_url": "/greenfield.storage.MsgCancelCreateObject",
+          "msg_type_url": "/mechain.storage.MsgCancelCreateObject",
           "fixed_type": {
             "fixed_gas": "1200"
           }
         },
         {
-          "msg_type_url": "/greenfield.storage.MsgUpdateObjectInfo",
+          "msg_type_url": "/mechain.storage.MsgUpdateObjectInfo",
           "fixed_type": {
             "fixed_gas": "1200"
           }
         },
         {
-          "msg_type_url": "/greenfield.storage.MsgDiscontinueObject",
+          "msg_type_url": "/mechain.storage.MsgDiscontinueObject",
           "fixed_type": {
             "fixed_gas": "2400"
           }
         },
         {
-          "msg_type_url": "/greenfield.storage.MsgDiscontinueBucket",
+          "msg_type_url": "/mechain.storage.MsgDiscontinueBucket",
           "fixed_type": {
             "fixed_gas": "2400"
           }
         },
         {
-          "msg_type_url": "/greenfield.storage.MsgCreateGroup",
+          "msg_type_url": "/mechain.storage.MsgCreateGroup",
           "fixed_type": {
             "fixed_gas": "2400"
           }
         },
         {
-          "msg_type_url": "/greenfield.storage.MsgDeleteGroup",
+          "msg_type_url": "/mechain.storage.MsgDeleteGroup",
           "fixed_type": {
             "fixed_gas": "1200"
           }
         },
         {
-          "msg_type_url": "/greenfield.storage.MsgLeaveGroup",
+          "msg_type_url": "/mechain.storage.MsgLeaveGroup",
           "fixed_type": {
             "fixed_gas": "1200"
           }
         },
         {
-          "msg_type_url": "/greenfield.storage.MsgUpdateGroupMember",
+          "msg_type_url": "/mechain.storage.MsgUpdateGroupMember",
           "fixed_type": {
             "fixed_gas": "1200"
           }
         },
         {
-          "msg_type_url": "/greenfield.storage.MsgUpdateGroupExtra",
+          "msg_type_url": "/mechain.storage.MsgUpdateGroupExtra",
           "fixed_type": {
             "fixed_gas": "1200"
           }
         },
         {
-          "msg_type_url": "/greenfield.storage.MsgRenewGroupMember",
+          "msg_type_url": "/mechain.storage.MsgRenewGroupMember",
           "fixed_type": {
             "fixed_gas": "1200"
           }
         },
         {
-          "msg_type_url": "/greenfield.storage.MsgMirrorGroup",
+          "msg_type_url": "/mechain.storage.MsgMirrorGroup",
           "fixed_type": {
             "fixed_gas": "1200"
           }
         },
         {
-          "msg_type_url": "/greenfield.storage.MsgPutPolicy",
+          "msg_type_url": "/mechain.storage.MsgPutPolicy",
           "fixed_type": {
             "fixed_gas": "2400"
           }
         },
         {
-          "msg_type_url": "/greenfield.storage.MsgDeletePolicy",
+          "msg_type_url": "/mechain.storage.MsgDeletePolicy",
           "fixed_type": {
             "fixed_gas": "1200"
           }
         },
         {
-          "msg_type_url": "/greenfield.storage.MsgMigrateBucket",
+          "msg_type_url": "/mechain.storage.MsgMigrateBucket",
           "fixed_type": {
             "fixed_gas": "1200"
           }
         },
         {
-          "msg_type_url": "/greenfield.storage.MsgCancelMigrateBucket",
+          "msg_type_url": "/mechain.storage.MsgCancelMigrateBucket",
           "fixed_type": {
             "fixed_gas": "1200"
           }
         },
         {
-          "msg_type_url": "/greenfield.storage.MsgCompleteMigrateBucket",
+          "msg_type_url": "/mechain.storage.MsgCompleteMigrateBucket",
           "fixed_type": {
             "fixed_gas": "1200"
           }
         },
         {
-          "msg_type_url": "/greenfield.storage.MsgRejectMigrateBucket",
+          "msg_type_url": "/mechain.storage.MsgRejectMigrateBucket",
           "fixed_type": {
             "fixed_gas": "1200"
           }
         },
         {
-          "msg_type_url": "/greenfield.payment.MsgCreatePaymentAccount",
+          "msg_type_url": "/mechain.payment.MsgCreatePaymentAccount",
           "fixed_type": {
             "fixed_gas": "200000"
           }
         },
         {
-          "msg_type_url": "/greenfield.payment.MsgDeposit",
+          "msg_type_url": "/mechain.payment.MsgDeposit",
           "fixed_type": {
             "fixed_gas": "1200"
           }
         },
         {
-          "msg_type_url": "/greenfield.payment.MsgWithdraw",
+          "msg_type_url": "/mechain.payment.MsgWithdraw",
           "fixed_type": {
             "fixed_gas": "1200"
           }
         },
         {
-          "msg_type_url": "/greenfield.payment.MsgDisableRefund",
+          "msg_type_url": "/mechain.payment.MsgDisableRefund",
           "fixed_type": {
             "fixed_gas": "1200"
           }
         },
         {
-          "msg_type_url": "/greenfield.challenge.MsgSubmit",
+          "msg_type_url": "/mechain.challenge.MsgSubmit",
           "fixed_type": {
             "fixed_gas": "1200"
           }
         },
         {
-          "msg_type_url": "/greenfield.challenge.MsgAttest",
+          "msg_type_url": "/mechain.challenge.MsgAttest",
           "fixed_type": {
             "fixed_gas": "100"
           }
         },
         {
-          "msg_type_url": "/greenfield.virtualgroup.MsgCreateGlobalVirtualGroup",
+          "msg_type_url": "/mechain.virtualgroup.MsgCreateGlobalVirtualGroup",
           "fixed_type": {
             "fixed_gas": "1000000"
           }
         },
         {
-          "msg_type_url": "/greenfield.virtualgroup.MsgDeleteGlobalVirtualGroup",
+          "msg_type_url": "/mechain.virtualgroup.MsgDeleteGlobalVirtualGroup",
           "fixed_type": {
             "fixed_gas": "1200"
           }
         },
         {
-          "msg_type_url": "/greenfield.virtualgroup.MsgDeposit",
+          "msg_type_url": "/mechain.virtualgroup.MsgDeposit",
           "fixed_type": {
             "fixed_gas": "1200"
           }
         },
         {
-          "msg_type_url": "/greenfield.virtualgroup.MsgWithdraw",
+          "msg_type_url": "/mechain.virtualgroup.MsgWithdraw",
           "fixed_type": {
             "fixed_gas": "1200"
           }
         },
         {
-          "msg_type_url": "/greenfield.virtualgroup.MsgSettle",
+          "msg_type_url": "/mechain.virtualgroup.MsgSettle",
           "fixed_type": {
             "fixed_gas": "1200"
           }
         },
         {
-          "msg_type_url": "/greenfield.virtualgroup.MsgSwapOut",
+          "msg_type_url": "/mechain.virtualgroup.MsgSwapOut",
           "fixed_type": {
             "fixed_gas": "24000"
           }
         },
         {
-          "msg_type_url": "/greenfield.virtualgroup.MsgCompleteSwapOut",
+          "msg_type_url": "/mechain.virtualgroup.MsgCompleteSwapOut",
           "fixed_type": {
             "fixed_gas": "24000"
           }
         },
         {
-          "msg_type_url": "/greenfield.virtualgroup.MsgCancelSwapOut",
+          "msg_type_url": "/mechain.virtualgroup.MsgCancelSwapOut",
           "fixed_type": {
             "fixed_gas": "1200"
           }
         },
         {
-          "msg_type_url": "/greenfield.virtualgroup.MsgStorageProviderExit",
+          "msg_type_url": "/mechain.virtualgroup.MsgStorageProviderExit",
           "fixed_type": {
             "fixed_gas": "1200"
           }
         },
         {
-          "msg_type_url": "/greenfield.virtualgroup.MsgCompleteStorageProviderExit",
+          "msg_type_url": "/mechain.virtualgroup.MsgCompleteStorageProviderExit",
           "fixed_type": {
             "fixed_gas": "1200"
           }
         },
         {
-          "msg_type_url": "/greenfield.virtualgroup.MsgUpdateParams",
+          "msg_type_url": "/mechain.virtualgroup.MsgUpdateParams",
           "fixed_type": {
             "fixed_gas": "1200"
           }
@@ -1427,7 +1442,7 @@
           "body": {
             "messages": [
               {
-                "@type": "/greenfield.sp.MsgCreateStorageProvider",
+                "@type": "/mechain.sp.MsgCreateStorageProvider",
                 "creator": "0xc1A979b06dF9221749571eFD6d9DC99cCFCa82A2",
                 "description": {
                   "moniker": "sp0",
@@ -1477,7 +1492,7 @@
           "body": {
             "messages": [
               {
-                "@type": "/greenfield.sp.MsgCreateStorageProvider",
+                "@type": "/mechain.sp.MsgCreateStorageProvider",
                 "creator": "0x33B642D17F0b8d3C62890057412f3904D6D513Ab",
                 "description": {
                   "moniker": "sp1",
@@ -1527,7 +1542,7 @@
           "body": {
             "messages": [
               {
-                "@type": "/greenfield.sp.MsgCreateStorageProvider",
+                "@type": "/mechain.sp.MsgCreateStorageProvider",
                 "creator": "0xCcfe1B41fFE3f6E892A5dcF1aF8e2152a6eBC902",
                 "description": {
                   "moniker": "sp2",

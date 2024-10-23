@@ -316,8 +316,8 @@ func (s *PaymentTestSuite) TestDeposit_ActiveAccount() {
 	taxRateParam := params.VersionedParams.ValidatorTaxRate
 	taxStreamRate := taxRateParam.MulInt(totalUserRate).TruncateInt()
 	expectedRate := totalUserRate.Add(taxStreamRate)
-	paymentAccountBNBNeeded := expectedRate.Mul(sdkmath.NewIntFromUint64(reserveTime))
-	s.T().Log("paymentAccountBNBNeeded", paymentAccountBNBNeeded.String())
+	paymentAccountZKMENeeded := expectedRate.Mul(sdkmath.NewIntFromUint64(reserveTime))
+	s.T().Log("paymentAccountZKMENeeded", paymentAccountZKMENeeded.String())
 
 	// create payment account and deposit
 	msgCreatePaymentAccount := &paymenttypes.MsgCreatePaymentAccount{
@@ -335,7 +335,7 @@ func (s *PaymentTestSuite) TestDeposit_ActiveAccount() {
 	msgDeposit := &paymenttypes.MsgDeposit{
 		Creator: user.GetAddr().String(),
 		To:      paymentAddr,
-		Amount:  paymentAccountBNBNeeded.MulRaw(2), // deposit more than needed
+		Amount:  paymentAccountZKMENeeded.MulRaw(2), // deposit more than needed
 	}
 	_ = s.SendTxBlock(user, msgDeposit)
 
@@ -353,8 +353,8 @@ func (s *PaymentTestSuite) TestDeposit_ActiveAccount() {
 	paymentAccountStreamRecord := s.getStreamRecord(paymentAddr)
 	s.T().Logf("paymentAccountStreamRecord %s", core.YamlString(paymentAccountStreamRecord))
 	s.Require().Equal(expectedRate.String(), paymentAccountStreamRecord.NetflowRate.Neg().String())
-	s.Require().Equal(paymentAccountStreamRecord.BufferBalance.String(), paymentAccountBNBNeeded.String())
-	s.Require().Equal(paymentAccountStreamRecord.StaticBalance.String(), paymentAccountBNBNeeded.String())
+	s.Require().Equal(paymentAccountStreamRecord.BufferBalance.String(), paymentAccountZKMENeeded.String())
+	s.Require().Equal(paymentAccountStreamRecord.StaticBalance.String(), paymentAccountZKMENeeded.String())
 
 	time.Sleep(5 * time.Second)
 
@@ -362,7 +362,7 @@ func (s *PaymentTestSuite) TestDeposit_ActiveAccount() {
 	msgDeposit = &paymenttypes.MsgDeposit{
 		Creator: userAddr,
 		To:      paymentAddr,
-		Amount:  paymentAccountBNBNeeded,
+		Amount:  paymentAccountZKMENeeded,
 	}
 	_ = s.SendTxBlock(user, msgDeposit)
 
@@ -375,8 +375,8 @@ func (s *PaymentTestSuite) TestDeposit_ActiveAccount() {
 	settledBalance := expectedRate.MulRaw(settledTime)
 	paymentBalanceChange := paymentAccountStreamRecordAfter.StaticBalance.Sub(paymentAccountStreamRecord.StaticBalance).
 		Add(paymentAccountStreamRecordAfter.BufferBalance.Sub(paymentAccountStreamRecord.BufferBalance))
-	s.Require().Equal(settledBalance.Add(paymentBalanceChange).Int64(), paymentAccountBNBNeeded.Int64())
-	s.Require().Equal(paymentAccountBNBNeeded.MulRaw(3), settledBalance.Add(paymentAccountStreamRecordAfter.StaticBalance.Add(paymentAccountStreamRecordAfter.BufferBalance)))
+	s.Require().Equal(settledBalance.Add(paymentBalanceChange).Int64(), paymentAccountZKMENeeded.Int64())
+	s.Require().Equal(paymentAccountZKMENeeded.MulRaw(3), settledBalance.Add(paymentAccountStreamRecordAfter.StaticBalance.Add(paymentAccountStreamRecordAfter.BufferBalance)))
 }
 
 func (s *PaymentTestSuite) TestDeposit_FromBankAccount() {
@@ -463,7 +463,7 @@ func (s *PaymentTestSuite) TestDeposit_ResumeInOneBlock() {
 	taxRateParam := params.VersionedParams.ValidatorTaxRate
 	taxStreamRate := taxRateParam.MulInt(totalUserRate).TruncateInt()
 	expectedRate := totalUserRate.Add(taxStreamRate)
-	paymentAccountBNBNeeded := expectedRate.Mul(sdkmath.NewIntFromUint64(reserveTime))
+	paymentAccountZKMENeeded := expectedRate.Mul(sdkmath.NewIntFromUint64(reserveTime))
 
 	// create payment account and deposit
 	msgCreatePaymentAccount := &paymenttypes.MsgCreatePaymentAccount{
@@ -481,7 +481,7 @@ func (s *PaymentTestSuite) TestDeposit_ResumeInOneBlock() {
 	msgDeposit := &paymenttypes.MsgDeposit{
 		Creator: user.GetAddr().String(),
 		To:      paymentAddr,
-		Amount:  paymentAccountBNBNeeded,
+		Amount:  paymentAccountZKMENeeded,
 	}
 	_ = s.SendTxBlock(user, msgDeposit)
 
@@ -499,7 +499,7 @@ func (s *PaymentTestSuite) TestDeposit_ResumeInOneBlock() {
 	paymentAccountStreamRecord := s.getStreamRecord(paymentAddr)
 	s.T().Logf("paymentAccountStreamRecord %s", core.YamlString(paymentAccountStreamRecord))
 	s.Require().Equal(expectedRate.String(), paymentAccountStreamRecord.NetflowRate.Neg().String())
-	s.Require().Equal(paymentAccountStreamRecord.BufferBalance.String(), paymentAccountBNBNeeded.String())
+	s.Require().Equal(paymentAccountStreamRecord.BufferBalance.String(), paymentAccountZKMENeeded.String())
 	s.Require().Equal(paymentAccountStreamRecord.StaticBalance.String(), sdkmath.ZeroInt().String())
 
 	// wait until settle time
@@ -580,7 +580,7 @@ func (s *PaymentTestSuite) TestDeposit_ResumeInBlocks() {
 	taxRateParam := params.VersionedParams.ValidatorTaxRate
 	taxStreamRate := taxRateParam.MulInt(totalUserRate).TruncateInt()
 	expectedRate := totalUserRate.Add(taxStreamRate)
-	paymentAccountBNBNeeded := expectedRate.Mul(sdkmath.NewIntFromUint64(reserveTime))
+	paymentAccountZKMENeeded := expectedRate.Mul(sdkmath.NewIntFromUint64(reserveTime))
 
 	// create payment account and deposit
 	msgCreatePaymentAccount := &paymenttypes.MsgCreatePaymentAccount{
@@ -598,7 +598,7 @@ func (s *PaymentTestSuite) TestDeposit_ResumeInBlocks() {
 	msgDeposit := &paymenttypes.MsgDeposit{
 		Creator: user.GetAddr().String(),
 		To:      paymentAddr,
-		Amount:  paymentAccountBNBNeeded,
+		Amount:  paymentAccountZKMENeeded,
 	}
 	_ = s.SendTxBlock(user, msgDeposit)
 
@@ -616,7 +616,7 @@ func (s *PaymentTestSuite) TestDeposit_ResumeInBlocks() {
 	paymentAccountStreamRecord := s.getStreamRecord(paymentAddr)
 	s.T().Logf("paymentAccountStreamRecord %s", core.YamlString(paymentAccountStreamRecord))
 	s.Require().Equal(expectedRate.String(), paymentAccountStreamRecord.NetflowRate.Neg().String())
-	s.Require().Equal(paymentAccountStreamRecord.BufferBalance.String(), paymentAccountBNBNeeded.String())
+	s.Require().Equal(paymentAccountStreamRecord.BufferBalance.String(), paymentAccountZKMENeeded.String())
 	s.Require().Equal(paymentAccountStreamRecord.StaticBalance.String(), sdkmath.ZeroInt().String())
 
 	// wait until settle time
@@ -672,7 +672,7 @@ func (s *PaymentTestSuite) TestDeposit_ResumeInBlocks() {
 			msgDeposit = &paymenttypes.MsgDeposit{
 				Creator: user.GetAddr().String(),
 				To:      paymentAddr,
-				Amount:  paymentAccountBNBNeeded,
+				Amount:  paymentAccountZKMENeeded,
 			}
 			s.SendTxBlockWithExpectErrorString(msgDeposit, user, "resuming")
 		}
@@ -716,7 +716,7 @@ func (s *PaymentTestSuite) TestAutoSettle_InOneBlock() {
 	taxRateParam := params.VersionedParams.ValidatorTaxRate
 	taxStreamRate := taxRateParam.MulInt(totalUserRate).TruncateInt()
 	expectedRate := totalUserRate.Add(taxStreamRate)
-	paymentAccountBNBNeeded := expectedRate.Mul(sdkmath.NewIntFromUint64(reserveTime))
+	paymentAccountZKMENeeded := expectedRate.Mul(sdkmath.NewIntFromUint64(reserveTime))
 
 	// create payment account and deposit
 	msgCreatePaymentAccount := &paymenttypes.MsgCreatePaymentAccount{
@@ -732,7 +732,7 @@ func (s *PaymentTestSuite) TestAutoSettle_InOneBlock() {
 	msgDeposit := &paymenttypes.MsgDeposit{
 		Creator: user.GetAddr().String(),
 		To:      paymentAddr,
-		Amount:  paymentAccountBNBNeeded,
+		Amount:  paymentAccountZKMENeeded,
 	}
 	_ = s.SendTxBlock(user, msgDeposit)
 
@@ -749,7 +749,7 @@ func (s *PaymentTestSuite) TestAutoSettle_InOneBlock() {
 	paymentAccountStreamRecord := s.getStreamRecord(paymentAddr)
 	s.T().Logf("paymentAccountStreamRecord %s", core.YamlString(paymentAccountStreamRecord))
 	s.Require().Equal(expectedRate.String(), paymentAccountStreamRecord.NetflowRate.Neg().String())
-	s.Require().Equal(paymentAccountStreamRecord.BufferBalance.String(), paymentAccountBNBNeeded.String())
+	s.Require().Equal(paymentAccountStreamRecord.BufferBalance.String(), paymentAccountZKMENeeded.String())
 	s.Require().Equal(paymentAccountStreamRecord.StaticBalance.String(), sdkmath.ZeroInt().String())
 	govStreamRecord := s.getStreamRecord(paymenttypes.GovernanceAddress.String())
 	s.T().Logf("govStreamRecord %s", core.YamlString(govStreamRecord))
@@ -855,7 +855,7 @@ func (s *PaymentTestSuite) TestAutoSettle_InBlocks() {
 	taxRateParam := params.VersionedParams.ValidatorTaxRate
 	taxStreamRate := taxRateParam.MulInt(totalUserRate).TruncateInt()
 	expectedRate := totalUserRate.Add(taxStreamRate)
-	paymentAccountBNBNeeded := expectedRate.Mul(sdkmath.NewIntFromUint64(reserveTime))
+	paymentAccountZKMENeeded := expectedRate.Mul(sdkmath.NewIntFromUint64(reserveTime))
 
 	// create payment account and deposit
 	msgCreatePaymentAccount := &paymenttypes.MsgCreatePaymentAccount{
@@ -873,7 +873,7 @@ func (s *PaymentTestSuite) TestAutoSettle_InBlocks() {
 	msgDeposit := &paymenttypes.MsgDeposit{
 		Creator: user.GetAddr().String(),
 		To:      paymentAddr,
-		Amount:  paymentAccountBNBNeeded,
+		Amount:  paymentAccountZKMENeeded,
 	}
 	_ = s.SendTxBlock(user, msgDeposit)
 
@@ -891,7 +891,7 @@ func (s *PaymentTestSuite) TestAutoSettle_InBlocks() {
 	paymentAccountStreamRecord := s.getStreamRecord(paymentAddr)
 	s.T().Logf("paymentAccountStreamRecord %s", core.YamlString(paymentAccountStreamRecord))
 	s.Require().Equal(expectedRate.String(), paymentAccountStreamRecord.NetflowRate.Neg().String())
-	s.Require().Equal(paymentAccountStreamRecord.BufferBalance.String(), paymentAccountBNBNeeded.String())
+	s.Require().Equal(paymentAccountStreamRecord.BufferBalance.String(), paymentAccountZKMENeeded.String())
 	s.Require().Equal(paymentAccountStreamRecord.StaticBalance.String(), sdkmath.ZeroInt().String())
 
 	// wait until settle time
@@ -951,8 +951,8 @@ func (s *PaymentTestSuite) TestWithdraw() {
 	taxRateParam := params.VersionedParams.ValidatorTaxRate
 	taxStreamRate := taxRateParam.MulInt(totalUserRate).TruncateInt()
 	expectedRate := totalUserRate.Add(taxStreamRate)
-	paymentAccountBNBNeeded := expectedRate.Mul(sdkmath.NewIntFromUint64(reserveTime))
-	s.T().Log("paymentAccountBNBNeeded", paymentAccountBNBNeeded.String())
+	paymentAccountZKMENeeded := expectedRate.Mul(sdkmath.NewIntFromUint64(reserveTime))
+	s.T().Log("paymentAccountZKMENeeded", paymentAccountZKMENeeded.String())
 
 	// create payment account and deposit
 	msgCreatePaymentAccount := &paymenttypes.MsgCreatePaymentAccount{
@@ -970,7 +970,7 @@ func (s *PaymentTestSuite) TestWithdraw() {
 	msgDeposit := &paymenttypes.MsgDeposit{
 		Creator: user.GetAddr().String(),
 		To:      paymentAddr,
-		Amount:  paymentAccountBNBNeeded.MulRaw(2), // deposit more than needed
+		Amount:  paymentAccountZKMENeeded.MulRaw(2), // deposit more than needed
 	}
 	_ = s.SendTxBlock(user, msgDeposit)
 
@@ -988,17 +988,17 @@ func (s *PaymentTestSuite) TestWithdraw() {
 	paymentAccountStreamRecord := s.getStreamRecord(paymentAddr)
 	s.T().Logf("paymentAccountStreamRecord %s", core.YamlString(paymentAccountStreamRecord))
 	s.Require().Equal(expectedRate.String(), paymentAccountStreamRecord.NetflowRate.Neg().String())
-	s.Require().Equal(paymentAccountStreamRecord.BufferBalance.String(), paymentAccountBNBNeeded.String())
-	s.Require().Equal(paymentAccountStreamRecord.StaticBalance.String(), paymentAccountBNBNeeded.String())
+	s.Require().Equal(paymentAccountStreamRecord.BufferBalance.String(), paymentAccountZKMENeeded.String())
+	s.Require().Equal(paymentAccountStreamRecord.StaticBalance.String(), paymentAccountZKMENeeded.String())
 
 	time.Sleep(5 * time.Second)
 
 	dynamicBalanceResp, err := s.Client.DynamicBalance(ctx, &paymenttypes.QueryDynamicBalanceRequest{Account: user.GetAddr().String()})
 	s.Require().NoError(err)
-	s.Require().True(dynamicBalanceResp.DynamicBalance.LT(paymentAccountBNBNeeded))
+	s.Require().True(dynamicBalanceResp.DynamicBalance.LT(paymentAccountZKMENeeded))
 
 	// withdraw more than static balance
-	withdrawMsg := paymenttypes.NewMsgWithdraw(userAddr, paymentAddr, paymentAccountBNBNeeded)
+	withdrawMsg := paymenttypes.NewMsgWithdraw(userAddr, paymentAddr, paymentAccountZKMENeeded)
 	s.SendTxBlockWithExpectErrorString(withdrawMsg, user, "not enough")
 
 	// withdraw less than static balance
@@ -2382,7 +2382,7 @@ func (s *PaymentTestSuite) updateParams(params paymenttypes.Params) {
 
 	msgProposal, err := govtypesv1.NewMsgSubmitProposal(
 		[]sdk.Msg{msgUpdateParams},
-		sdk.Coins{sdk.NewCoin(s.BaseSuite.Config.Denom, types.NewIntFromInt64WithDecimal(100, types.DecimalBNB))},
+		sdk.Coins{sdk.NewCoin(s.BaseSuite.Config.Denom, types.NewIntFromInt64WithDecimal(100, types.DecimalZKME))},
 		validator.String(),
 		"test", "test", "test",
 	)

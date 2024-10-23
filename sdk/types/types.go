@@ -13,10 +13,10 @@ import (
 const (
 	Denom = "azkme"
 
-	// DecimalBNB defines number of azkme decimal places
-	DecimalBNB = 18
+	// DecimalZKME defines number of azkme decimal places
+	DecimalZKME = 18
 
-	// DecimalGwei defines number of gweiBNB decimal places
+	// DecimalGwei defines number of gweiZKME decimal places
 	DecimalGwei = 9
 )
 

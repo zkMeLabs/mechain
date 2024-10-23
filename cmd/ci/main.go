@@ -46,7 +46,7 @@ services:
       bash localup.sh init {{$.NodeSize}} {{$.SPSize}} &&
       bash localup.sh generate {{$.NodeSize}} {{$.SPSize}} &&
       bash localup.sh copy_genesis &&
-       bash localup.sh persistent_peers &&
+      bash localup.sh persistent_peers &&
       bash localup.sh export_validator 4 > validator.json &&
       bash localup.sh export_sps {{$.NodeSize}} {{$.SPSize}} > sp.json &&
       touch init_done && 
@@ -77,7 +77,10 @@ services:
     volumes:
       - "local-env:/app:Z"
     command: >
-      /usr/bin/mechaind start --home /app/validator{{.NodeIndex}}
+      bash -c "
+      mkdir -p ~/.mechaind &&
+      cp -r /app/validator{{.NodeIndex}}/* ~/.mechaind/ && 
+      mechaind start
       --keyring-backend test
       --api.enabled-unsafe-cors true
       --address 0.0.0.0:{{$.BasePorts.AddressPort}}
@@ -87,6 +90,7 @@ services:
       --rpc.laddr tcp://0.0.0.0:{{$.BasePorts.RPCPort}}
       --rpc.unsafe true
       --log_format json
+      "
 {{- end }}
 volumes:
   local-env:

@@ -51,8 +51,9 @@ function generate() {
     echo DELEGATOR_ADDR: $DELEGATOR_ADDR
 
     echo "send tokens..."
-    echo "mechaind tx bank send validator0 $VALIDATOR_ADDR 10000000000000000000000000azkme --home /app/validator0 --keyring-backend test --node http://localhost:26657 -y --fees 6000000azkme"
-    echo "mechaind tx bank send validator0 $DELEGATOR_ADDR 10000000000000000000000000azkme --home /app/validator0 --keyring-backend test --node http://localhost:26657 -y --fees 6000000azkme"
+    echo '#!/bin/bash' >${SCRIPT_DIR}/send_tokens.sh
+    echo "docker exec mechaind-validator-0 mechaind tx bank send validator0 $VALIDATOR_ADDR 10000000000000000000000000azkme --keyring-backend test --node http://localhost:26657 -y --fees 6000000azkme" >>${SCRIPT_DIR}/send_tokens.sh
+    echo "docker exec mechaind-validator-0 mechaind tx bank send validator0 $DELEGATOR_ADDR 10000000000000000000000000azkme --keyring-backend test --node http://localhost:26657 -y --fees 6000000azkme" >>${SCRIPT_DIR}/send_tokens.sh
 }
 
 function balance() {
@@ -101,12 +102,24 @@ function query_proposal() {
     tx_hash=$(grep 'txhash' ${home}/create.log | awk '{print $2}')
     $MECHAIND_CMD q tx $tx_hash --home /app --output json >${SCRIPT_DIR}/tx.json
     proposal_id=$(jq '.logs[] | .events[] | select(.type == "submit_proposal") | .attributes[] | select(.key == "proposal_id") | .value | tonumber' ${SCRIPT_DIR}/tx.json)
-    echo "curl -s http://127.0.0.1:1317/cosmos/gov/v1/proposals/$proposal_id | jq"
+    echo "docker exec mechaind-validator-0curl -s http://127.0.0.1:1317/cosmos/gov/v1/proposals/$proposal_id | jq"
 }
 
 function clean() {
     rm $OUTPUT_FILE
     rm -r $home/keyring-test
+}
+
+function vote() {
+    size=$1
+    vote_id=$2
+    for ((i = 0; i < ${size}; i++)); do
+        docker exec mechaind-validator-${i} mechaind tx gov vote $vote_id yes --from=validator$i --chain-id="mechain_5151-1" --keyring-backend=test --gas-prices=10000azkme -y
+    done
+}
+
+function show_validator() {
+    docker exec mechaind-validator-0 curl -s http://localhost:1317/cosmos/staking/v1beta1/validators | jq '.pagination.total'
 }
 
 CMD=$1
@@ -147,6 +160,16 @@ query_proposal)
 clean)
     echo "===== clean ===="
     clean
+    echo "===== end ===="
+    ;;
+vote)
+    echo "===== vote ===="
+    vote $2 $3
+    echo "===== end ===="
+    ;;
+show_validator)
+    echo "===== show_validator ===="
+    show_validator
     echo "===== end ===="
     ;;
 *)

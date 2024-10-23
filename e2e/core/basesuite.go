@@ -57,7 +57,7 @@ var initValidatorOnce sync.Once
 type BaseSuite struct {
 	suite.Suite
 	Config           *Config
-	Client           *client.GreenfieldClient
+	Client           *client.MechainClient
 	TmClient         *client.TendermintClient
 	Validator        keys.KeyManager
 	ValidatorBLS     keys.KeyManager
@@ -132,7 +132,7 @@ func (s *BaseSuite) SetupSuite() {
 		s.InitChain()
 	})
 
-	s.Client, _ = client.NewGreenfieldClient(s.Config.TendermintAddr, s.Config.ChainID)
+	s.Client, _ = client.NewMechainClient(s.Config.TendermintAddr, s.Config.ChainID)
 	tmClient := client.NewTendermintClient(s.Config.TendermintAddr)
 	s.TmClient = &tmClient
 	var err error
@@ -178,7 +178,7 @@ func (s *BaseSuite) SetupSuite() {
 			// Create a GVG for each sp by default
 			deposit := sdk.Coin{
 				Denom:  s.Config.Denom,
-				Amount: types.NewIntFromInt64WithDecimal(1000, types.DecimalBNB),
+				Amount: types.NewIntFromInt64WithDecimal(1000, types.DecimalZKME),
 			}
 			var secondaryIDs []uint32
 			for _, ssp := range s.StorageProviders {
@@ -290,14 +290,14 @@ func (s *BaseSuite) GenAndChargeAccounts(n int, balance int64) (accounts []keys.
 		accounts = append(accounts, km)
 		outputs = append(outputs, banktypes.Output{
 			Address: km.GetAddr().String(),
-			Coins:   []sdk.Coin{{Denom: denom, Amount: types.NewIntFromInt64WithDecimal(balance, types.DecimalBNB)}},
+			Coins:   []sdk.Coin{{Denom: denom, Amount: types.NewIntFromInt64WithDecimal(balance, types.DecimalZKME)}},
 		})
 	}
 	if balance == 0 {
 		return
 	}
 	// prevent int64 multiplication overflow
-	balanceInt := types.NewIntFromInt64WithDecimal(balance, types.DecimalBNB)
+	balanceInt := types.NewIntFromInt64WithDecimal(balance, types.DecimalZKME)
 	nInt := sdkmath.NewInt(int64(n))
 	in := banktypes.Input{
 		Address: s.Validator.GetAddr().String(),
@@ -460,7 +460,7 @@ func (s *BaseSuite) CreateNewStorageProvider() *StorageProvider {
 	newSP := s.NewSpAcc()
 
 	// 2. grant deposit authorization of sp to gov module account
-	coins := sdk.NewCoin(s.Config.Denom, types.NewIntFromInt64WithDecimal(10000, types.DecimalBNB))
+	coins := sdk.NewCoin(s.Config.Denom, types.NewIntFromInt64WithDecimal(10000, types.DecimalZKME))
 	authorization := sptypes.NewDepositAuthorization(newSP.OperatorKey.GetAddr(), &coins)
 
 	govAddr := authtypes.NewModuleAddress(gov.ModuleName)
@@ -473,7 +473,7 @@ func (s *BaseSuite) CreateNewStorageProvider() *StorageProvider {
 	// 2. submit CreateStorageProvider proposal
 	deposit := sdk.Coin{
 		Denom:  s.Config.Denom,
-		Amount: types.NewIntFromInt64WithDecimal(10000, types.DecimalBNB),
+		Amount: types.NewIntFromInt64WithDecimal(10000, types.DecimalZKME),
 	}
 	description := sptypes.Description{
 		Moniker:  "sp_test",
@@ -503,7 +503,7 @@ func (s *BaseSuite) CreateNewStorageProvider() *StorageProvider {
 
 	msgProposal, err := govtypesv1.NewMsgSubmitProposal(
 		[]sdk.Msg{msgCreateSP},
-		sdk.Coins{sdk.NewCoin(s.Config.Denom, types.NewIntFromInt64WithDecimal(100, types.DecimalBNB))},
+		sdk.Coins{sdk.NewCoin(s.Config.Denom, types.NewIntFromInt64WithDecimal(100, types.DecimalZKME))},
 		validator.String(),
 		"test", "test", "test",
 	)
@@ -698,7 +698,7 @@ func (s *BaseSuite) CreateGlobalVirtualGroup(sp *StorageProvider, familyID uint3
 	// Create a GVG for each sp by default
 	deposit := sdk.Coin{
 		Denom:  s.Config.Denom,
-		Amount: types.NewIntFromInt64WithDecimal(depositAmount, types.DecimalBNB),
+		Amount: types.NewIntFromInt64WithDecimal(depositAmount, types.DecimalZKME),
 	}
 	msgCreateGVG := &virtualgroupmoduletypes.MsgCreateGlobalVirtualGroup{
 		StorageProvider: sp.OperatorKey.GetAddr().String(),
@@ -716,7 +716,7 @@ func (s *BaseSuite) CreateGlobalVirtualGroup(sp *StorageProvider, familyID uint3
 	var newFamilyID uint32
 	for _, e := range resp2.Events {
 		s.T().Logf("Event: %s", e.String())
-		if e.Type == "greenfield.virtualgroup.EventCreateGlobalVirtualGroup" {
+		if e.Type == "mechain.virtualgroup.EventCreateGlobalVirtualGroup" {
 			for _, a := range e.Attributes {
 				if a.Key == "id" {
 					num, err := strconv.ParseUint(a.Value, 10, 32)
