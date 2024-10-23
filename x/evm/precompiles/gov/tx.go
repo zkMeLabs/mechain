@@ -3,11 +3,13 @@ package gov
 import (
 	"encoding/json"
 	"fmt"
-	consensustypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
-	crosschaintypes "github.com/cosmos/cosmos-sdk/x/crosschain/types"
-	gashubtypes "github.com/cosmos/cosmos-sdk/x/gashub/types"
-	oracletypes "github.com/cosmos/cosmos-sdk/x/oracle/types"
+
+	"github.com/evmos/evmos/v12/utils"
+	bridgetypes "github.com/evmos/evmos/v12/x/bridge/types"
+	challengetypes "github.com/evmos/evmos/v12/x/challenge/types"
 	erc20types "github.com/evmos/evmos/v12/x/erc20/types"
+	"github.com/evmos/evmos/v12/x/evm/types"
+	feemarkettypes "github.com/evmos/evmos/v12/x/feemarket/types"
 	gensptypes "github.com/evmos/evmos/v12/x/gensp/types"
 	paymenttypes "github.com/evmos/evmos/v12/x/payment/types"
 	permissiontypes "github.com/evmos/evmos/v12/x/permission/types"
@@ -21,13 +23,17 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
+	consensustypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
 	crisistypes "github.com/cosmos/cosmos-sdk/x/crisis/types"
+	crosschaintypes "github.com/cosmos/cosmos-sdk/x/crosschain/types"
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
+	gashubtypes "github.com/cosmos/cosmos-sdk/x/gashub/types"
 	govkeeper "github.com/cosmos/cosmos-sdk/x/gov/keeper"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	govv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 	govv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
-	"github.com/cosmos/cosmos-sdk/x/params/types/proposal"
+	oracletypes "github.com/cosmos/cosmos-sdk/x/oracle/types"
+	proposaltypes "github.com/cosmos/cosmos-sdk/x/params/types/proposal"
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
@@ -35,12 +41,6 @@ import (
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/vm"
-
-	"github.com/evmos/evmos/v12/utils"
-	bridgetypes "github.com/evmos/evmos/v12/x/bridge/types"
-	challengetypes "github.com/evmos/evmos/v12/x/challenge/types"
-	"github.com/evmos/evmos/v12/x/evm/types"
-	feemarkettypes "github.com/evmos/evmos/v12/x/feemarket/types"
 )
 
 const (
@@ -158,7 +158,7 @@ func (c *Contract) SubmitProposal(ctx sdk.Context, evm *vm.EVM, contract *vm.Con
 	crisistypes.RegisterInterfaces(interfaceRegistry)
 	ibctransfertypes.RegisterInterfaces(interfaceRegistry)
 	upgradetypes.RegisterInterfaces(interfaceRegistry)
-	proposal.RegisterInterfaces(interfaceRegistry)
+	proposaltypes.RegisterInterfaces(interfaceRegistry)
 	cryptocodec.RegisterInterfaces(interfaceRegistry)
 
 	bridgetypes.RegisterInterfaces(interfaceRegistry)
