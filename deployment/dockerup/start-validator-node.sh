@@ -67,7 +67,13 @@ function start() {
 
 function test() {
     echo "test chain..."
-    curl http://localhost:26657/status | jq
+    latest_block_height=$(curl -s http://localhost:26657/status | jq '.result.sync_info.latest_block_height | tonumber')
+
+    if [ "$latest_block_height" -gt 0 ]; then
+        echo "Node successfully started and config is right. Latest block height: $latest_block_height"
+    else
+        echo "Node failed to start or not syncing correctly."
+    fi
 }
 
 function clean() {
@@ -116,6 +122,8 @@ all)
     client_toml $home
     genesis $home
     start $home
+    sleep 10
+    test
     echo "===== end ===="
     ;;
 *)

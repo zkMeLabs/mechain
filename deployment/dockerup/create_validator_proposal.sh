@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
-
+PROJECT_DIR=$(realpath "${SCRIPT_DIR}/../../")
 source $SCRIPT_DIR/.env
 
 TEMPLATE_FILE="$SCRIPT_DIR/create_validator_proposal.json"
@@ -52,8 +52,8 @@ function generate() {
 
     echo "send tokens..."
     echo '#!/bin/bash' >${SCRIPT_DIR}/send_tokens.sh
-    echo "docker exec mechaind-validator-0 mechaind tx bank send validator0 $VALIDATOR_ADDR 10000000000000000000000000azkme --keyring-backend test --node http://localhost:26657 -y --fees 6000000azkme" >>${SCRIPT_DIR}/send_tokens.sh
-    echo "docker exec mechaind-validator-0 mechaind tx bank send validator0 $DELEGATOR_ADDR 10000000000000000000000000azkme --keyring-backend test --node http://localhost:26657 -y --fees 6000000azkme" >>${SCRIPT_DIR}/send_tokens.sh
+    echo "mechaind tx bank send validator0 $VALIDATOR_ADDR 10000000000000000000000000azkme --keyring-backend test --node http://localhost:26657 -y --fees 6000000azkme" >>${SCRIPT_DIR}/send_tokens.sh
+    echo "mechaind tx bank send validator0 $DELEGATOR_ADDR 10000000000000000000000000azkme --keyring-backend test --node http://localhost:26657 -y --fees 6000000azkme" >>${SCRIPT_DIR}/send_tokens.sh
 }
 
 function balance() {
@@ -95,6 +95,7 @@ function create() {
     $MECHAIND_CMD tx staking create-validator $OUTPUT_FILE --home $home --keyring-backend test \
         --chain-id $CHAIN_ID --from ${DELEGATOR_ADDR} --node tcp://localhost:26657 -b sync \
         --gas "200000000" --fees "100000000000000000000azkme" --yes >${home}/create.log 2>&1
+
 }
 
 function query_proposal() {
@@ -102,7 +103,8 @@ function query_proposal() {
     tx_hash=$(grep 'txhash' ${home}/create.log | awk '{print $2}')
     $MECHAIND_CMD q tx $tx_hash --home /app --output json >${SCRIPT_DIR}/tx.json
     proposal_id=$(jq '.logs[] | .events[] | select(.type == "submit_proposal") | .attributes[] | select(.key == "proposal_id") | .value | tonumber' ${SCRIPT_DIR}/tx.json)
-    echo "docker exec mechaind-validator-0curl -s http://127.0.0.1:1317/cosmos/gov/v1/proposals/$proposal_id | jq"
+    cat $proposal_id >${SCRIPT_DIR}/proposal_id.txt
+    echo "docker exec mechaind-validator-0 curl -s http://127.0.0.1:1317/cosmos/gov/v1/proposals/$proposal_id | jq"
 }
 
 function clean() {
@@ -120,6 +122,42 @@ function vote() {
 
 function show_validator() {
     docker exec mechaind-validator-0 curl -s http://localhost:1317/cosmos/staking/v1beta1/validators | jq '.pagination.total'
+}
+
+function test() {
+    echo "Starting validator node container..."
+    docker run --rm -d -it --name my-validator-node -w /app -v ${SCRIPT_DIR}/:/app/scripts --network mechain-network zkmelabs/mechain /bin/bash
+
+    sleep 5
+    echo "Starting the validator node..."
+    docker exec my-validator-node bash /app/scripts/start-validator-node.sh all /root/.mechaind
+
+    echo "Creating account and generating proposal..."
+    docker exec my-validator-node bash /app/scripts/create_validator_proposal.sh generate /root/.mechaind
+
+    echo "Please make sure to fund the account if it doesn't have zkme."
+    docker cp ${SCRIPT_DIR}/send_tokens.sh mechaind-validator-0:/root/send_tokens.sh
+    docker exec mechaind-validator-0 bash /root/send_tokens.sh
+
+    sleep 10
+    echo "Querying account balance..."
+    docker exec my-validator-node bash /app/scripts/create_validator_proposal.sh balance /root/.mechaind
+
+    echo "Submitting proposal..."
+    docker exec my-validator-node bash /app/scripts/create_validator_proposal.sh create /root/.mechaind
+
+    echo "Querying proposal information..."
+    docker exec my-validator-node bash /app/scripts/create_validator_proposal.sh query_proposal /root/.mechaind
+
+    # $MECHAIND_CMD q tx $tx_hash --home /app --output json >${SCRIPT_DIR}/tx.json
+    # proposal_id=$(jq '.logs[] | .events[] | select(.type == "submit_proposal") | .attributes[] | select(.key == "proposal_id") | .value | tonumber' ${SCRIPT_DIR}/tx.json)
+    # echo "Please vote on the proposal outside the container..."
+    # bash deployment/dockerup/create_validator_proposal.sh vote 4 $proposal_id
+
+    echo "Showing the validator list on validator0..."
+    docker exec mechaind-validator-0 bash /app/scripts/create_validator_proposal.sh show_validator
+
+    echo "All steps completed."
 }
 
 CMD=$1
@@ -170,6 +208,11 @@ vote)
 show_validator)
     echo "===== show_validator ===="
     show_validator
+    echo "===== end ===="
+    ;;
+test)
+    echo "===== test ===="
+    test
     echo "===== end ===="
     ;;
 *)
