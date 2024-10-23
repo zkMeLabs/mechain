@@ -218,7 +218,7 @@ external_address = ""
 seeds = ""
 
 # Comma separated list of nodes to keep persistent connections to
-persistent_peers = "25f5bfd3e5024649bbcf6b1ab0c41f0e08316d34@testnet-validator3.mechain.tech:26656,9b4fc1d0c03245a4803a070c816201d1dcabdd4d@testnet-validator2.mechain.tech:26656,291a815cf452e8734aa1954fb29aa74e010f0f1a@testnet-validator1.mechain.tech:26656,6790c7ef6b4024e00214fef4b29f256f429566e1@testnet-validator0.mechain.tech:26656"
+persistent_peers = "1157f7509387d5039f502b93254fc6d18eca13d5@testnet-validator3.mechain.tech:26656,09ca70eb35beeab69bdcd0de0200af70bec063e9@testnet-validator2.mechain.tech:26656,a682ab6bcd1b34bfd5da69a218fa3d152e776a9f@testnet-validator1.mechain.tech:26656,0ccdb004f3640821d4925aa6dd55e0bf2690a485@testnet-validator0.mechain.tech:26656"
 
 # UPNP port forwarding
 upnp = false
@@ -467,7 +467,7 @@ disable-events-indexing = "false"
 # When true, Prometheus metrics are served under /metrics on
 # PrometheusListenAddr.
 # Check out the documentation for the list of available metrics.
-prometheus = false
+prometheus = true
 
 # Address to listen for Prometheus collector(s) connections
 prometheus_listen_addr = ":26660"
