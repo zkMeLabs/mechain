@@ -3,6 +3,7 @@ package gov
 import (
 	"encoding/json"
 	"fmt"
+	consensustypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
 	erc20types "github.com/evmos/evmos/v12/x/erc20/types"
 	gensptypes "github.com/evmos/evmos/v12/x/gensp/types"
 	paymenttypes "github.com/evmos/evmos/v12/x/payment/types"
@@ -142,6 +143,7 @@ func (c *Contract) SubmitProposal(ctx sdk.Context, evm *vm.EVM, contract *vm.Con
 
 	authtypes.RegisterInterfaces(interfaceRegistry)
 	banktypes.RegisterInterfaces(interfaceRegistry)
+	consensustypes.RegisterInterfaces(interfaceRegistry)
 	stakingtypes.RegisterInterfaces(interfaceRegistry)
 	distrtypes.RegisterInterfaces(interfaceRegistry)
 	slashingtypes.RegisterInterfaces(interfaceRegistry)
