@@ -36,6 +36,24 @@ interface IAuthz {
     ) external returns (bool success);
 
     /**
+     * @dev exec attempts to execute the provided messages using
+     * authorizations granted to the grantee. Each message should have only
+     * one signer corresponding to the granter of the authorization.
+     */
+    function revoke(
+        address grantee,
+        string memory msgTypeUrl
+    ) external returns (bool success);
+
+    /**
+     * @dev exec revokes any authorization corresponding to the provided method name on the
+     * granter's account that has been granted to the grantee.
+     */
+    function exec(
+        string memory msgs
+    ) external returns (bool success);
+
+    /**
      * @dev grants returns list of `Authorization`, granted to the grantee by the granter.
      */
     function grants(
@@ -68,5 +86,22 @@ interface IAuthz {
         address indexed granter,
         address indexed grantee,
         string authzType
+    );
+
+    /**
+     * @dev Revoke defines an Event emitted when create a granter revoke authorization for grantee
+     */
+    event Revoke(
+        address indexed granter,
+        address indexed grantee,
+        string msgTypeUrl
+    );
+
+    /**
+     * @dev Exec defines an Event emitted when execute the provided messages using
+     * authorizations granted to the grantee
+     */
+    event Exec(
+        address indexed grantee
     );
 }

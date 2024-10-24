@@ -108,6 +108,10 @@ struct Params {
     string quorum;
     string threshold;
     string vetoThreshold;
+    string minInitialDepositRatio;
+    bool burnVoteQuorum;
+    bool burnProposalDepositPrevote;
+    bool burnVoteVeto;
 }
 
 interface IGov {

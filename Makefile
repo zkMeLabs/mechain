@@ -602,3 +602,6 @@ stop-dc:
 	docker compose down --volumes
 
 .PHONY: build-dcf start-dc stop-dc
+
+precompile:
+	@cd x/evm/precompiles && sh compile.sh

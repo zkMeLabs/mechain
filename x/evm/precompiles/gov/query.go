@@ -3,29 +3,42 @@ package gov
 import (
 	"bytes"
 
+	"github.com/evmos/evmos/v12/utils"
+	bridgetypes "github.com/evmos/evmos/v12/x/bridge/types"
+	challengetypes "github.com/evmos/evmos/v12/x/challenge/types"
+	erc20types "github.com/evmos/evmos/v12/x/erc20/types"
+	"github.com/evmos/evmos/v12/x/evm/types"
+	feemarkettypes "github.com/evmos/evmos/v12/x/feemarket/types"
+	gensptypes "github.com/evmos/evmos/v12/x/gensp/types"
+	paymenttypes "github.com/evmos/evmos/v12/x/payment/types"
+	permissiontypes "github.com/evmos/evmos/v12/x/permission/types"
+	sptypes "github.com/evmos/evmos/v12/x/sp/types"
+	storagetypes "github.com/evmos/evmos/v12/x/storage/types"
+	virtualgrouptypes "github.com/evmos/evmos/v12/x/virtualgroup/types"
+
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
+	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
+	consensustypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
 	crisistypes "github.com/cosmos/cosmos-sdk/x/crisis/types"
+	crosschaintypes "github.com/cosmos/cosmos-sdk/x/crosschain/types"
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
+	gashubtypes "github.com/cosmos/cosmos-sdk/x/gashub/types"
 	govv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 	govv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
+	oracletypes "github.com/cosmos/cosmos-sdk/x/oracle/types"
 	proposaltypes "github.com/cosmos/cosmos-sdk/x/params/types/proposal"
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
+	ibctransfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/vm"
-
-	"github.com/evmos/evmos/v12/utils"
-	erc20types "github.com/evmos/evmos/v12/x/erc20/types"
-	feemarkettypes "github.com/evmos/evmos/v12/x/feemarket/types"
-
-	"github.com/evmos/evmos/v12/x/evm/types"
 )
 
 const (
@@ -299,15 +312,19 @@ func (c *Contract) Params(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract, _ b
 	params := Params{
 		MinDeposit: []Coin{
 			{
-				Denom:  res1.DepositParams.MinDeposit[0].Denom,
-				Amount: res1.DepositParams.MinDeposit[0].Amount.BigInt(),
+				Denom:  res1.Params.MinDeposit[0].Denom,
+				Amount: res1.Params.MinDeposit[0].Amount.BigInt(),
 			},
 		},
-		MaxDepositPeriod: int64(res1.DepositParams.MaxDepositPeriod.Seconds()),
-		VotingPeriod:     int64(res2.VotingParams.VotingPeriod.Seconds()),
-		Quorum:           res3.TallyParams.Quorum,
-		Threshold:        res3.TallyParams.Threshold,
-		VetoThreshold:    res3.TallyParams.VetoThreshold,
+		MaxDepositPeriod:           int64(res1.Params.MaxDepositPeriod.Seconds()),
+		VotingPeriod:               int64(res2.Params.VotingPeriod.Seconds()),
+		Quorum:                     res3.Params.Quorum,
+		Threshold:                  res3.Params.Threshold,
+		VetoThreshold:              res3.Params.VetoThreshold,
+		MinInitialDepositRatio:     res3.Params.MinInitialDepositRatio,
+		BurnProposalDepositPrevote: res3.Params.BurnProposalDepositPrevote,
+		BurnVoteQuorum:             res3.Params.BurnVoteQuorum,
+		BurnVoteVeto:               res3.Params.BurnVoteVeto,
 	}
 
 	return method.Outputs.Pack(params)
@@ -340,22 +357,37 @@ func OutputsProposal(proposal govv1.Proposal) Proposal {
 
 	authtypes.RegisterInterfaces(interfaceRegistry)
 	banktypes.RegisterInterfaces(interfaceRegistry)
+	consensustypes.RegisterInterfaces(interfaceRegistry)
+	crosschaintypes.RegisterInterfaces(interfaceRegistry)
+	gashubtypes.RegisterInterfaces(interfaceRegistry)
+	oracletypes.RegisterInterfaces(interfaceRegistry)
 	stakingtypes.RegisterInterfaces(interfaceRegistry)
 	distrtypes.RegisterInterfaces(interfaceRegistry)
 	slashingtypes.RegisterInterfaces(interfaceRegistry)
 	govv1beta1.RegisterInterfaces(interfaceRegistry)
 	govv1.RegisterInterfaces(interfaceRegistry)
 	crisistypes.RegisterInterfaces(interfaceRegistry)
-	types.RegisterInterfaces(interfaceRegistry)
-	feemarkettypes.RegisterInterfaces(interfaceRegistry)
-	erc20types.RegisterInterfaces(interfaceRegistry)
+	ibctransfertypes.RegisterInterfaces(interfaceRegistry)
 	upgradetypes.RegisterInterfaces(interfaceRegistry)
 	proposaltypes.RegisterInterfaces(interfaceRegistry)
+	cryptocodec.RegisterInterfaces(interfaceRegistry)
 
-	mechainCodec := codec.NewProtoCodec(interfaceRegistry)
+	bridgetypes.RegisterInterfaces(interfaceRegistry)
+	challengetypes.RegisterInterfaces(interfaceRegistry)
+	erc20types.RegisterInterfaces(interfaceRegistry)
+	types.RegisterInterfaces(interfaceRegistry)
+	feemarkettypes.RegisterInterfaces(interfaceRegistry)
+	gensptypes.RegisterInterfaces(interfaceRegistry)
+	paymenttypes.RegisterInterfaces(interfaceRegistry)
+	permissiontypes.RegisterInterfaces(interfaceRegistry)
+	sptypes.RegisterInterfaces(interfaceRegistry)
+	storagetypes.RegisterInterfaces(interfaceRegistry)
+	virtualgrouptypes.RegisterInterfaces(interfaceRegistry)
+
+	protoCodec := codec.NewProtoCodec(interfaceRegistry)
 
 	for _, msg := range msgs {
-		bytesMsg, err := mechainCodec.MarshalInterfaceJSON(msg)
+		bytesMsg, err := protoCodec.MarshalInterfaceJSON(msg)
 		if err != nil {
 			messages = append(messages, msg.String())
 		}
