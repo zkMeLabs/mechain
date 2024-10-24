@@ -29,9 +29,49 @@ var (
 	_ = abi.ConvertType
 )
 
+// Description is an auto generated low-level Go binding around an user-defined struct.
+type Description struct {
+	Moniker         string
+	Identity        string
+	Website         string
+	SecurityContact string
+	Details         string
+}
+
+// PageRequest is an auto generated low-level Go binding around an user-defined struct.
+type PageRequest struct {
+	Key        []byte
+	Offset     uint64
+	Limit      uint64
+	CountTotal bool
+	Reverse    bool
+}
+
+// PageResponse is an auto generated low-level Go binding around an user-defined struct.
+type PageResponse struct {
+	NextKey []byte
+	Total   uint64
+}
+
+// StorageProvider is an auto generated low-level Go binding around an user-defined struct.
+type StorageProvider struct {
+	Id                 uint32
+	OperatorAddress    string
+	FundingAddress     string
+	SealAddress        string
+	ApprovalAddress    string
+	GcAddress          string
+	MaintenanceAddress string
+	TotalDeposit       *big.Int
+	Status             uint8
+	Endpoint           string
+	Description        Description
+	BlsKey             string
+}
+
 // IStorageProviderMetaData contains all meta data concerning the IStorageProvider contract.
 var IStorageProviderMetaData = &bind.MetaData{
-	ABI: "[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"storageProvider\",\"type\":\"address\"}],\"name\":\"UpdateSPPrice\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"int256\",\"name\":\"readPrice\",\"type\":\"int256\"},{\"internalType\":\"uint64\",\"name\":\"freeReadQuota\",\"type\":\"uint64\"},{\"internalType\":\"int256\",\"name\":\"storePrice\",\"type\":\"int256\"}],\"name\":\"updateSPPrice\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
+	ABI: "[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"storageProvider\",\"type\":\"address\"}],\"name\":\"UpdateSPPrice\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"uint32\",\"name\":\"proposalId\",\"type\":\"uint32\"}],\"name\":\"storageProvider\",\"outputs\":[{\"components\":[{\"internalType\":\"uint32\",\"name\":\"id\",\"type\":\"uint32\"},{\"internalType\":\"string\",\"name\":\"operator_address\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"funding_address\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"seal_address\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"approval_address\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"gc_address\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"maintenance_address\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"total_deposit\",\"type\":\"uint256\"},{\"internalType\":\"enumStatus\",\"name\":\"status\",\"type\":\"uint8\"},{\"internalType\":\"string\",\"name\":\"endpoint\",\"type\":\"string\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"moniker\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"identity\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"website\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"security_contact\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"details\",\"type\":\"string\"}],\"internalType\":\"structDescription\",\"name\":\"description\",\"type\":\"tuple\"},{\"internalType\":\"string\",\"name\":\"bls_key\",\"type\":\"string\"}],\"internalType\":\"structStorageProvider\",\"name\":\"storageProvider\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"bytes\",\"name\":\"key\",\"type\":\"bytes\"},{\"internalType\":\"uint64\",\"name\":\"offset\",\"type\":\"uint64\"},{\"internalType\":\"uint64\",\"name\":\"limit\",\"type\":\"uint64\"},{\"internalType\":\"bool\",\"name\":\"countTotal\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"reverse\",\"type\":\"bool\"}],\"internalType\":\"structPageRequest\",\"name\":\"pagination\",\"type\":\"tuple\"}],\"name\":\"storageProviders\",\"outputs\":[{\"components\":[{\"internalType\":\"uint32\",\"name\":\"id\",\"type\":\"uint32\"},{\"internalType\":\"string\",\"name\":\"operator_address\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"funding_address\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"seal_address\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"approval_address\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"gc_address\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"maintenance_address\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"total_deposit\",\"type\":\"uint256\"},{\"internalType\":\"enumStatus\",\"name\":\"status\",\"type\":\"uint8\"},{\"internalType\":\"string\",\"name\":\"endpoint\",\"type\":\"string\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"moniker\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"identity\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"website\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"security_contact\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"details\",\"type\":\"string\"}],\"internalType\":\"structDescription\",\"name\":\"description\",\"type\":\"tuple\"},{\"internalType\":\"string\",\"name\":\"bls_key\",\"type\":\"string\"}],\"internalType\":\"structStorageProvider[]\",\"name\":\"storageProviders\",\"type\":\"tuple[]\"},{\"components\":[{\"internalType\":\"bytes\",\"name\":\"nextKey\",\"type\":\"bytes\"},{\"internalType\":\"uint64\",\"name\":\"total\",\"type\":\"uint64\"}],\"internalType\":\"structPageResponse\",\"name\":\"pageResponse\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"int256\",\"name\":\"readPrice\",\"type\":\"int256\"},{\"internalType\":\"uint64\",\"name\":\"freeReadQuota\",\"type\":\"uint64\"},{\"internalType\":\"int256\",\"name\":\"storePrice\",\"type\":\"int256\"}],\"name\":\"updateSPPrice\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
 }
 
 // IStorageProviderABI is the input ABI used to generate the binding from.
@@ -178,6 +218,82 @@ func (_IStorageProvider *IStorageProviderTransactorRaw) Transfer(opts *bind.Tran
 // Transact invokes the (paid) contract method with params as input values.
 func (_IStorageProvider *IStorageProviderTransactorRaw) Transact(opts *bind.TransactOpts, method string, params ...interface{}) (*types.Transaction, error) {
 	return _IStorageProvider.Contract.contract.Transact(opts, method, params...)
+}
+
+// StorageProvider is a free data retrieval call binding the contract method 0x163c507d.
+//
+// Solidity: function storageProvider(uint32 proposalId) view returns((uint32,string,string,string,string,string,string,uint256,uint8,string,(string,string,string,string,string),string) storageProvider)
+func (_IStorageProvider *IStorageProviderCaller) StorageProvider(opts *bind.CallOpts, proposalId uint32) (StorageProvider, error) {
+	var out []interface{}
+	err := _IStorageProvider.contract.Call(opts, &out, "storageProvider", proposalId)
+
+	if err != nil {
+		return *new(StorageProvider), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(StorageProvider)).(*StorageProvider)
+
+	return out0, err
+
+}
+
+// StorageProvider is a free data retrieval call binding the contract method 0x163c507d.
+//
+// Solidity: function storageProvider(uint32 proposalId) view returns((uint32,string,string,string,string,string,string,uint256,uint8,string,(string,string,string,string,string),string) storageProvider)
+func (_IStorageProvider *IStorageProviderSession) StorageProvider(proposalId uint32) (StorageProvider, error) {
+	return _IStorageProvider.Contract.StorageProvider(&_IStorageProvider.CallOpts, proposalId)
+}
+
+// StorageProvider is a free data retrieval call binding the contract method 0x163c507d.
+//
+// Solidity: function storageProvider(uint32 proposalId) view returns((uint32,string,string,string,string,string,string,uint256,uint8,string,(string,string,string,string,string),string) storageProvider)
+func (_IStorageProvider *IStorageProviderCallerSession) StorageProvider(proposalId uint32) (StorageProvider, error) {
+	return _IStorageProvider.Contract.StorageProvider(&_IStorageProvider.CallOpts, proposalId)
+}
+
+// StorageProviders is a free data retrieval call binding the contract method 0x12196b83.
+//
+// Solidity: function storageProviders((bytes,uint64,uint64,bool,bool) pagination) view returns((uint32,string,string,string,string,string,string,uint256,uint8,string,(string,string,string,string,string),string)[] storageProviders, (bytes,uint64) pageResponse)
+func (_IStorageProvider *IStorageProviderCaller) StorageProviders(opts *bind.CallOpts, pagination PageRequest) (struct {
+	StorageProviders []StorageProvider
+	PageResponse     PageResponse
+}, error) {
+	var out []interface{}
+	err := _IStorageProvider.contract.Call(opts, &out, "storageProviders", pagination)
+
+	outstruct := new(struct {
+		StorageProviders []StorageProvider
+		PageResponse     PageResponse
+	})
+	if err != nil {
+		return *outstruct, err
+	}
+
+	outstruct.StorageProviders = *abi.ConvertType(out[0], new([]StorageProvider)).(*[]StorageProvider)
+	outstruct.PageResponse = *abi.ConvertType(out[1], new(PageResponse)).(*PageResponse)
+
+	return *outstruct, err
+
+}
+
+// StorageProviders is a free data retrieval call binding the contract method 0x12196b83.
+//
+// Solidity: function storageProviders((bytes,uint64,uint64,bool,bool) pagination) view returns((uint32,string,string,string,string,string,string,uint256,uint8,string,(string,string,string,string,string),string)[] storageProviders, (bytes,uint64) pageResponse)
+func (_IStorageProvider *IStorageProviderSession) StorageProviders(pagination PageRequest) (struct {
+	StorageProviders []StorageProvider
+	PageResponse     PageResponse
+}, error) {
+	return _IStorageProvider.Contract.StorageProviders(&_IStorageProvider.CallOpts, pagination)
+}
+
+// StorageProviders is a free data retrieval call binding the contract method 0x12196b83.
+//
+// Solidity: function storageProviders((bytes,uint64,uint64,bool,bool) pagination) view returns((uint32,string,string,string,string,string,string,uint256,uint8,string,(string,string,string,string,string),string)[] storageProviders, (bytes,uint64) pageResponse)
+func (_IStorageProvider *IStorageProviderCallerSession) StorageProviders(pagination PageRequest) (struct {
+	StorageProviders []StorageProvider
+	PageResponse     PageResponse
+}, error) {
+	return _IStorageProvider.Contract.StorageProviders(&_IStorageProvider.CallOpts, pagination)
 }
 
 // UpdateSPPrice is a paid mutator transaction binding the contract method 0xc867d92b.
