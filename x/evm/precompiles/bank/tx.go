@@ -1,8 +1,6 @@
 package bank
 
 import (
-	"errors"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
@@ -22,7 +20,11 @@ const (
 
 func (c *Contract) Send(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	if readonly {
-		return nil, errors.New("send method readonly")
+		return nil, types.ErrReadOnly
+	}
+
+	if evm.Origin != contract.Caller() {
+		return nil, types.ErrInvalidCaller
 	}
 
 	method := MustMethod(SendMethodName)
