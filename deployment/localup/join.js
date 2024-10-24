@@ -51,7 +51,7 @@ const main = async function () {
 
       console.log('remove latest validator from genesis file');
       for (let i = 0; i < validatorCount; i++) {
-        const genesisPath = path.join(workPath, `deployment/.local/validator${i}/config/genesis.json`);
+        const genesisPath = path.join(workPath, `deployment/localup/.local/validator${i}/config/genesis.json`);
         const genesis = await fs.readJSON(genesisPath);
         const tx = genesis.app_state.genutil.gen_txs.pop();
         message = tx.body.messages[0];
@@ -82,7 +82,7 @@ const main = async function () {
 
     {
       console.log('authz grant cosmos.staking.v1beta1.MsgDelegate');
-      const exportKeyCmd = `echo "y" | ./build/mechaind keys export validator_delegator${validatorCount - 1} --unarmored-hex --unsafe --home=./deployment/.local/validator${
+      const exportKeyCmd = `echo "y" | ./build/mechaind keys export validator_delegator${validatorCount - 1} --unarmored-hex --unsafe --home=./deployment/localup/.local/validator${
         validatorCount - 1
       } --keyring-backend test`;
       let { stdout: privateKey } = await execPromis(exportKeyCmd, { cwd: workPath });
@@ -101,7 +101,7 @@ const main = async function () {
     }
 
     {
-      const exportKeyCmd = `echo "y" | ./build/mechaind keys export validator0 --unarmored-hex --unsafe --home=./deployment/.local/validator0 --keyring-backend test`;
+      const exportKeyCmd = `echo "y" | ./build/mechaind keys export validator0 --unarmored-hex --unsafe --home=./deployment/localup/.local/validator0 --keyring-backend test`;
       let { stdout: privateKey } = await execPromis(exportKeyCmd, { cwd: workPath });
       privateKey = privateKey.replace('\n', '');
       const wallet = new ethers.Wallet(privateKey, provider);
@@ -154,12 +154,12 @@ const main = async function () {
     await fs.outputJson(proposalPath, proposal, { spaces: 2 });
 
     console.log('submint proposal');
-    const proposalCmd = `./build/mechaind tx gov submit-proposal ./build/proposal.json --gas="600000" --gas-prices="10000000000azkme" --from=validator0 --home=./deployment/.local/validator0 --keyring-backend=test --broadcast-mode sync -y`;
+    const proposalCmd = `./build/mechaind tx gov submit-proposal ./build/proposal.json --gas="600000" --gas-prices="10000000000azkme" --from=validator0 --home=./deployment/localup/.local/validator0 --keyring-backend=test --broadcast-mode sync -y`;
     execPromis(proposalCmd, { cwd: workPath });
     await sleep(3000);
 
     console.log('vote proposal');
-    const voteCmd = `./build/mechaind tx gov vote 1 yes --gas="600000" --gas-prices="10000000000azkme" --from=validator0 --home=./deployment/.local/validator0 --keyring-backend=test --broadcast-mode sync -y`;
+    const voteCmd = `./build/mechaind tx gov vote 1 yes --gas="600000" --gas-prices="10000000000azkme" --from=validator0 --home=./deployment/localup/.local/validator0 --keyring-backend=test --broadcast-mode sync -y`;
     execPromis(voteCmd, { cwd: workPath });
     await sleep(9000);
     */
