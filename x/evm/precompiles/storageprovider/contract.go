@@ -33,6 +33,7 @@ func NewPrecompiledContract(ctx sdk.Context, spKeeper spkeeper.Keeper) *Contract
 		events:    make(map[string]string),
 	}
 	c.registerTx()
+	c.registerQuery()
 	return c
 }
 

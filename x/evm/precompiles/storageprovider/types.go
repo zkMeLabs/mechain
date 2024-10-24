@@ -16,6 +16,10 @@ var (
 	invalidMethod = abi.Method{}
 )
 
+type (
+	PageRequestJson = PageRequest
+)
+
 func GetAddress() common.Address {
 	return spAddress
 }
@@ -48,5 +52,23 @@ type UpdateSPPriceArgs struct {
 
 // Validate UpdateSPPriceArgs the args
 func (args *UpdateSPPriceArgs) Validate() error {
+	return nil
+}
+
+type StorageProviderArgs struct {
+	Id uint32 `abi:"id"`
+}
+
+// Validate StorageProvider args
+func (args *StorageProviderArgs) Validate() error {
+	return nil
+}
+
+type StorageProvidersArgs struct {
+	Pagination PageRequestJson `abi:"pagination"`
+}
+
+// Validate StorageProviders the args
+func (args *StorageProvidersArgs) Validate() error {
 	return nil
 }
