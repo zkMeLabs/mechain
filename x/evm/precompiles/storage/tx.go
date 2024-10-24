@@ -64,8 +64,13 @@ func (c *Contract) registerTx() {
 
 func (c *Contract) CreateBucket(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	if readonly {
-		return nil, errors.New("create bucket method readonly")
+		return nil, types.ErrReadOnly
 	}
+
+	if evm.Origin != contract.Caller() {
+		return nil, types.ErrInvalidCaller
+	}
+
 	method := GetAbiMethod(CreateBucketMethodName)
 	var args CreateBucketArgs
 
@@ -127,8 +132,13 @@ func (c *Contract) CreateBucket(ctx sdk.Context, evm *vm.EVM, contract *vm.Contr
 
 func (c *Contract) UpdateBucketInfo(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	if readonly {
-		return nil, errors.New("update bucket method readonly")
+		return nil, types.ErrReadOnly
 	}
+
+	if evm.Origin != contract.Caller() {
+		return nil, types.ErrInvalidCaller
+	}
+
 	method := GetAbiMethod(UpdateBucketInfoMethodName)
 	var args UpdateBucketInfoArgs
 	if err := types.ParseMethodArgs(method, &args, contract.Input[4:]); err != nil {
@@ -168,7 +178,11 @@ func (c *Contract) UpdateBucketInfo(ctx sdk.Context, evm *vm.EVM, contract *vm.C
 
 func (c *Contract) DeleteBucket(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	if readonly {
-		return nil, errors.New("delete bucket method readonly")
+		return nil, types.ErrReadOnly
+	}
+
+	if evm.Origin != contract.Caller() {
+		return nil, types.ErrInvalidCaller
 	}
 
 	method := GetAbiMethod(DeleteBucketMethodName)
@@ -207,7 +221,11 @@ func (c *Contract) DeleteBucket(ctx sdk.Context, evm *vm.EVM, contract *vm.Contr
 
 func (c *Contract) DiscontinueBucket(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	if readonly {
-		return nil, errors.New("discontinue bucket method readonly")
+		return nil, types.ErrReadOnly
+	}
+
+	if evm.Origin != contract.Caller() {
+		return nil, types.ErrInvalidCaller
 	}
 
 	method := GetAbiMethod(DiscontinueBucketMethodName)
@@ -250,7 +268,11 @@ func (c *Contract) DiscontinueBucket(ctx sdk.Context, evm *vm.EVM, contract *vm.
 
 func (c *Contract) CompleteMigrateBucket(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	if readonly {
-		return nil, errors.New("complete migrate bucket method readonly")
+		return nil, types.ErrReadOnly
+	}
+
+	if evm.Origin != contract.Caller() {
+		return nil, types.ErrInvalidCaller
 	}
 
 	method := GetAbiMethod(CompleteMigrateBucketMethodName)
@@ -304,7 +326,11 @@ func (c *Contract) CompleteMigrateBucket(ctx sdk.Context, evm *vm.EVM, contract 
 
 func (c *Contract) RejectMigrateBucket(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	if readonly {
-		return nil, errors.New("reject migrate bucket method readonly")
+		return nil, types.ErrReadOnly
+	}
+
+	if evm.Origin != contract.Caller() {
+		return nil, types.ErrInvalidCaller
 	}
 
 	method := GetAbiMethod(RejectMigrateBucketMethodName)
@@ -343,8 +369,13 @@ func (c *Contract) RejectMigrateBucket(ctx sdk.Context, evm *vm.EVM, contract *v
 
 func (c *Contract) CreateObject(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	if readonly {
-		return nil, errors.New("create object method readonly")
+		return nil, types.ErrReadOnly
 	}
+
+	if evm.Origin != contract.Caller() {
+		return nil, types.ErrInvalidCaller
+	}
+
 	method := GetAbiMethod(CreateObjectMethodName)
 	var args CreateObjectArgs
 	if err := types.ParseMethodArgs(method, &args, contract.Input[4:]); err != nil {
@@ -394,8 +425,13 @@ func (c *Contract) CreateObject(ctx sdk.Context, evm *vm.EVM, contract *vm.Contr
 
 func (c *Contract) SealObject(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	if readonly {
-		return nil, errors.New("seal object method readonly")
+		return nil, types.ErrReadOnly
 	}
+
+	if evm.Origin != contract.Caller() {
+		return nil, types.ErrInvalidCaller
+	}
+
 	method := GetAbiMethod(SealObjectMethodName)
 	var args SealObjectArgs
 	if err := types.ParseMethodArgs(method, &args, contract.Input[4:]); err != nil {
@@ -451,8 +487,13 @@ func (c *Contract) SealObject(ctx sdk.Context, evm *vm.EVM, contract *vm.Contrac
 
 func (c *Contract) SealObjectV2(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	if readonly {
-		return nil, errors.New("seal object V2 method readonly")
+		return nil, types.ErrReadOnly
 	}
+
+	if evm.Origin != contract.Caller() {
+		return nil, types.ErrInvalidCaller
+	}
+
 	method := GetAbiMethod(SealObjectV2MethodName)
 	var args SealObjectV2Args
 	if err := types.ParseMethodArgs(method, &args, contract.Input[4:]); err != nil {
@@ -500,8 +541,13 @@ func (c *Contract) SealObjectV2(ctx sdk.Context, evm *vm.EVM, contract *vm.Contr
 
 func (c *Contract) RejectSealObject(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	if readonly {
-		return nil, errors.New("reject seal object method readonly")
+		return nil, types.ErrReadOnly
 	}
+
+	if evm.Origin != contract.Caller() {
+		return nil, types.ErrInvalidCaller
+	}
+
 	method := GetAbiMethod(RejectSealObjectMethodName)
 	var args RejectSealObjectArgs
 	if err := types.ParseMethodArgs(method, &args, contract.Input[4:]); err != nil {
@@ -536,8 +582,13 @@ func (c *Contract) RejectSealObject(ctx sdk.Context, evm *vm.EVM, contract *vm.C
 
 func (c *Contract) DelegateCreateObject(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	if readonly {
-		return nil, errors.New("delegate create object method readonly")
+		return nil, types.ErrReadOnly
 	}
+
+	if evm.Origin != contract.Caller() {
+		return nil, types.ErrInvalidCaller
+	}
+
 	method := GetAbiMethod(DelegateCreateObjectMethodName)
 	var args DelegateCreateObjectArgs
 	if err := types.ParseMethodArgs(method, &args, contract.Input[4:]); err != nil {
@@ -586,8 +637,13 @@ func (c *Contract) DelegateCreateObject(ctx sdk.Context, evm *vm.EVM, contract *
 
 func (c *Contract) DelegateUpdateObjectContent(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	if readonly {
-		return nil, errors.New("delegate update object content method readonly")
+		return nil, types.ErrReadOnly
 	}
+
+	if evm.Origin != contract.Caller() {
+		return nil, types.ErrInvalidCaller
+	}
+
 	method := GetAbiMethod(DelegateUpdateObjectContentMethodName)
 	var args DelegateUpdateObjectContentArgs
 	if err := types.ParseMethodArgs(method, &args, contract.Input[4:]); err != nil {
@@ -634,8 +690,13 @@ func (c *Contract) DelegateUpdateObjectContent(ctx sdk.Context, evm *vm.EVM, con
 
 func (c *Contract) UpdateObjectInfo(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	if readonly {
-		return nil, errors.New("update object info method readonly")
+		return nil, types.ErrReadOnly
 	}
+
+	if evm.Origin != contract.Caller() {
+		return nil, types.ErrInvalidCaller
+	}
+
 	method := GetAbiMethod(UpdateObjectInfoMethodName)
 	var args UpdateObjectInfoArgs
 	if err := types.ParseMethodArgs(method, &args, contract.Input[4:]); err != nil {
@@ -666,8 +727,13 @@ func (c *Contract) UpdateObjectInfo(ctx sdk.Context, evm *vm.EVM, contract *vm.C
 
 func (c *Contract) CreateGroup(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	if readonly {
-		return nil, errors.New("create group method readonly")
+		return nil, types.ErrReadOnly
 	}
+
+	if evm.Origin != contract.Caller() {
+		return nil, types.ErrInvalidCaller
+	}
+
 	method := GetAbiMethod(CreateGroupMethodName)
 	var args CreateGroupArgs
 	if err := types.ParseMethodArgs(method, &args, contract.Input[4:]); err != nil {
@@ -717,8 +783,13 @@ func (c *Contract) CreateGroup(ctx sdk.Context, evm *vm.EVM, contract *vm.Contra
 
 func (c *Contract) UpdateGroup(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	if readonly {
-		return nil, errors.New("update group method readonly")
+		return nil, types.ErrReadOnly
 	}
+
+	if evm.Origin != contract.Caller() {
+		return nil, types.ErrInvalidCaller
+	}
+
 	method := GetAbiMethod(UpdateGroupMethodName)
 	var args UpdateGroupArgs
 	if err := types.ParseMethodArgs(method, &args, contract.Input[4:]); err != nil {
@@ -772,8 +843,13 @@ func (c *Contract) UpdateGroup(ctx sdk.Context, evm *vm.EVM, contract *vm.Contra
 
 func (c *Contract) DeleteGroup(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	if readonly {
-		return nil, errors.New("delete group method readonly")
+		return nil, types.ErrReadOnly
 	}
+
+	if evm.Origin != contract.Caller() {
+		return nil, types.ErrInvalidCaller
+	}
+
 	method := GetAbiMethod(DeleteGroupMethodName)
 	var args DeleteGroupArgs
 	if err := types.ParseMethodArgs(method, &args, contract.Input[4:]); err != nil {
@@ -802,8 +878,13 @@ func (c *Contract) DeleteGroup(ctx sdk.Context, evm *vm.EVM, contract *vm.Contra
 
 func (c *Contract) RenewGroupMember(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	if readonly {
-		return nil, errors.New("renew group member method readonly")
+		return nil, types.ErrReadOnly
 	}
+
+	if evm.Origin != contract.Caller() {
+		return nil, types.ErrInvalidCaller
+	}
+
 	method := GetAbiMethod(RenewGroupMemberMethodName)
 	var args RenewGroupMemberArgs
 	if err := types.ParseMethodArgs(method, &args, contract.Input[4:]); err != nil {
@@ -858,8 +939,13 @@ func (c *Contract) RenewGroupMember(ctx sdk.Context, evm *vm.EVM, contract *vm.C
 
 func (c *Contract) SetTagForGroup(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	if readonly {
-		return nil, errors.New("set tag for group method readonly")
+		return nil, types.ErrReadOnly
 	}
+
+	if evm.Origin != contract.Caller() {
+		return nil, types.ErrInvalidCaller
+	}
+
 	method := GetAbiMethod(SetTagForGroupMethodName)
 	var args SetTagForGroupArgs
 	if err := types.ParseMethodArgs(method, &args, contract.Input[4:]); err != nil {

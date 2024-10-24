@@ -1,8 +1,6 @@
 package storageprovider
 
 import (
-	"errors"
-
 	"github.com/ethereum/go-ethereum/common"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -23,8 +21,13 @@ func (c *Contract) registerTx() {
 
 func (c *Contract) UpdateSPPrice(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	if readonly {
-		return nil, errors.New("update sp price method readonly")
+		return nil, types.ErrReadOnly
 	}
+
+	if evm.Origin != contract.Caller() {
+		return nil, types.ErrInvalidCaller
+	}
+
 	method := GetAbiMethod(UpdateSPPriceMethodName)
 	var args UpdateSPPriceArgs
 	if err := types.ParseMethodArgs(method, &args, contract.Input[4:]); err != nil {
