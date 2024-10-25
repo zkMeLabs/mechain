@@ -31,6 +31,8 @@ const (
 	FlagGroupName            = "group-name"
 	FlagExtra                = "extra"
 	FlagTags                 = "tags"
+	FlagPrivateKey           = "privatekey"
+	FlagGVGFamilyID          = "gvgfamily-id"
 )
 
 func GetVisibilityType(str string) (storagetypes.VisibilityType, error) {
