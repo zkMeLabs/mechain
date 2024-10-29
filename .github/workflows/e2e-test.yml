@@ -6,25 +6,21 @@ on:
   push:
     branches:
       - main
+      - feat/kevin/e2e
 
 jobs:
   test-e2e:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/setup-go@v5
+      - name: Setup Go
+        uses: actions/setup-go@v5
         with:
-          go-version: "1.20"
+          go-version: "1.22"
           check-latest: true
-      - uses: actions/checkout@v4
-      - uses: technote-space/get-diff-action@v6.1.2
-        with:
-          PATTERNS: |
-            app/app.go
-            app/upgrades/*
-            go.mod
-            go.sum
-            tests/e2e/*
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Test E2E
-        if: env.GIT_DIFF
         run: |
           make test-e2e
