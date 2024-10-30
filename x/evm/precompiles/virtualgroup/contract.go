@@ -56,6 +56,8 @@ func (c *Contract) RequiredGas(input []byte) uint64 {
 		return CancelSwapInGas
 	case GlobalVirtualGroupFamiliesMethodName:
 		return GlobalVirtualGroupFamiliesGas
+	case GlobalVirtualGroupFamilyMethodName:
+		return GlobalVirtualGroupFamilyGas
 	default:
 		return 0
 	}
@@ -94,6 +96,8 @@ func (c *Contract) Run(evm *vm.EVM, contract *vm.Contract, readonly bool) (ret [
 			ret, err = c.CancelSwapIn(ctx, evm, contract, readonly)
 		case GlobalVirtualGroupFamiliesMethodName:
 			ret, err = c.GlobalVirtualGroupFamilies(ctx, evm, contract, readonly)
+		case GlobalVirtualGroupFamilyMethodName:
+			ret, err = c.GlobalVirtualGroupFamily(ctx, evm, contract, readonly)
 		}
 	}
 

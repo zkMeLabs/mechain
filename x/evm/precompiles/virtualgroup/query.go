@@ -13,8 +13,10 @@ import (
 
 const (
 	GlobalVirtualGroupFamiliesGas = 50_000
+	GlobalVirtualGroupFamilyGas   = 20_000
 
 	GlobalVirtualGroupFamiliesMethodName = "globalVirtualGroupFamilies"
+	GlobalVirtualGroupFamilyMethodName   = "globalVirtualGroupFamily"
 )
 
 // GlobalVirtualGroupFamilies queries all the global virtual group family.
@@ -60,4 +62,31 @@ func (c *Contract) GlobalVirtualGroupFamilies(ctx sdk.Context, _ *vm.EVM, contra
 	pageResponse.Total = res.Pagination.Total
 
 	return method.Outputs.Pack(gvgFamilies, pageResponse)
+}
+
+// GlobalVirtualGroupFamily queries the global virtual group family by family id.
+func (c *Contract) GlobalVirtualGroupFamily(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract, _ bool) ([]byte, error) {
+	method := MustMethod(GlobalVirtualGroupFamilyMethodName)
+
+	// parse args
+	var args GlobalVirtualGroupFamilyArgs
+	if err := types.ParseMethodArgs(method, &args, contract.Input[4:]); err != nil {
+		return nil, err
+	}
+
+	msg := &virtualgrouptypes.QueryGlobalVirtualGroupFamilyRequest{
+		FamilyId: args.FamilyId,
+	}
+
+	res, err := c.virtualGroupKeeper.GlobalVirtualGroupFamily(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
+
+	return method.Outputs.Pack(GlobalVirtualGroupFamily{
+		Id:                    res.GlobalVirtualGroupFamily.Id,
+		PrimarySpId:           res.GlobalVirtualGroupFamily.PrimarySpId,
+		GlobalVirtualGroupIds: res.GlobalVirtualGroupFamily.GlobalVirtualGroupIds,
+		VirtualPaymentAddress: common.HexToAddress(res.GlobalVirtualGroupFamily.VirtualPaymentAddress),
+	})
 }

@@ -168,6 +168,73 @@ struct GVGMapping {
     bytes secondarySpBlsSignature;
 }
 
+// Params defines the parameters for the module.
+struct Params {
+    // VersionedParams versionedParams;
+    VersionedParams versionedParams;
+    // maxPayloadSize is the maximum size of the payload, default: 2G
+    uint64 maxPayloadSize;
+    // relayer fee for the mirror bucket tx to bsc
+    string bscMirrorBucketRelayerFee;
+    // relayer fee for the ACK or FAIL_ACK package of the mirror bucket tx to bsc
+    string bscMirrorBucketAckRelayerFee;
+    // relayer fee for the mirror object tx to bsc
+    string bscMirrorObjectRelayerFee;
+    // Relayer fee for the ACK or FAIL_ACK package of the mirror object tx to bsc
+    string bscMirrorObjectAckRelayerFee;
+    // relayer fee for the mirror object tx to bsc
+    string bscMirrorGroupRelayerFee;
+    // Relayer fee for the ACK or FAIL_ACK package of the mirror object tx to bsc
+    string bscMirrorGroupAckRelayerFee;
+    // The maximum number of buckets that can be created per account
+    uint32 maxBucketsPerAccount;
+    // The window to count the discontinued objects or buckets
+    uint64 discontinueCountingWindow;
+    // The max objects can be requested in a window
+    uint64 discontinueObjectMax;
+    // The max buckets can be requested in a window
+    uint64 discontinueBucketMax;
+    // The object will be deleted after the confirm period in seconds
+    int64 discontinueConfirmPeriod;
+    // The max delete objects in each end block
+    uint64 discontinueDeletionMax;
+    // The max number for deleting policy in each end block
+    uint64 stalePolicyCleanupMax;
+    // The min interval for making quota smaller in seconds
+    uint64 minQuotaUpdateInterval;
+    // the max number of local virtual group per bucket
+    uint32 maxLocalVirtualGroupNumPerBucket;
+    // relayer fee for the mirror bucket tx to op chain
+    string opMirrorBucketRelayerFee;
+    // relayer fee for the ACK or FAIL_ACK package of the mirror bucket tx to op chain
+    string opMirrorBucketAckRelayerFee;
+    // relayer fee for the mirror object tx to op chain
+    string opMirrorObjectRelayerFee;
+    // Relayer fee for the ACK or FAIL_ACK package of the mirror object tx to op chain
+    string opMirrorObjectAckRelayerFee;
+    // relayer fee for the mirror object tx to op chain
+    string opMirrorGroupRelayerFee;
+    // Relayer fee for the ACK or FAIL_ACK package of the mirror object tx to op chain
+    string opMirrorGroupAckRelayerFee;
+    // relayer fee for the mirror bucket tx to polygon chain
+    string polygonMirrorBucketRelayerFee;
+    // relayer fee for the ACK or FAIL_ACK package of the mirror bucket tx to polygon chain
+    string polygonMirrorBucketAckRelayerFee;
+    // Add the rest of the fields similarly
+}
+
+// VersionedParams defines the parameters for the storage module with multi version, each version store with different timestamp.
+struct VersionedParams {
+    // max_segment_size is the maximum size of a segment. default: 16M
+    uint64 maxSegmentSize;
+    // redundant_data_check_num is the num of data chunks of EC redundancy algorithm
+    uint32 redundantDataChunkNum;
+    // redundant_data_check_num is the num of parity chunks of EC redundancy algorithm
+    uint32 redundantParityChunkNum;
+    // min_charge_size is the minimum charge size of the payload, objects smaller than this size will be charged as this size
+    uint64 minChargeSize;
+}
+
 interface IStorage {
     /**
      * @dev createBucket defines a method for create a bucket.
@@ -443,6 +510,11 @@ interface IStorage {
             ObjectInfo memory objectInfo,
             GlobalVirtualGroup memory globalVirtualGroup
         );
+
+    /**
+     * @dev params queries the storage params.
+     */
+    function params() external view returns (Params calldata params);
 
     /**
      * @dev CreateBucket defines an Event emitted when a user create a bucket
