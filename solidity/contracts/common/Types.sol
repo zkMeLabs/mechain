@@ -10,6 +10,23 @@ struct Coin {
     uint256 amount;
 }
 
+/**
+ * @dev DecCoin defines a token with a denomination and a decimal amount.
+ */
+struct DecCoin {
+    string denom;
+    uint256 amount;
+    uint8 precision;
+}
+
+/**
+ * @dev Dec defines decimal with a precision. for example, amount:16800, precision:3 means is 16.800
+ */
+struct Dec {
+    uint256 amount;
+    uint8 precision;
+}
+
 // Approval is the signature information returned by the Primary Storage Provider (SP) to the user
 // after allowing them to create a bucket or object, which is then used for verification on the chain
 // to ensure agreement between the Primary SP and the user.
