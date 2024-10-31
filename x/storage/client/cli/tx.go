@@ -22,19 +22,12 @@ import (
 
 	sdkclient "github.com/evmos/evmos/v12/sdk/client"
 	"github.com/evmos/evmos/v12/sdk/keys"
+	gnfdSdkTypes "github.com/evmos/evmos/v12/sdk/types"
 	types2 "github.com/evmos/evmos/v12/types"
 	"github.com/evmos/evmos/v12/types/common"
 	gnfderrors "github.com/evmos/evmos/v12/types/errors"
 	"github.com/evmos/evmos/v12/x/evm/precompiles/storage"
 	"github.com/evmos/evmos/v12/x/storage/types"
-)
-
-const (
-	DefaultGasLimit = 180000
-	DefaultChainId  = 5151
-	ChainID         = "mechain_5151-1"
-	EvmUrl          = "http://localhost:8545"
-	// Endpoint        = "http://localhost:26657"
 )
 
 // GetTxCmd returns the transaction commands for this module
@@ -144,7 +137,7 @@ func CmdCreateBucket() *cobra.Command {
 				return err
 			}
 			km, err := keys.NewPrivateKeyManager(argPrivateKey)
-			gnfdCli, err := sdkclient.NewMechainClient(clientCtx.NodeURI, ChainID, sdkclient.WithKeyManager(km))
+			gnfdCli, err := sdkclient.NewMechainClient(clientCtx.NodeURI, gnfdSdkTypes.ChainID, sdkclient.WithKeyManager(km))
 			if err != nil {
 				return err
 			}
@@ -170,7 +163,7 @@ func CmdCreateBucket() *cobra.Command {
 				}
 				return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msgCreateBucket, msgSetTag)
 			}
-			evmClient, err := ethclient.Dial(EvmUrl)
+			evmClient, err := ethclient.Dial(gnfdSdkTypes.EvmUrl)
 			if err != nil {
 				// return fmt.Errorf("failed to new a evm client")
 				return err
@@ -180,13 +173,13 @@ func CmdCreateBucket() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			txOpts, err := CreateTxOpts(context.Background(), evmClient, argPrivateKey, big.NewInt(DefaultChainId), DefaultGasLimit, nonce)
+			txOpts, err := sdkclient.CreateTxOpts(context.Background(), evmClient, argPrivateKey, big.NewInt(gnfdSdkTypes.DefaultChainId), gnfdSdkTypes.DefaultGasLimit, nonce)
 			if err != nil {
 				// return fmt.Errorf("failed to create tx opts")
 				return err
 			}
 
-			session, err := CreateStorageSession(evmClient, *txOpts, types2.StorageAddress)
+			session, err := sdkclient.CreateStorageSession(evmClient, *txOpts, types2.StorageAddress)
 			if err != nil {
 				// return fmt.Errorf("failed to create session")
 				return err
@@ -209,6 +202,10 @@ func CmdCreateBucket() *cobra.Command {
 				return err
 			}
 
+			_, err = sdkclient.WaitForEvmTx(context.Background(), evmClient, gnfdCli, txRsp.Hash())
+			if err != nil {
+				return fmt.Errorf("failed to create bucket", err.Error())
+			}
 			return clientCtx.PrintObjectLegacy(txRsp.Hash().String())
 		},
 	}
@@ -241,7 +238,7 @@ func CmdDeleteBucket() *cobra.Command {
 			}
 
 			km, err := keys.NewPrivateKeyManager(argPrivateKey)
-			gnfdCli, err := sdkclient.NewMechainClient(clientCtx.NodeURI, ChainID, sdkclient.WithKeyManager(km))
+			gnfdCli, err := sdkclient.NewMechainClient(clientCtx.NodeURI, gnfdSdkTypes.ChainID, sdkclient.WithKeyManager(km))
 			if err != nil {
 				return err
 			}
@@ -252,7 +249,7 @@ func CmdDeleteBucket() *cobra.Command {
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
-			evmClient, err := ethclient.Dial(EvmUrl)
+			evmClient, err := ethclient.Dial(gnfdSdkTypes.EvmUrl)
 			if err != nil {
 				// return fmt.Errorf("failed to new a evm client")
 				return err
@@ -261,13 +258,13 @@ func CmdDeleteBucket() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			txOpts, err := CreateTxOpts(context.Background(), evmClient, argPrivateKey, big.NewInt(DefaultChainId), DefaultGasLimit, nonce)
+			txOpts, err := sdkclient.CreateTxOpts(context.Background(), evmClient, argPrivateKey, big.NewInt(gnfdSdkTypes.DefaultChainId), gnfdSdkTypes.DefaultGasLimit, nonce)
 			if err != nil {
 				// return fmt.Errorf("failed to create tx opts")
 				return err
 			}
 
-			session, err := CreateStorageSession(evmClient, *txOpts, types2.StorageAddress)
+			session, err := sdkclient.CreateStorageSession(evmClient, *txOpts, types2.StorageAddress)
 			if err != nil {
 				// return fmt.Errorf("failed to create session")
 				return err
@@ -279,6 +276,10 @@ func CmdDeleteBucket() *cobra.Command {
 				return err
 			}
 
+			_, err = sdkclient.WaitForEvmTx(context.Background(), evmClient, gnfdCli, txRsp.Hash())
+			if err != nil {
+				return fmt.Errorf("failed to delete bucket", err.Error())
+			}
 			return clientCtx.PrintObjectLegacy(txRsp.Hash().String())
 		},
 	}
@@ -317,7 +318,7 @@ func CmdUpdateBucketInfo() *cobra.Command {
 			}
 
 			km, err := keys.NewPrivateKeyManager(argPrivateKey)
-			gnfdCli, err := sdkclient.NewMechainClient(clientCtx.NodeURI, ChainID, sdkclient.WithKeyManager(km))
+			gnfdCli, err := sdkclient.NewMechainClient(clientCtx.NodeURI, gnfdSdkTypes.ChainID, sdkclient.WithKeyManager(km))
 			if err != nil {
 				return err
 			}
@@ -331,7 +332,7 @@ func CmdUpdateBucketInfo() *cobra.Command {
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
-			evmClient, err := ethclient.Dial(EvmUrl)
+			evmClient, err := ethclient.Dial(gnfdSdkTypes.EvmUrl)
 			if err != nil {
 				// return fmt.Errorf("failed to new a evm client")
 				return err
@@ -340,13 +341,13 @@ func CmdUpdateBucketInfo() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			txOpts, err := CreateTxOpts(context.Background(), evmClient, argPrivateKey, big.NewInt(DefaultChainId), DefaultGasLimit, nonce)
+			txOpts, err := sdkclient.CreateTxOpts(context.Background(), evmClient, argPrivateKey, big.NewInt(gnfdSdkTypes.DefaultChainId), gnfdSdkTypes.DefaultGasLimit, nonce)
 			if err != nil {
 				// return fmt.Errorf("failed to create tx opts")
 				return err
 			}
 
-			session, err := CreateStorageSession(evmClient, *txOpts, types2.StorageAddress)
+			session, err := sdkclient.CreateStorageSession(evmClient, *txOpts, types2.StorageAddress)
 			if err != nil {
 				// return fmt.Errorf("failed to create session")
 				return err
@@ -363,6 +364,10 @@ func CmdUpdateBucketInfo() *cobra.Command {
 				return err
 			}
 
+			_, err = sdkclient.WaitForEvmTx(context.Background(), evmClient, gnfdCli, txRsp.Hash())
+			if err != nil {
+				return fmt.Errorf("update bucket info", err.Error())
+			}
 			return clientCtx.PrintObjectLegacy(txRsp.Hash().String())
 		},
 	}
@@ -376,10 +381,11 @@ func CmdUpdateBucketInfo() *cobra.Command {
 
 func CmdCancelCreateObject() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "cancel-create-object [bucket-name] [object-name]",
+		Use:   "cancel-create-object [bucket-name] [object-name] --privatekey xxx",
 		Short: "Broadcast message cancel_create_object",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			argPrivateKey, _ := cmd.Flags().GetString(FlagPrivateKey)
 			argBucketName := args[0]
 			argObjectName := args[1]
 
@@ -388,18 +394,58 @@ func CmdCancelCreateObject() *cobra.Command {
 				return err
 			}
 
+			km, err := keys.NewPrivateKeyManager(argPrivateKey)
+			gnfdCli, err := sdkclient.NewMechainClient(clientCtx.NodeURI, gnfdSdkTypes.ChainID, sdkclient.WithKeyManager(km))
+			if err != nil {
+				return err
+			}
 			msg := types.NewMsgCancelCreateObject(
-				clientCtx.GetFromAddress(),
+				km.GetAddr(), // clientCtx.GetFromAddress(),
 				argBucketName,
 				argObjectName,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+			evmClient, err := ethclient.Dial(gnfdSdkTypes.EvmUrl)
+			if err != nil {
+				// return fmt.Errorf("failed to new a evm client")
+				return err
+			}
+			nonce, err := gnfdCli.GetNonce(context.Background())
+			if err != nil {
+				return err
+			}
+			txOpts, err := sdkclient.CreateTxOpts(context.Background(), evmClient, argPrivateKey, big.NewInt(gnfdSdkTypes.DefaultChainId), gnfdSdkTypes.DefaultGasLimit, nonce)
+			if err != nil {
+				// return fmt.Errorf("failed to create tx opts")
+				return err
+			}
+
+			session, err := sdkclient.CreateStorageSession(evmClient, *txOpts, types2.StorageAddress)
+			if err != nil {
+				// return fmt.Errorf("failed to create session")
+				return err
+			}
+
+			txRsp, err := session.CancelCreateObject(
+				argBucketName,
+				argObjectName,
+			)
+			if err != nil {
+				// return fmt.Errorf("failed to cancel create object")
+				return err
+			}
+
+			_, err = sdkclient.WaitForEvmTx(context.Background(), evmClient, gnfdCli, txRsp.Hash())
+			if err != nil {
+				return fmt.Errorf("failed to cancel create object", err.Error())
+			}
+			return clientCtx.PrintObjectLegacy(txRsp.Hash().String())
 		},
 	}
 
+	cmd.Flags().String(FlagPrivateKey, "", "The privatekey of account to cancel create object")
 	flags.AddTxFlagsToCmd(cmd)
 
 	return cmd
@@ -471,7 +517,7 @@ func CmdCreateObject() *cobra.Command {
 			}
 
 			km, err := keys.NewPrivateKeyManager(argPrivateKey)
-			gnfdCli, err := sdkclient.NewMechainClient(clientCtx.NodeURI, ChainID, sdkclient.WithKeyManager(km))
+			gnfdCli, err := sdkclient.NewMechainClient(clientCtx.NodeURI, gnfdSdkTypes.ChainID, sdkclient.WithKeyManager(km))
 			if err != nil {
 				return err
 			}
@@ -500,7 +546,7 @@ func CmdCreateObject() *cobra.Command {
 				return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msgCreateObject, msgSetTag)
 			}
 
-			evmClient, err := ethclient.Dial(EvmUrl)
+			evmClient, err := ethclient.Dial(gnfdSdkTypes.EvmUrl)
 			if err != nil {
 				// return fmt.Errorf("failed to new a evm client")
 				return err
@@ -509,13 +555,13 @@ func CmdCreateObject() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			txOpts, err := CreateTxOpts(context.Background(), evmClient, argPrivateKey, big.NewInt(DefaultChainId), DefaultGasLimit, nonce)
+			txOpts, err := sdkclient.CreateTxOpts(context.Background(), evmClient, argPrivateKey, big.NewInt(gnfdSdkTypes.DefaultChainId), gnfdSdkTypes.DefaultGasLimit, nonce)
 			if err != nil {
 				// return fmt.Errorf("failed to create tx opts")
 				return err
 			}
 
-			session, err := CreateStorageSession(evmClient, *txOpts, types2.StorageAddress)
+			session, err := sdkclient.CreateStorageSession(evmClient, *txOpts, types2.StorageAddress)
 			if err != nil {
 				// return fmt.Errorf("failed to create session")
 				return err
@@ -536,6 +582,10 @@ func CmdCreateObject() *cobra.Command {
 				return err
 			}
 
+			_, err = sdkclient.WaitForEvmTx(context.Background(), evmClient, gnfdCli, txRsp.Hash())
+			if err != nil {
+				return fmt.Errorf("failed to create object", err.Error())
+			}
 			return clientCtx.PrintObjectLegacy(txRsp.Hash().String())
 		},
 	}
@@ -554,10 +604,11 @@ func CmdCreateObject() *cobra.Command {
 
 func CmdCopyObject() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "copy-object [src-bucket-name] [dst-bucket-name] [src-object-name] [dst-object-name]",
+		Use:   "copy-object [src-bucket-name] [dst-bucket-name] [src-object-name] [dst-object-name] --privatekey xxx",
 		Short: "Copy an existing object in a bucket to another bucket",
 		Args:  cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			argPrivateKey, _ := cmd.Flags().GetString(FlagPrivateKey)
 			argSrcBucketName := args[0]
 			argDstBucketName := args[1]
 			argSrcObjectName := args[2]
@@ -575,8 +626,13 @@ func CmdCopyObject() *cobra.Command {
 			if err != nil {
 				return err
 			}
+			km, err := keys.NewPrivateKeyManager(argPrivateKey)
+			gnfdCli, err := sdkclient.NewMechainClient(clientCtx.NodeURI, gnfdSdkTypes.ChainID, sdkclient.WithKeyManager(km))
+			if err != nil {
+				return err
+			}
 			msg := types.NewMsgCopyObject(
-				clientCtx.GetFromAddress(),
+				km.GetAddr(), // clientCtx.GetFromAddress(),
 				argSrcBucketName,
 				argDstBucketName,
 				argSrcObjectName,
@@ -587,10 +643,48 @@ func CmdCopyObject() *cobra.Command {
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+			evmClient, err := ethclient.Dial(gnfdSdkTypes.EvmUrl)
+			if err != nil {
+				// return fmt.Errorf("failed to new a evm client")
+				return err
+			}
+			nonce, err := gnfdCli.GetNonce(context.Background())
+			if err != nil {
+				return err
+			}
+			txOpts, err := sdkclient.CreateTxOpts(context.Background(), evmClient, argPrivateKey, big.NewInt(gnfdSdkTypes.DefaultChainId), gnfdSdkTypes.DefaultGasLimit, nonce)
+			if err != nil {
+				// return fmt.Errorf("failed to create tx opts")
+				return err
+			}
+
+			session, err := sdkclient.CreateStorageSession(evmClient, *txOpts, types2.StorageAddress)
+			if err != nil {
+				// return fmt.Errorf("failed to create session")
+				return err
+			}
+
+			txRsp, err := session.CopyObject(
+				argSrcBucketName,
+				argDstBucketName,
+				argSrcObjectName,
+				argDstObjectName,
+				storage.Approval{ExpiredHeight: approveTimeoutHeight, Sig: approveSignatureBytes},
+			)
+			if err != nil {
+				// return fmt.Errorf("failed to copy object")
+				return err
+			}
+
+			_, err = sdkclient.WaitForEvmTx(context.Background(), evmClient, gnfdCli, txRsp.Hash())
+			if err != nil {
+				return fmt.Errorf("failed to copy object", err.Error())
+			}
+			return clientCtx.PrintObjectLegacy(txRsp.Hash().String())
 		},
 	}
 
+	cmd.Flags().String(FlagPrivateKey, "", "The privatekey of account to copy object")
 	flags.AddTxFlagsToCmd(cmd)
 	cmd.Flags().AddFlagSet(FlagSetApproval())
 
@@ -599,10 +693,11 @@ func CmdCopyObject() *cobra.Command {
 
 func CmdDeleteObject() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "delete-object [bucket-name] [object-name]",
+		Use:   "delete-object [bucket-name] [object-name] --privatekey xxx",
 		Short: "Delete an existing object",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			argPrivateKey, _ := cmd.Flags().GetString(FlagPrivateKey)
 			argBucketName := args[0]
 			argObjectName := args[1]
 
@@ -611,18 +706,58 @@ func CmdDeleteObject() *cobra.Command {
 				return err
 			}
 
+			km, err := keys.NewPrivateKeyManager(argPrivateKey)
+			gnfdCli, err := sdkclient.NewMechainClient(clientCtx.NodeURI, gnfdSdkTypes.ChainID, sdkclient.WithKeyManager(km))
+			if err != nil {
+				return err
+			}
 			msg := types.NewMsgDeleteObject(
-				clientCtx.GetFromAddress(),
+				km.GetAddr(), // clientCtx.GetFromAddress(),
 				argBucketName,
 				argObjectName,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+			evmClient, err := ethclient.Dial(gnfdSdkTypes.EvmUrl)
+			if err != nil {
+				// return fmt.Errorf("failed to new a evm client")
+				return err
+			}
+			nonce, err := gnfdCli.GetNonce(context.Background())
+			if err != nil {
+				return err
+			}
+			txOpts, err := sdkclient.CreateTxOpts(context.Background(), evmClient, argPrivateKey, big.NewInt(gnfdSdkTypes.DefaultChainId), gnfdSdkTypes.DefaultGasLimit, nonce)
+			if err != nil {
+				// return fmt.Errorf("failed to create tx opts")
+				return err
+			}
+
+			session, err := sdkclient.CreateStorageSession(evmClient, *txOpts, types2.StorageAddress)
+			if err != nil {
+				// return fmt.Errorf("failed to create session")
+				return err
+			}
+
+			txRsp, err := session.DeleteObject(
+				argBucketName,
+				argObjectName,
+			)
+			if err != nil {
+				// return fmt.Errorf("failed to delete object")
+				return err
+			}
+
+			_, err = sdkclient.WaitForEvmTx(context.Background(), evmClient, gnfdCli, txRsp.Hash())
+			if err != nil {
+				return fmt.Errorf("failed to delete object", err.Error())
+			}
+			return clientCtx.PrintObjectLegacy(txRsp.Hash().String())
 		},
 	}
 
+	cmd.Flags().String(FlagPrivateKey, "", "The privatekey of account to delete object")
 	flags.AddTxFlagsToCmd(cmd)
 
 	return cmd
@@ -653,7 +788,7 @@ func CmdUpdateObjectInfo() *cobra.Command {
 			}
 
 			km, err := keys.NewPrivateKeyManager(argPrivateKey)
-			gnfdCli, err := sdkclient.NewMechainClient(clientCtx.NodeURI, ChainID, sdkclient.WithKeyManager(km))
+			gnfdCli, err := sdkclient.NewMechainClient(clientCtx.NodeURI, gnfdSdkTypes.ChainID, sdkclient.WithKeyManager(km))
 			if err != nil {
 				return err
 			}
@@ -666,7 +801,7 @@ func CmdUpdateObjectInfo() *cobra.Command {
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
-			evmClient, err := ethclient.Dial(EvmUrl)
+			evmClient, err := ethclient.Dial(gnfdSdkTypes.EvmUrl)
 			if err != nil {
 				// return fmt.Errorf("failed to new a evm client")
 				return err
@@ -675,13 +810,13 @@ func CmdUpdateObjectInfo() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			txOpts, err := CreateTxOpts(context.Background(), evmClient, argPrivateKey, big.NewInt(DefaultChainId), DefaultGasLimit, nonce)
+			txOpts, err := sdkclient.CreateTxOpts(context.Background(), evmClient, argPrivateKey, big.NewInt(gnfdSdkTypes.DefaultChainId), gnfdSdkTypes.DefaultGasLimit, nonce)
 			if err != nil {
 				// return fmt.Errorf("failed to create tx opts")
 				return err
 			}
 
-			session, err := CreateStorageSession(evmClient, *txOpts, types2.StorageAddress)
+			session, err := sdkclient.CreateStorageSession(evmClient, *txOpts, types2.StorageAddress)
 			if err != nil {
 				// return fmt.Errorf("failed to create session")
 				return err
@@ -697,6 +832,10 @@ func CmdUpdateObjectInfo() *cobra.Command {
 				return err
 			}
 
+			_, err = sdkclient.WaitForEvmTx(context.Background(), evmClient, gnfdCli, txRsp.Hash())
+			if err != nil {
+				return fmt.Errorf("failed to update object info", err.Error())
+			}
 			return clientCtx.PrintObjectLegacy(txRsp.Hash().String())
 		},
 	}
@@ -710,10 +849,11 @@ func CmdUpdateObjectInfo() *cobra.Command {
 
 func CmdDiscontinueObject() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "discontinue-object [bucket-name] [object-ids] [reason]",
+		Use:   "discontinue-object [bucket-name] [object-ids] [reason] --privatekey xxx",
 		Short: "Discontinue to store objects",
 		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			argPrivateKey, _ := cmd.Flags().GetString(FlagPrivateKey)
 			argBucketName := args[0]
 			argObjectIDs := args[1]
 			argObjectReason := args[2]
@@ -724,6 +864,7 @@ func CmdDiscontinueObject() *cobra.Command {
 			}
 
 			objectIDs := make([]cmath.Uint, 0)
+			objectIds := make([]*big.Int, 0)
 			splitIDs := strings.Split(argObjectIDs, ",")
 			for _, split := range splitIDs {
 				id, ok := big.NewInt(0).SetString(split, 10)
@@ -735,10 +876,16 @@ func CmdDiscontinueObject() *cobra.Command {
 				}
 
 				objectIDs = append(objectIDs, cmath.NewUintFromBigInt(id))
+				objectIds = append(objectIds, id)
 			}
 
+			km, err := keys.NewPrivateKeyManager(argPrivateKey)
+			gnfdCli, err := sdkclient.NewMechainClient(clientCtx.NodeURI, gnfdSdkTypes.ChainID, sdkclient.WithKeyManager(km))
+			if err != nil {
+				return err
+			}
 			msg := types.NewMsgDiscontinueObject(
-				clientCtx.GetFromAddress(),
+				km.GetAddr(), // clientCtx.GetFromAddress(),
 				argBucketName,
 				objectIDs,
 				argObjectReason,
@@ -746,10 +893,46 @@ func CmdDiscontinueObject() *cobra.Command {
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+			evmClient, err := ethclient.Dial(gnfdSdkTypes.EvmUrl)
+			if err != nil {
+				// return fmt.Errorf("failed to new a evm client")
+				return err
+			}
+			nonce, err := gnfdCli.GetNonce(context.Background())
+			if err != nil {
+				return err
+			}
+			txOpts, err := sdkclient.CreateTxOpts(context.Background(), evmClient, argPrivateKey, big.NewInt(gnfdSdkTypes.DefaultChainId), gnfdSdkTypes.DefaultGasLimit, nonce)
+			if err != nil {
+				// return fmt.Errorf("failed to create tx opts")
+				return err
+			}
+
+			session, err := sdkclient.CreateStorageSession(evmClient, *txOpts, types2.StorageAddress)
+			if err != nil {
+				// return fmt.Errorf("failed to create session")
+				return err
+			}
+
+			txRsp, err := session.DiscontinueObject(
+				argBucketName,
+				objectIds,
+				argObjectReason,
+			)
+			if err != nil {
+				// return fmt.Errorf("failed to discontinue object")
+				return err
+			}
+
+			_, err = sdkclient.WaitForEvmTx(context.Background(), evmClient, gnfdCli, txRsp.Hash())
+			if err != nil {
+				return fmt.Errorf("failed to discontinue object", err.Error())
+			}
+			return clientCtx.PrintObjectLegacy(txRsp.Hash().String())
 		},
 	}
 
+	cmd.Flags().String(FlagPrivateKey, "", "The privatekey of account to discontinue object")
 	flags.AddTxFlagsToCmd(cmd)
 
 	return cmd
@@ -774,7 +957,7 @@ func CmdCreateGroup() *cobra.Command {
 			tags := GetTags(tagsStr)
 
 			km, err := keys.NewPrivateKeyManager(argPrivateKey)
-			gnfdCli, err := sdkclient.NewMechainClient(clientCtx.NodeURI, ChainID, sdkclient.WithKeyManager(km))
+			gnfdCli, err := sdkclient.NewMechainClient(clientCtx.NodeURI, gnfdSdkTypes.ChainID, sdkclient.WithKeyManager(km))
 			if err != nil {
 				return err
 			}
@@ -795,7 +978,7 @@ func CmdCreateGroup() *cobra.Command {
 				}
 				return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msgCreateGroup, msgSetTag)
 			}
-			evmClient, err := ethclient.Dial(EvmUrl)
+			evmClient, err := ethclient.Dial(gnfdSdkTypes.EvmUrl)
 			if err != nil {
 				// return fmt.Errorf("failed to new a evm client")
 				return err
@@ -804,13 +987,13 @@ func CmdCreateGroup() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			txOpts, err := CreateTxOpts(context.Background(), evmClient, argPrivateKey, big.NewInt(DefaultChainId), DefaultGasLimit, nonce)
+			txOpts, err := sdkclient.CreateTxOpts(context.Background(), evmClient, argPrivateKey, big.NewInt(gnfdSdkTypes.DefaultChainId), gnfdSdkTypes.DefaultGasLimit, nonce)
 			if err != nil {
 				// return fmt.Errorf("failed to create tx opts")
 				return err
 			}
 
-			session, err := CreateStorageSession(evmClient, *txOpts, types2.StorageAddress)
+			session, err := sdkclient.CreateStorageSession(evmClient, *txOpts, types2.StorageAddress)
 			if err != nil {
 				// return fmt.Errorf("failed to create session")
 				return err
@@ -825,6 +1008,10 @@ func CmdCreateGroup() *cobra.Command {
 				return err
 			}
 
+			_, err = sdkclient.WaitForEvmTx(context.Background(), evmClient, gnfdCli, txRsp.Hash())
+			if err != nil {
+				return fmt.Errorf("failed to create group", err.Error())
+			}
 			return clientCtx.PrintObjectLegacy(txRsp.Hash().String())
 		},
 	}
@@ -852,7 +1039,7 @@ func CmdDeleteGroup() *cobra.Command {
 			}
 
 			km, err := keys.NewPrivateKeyManager(argPrivateKey)
-			gnfdCli, err := sdkclient.NewMechainClient(clientCtx.NodeURI, ChainID, sdkclient.WithKeyManager(km))
+			gnfdCli, err := sdkclient.NewMechainClient(clientCtx.NodeURI, gnfdSdkTypes.ChainID, sdkclient.WithKeyManager(km))
 			if err != nil {
 				return err
 			}
@@ -863,7 +1050,7 @@ func CmdDeleteGroup() *cobra.Command {
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
-			evmClient, err := ethclient.Dial(EvmUrl)
+			evmClient, err := ethclient.Dial(gnfdSdkTypes.EvmUrl)
 			if err != nil {
 				// return fmt.Errorf("failed to new a evm client")
 				return err
@@ -872,13 +1059,13 @@ func CmdDeleteGroup() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			txOpts, err := CreateTxOpts(context.Background(), evmClient, argPrivateKey, big.NewInt(DefaultChainId), DefaultGasLimit, nonce)
+			txOpts, err := sdkclient.CreateTxOpts(context.Background(), evmClient, argPrivateKey, big.NewInt(gnfdSdkTypes.DefaultChainId), gnfdSdkTypes.DefaultGasLimit, nonce)
 			if err != nil {
 				// return fmt.Errorf("failed to create tx opts")
 				return err
 			}
 
-			session, err := CreateStorageSession(evmClient, *txOpts, types2.StorageAddress)
+			session, err := sdkclient.CreateStorageSession(evmClient, *txOpts, types2.StorageAddress)
 			if err != nil {
 				// return fmt.Errorf("failed to create session")
 				return err
@@ -890,6 +1077,10 @@ func CmdDeleteGroup() *cobra.Command {
 				return err
 			}
 
+			_, err = sdkclient.WaitForEvmTx(context.Background(), evmClient, gnfdCli, txRsp.Hash())
+			if err != nil {
+				return fmt.Errorf("failed to delete group", err.Error())
+			}
 			return clientCtx.PrintObjectLegacy(txRsp.Hash().String())
 		},
 	}
@@ -902,10 +1093,11 @@ func CmdDeleteGroup() *cobra.Command {
 
 func CmdLeaveGroup() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "leave-group [group-owner] [group-name]",
+		Use:   "leave-group [group-owner] [group-name] --privatekey xxx",
 		Short: "Leave the group you're a member of",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			argPrivateKey, _ := cmd.Flags().GetString(FlagPrivateKey)
 			argGroupOwner := args[0]
 			argGroupName := args[1]
 
@@ -919,18 +1111,59 @@ func CmdLeaveGroup() *cobra.Command {
 				return err
 			}
 
+			km, err := keys.NewPrivateKeyManager(argPrivateKey)
+			gnfdCli, err := sdkclient.NewMechainClient(clientCtx.NodeURI, gnfdSdkTypes.ChainID, sdkclient.WithKeyManager(km))
+			if err != nil {
+				return err
+			}
 			msg := types.NewMsgLeaveGroup(
-				clientCtx.GetFromAddress(),
+				km.GetAddr(), // clientCtx.GetFromAddress(),
 				groupOwner,
 				argGroupName,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+			evmClient, err := ethclient.Dial(gnfdSdkTypes.EvmUrl)
+			if err != nil {
+				// return fmt.Errorf("failed to new a evm client")
+				return err
+			}
+			nonce, err := gnfdCli.GetNonce(context.Background())
+			if err != nil {
+				return err
+			}
+			txOpts, err := sdkclient.CreateTxOpts(context.Background(), evmClient, argPrivateKey, big.NewInt(gnfdSdkTypes.DefaultChainId), gnfdSdkTypes.DefaultGasLimit, nonce)
+			if err != nil {
+				// return fmt.Errorf("failed to create tx opts")
+				return err
+			}
+
+			session, err := sdkclient.CreateStorageSession(evmClient, *txOpts, types2.StorageAddress)
+			if err != nil {
+				// return fmt.Errorf("failed to create session")
+				return err
+			}
+
+			txRsp, err := session.LeaveGroup(
+				ethcmn.Address(km.GetAddr()),
+				ethcmn.Address(groupOwner),
+				argGroupName,
+			)
+			if err != nil {
+				// return fmt.Errorf("failed to leave group")
+				return err
+			}
+
+			_, err = sdkclient.WaitForEvmTx(context.Background(), evmClient, gnfdCli, txRsp.Hash())
+			if err != nil {
+				return fmt.Errorf("failed to leave group", err.Error())
+			}
+			return clientCtx.PrintObjectLegacy(txRsp.Hash().String())
 		},
 	}
 
+	cmd.Flags().String(FlagPrivateKey, "", "The privatekey of account to leave group")
 	flags.AddTxFlagsToCmd(cmd)
 
 	return cmd
@@ -938,10 +1171,11 @@ func CmdLeaveGroup() *cobra.Command {
 
 func CmdUpdateGroupMember() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update-group-member [group-name] [member-to-add] [member-expiration-to-add] [member-to-delete]",
+		Use:   "update-group-member [group-name] [member-to-add] [member-expiration-to-add] [member-to-delete] --privatekey xxx",
 		Short: "Update the member of the group you own, split member addresses and expiration(UNIX timestamp) by ,",
 		Args:  cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			argPrivateKey, _ := cmd.Flags().GetString(FlagPrivateKey)
 			argGroupName := args[0]
 			argMemberToAdd := args[1]
 			argMemberExpirationToAdd := args[2]
@@ -957,13 +1191,16 @@ func CmdUpdateGroupMember() *cobra.Command {
 			}
 
 			msgGroupMemberToAdd := make([]*types.MsgGroupMember, 0, len(argMemberToAdd))
+			groupMembersToAdd := make([]ethcmn.Address, 0, len(argMemberToAdd))
+			var expirationTime []int64
 			if len(membersToAdd) > 0 {
 				for i := range membersToAdd {
 					if len(membersToAdd[i]) > 0 {
-						_, err := sdk.AccAddressFromHexUnsafe(membersToAdd[i])
+						memberToAdd, err := sdk.AccAddressFromHexUnsafe(membersToAdd[i])
 						if err != nil {
 							return err
 						}
+						groupMembersToAdd[i] = ethcmn.Address(memberToAdd)
 						member := types.MsgGroupMember{
 							Member: membersToAdd[i],
 						}
@@ -972,6 +1209,7 @@ func CmdUpdateGroupMember() *cobra.Command {
 							if err != nil {
 								return err
 							}
+							expirationTime[i] = unix
 							expiration := time.Unix(unix, 0)
 							member.ExpirationTime = &expiration
 						}
@@ -982,6 +1220,7 @@ func CmdUpdateGroupMember() *cobra.Command {
 			}
 
 			var memberAddrsToDelete []sdk.AccAddress
+			var groupMembersToDelete []ethcmn.Address
 			if len(argMemberToDelete) != 0 {
 				membersToDelete := strings.Split(argMemberToDelete, ",")
 				for _, member := range membersToDelete {
@@ -990,13 +1229,19 @@ func CmdUpdateGroupMember() *cobra.Command {
 						if err != nil {
 							return err
 						}
+						groupMembersToDelete = append(groupMembersToDelete, ethcmn.Address(memberAddr))
 						memberAddrsToDelete = append(memberAddrsToDelete, memberAddr)
 					}
 				}
 			}
+			km, err := keys.NewPrivateKeyManager(argPrivateKey)
+			gnfdCli, err := sdkclient.NewMechainClient(clientCtx.NodeURI, gnfdSdkTypes.ChainID, sdkclient.WithKeyManager(km))
+			if err != nil {
+				return err
+			}
 			msg := types.NewMsgUpdateGroupMember(
-				clientCtx.GetFromAddress(),
-				clientCtx.GetFromAddress(),
+				km.GetAddr(), // clientCtx.GetFromAddress(),
+				km.GetAddr(), // clientCtx.GetFromAddress(),
 				argGroupName,
 				msgGroupMemberToAdd,
 				memberAddrsToDelete,
@@ -1004,10 +1249,48 @@ func CmdUpdateGroupMember() *cobra.Command {
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+			evmClient, err := ethclient.Dial(gnfdSdkTypes.EvmUrl)
+			if err != nil {
+				// return fmt.Errorf("failed to new a evm client")
+				return err
+			}
+			nonce, err := gnfdCli.GetNonce(context.Background())
+			if err != nil {
+				return err
+			}
+			txOpts, err := sdkclient.CreateTxOpts(context.Background(), evmClient, argPrivateKey, big.NewInt(gnfdSdkTypes.DefaultChainId), gnfdSdkTypes.DefaultGasLimit, nonce)
+			if err != nil {
+				// return fmt.Errorf("failed to create tx opts")
+				return err
+			}
+
+			session, err := sdkclient.CreateStorageSession(evmClient, *txOpts, types2.StorageAddress)
+			if err != nil {
+				// return fmt.Errorf("failed to create session")
+				return err
+			}
+
+			txRsp, err := session.UpdateGroup(
+				ethcmn.Address(km.GetAddr()),
+				argGroupName,
+				groupMembersToAdd,
+				expirationTime,
+				groupMembersToDelete,
+			)
+			if err != nil {
+				// return fmt.Errorf("failed to update group member")
+				return err
+			}
+
+			_, err = sdkclient.WaitForEvmTx(context.Background(), evmClient, gnfdCli, txRsp.Hash())
+			if err != nil {
+				return fmt.Errorf("failed to update group member", err.Error())
+			}
+			return clientCtx.PrintObjectLegacy(txRsp.Hash().String())
 		},
 	}
 
+	cmd.Flags().String(FlagPrivateKey, "", "The privatekey of account to update group member")
 	flags.AddTxFlagsToCmd(cmd)
 
 	return cmd
@@ -1015,10 +1298,11 @@ func CmdUpdateGroupMember() *cobra.Command {
 
 func CmdRenewGroupMember() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "renew-group-member [group-name] [member] [member-expiration]",
+		Use:   "renew-group-member [group-name] [member] [member-expiration] --privatekey xxx",
 		Short: "renew the member of the group you own, split member-addresses and member-expiration(UNIX timestamp) by ,",
 		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			argPrivateKey, _ := cmd.Flags().GetString(FlagPrivateKey)
 			argGroupName := args[0]
 			argMember := args[1]
 			argMemberExpiration := args[2]
@@ -1036,12 +1320,15 @@ func CmdRenewGroupMember() *cobra.Command {
 			}
 
 			msgGroupMember := make([]*types.MsgGroupMember, 0, len(argMember))
+			var groupMembers []ethcmn.Address
+			var expirationTime []int64
 			for i := range members {
 				if len(members[i]) > 0 {
-					_, err := sdk.AccAddressFromHexUnsafe(members[i])
+					memberToRenew, err := sdk.AccAddressFromHexUnsafe(members[i])
 					if err != nil {
 						return err
 					}
+					groupMembers[i] = ethcmn.Address(memberToRenew)
 					member := types.MsgGroupMember{
 						Member: members[i],
 					}
@@ -1050,6 +1337,7 @@ func CmdRenewGroupMember() *cobra.Command {
 						if err != nil {
 							return err
 						}
+						expirationTime[i] = unix
 						expiration := time.Unix(unix, 0)
 						member.ExpirationTime = &expiration
 					}
@@ -1058,19 +1346,61 @@ func CmdRenewGroupMember() *cobra.Command {
 				}
 			}
 
+			km, err := keys.NewPrivateKeyManager(argPrivateKey)
+			gnfdCli, err := sdkclient.NewMechainClient(clientCtx.NodeURI, gnfdSdkTypes.ChainID, sdkclient.WithKeyManager(km))
+			if err != nil {
+				return err
+			}
 			msg := types.NewMsgRenewGroupMember(
-				clientCtx.GetFromAddress(),
-				clientCtx.GetFromAddress(),
+				km.GetAddr(), // clientCtx.GetFromAddress(),
+				km.GetAddr(), // clientCtx.GetFromAddress(),
 				argGroupName,
 				msgGroupMember,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+			evmClient, err := ethclient.Dial(gnfdSdkTypes.EvmUrl)
+			if err != nil {
+				// return fmt.Errorf("failed to new a evm client")
+				return err
+			}
+			nonce, err := gnfdCli.GetNonce(context.Background())
+			if err != nil {
+				return err
+			}
+			txOpts, err := sdkclient.CreateTxOpts(context.Background(), evmClient, argPrivateKey, big.NewInt(gnfdSdkTypes.DefaultChainId), gnfdSdkTypes.DefaultGasLimit, nonce)
+			if err != nil {
+				// return fmt.Errorf("failed to create tx opts")
+				return err
+			}
+
+			session, err := sdkclient.CreateStorageSession(evmClient, *txOpts, types2.StorageAddress)
+			if err != nil {
+				// return fmt.Errorf("failed to create session")
+				return err
+			}
+
+			txRsp, err := session.RenewGroupMember(
+				ethcmn.Address(km.GetAddr()),
+				argGroupName,
+				groupMembers,
+				expirationTime,
+			)
+			if err != nil {
+				// return fmt.Errorf("failed to renew group member")
+				return err
+			}
+
+			_, err = sdkclient.WaitForEvmTx(context.Background(), evmClient, gnfdCli, txRsp.Hash())
+			if err != nil {
+				return fmt.Errorf("failed to renew group member", err.Error())
+			}
+			return clientCtx.PrintObjectLegacy(txRsp.Hash().String())
 		},
 	}
 
+	cmd.Flags().String(FlagPrivateKey, "", "The privatekey of account to renew group member")
 	flags.AddTxFlagsToCmd(cmd)
 
 	return cmd
@@ -1078,10 +1408,11 @@ func CmdRenewGroupMember() *cobra.Command {
 
 func CmdUpdateGroupExtra() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update-group-extra [group-name] [extra]",
+		Use:   "update-group-extra [group-name] [extra] --privatekey xxx",
 		Short: "Update the extra info of the group",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			argPrivateKey, _ := cmd.Flags().GetString(FlagPrivateKey)
 			argGroupName := args[0]
 			argExtra := args[1]
 
@@ -1089,19 +1420,60 @@ func CmdUpdateGroupExtra() *cobra.Command {
 			if err != nil {
 				return err
 			}
+			km, err := keys.NewPrivateKeyManager(argPrivateKey)
+			gnfdCli, err := sdkclient.NewMechainClient(clientCtx.NodeURI, gnfdSdkTypes.ChainID, sdkclient.WithKeyManager(km))
+			if err != nil {
+				return err
+			}
 			msg := types.NewMsgUpdateGroupExtra(
-				clientCtx.GetFromAddress(),
-				clientCtx.GetFromAddress(),
+				km.GetAddr(), // clientCtx.GetFromAddress(),
+				km.GetAddr(), // clientCtx.GetFromAddress(),
 				argGroupName,
 				argExtra,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+			evmClient, err := ethclient.Dial(gnfdSdkTypes.EvmUrl)
+			if err != nil {
+				// return fmt.Errorf("failed to new a evm client")
+				return err
+			}
+			nonce, err := gnfdCli.GetNonce(context.Background())
+			if err != nil {
+				return err
+			}
+			txOpts, err := sdkclient.CreateTxOpts(context.Background(), evmClient, argPrivateKey, big.NewInt(gnfdSdkTypes.DefaultChainId), gnfdSdkTypes.DefaultGasLimit, nonce)
+			if err != nil {
+				// return fmt.Errorf("failed to create tx opts")
+				return err
+			}
+
+			session, err := sdkclient.CreateStorageSession(evmClient, *txOpts, types2.StorageAddress)
+			if err != nil {
+				// return fmt.Errorf("failed to create session")
+				return err
+			}
+
+			txRsp, err := session.UpdateGroupExtra(
+				ethcmn.Address(km.GetAddr()),
+				argGroupName,
+				argExtra,
+			)
+			if err != nil {
+				// return fmt.Errorf("failed to update group extra")
+				return err
+			}
+
+			_, err = sdkclient.WaitForEvmTx(context.Background(), evmClient, gnfdCli, txRsp.Hash())
+			if err != nil {
+				return fmt.Errorf("failed to update group extra", err.Error())
+			}
+			return clientCtx.PrintObjectLegacy(txRsp.Hash().String())
 		},
 	}
 
+	cmd.Flags().String(FlagPrivateKey, "", "The privatekey of account to update group extra")
 	flags.AddTxFlagsToCmd(cmd)
 
 	return cmd
@@ -1109,10 +1481,11 @@ func CmdUpdateGroupExtra() *cobra.Command {
 
 func CmdPutPolicy() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "put-policy [principle-value] [resource]",
+		Use:   "put-policy [principle-value] [resource] --privatekey xxx",
 		Short: "put a policy to bucket/object/group which can grant permission to others",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			argPrivateKey, _ := cmd.Flags().GetString(FlagPrivateKey)
 			argPrincipalValue := args[0]
 			argResource := args[1]
 
@@ -1126,8 +1499,13 @@ func CmdPutPolicy() *cobra.Command {
 				return err
 			}
 
+			km, err := keys.NewPrivateKeyManager(argPrivateKey)
+			gnfdCli, err := sdkclient.NewMechainClient(clientCtx.NodeURI, gnfdSdkTypes.ChainID, sdkclient.WithKeyManager(km))
+			if err != nil {
+				return err
+			}
 			msg := types.NewMsgPutPolicy(
-				clientCtx.GetFromAddress(),
+				km.GetAddr(), // clientCtx.GetFromAddress(),
 				argResource,
 				&principal,
 				nil,
@@ -1136,10 +1514,48 @@ func CmdPutPolicy() *cobra.Command {
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+			evmClient, err := ethclient.Dial(gnfdSdkTypes.EvmUrl)
+			if err != nil {
+				// return fmt.Errorf("failed to new a evm client")
+				return err
+			}
+			nonce, err := gnfdCli.GetNonce(context.Background())
+			if err != nil {
+				return err
+			}
+			txOpts, err := sdkclient.CreateTxOpts(context.Background(), evmClient, argPrivateKey, big.NewInt(gnfdSdkTypes.DefaultChainId), gnfdSdkTypes.DefaultGasLimit, nonce)
+			if err != nil {
+				// return fmt.Errorf("failed to create tx opts")
+				return err
+			}
+
+			session, err := sdkclient.CreateStorageSession(evmClient, *txOpts, types2.StorageAddress)
+			if err != nil {
+				// return fmt.Errorf("failed to create session")
+				return err
+			}
+
+			txRsp, err := session.PutPolicy(
+				// ethcmn.Address(km.GetAddr()),
+				storage.Principal{PrincipalType: int32(principal.Type), Value: principal.Value},
+				argResource,
+				[]storage.Statement{},
+				0,
+			)
+			if err != nil {
+				// return fmt.Errorf("failed to put policy")
+				return err
+			}
+
+			_, err = sdkclient.WaitForEvmTx(context.Background(), evmClient, gnfdCli, txRsp.Hash())
+			if err != nil {
+				return fmt.Errorf("failed to put policy", err.Error())
+			}
+			return clientCtx.PrintObjectLegacy(txRsp.Hash().String())
 		},
 	}
 
+	cmd.Flags().String(FlagPrivateKey, "", "The privatekey of account to put policy")
 	flags.AddTxFlagsToCmd(cmd)
 
 	return cmd
@@ -1147,7 +1563,7 @@ func CmdPutPolicy() *cobra.Command {
 
 func CmdDeletePolicy() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "delete-policy [principle-value] [resource]",
+		Use:   "delete-policy [principle-value] [resource] --privatekey xxx",
 		Short: "Delete policy with specify principle",
 		Args:  cobra.ExactArgs(2),
 		Long: strings.TrimSpace(
@@ -1161,6 +1577,7 @@ $ %s tx delete-policy 3
 			),
 		),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			argPrivateKey, _ := cmd.Flags().GetString(FlagPrivateKey)
 			argPrincipalValue := args[0]
 			argResource := args[1]
 
@@ -1174,18 +1591,59 @@ $ %s tx delete-policy 3
 				return err
 			}
 
+			km, err := keys.NewPrivateKeyManager(argPrivateKey)
+			gnfdCli, err := sdkclient.NewMechainClient(clientCtx.NodeURI, gnfdSdkTypes.ChainID, sdkclient.WithKeyManager(km))
+			if err != nil {
+				return err
+			}
 			msg := types.NewMsgDeletePolicy(
-				clientCtx.GetFromAddress(),
+				km.GetAddr(), // clientCtx.GetFromAddress(),
 				argResource,
 				&principal,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+			evmClient, err := ethclient.Dial(gnfdSdkTypes.EvmUrl)
+			if err != nil {
+				// return fmt.Errorf("failed to new a evm client")
+				return err
+			}
+			nonce, err := gnfdCli.GetNonce(context.Background())
+			if err != nil {
+				return err
+			}
+			txOpts, err := sdkclient.CreateTxOpts(context.Background(), evmClient, argPrivateKey, big.NewInt(gnfdSdkTypes.DefaultChainId), gnfdSdkTypes.DefaultGasLimit, nonce)
+			if err != nil {
+				// return fmt.Errorf("failed to create tx opts")
+				return err
+			}
+
+			session, err := sdkclient.CreateStorageSession(evmClient, *txOpts, types2.StorageAddress)
+			if err != nil {
+				// return fmt.Errorf("failed to create session")
+				return err
+			}
+
+			txRsp, err := session.DeletePolicy(
+				// ethcmn.Address(km.GetAddr()),
+				storage.Principal{PrincipalType: int32(principal.Type), Value: principal.Value},
+				argResource,
+			)
+			if err != nil {
+				// return fmt.Errorf("failed to delete policy")
+				return err
+			}
+
+			_, err = sdkclient.WaitForEvmTx(context.Background(), evmClient, gnfdCli, txRsp.Hash())
+			if err != nil {
+				return fmt.Errorf("failed to delete policy", err.Error())
+			}
+			return clientCtx.PrintObjectLegacy(txRsp.Hash().String())
 		},
 	}
 
+	cmd.Flags().String(FlagPrivateKey, "", "The privatekey of account to delete policy")
 	flags.AddTxFlagsToCmd(cmd)
 
 	return cmd
@@ -1193,10 +1651,11 @@ $ %s tx delete-policy 3
 
 func CmdMirrorBucket() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "mirror-bucket",
+		Use:   "mirror-bucket --privatekey xxx",
 		Short: "Mirror an existing bucket to the destination chain",
 		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, _ []string) (err error) {
+			argPrivateKey, _ := cmd.Flags().GetString(FlagPrivateKey)
 			argBucketID, _ := cmd.Flags().GetString(FlagBucketID)
 			argBucketName, _ := cmd.Flags().GetString(FlagBucketName)
 			argDestChainID, _ := cmd.Flags().GetString(FlagDestChainID)
@@ -1231,8 +1690,13 @@ func CmdMirrorBucket() *cobra.Command {
 				return err
 			}
 
+			km, err := keys.NewPrivateKeyManager(argPrivateKey)
+			gnfdCli, err := sdkclient.NewMechainClient(clientCtx.NodeURI, gnfdSdkTypes.ChainID, sdkclient.WithKeyManager(km))
+			if err != nil {
+				return err
+			}
 			msg := types.NewMsgMirrorBucket(
-				clientCtx.GetFromAddress(),
+				km.GetAddr(), // clientCtx.GetFromAddress(),
 				sdk.ChainID(destChainID),
 				cmath.NewUintFromBigInt(bucketID),
 				argBucketName,
@@ -1240,13 +1704,50 @@ func CmdMirrorBucket() *cobra.Command {
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+			evmClient, err := ethclient.Dial(gnfdSdkTypes.EvmUrl)
+			if err != nil {
+				// return fmt.Errorf("failed to new a evm client")
+				return err
+			}
+			nonce, err := gnfdCli.GetNonce(context.Background())
+			if err != nil {
+				return err
+			}
+			txOpts, err := sdkclient.CreateTxOpts(context.Background(), evmClient, argPrivateKey, big.NewInt(gnfdSdkTypes.DefaultChainId), gnfdSdkTypes.DefaultGasLimit, nonce)
+			if err != nil {
+				// return fmt.Errorf("failed to create tx opts")
+				return err
+			}
+
+			session, err := sdkclient.CreateStorageSession(evmClient, *txOpts, types2.StorageAddress)
+			if err != nil {
+				// return fmt.Errorf("failed to create session")
+				return err
+			}
+
+			txRsp, err := session.MirrorBucket(
+				// ethcmn.Address(km.GetAddr()),
+				bucketID,
+				argBucketName,
+				uint32(destChainID),
+			)
+			if err != nil {
+				// return fmt.Errorf("failed to mirror bucket")
+				return err
+			}
+
+			_, err = sdkclient.WaitForEvmTx(context.Background(), evmClient, gnfdCli, txRsp.Hash())
+			if err != nil {
+				return fmt.Errorf("failed to mirror bucket", err.Error())
+			}
+			return clientCtx.PrintObjectLegacy(txRsp.Hash().String())
 		},
 	}
 
 	cmd.Flags().String(FlagBucketID, "", "Id of the bucket to mirror")
 	cmd.Flags().String(FlagBucketName, "", "Name of the bucket to mirror")
 	cmd.Flags().String(FlagDestChainID, "", "the destination chain id")
+	cmd.Flags().String(FlagPrivateKey, "", "The privatekey of account to mirror bucket")
 	flags.AddTxFlagsToCmd(cmd)
 
 	return cmd
@@ -1254,10 +1755,11 @@ func CmdMirrorBucket() *cobra.Command {
 
 func CmdDiscontinueBucket() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "discontinue-bucket [bucket-name] [reason]",
+		Use:   "discontinue-bucket [bucket-name] [reason] --privatekey xxx",
 		Short: "Discontinue to store bucket",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			argPrivateKey, _ := cmd.Flags().GetString(FlagPrivateKey)
 			argBucketName := args[0]
 			argObjectReason := args[1]
 
@@ -1266,18 +1768,58 @@ func CmdDiscontinueBucket() *cobra.Command {
 				return err
 			}
 
+			km, err := keys.NewPrivateKeyManager(argPrivateKey)
+			gnfdCli, err := sdkclient.NewMechainClient(clientCtx.NodeURI, gnfdSdkTypes.ChainID, sdkclient.WithKeyManager(km))
+			if err != nil {
+				return err
+			}
 			msg := types.NewMsgDiscontinueBucket(
-				clientCtx.GetFromAddress(),
+				km.GetAddr(), // clientCtx.GetFromAddress(),
 				argBucketName,
 				argObjectReason,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+			evmClient, err := ethclient.Dial(gnfdSdkTypes.EvmUrl)
+			if err != nil {
+				// return fmt.Errorf("failed to new a evm client")
+				return err
+			}
+			nonce, err := gnfdCli.GetNonce(context.Background())
+			if err != nil {
+				return err
+			}
+			txOpts, err := sdkclient.CreateTxOpts(context.Background(), evmClient, argPrivateKey, big.NewInt(gnfdSdkTypes.DefaultChainId), gnfdSdkTypes.DefaultGasLimit, nonce)
+			if err != nil {
+				// return fmt.Errorf("failed to create tx opts")
+				return err
+			}
+
+			session, err := sdkclient.CreateStorageSession(evmClient, *txOpts, types2.StorageAddress)
+			if err != nil {
+				// return fmt.Errorf("failed to create session")
+				return err
+			}
+
+			txRsp, err := session.DiscontinueBucket(
+				argBucketName,
+				argObjectReason,
+			)
+			if err != nil {
+				// return fmt.Errorf("failed to discontinue bucket")
+				return err
+			}
+
+			_, err = sdkclient.WaitForEvmTx(context.Background(), evmClient, gnfdCli, txRsp.Hash())
+			if err != nil {
+				return fmt.Errorf("failed to discontinue bucket", err.Error())
+			}
+			return clientCtx.PrintObjectLegacy(txRsp.Hash().String())
 		},
 	}
 
+	cmd.Flags().String(FlagPrivateKey, "", "The privatekey of account to discontinue bucket")
 	flags.AddTxFlagsToCmd(cmd)
 
 	return cmd
@@ -1285,10 +1827,11 @@ func CmdDiscontinueBucket() *cobra.Command {
 
 func CmdMigrateBucket() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "migrate-bucket [bucket-name] [dest-primary-sp-id]",
+		Use:   "migrate-bucket [bucket-name] [dest-primary-sp-id] --privatekey xxx",
 		Short: "migrate a bucket to another primary storage provider by user",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			argPrivateKey, _ := cmd.Flags().GetString(FlagPrivateKey)
 			bucketName := args[0]
 			destPrimarySpID, err := strconv.ParseUint(args[1], 10, 32)
 			if err != nil {
@@ -1306,8 +1849,13 @@ func CmdMigrateBucket() *cobra.Command {
 			}
 			spApproval := &common.Approval{ExpiredHeight: approveTimeoutHeight, Sig: approveSignatureBytes}
 
+			km, err := keys.NewPrivateKeyManager(argPrivateKey)
+			gnfdCli, err := sdkclient.NewMechainClient(clientCtx.NodeURI, gnfdSdkTypes.ChainID, sdkclient.WithKeyManager(km))
+			if err != nil {
+				return err
+			}
 			msg := &types.MsgMigrateBucket{
-				Operator:             clientCtx.GetFromAddress().String(),
+				Operator:             km.GetAddr().String(), // clientCtx.GetFromAddress().String(),
 				BucketName:           bucketName,
 				DstPrimarySpId:       uint32(destPrimarySpID),
 				DstPrimarySpApproval: spApproval,
@@ -1315,10 +1863,47 @@ func CmdMigrateBucket() *cobra.Command {
 			if err = msg.ValidateBasic(); err != nil {
 				return err
 			}
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+			evmClient, err := ethclient.Dial(gnfdSdkTypes.EvmUrl)
+			if err != nil {
+				// return fmt.Errorf("failed to new a evm client")
+				return err
+			}
+			nonce, err := gnfdCli.GetNonce(context.Background())
+			if err != nil {
+				return err
+			}
+			txOpts, err := sdkclient.CreateTxOpts(context.Background(), evmClient, argPrivateKey, big.NewInt(gnfdSdkTypes.DefaultChainId), gnfdSdkTypes.DefaultGasLimit, nonce)
+			if err != nil {
+				// return fmt.Errorf("failed to create tx opts")
+				return err
+			}
+
+			session, err := sdkclient.CreateStorageSession(evmClient, *txOpts, types2.StorageAddress)
+			if err != nil {
+				// return fmt.Errorf("failed to create session")
+				return err
+			}
+
+			txRsp, err := session.MigrateBucket(
+				// ethcmn.Address(km.GetAddr()),
+				bucketName,
+				uint32(destPrimarySpID),
+				storage.Approval{ExpiredHeight: approveTimeoutHeight, Sig: approveSignatureBytes},
+			)
+			if err != nil {
+				// return fmt.Errorf("failed to migrate bucket")
+				return err
+			}
+
+			_, err = sdkclient.WaitForEvmTx(context.Background(), evmClient, gnfdCli, txRsp.Hash())
+			if err != nil {
+				return fmt.Errorf("failed to migrate bucket", err.Error())
+			}
+			return clientCtx.PrintObjectLegacy(txRsp.Hash().String())
 		},
 	}
 
+	cmd.Flags().String(FlagPrivateKey, "", "The privatekey of account to migrate bucket")
 	flags.AddTxFlagsToCmd(cmd)
 	cmd.Flags().AddFlagSet(FlagSetApproval())
 	return cmd
@@ -1326,10 +1911,11 @@ func CmdMigrateBucket() *cobra.Command {
 
 func CmdMirrorObject() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "mirror-object",
+		Use:   "mirror-object --privatekey xxx",
 		Short: "Mirror the object to the destination chain",
 		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, _ []string) (err error) {
+			argPrivateKey, _ := cmd.Flags().GetString(FlagPrivateKey)
 			argObjectID, _ := cmd.Flags().GetString(FlagObjectID)
 			argBucketName, _ := cmd.Flags().GetString(FlagBucketName)
 			argObjectName, _ := cmd.Flags().GetString(FlagObjectName)
@@ -1367,8 +1953,13 @@ func CmdMirrorObject() *cobra.Command {
 				return err
 			}
 
+			km, err := keys.NewPrivateKeyManager(argPrivateKey)
+			gnfdCli, err := sdkclient.NewMechainClient(clientCtx.NodeURI, gnfdSdkTypes.ChainID, sdkclient.WithKeyManager(km))
+			if err != nil {
+				return err
+			}
 			msg := types.NewMsgMirrorObject(
-				clientCtx.GetFromAddress(),
+				km.GetAddr(), // clientCtx.GetFromAddress(),
 				sdk.ChainID(destChainID),
 				cmath.NewUintFromBigInt(objectID),
 				argBucketName,
@@ -1377,7 +1968,44 @@ func CmdMirrorObject() *cobra.Command {
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+			evmClient, err := ethclient.Dial(gnfdSdkTypes.EvmUrl)
+			if err != nil {
+				// return fmt.Errorf("failed to new a evm client")
+				return err
+			}
+			nonce, err := gnfdCli.GetNonce(context.Background())
+			if err != nil {
+				return err
+			}
+			txOpts, err := sdkclient.CreateTxOpts(context.Background(), evmClient, argPrivateKey, big.NewInt(gnfdSdkTypes.DefaultChainId), gnfdSdkTypes.DefaultGasLimit, nonce)
+			if err != nil {
+				// return fmt.Errorf("failed to create tx opts")
+				return err
+			}
+
+			session, err := sdkclient.CreateStorageSession(evmClient, *txOpts, types2.StorageAddress)
+			if err != nil {
+				// return fmt.Errorf("failed to create session")
+				return err
+			}
+
+			txRsp, err := session.MirrorObject(
+				// ethcmn.Address(km.GetAddr()),
+				objectID,
+				argBucketName,
+				argObjectName,
+				uint32(destChainID),
+			)
+			if err != nil {
+				// return fmt.Errorf("failed to mirror object")
+				return err
+			}
+
+			_, err = sdkclient.WaitForEvmTx(context.Background(), evmClient, gnfdCli, txRsp.Hash())
+			if err != nil {
+				return fmt.Errorf("failed to mirror object", err.Error())
+			}
+			return clientCtx.PrintObjectLegacy(txRsp.Hash().String())
 		},
 	}
 
@@ -1385,6 +2013,7 @@ func CmdMirrorObject() *cobra.Command {
 	cmd.Flags().String(FlagObjectName, "", "Name of the object to mirror")
 	cmd.Flags().String(FlagBucketName, "", "Name of the bucket that the object belongs to")
 	cmd.Flags().String(FlagDestChainID, "", "the destination chain id")
+	cmd.Flags().String(FlagPrivateKey, "", "The privatekey of account to mirror object")
 	flags.AddTxFlagsToCmd(cmd)
 
 	return cmd
@@ -1392,10 +2021,11 @@ func CmdMirrorObject() *cobra.Command {
 
 func CmdMirrorGroup() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "mirror-group",
+		Use:   "mirror-group --privatekey xxx",
 		Short: "Mirror an existing group to the destination chain",
 		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, _ []string) (err error) {
+			argPrivateKey, _ := cmd.Flags().GetString(FlagPrivateKey)
 			argGroupID, _ := cmd.Flags().GetString(FlagGroupID)
 			argGroupName, _ := cmd.Flags().GetString(FlagGroupName)
 			argDestChainID, _ := cmd.Flags().GetString(FlagDestChainID)
@@ -1430,8 +2060,13 @@ func CmdMirrorGroup() *cobra.Command {
 				return err
 			}
 
+			km, err := keys.NewPrivateKeyManager(argPrivateKey)
+			gnfdCli, err := sdkclient.NewMechainClient(clientCtx.NodeURI, gnfdSdkTypes.ChainID, sdkclient.WithKeyManager(km))
+			if err != nil {
+				return err
+			}
 			msg := types.NewMsgMirrorGroup(
-				clientCtx.GetFromAddress(),
+				km.GetAddr(), // clientCtx.GetFromAddress(),
 				sdk.ChainID(destChainID),
 				cmath.NewUintFromBigInt(groupID),
 				argGroupName,
@@ -1439,13 +2074,50 @@ func CmdMirrorGroup() *cobra.Command {
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+			evmClient, err := ethclient.Dial(gnfdSdkTypes.EvmUrl)
+			if err != nil {
+				// return fmt.Errorf("failed to new a evm client")
+				return err
+			}
+			nonce, err := gnfdCli.GetNonce(context.Background())
+			if err != nil {
+				return err
+			}
+			txOpts, err := sdkclient.CreateTxOpts(context.Background(), evmClient, argPrivateKey, big.NewInt(gnfdSdkTypes.DefaultChainId), gnfdSdkTypes.DefaultGasLimit, nonce)
+			if err != nil {
+				// return fmt.Errorf("failed to create tx opts")
+				return err
+			}
+
+			session, err := sdkclient.CreateStorageSession(evmClient, *txOpts, types2.StorageAddress)
+			if err != nil {
+				// return fmt.Errorf("failed to create session")
+				return err
+			}
+
+			txRsp, err := session.MirrorGroup(
+				// ethcmn.Address(km.GetAddr()),
+				groupID,
+				argGroupName,
+				uint32(destChainID),
+			)
+			if err != nil {
+				// return fmt.Errorf("failed to mirror group")
+				return err
+			}
+
+			_, err = sdkclient.WaitForEvmTx(context.Background(), evmClient, gnfdCli, txRsp.Hash())
+			if err != nil {
+				return fmt.Errorf("failed to mirror group", err.Error())
+			}
+			return clientCtx.PrintObjectLegacy(txRsp.Hash().String())
 		},
 	}
 
 	cmd.Flags().String(FlagGroupID, "", "Id of the group to mirror")
 	cmd.Flags().String(FlagGroupName, "", "Name of the group to mirror")
 	cmd.Flags().String(FlagDestChainID, "", "the destination chain id")
+	cmd.Flags().String(FlagPrivateKey, "", "The privatekey of account to mirror group")
 	flags.AddTxFlagsToCmd(cmd)
 
 	return cmd

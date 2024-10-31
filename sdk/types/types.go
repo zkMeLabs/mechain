@@ -18,6 +18,19 @@ const (
 
 	// DecimalGwei defines number of gweiZKME decimal places
 	DecimalGwei = 9
+
+	// ReceiptStatusFailed is the status code of a transaction if execution failed.
+	ReceiptStatusFailed = uint64(0)
+
+	// ReceiptStatusSuccessful is the status code of a transaction if execution succeeded.
+	ReceiptStatusSuccessful = uint64(1)
+
+	DefaultGasLimit = 180000
+	DefaultChainId  = 5151
+	ChainID         = "mechain_5151-1"
+	EvmUrl          = "http://localhost:8545"
+	EvmPort         = 8545
+	// Endpoint        = "http://localhost:26657"
 )
 
 type TxOption struct {

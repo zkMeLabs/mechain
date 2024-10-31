@@ -60,9 +60,9 @@ interface IStorageProvider {
      * @dev updateSPPrice defines a method for sp update storage-provider price info.
      */
     function updateSPPrice(
-        int256 readPrice,
+        uint256 readPrice,
         uint64 freeReadQuota,
-        int256 storePrice
+        uint256 storePrice
     ) external returns (bool success);
 
     /**
@@ -77,7 +77,13 @@ interface IStorageProvider {
      */
     function storageProviders(
         PageRequest calldata pagination
-    ) external view returns (StorageProvider[] calldata storageProviders, PageResponse calldata pageResponse);
+    )
+        external
+        view
+        returns (
+            StorageProvider[] calldata storageProviders,
+            PageResponse calldata pageResponse
+        );
 
     /**
      * @dev UpdateSPPrice defines an Event emitted when a sp update storage-provider price info.

@@ -153,6 +153,8 @@ import (
 	precompilesauthz "github.com/evmos/evmos/v12/x/evm/precompiles/authz"
 	precompilesbank "github.com/evmos/evmos/v12/x/evm/precompiles/bank"
 	precompilesgov "github.com/evmos/evmos/v12/x/evm/precompiles/gov"
+	precompilespayment "github.com/evmos/evmos/v12/x/evm/precompiles/payment"
+	precompilespermission "github.com/evmos/evmos/v12/x/evm/precompiles/permission"
 	precompilesstorage "github.com/evmos/evmos/v12/x/evm/precompiles/storage"
 	precompilessp "github.com/evmos/evmos/v12/x/evm/precompiles/storageprovider"
 	precompilesvirtualgroup "github.com/evmos/evmos/v12/x/evm/precompiles/virtualgroup"
@@ -349,13 +351,13 @@ type Evmos struct {
 	TransferKeeper        transferkeeper.Keeper
 	ConsensusParamsKeeper consensusparamkeeper.Keeper
 
-	BridgeKeeper           bridgemodulekeeper.Keeper
-	SpKeeper               spmodulekeeper.Keeper
-	PaymentKeeper          paymentmodulekeeper.Keeper
-	ChallengeKeeper        challengemodulekeeper.Keeper
-	PermissionmoduleKeeper permissionmodulekeeper.Keeper
-	VirtualgroupKeeper     virtualgroupmodulekeeper.Keeper
-	StorageKeeper          storagemodulekeeper.Keeper
+	BridgeKeeper       bridgemodulekeeper.Keeper
+	SpKeeper           spmodulekeeper.Keeper
+	PaymentKeeper      paymentmodulekeeper.Keeper
+	ChallengeKeeper    challengemodulekeeper.Keeper
+	PermissionKeeper   permissionmodulekeeper.Keeper
+	VirtualgroupKeeper virtualgroupmodulekeeper.Keeper
+	StorageKeeper      storagemodulekeeper.Keeper
 	// make scoped keepers public for test purposes
 	ScopedIBCKeeper      capabilitykeeper.ScopedKeeper
 	ScopedTransferKeeper capabilitykeeper.ScopedKeeper
@@ -714,13 +716,13 @@ func NewEvmos(
 		app.PaymentKeeper,
 	)
 
-	app.PermissionmoduleKeeper = *permissionmodulekeeper.NewKeeper(
+	app.PermissionKeeper = *permissionmodulekeeper.NewKeeper(
 		appCodec,
 		keys[permissionmoduletypes.StoreKey],
 		app.AccountKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
-	permissionModule := permissionmodule.NewAppModule(appCodec, app.PermissionmoduleKeeper, app.AccountKeeper, app.BankKeeper)
+	permissionModule := permissionmodule.NewAppModule(appCodec, app.PermissionKeeper, app.AccountKeeper, app.BankKeeper)
 
 	app.StorageKeeper = *storagemodulekeeper.NewKeeper(
 		appCodec,
@@ -729,7 +731,7 @@ func NewEvmos(
 		app.AccountKeeper,
 		app.SpKeeper,
 		app.PaymentKeeper,
-		app.PermissionmoduleKeeper,
+		app.PermissionKeeper,
 		app.CrossChainKeeper,
 		app.VirtualgroupKeeper,
 		app.EvmKeeper,
@@ -1442,6 +1444,16 @@ func (app *Evmos) EvmPrecompiled() {
 	// gov precompile
 	precompiled[precompilesgov.GetAddress()] = func(ctx sdk.Context) vm.PrecompiledContract {
 		return precompilesgov.NewPrecompiledContract(ctx, app.GovKeeper, app.AccountKeeper)
+	}
+
+	// payment precompile
+	precompiled[precompilespayment.GetAddress()] = func(ctx sdk.Context) vm.PrecompiledContract {
+		return precompilespayment.NewPrecompiledContract(ctx, app.PaymentKeeper)
+	}
+
+	// permission precompile
+	precompiled[precompilespermission.GetAddress()] = func(ctx sdk.Context) vm.PrecompiledContract {
+		return precompilespermission.NewPrecompiledContract(ctx, app.PermissionKeeper)
 	}
 
 	// storage precompile

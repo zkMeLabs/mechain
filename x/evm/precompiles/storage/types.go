@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"math/big"
+	"time"
 
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
@@ -16,6 +17,24 @@ var (
 	storageABI     = types.MustABIJson(IStorageMetaData.ABI)
 	invalidMethod  = abi.Method{}
 )
+
+const (
+	noBalanceErr = "key not found"
+
+	BucketResourcePrefix = "grn:b::"
+	ObjectResourcePrefix = "grn:o::"
+	GroupResourcePrefix  = "grn:g:"
+
+	ObjectResourceType = 1
+	BucketResourceType = 2
+	GroupResourceType  = 3
+)
+
+type ResourceType int
+type NewStatementOptions struct {
+	StatementExpireTime *time.Time
+	LimitSize           uint64
+}
 
 func GetAddress() common.Address {
 	return storageAddress
@@ -97,6 +116,51 @@ func (args *HeadBucketArgs) Validate() error {
 	return nil
 }
 
+type HeadBucketExtraArgs struct {
+	BucketName string `abi:"bucketName"`
+}
+
+// Validate HeadBucketExtraArgs the args
+func (args *HeadBucketExtraArgs) Validate() error {
+	return nil
+}
+
+type HeadBucketByIdArgs struct {
+	BucketId string `abi:"bucketId"`
+}
+
+// Validate HeadBucketByIdArgs the args
+func (args *HeadBucketByIdArgs) Validate() error {
+	return nil
+}
+
+type HeadBucketNFTArgs struct {
+	TokenId string `abi:"tokenId"`
+}
+
+// Validate HeadBucketNFTArgs the args
+func (args *HeadBucketNFTArgs) Validate() error {
+	return nil
+}
+
+type HeadObjectNFTArgs struct {
+	TokenId string `abi:"tokenId"`
+}
+
+// Validate HeadObjectNFTArgs the args
+func (args *HeadObjectNFTArgs) Validate() error {
+	return nil
+}
+
+type HeadGroupNFTArgs struct {
+	TokenId string `abi:"tokenId"`
+}
+
+// Validate HeadGroupNFTArgs the args
+func (args *HeadGroupNFTArgs) Validate() error {
+	return nil
+}
+
 type DeleteBucketArgs struct {
 	BucketName string `abi:"bucketName"`
 }
@@ -113,6 +177,18 @@ type DiscontinueBucketArgs struct {
 
 // Validate DiscontinueBucketArgs args
 func (args *DiscontinueBucketArgs) Validate() error {
+	return nil
+}
+
+type MigrateBucketArgs struct {
+	// Operator             string       `abi:"operator"`
+	BucketName           string       `abi:"bucketName"`
+	DstPrimarySpId       uint32       `abi:"dstPrimarySpId"`
+	DstPrimarySpApproval ApprovalJSON `abi:"dstPrimarySpApproval"`
+}
+
+// Validate MigrateBucketArgs args
+func (args *MigrateBucketArgs) Validate() error {
 	return nil
 }
 
@@ -136,6 +212,38 @@ func (args *RejectMigrateBucketArgs) Validate() error {
 	return nil
 }
 
+type CancelMigrateBucketArgs struct {
+	BucketName string `abi:"bucketName"`
+}
+
+// Validate CancelMigrateBucketArgs args
+func (args *CancelMigrateBucketArgs) Validate() error {
+	return nil
+}
+
+type SetBucketFlowRateLimitArgs struct {
+	BucketName     string   `abi:"bucketName"`
+	BucketOwner    string   `abi:"bucketOwner"`
+	PaymentAddress string   `abi:"paymentAddress"`
+	FlowRateLimit  *big.Int `abi:"flowRateLimit"`
+}
+
+// Validate SetBucketFlowRateLimitArgs args
+func (args *SetBucketFlowRateLimitArgs) Validate() error {
+	return nil
+}
+
+type MirrorBucketArgs struct {
+	Id          *big.Int `abi:"id"`
+	BucketName  string   `abi:"bucketName"`
+	DestChainId uint32   `abi:"destChainId"`
+}
+
+// Validate MirrorBucketArgs args
+func (args *MirrorBucketArgs) Validate() error {
+	return nil
+}
+
 type CreateObjectArgs struct {
 	BucketName        string       `abi:"bucketName"`
 	ObjectName        string       `abi:"objectName"`
@@ -152,6 +260,42 @@ func (args *CreateObjectArgs) Validate() error {
 	return nil
 }
 
+type CopyObjectArgs struct {
+	// Operator             string       `abi:"operator"`
+	SrcBucketName        string       `abi:"srcBucketName"`
+	DstBucketName        string       `abi:"dstBucketName"`
+	SrcObjectName        string       `abi:"srcObjectName"`
+	DstObjectName        string       `abi:"dstObjectName"`
+	DstPrimarySpApproval ApprovalJSON `abi:"dstPrimarySpApproval"`
+}
+
+// Validate CopyObjectArgs args
+func (args *CopyObjectArgs) Validate() error {
+	return nil
+}
+
+type DeleteObjectArgs struct {
+	// Operator   string `abi:"operator"`
+	BucketName string `abi:"bucketName"`
+	ObjectName string `abi:"objectName"`
+}
+
+// Validate DeleteObjectArgs args
+func (args *DeleteObjectArgs) Validate() error {
+	return nil
+}
+
+type CancelCreateObjectArgs struct {
+	// Operator   string `abi:"operator"`
+	BucketName string `abi:"bucketName"`
+	ObjectName string `abi:"objectName"`
+}
+
+// Validate CancelCreateObjectArgs args
+func (args *CancelCreateObjectArgs) Validate() error {
+	return nil
+}
+
 type ListObjectsArgs struct {
 	Pagination PageRequestJSON `abi:"pagination"`
 	BucketName string          `abi:"bucketName"`
@@ -159,6 +303,16 @@ type ListObjectsArgs struct {
 
 // Validate ListObjectsArgs the args
 func (args *ListObjectsArgs) Validate() error {
+	return nil
+}
+
+type ListObjectsByBucketIdArgs struct {
+	Pagination PageRequestJSON `abi:"pagination"`
+	BucketId   string          `abi:"bucketId"`
+}
+
+// Validate ListObjectsByBucketIdArgs the args
+func (args *ListObjectsByBucketIdArgs) Validate() error {
 	return nil
 }
 
@@ -241,6 +395,43 @@ func (args *UpdateObjectInfoArgs) Validate() error {
 	return nil
 }
 
+type UpdateObjectContentArgs struct {
+	BucketName      string   `abi:"bucketName"`
+	ObjectName      string   `abi:"objectName"`
+	PayloadSize     uint64   `abi:"payloadSize"`
+	ContentType     string   `abi:"contentType"`
+	ExpectChecksums []string `abi:"expectChecksums"`
+}
+
+// Validate UpdateObjectInfoArgs args
+func (args *UpdateObjectContentArgs) Validate() error {
+	return nil
+}
+
+type DiscontinueObjectArgs struct {
+	// Operator   string     `abi:"operator"`
+	BucketName string     `abi:"bucketName"`
+	ObjectIds  []*big.Int `abi:"objectIds"`
+	Reason     string     `abi:"reason"`
+}
+
+// Validate DiscontinueObjectArgs args
+func (args *DiscontinueObjectArgs) Validate() error {
+	return nil
+}
+
+type MirrorObjectArgs struct {
+	Id          *big.Int `abi:"id"`
+	BucketName  string   `abi:"bucketName"`
+	ObjectName  string   `abi:"objectName"`
+	DestChainId uint32   `abi:"destChainId"`
+}
+
+// Validate MirrorObjectArgs args
+func (args *MirrorObjectArgs) Validate() error {
+	return nil
+}
+
 type CreateGroupArgs struct {
 	GroupName string `abi:"groupName"`
 	Extra     string `abi:"extra"`
@@ -283,6 +474,18 @@ func (args *UpdateGroupArgs) Validate() error {
 	return nil
 }
 
+type UpdateGroupExtraArgs struct {
+	// Operator string `abi:"operator"`
+	GroupOwner common.Address `abi:"groupOwner"`
+	GroupName  string         `abi:"groupName"`
+	Extra      string         `abi:"extra"`
+}
+
+// Validate UpdateGroupExtraArgs the args
+func (args *UpdateGroupExtraArgs) Validate() error {
+	return nil
+}
+
 type HeadGroupArgs struct {
 	GroupOwner common.Address `abi:"groupOwner"`
 	GroupName  string         `abi:"groupName"`
@@ -299,6 +502,17 @@ type DeleteGroupArgs struct {
 
 // Validate DeleteGroupArgs the args
 func (args *DeleteGroupArgs) Validate() error {
+	return nil
+}
+
+type LeaveGroupArgs struct {
+	Member     common.Address `abi:"member"`
+	GroupOwner common.Address `abi:"groupOwner"`
+	GroupName  string         `abi:"groupName"`
+}
+
+// Validate LeaveGroupArgs the args
+func (args *LeaveGroupArgs) Validate() error {
 	return nil
 }
 
@@ -322,6 +536,36 @@ type RenewGroupMemberArgs struct {
 
 // Validate RenewGroupMemberArgs the args
 func (args *RenewGroupMemberArgs) Validate() error {
+	return nil
+}
+
+type MirrorGroupArgs struct {
+	Id          *big.Int `abi:"id"`
+	GroupName   string   `abi:"groupName"`
+	DestChainId uint32   `abi:"destChainId"`
+}
+
+// Validate MirrorGroupArgs args
+func (args *MirrorGroupArgs) Validate() error {
+	return nil
+}
+
+type ToggleSPAsDelegatedAgentArgs struct {
+	BucketName string `abi:"bucketName"`
+}
+
+// Validate ToggleSPAsDelegatedAgentArgs args
+func (args *ToggleSPAsDelegatedAgentArgs) Validate() error {
+	return nil
+}
+
+type UpdateParamsArgs struct {
+	Authority string `abi:"authority"`
+	Params    Params `abi:"params"`
+}
+
+// Validate UpdateParamsArgs args
+func (args *UpdateParamsArgs) Validate() error {
 	return nil
 }
 
@@ -366,5 +610,163 @@ func (args *HeadObjectByIDArgs) Validate() error {
 	if args.ObjectID == "" {
 		return errors.New("empty object id")
 	}
+	return nil
+}
+
+type HeadShadowObjectArgs struct {
+	BucketName string `abi:"bucketName"`
+	ObjectName string `abi:"objectName"`
+}
+
+// Validate HeadShadowObjectArgs the args
+func (args *HeadShadowObjectArgs) Validate() error {
+	if args.BucketName == "" {
+		return errors.New("empty bucket name")
+	}
+	if args.ObjectName == "" {
+		return errors.New("empty object name")
+	}
+	return nil
+}
+
+type PutPolicyArgs struct {
+	// Operator       string      `abi:"operator"`
+	Principal      Principal   `abi:"principal"`
+	Resource       string      `abi:"resource"`
+	Statements     []Statement `abi:"statements"`
+	ExpirationTime int64       `abi:"expirationTime"`
+}
+
+// Validate PutPolicyArgs the args
+func (args *PutPolicyArgs) Validate() error {
+	return nil
+}
+
+type DeletePolicyArgs struct {
+	// Operator  string    `abi:"operator"`
+	Principal Principal `abi:"principal"`
+	Resource  string    `abi:"resource"`
+}
+
+// Validate DeletePolicyArgs the args
+func (args *DeletePolicyArgs) Validate() error {
+	return nil
+}
+
+type QueryPolicyForGroupArgs struct {
+	Resource string   `abi:"resource"`
+	GroupId  *big.Int `abi:"groupId"`
+}
+
+// Validate QueryPolicyForGroupArgs the args
+func (args *QueryPolicyForGroupArgs) Validate() error {
+	return nil
+}
+
+type QueryPolicyForAccountArgs struct {
+	Resource      string `abi:"resource"`
+	PrincipalAddr string `abi:"principalAddr"`
+}
+
+// Validate QueryPolicyForAccountArgs the args
+func (args *QueryPolicyForAccountArgs) Validate() error {
+	return nil
+}
+
+type QueryPolicyByIdArgs struct {
+	PolicyId string `abi:"policyId"`
+}
+
+// Validate QueryPolicyByIdArgs the args
+func (args *QueryPolicyByIdArgs) Validate() error {
+	return nil
+}
+
+type QueryLockFeeArgs struct {
+	PrimarySpAddress string `abi:"primarySpAddress"`
+	CreateAt         int64  `abi:"createAt"`
+	PayloadSize      uint64 `abi:"payloadSize"`
+}
+
+// Validate QueryLockFeeArgs the args
+func (args *QueryLockFeeArgs) Validate() error {
+	return nil
+}
+
+type QueryIsPriceChangedArgs struct {
+	BucketName string `abi:"bucketName"`
+}
+
+// Validate QueryIsPriceChangedArgs the args
+func (args *QueryIsPriceChangedArgs) Validate() error {
+	return nil
+}
+
+type QueryQuotaUpdateTimeArgs struct {
+	BucketName string `abi:"bucketName"`
+}
+
+// Validate QueryQuotaUpdateTimeArgs the args
+func (args *QueryQuotaUpdateTimeArgs) Validate() error {
+	return nil
+}
+
+type QueryGroupMembersExistArgs struct {
+	GroupId string   `abi:"groupId"`
+	Members []string `abi:"members"`
+}
+
+// Validate QueryGroupMembersExistArgs the args
+func (args *QueryGroupMembersExistArgs) Validate() error {
+	return nil
+}
+
+type QueryGroupsExistArgs struct {
+	GroupOwner string   `abi:"groupOwner"`
+	GroupNames []string `abi:"groupNames"`
+}
+
+// Validate QueryGroupsExistArgs the args
+func (args *QueryGroupsExistArgs) Validate() error {
+	return nil
+}
+
+type QueryGroupsExistByIdArgs struct {
+	GroupIds []string `abi:"groupIds"`
+}
+
+// Validate QueryGroupsExistByIdArgs the args
+func (args *QueryGroupsExistByIdArgs) Validate() error {
+	return nil
+}
+
+type QueryPaymentAccountBucketFlowRateLimitArgs struct {
+	PaymentAccount string `abi:"paymentAccount"`
+	BucketOwner    string `abi:"bucketOwner"`
+	BucketName     string `abi:"bucketName"`
+}
+
+// Validate QueryPaymentAccountBucketFlowRateLimitArgs the args
+func (args *QueryPaymentAccountBucketFlowRateLimitArgs) Validate() error {
+	return nil
+}
+
+type QueryParamsByTimestampArgs struct {
+	Timestamp int64 `abi:"timestamp"`
+}
+
+// Validate QueryParamsByTimestampArgs the args
+func (args *QueryParamsByTimestampArgs) Validate() error {
+	return nil
+}
+
+type VerifyPermissionArgs struct {
+	BucketName string `abi:"bucketName"`
+	ObjectName string `abi:"objectName"`
+	ActionType int32  `abi:"actionType"`
+}
+
+// Validate VerifyPermissionArgs the args
+func (args *VerifyPermissionArgs) Validate() error {
 	return nil
 }

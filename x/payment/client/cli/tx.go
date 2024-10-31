@@ -15,6 +15,7 @@ var DefaultRelativePacketTimeoutTimestamp = uint64((time.Duration(10) * time.Min
 const (
 	//nolint
 	flagPacketTimeoutTimestamp = "packet-timeout-timestamp"
+	FlagPrivateKey             = "privatekey"
 )
 
 // GetTxCmd returns the transaction commands for this module
