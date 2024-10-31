@@ -1,7 +1,6 @@
 package virtualgroup
 
 import (
-	"errors"
 	"math/big"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -52,7 +51,11 @@ const (
 // CreateGlobalVirtualGroup defines a method for sp create a global virtual group.
 func (c *Contract) CreateGlobalVirtualGroup(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	if readonly {
-		return nil, errors.New("send method readonly")
+		return nil, types.ErrReadOnly
+	}
+
+	if evm.Origin != contract.Caller() {
+		return nil, types.ErrInvalidCaller
 	}
 
 	method := MustMethod(CreateGlobalVirtualGroupMethodName)
@@ -99,7 +102,11 @@ func (c *Contract) CreateGlobalVirtualGroup(ctx sdk.Context, evm *vm.EVM, contra
 // DeleteGlobalVirtualGroup defines a method for sp delete a global virtual group.
 func (c *Contract) DeleteGlobalVirtualGroup(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	if readonly {
-		return nil, errors.New("delete global virtual group method readonly")
+		return nil, types.ErrReadOnly
+	}
+
+	if evm.Origin != contract.Caller() {
+		return nil, types.ErrInvalidCaller
 	}
 
 	method := MustMethod(DeleteGlobalVirtualGroupMethodName)
@@ -141,7 +148,11 @@ func (c *Contract) DeleteGlobalVirtualGroup(ctx sdk.Context, evm *vm.EVM, contra
 // SwapOut defines a method for sp to remove itself from all Virtual Groups.
 func (c *Contract) SwapOut(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	if readonly {
-		return nil, errors.New("swapout method readonly")
+		return nil, types.ErrReadOnly
+	}
+
+	if evm.Origin != contract.Caller() {
+		return nil, types.ErrInvalidCaller
 	}
 
 	method := MustMethod(SwapOutMethodName)
@@ -190,7 +201,11 @@ func (c *Contract) SwapOut(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, 
 // CompleteSwapOut defines a method for sp somplete to remove itself from all Virtual Groups.
 func (c *Contract) CompleteSwapOut(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	if readonly {
-		return nil, errors.New("complete swapout method readonly")
+		return nil, types.ErrReadOnly
+	}
+
+	if evm.Origin != contract.Caller() {
+		return nil, types.ErrInvalidCaller
 	}
 
 	method := MustMethod(CompleteSwapOutMethodName)
@@ -233,7 +248,11 @@ func (c *Contract) CompleteSwapOut(ctx sdk.Context, evm *vm.EVM, contract *vm.Co
 // SPExit defines a method for sp to exit.
 func (c *Contract) SPExit(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	if readonly {
-		return nil, errors.New("sp exit method readonly")
+		return nil, types.ErrReadOnly
+	}
+
+	if evm.Origin != contract.Caller() {
+		return nil, types.ErrInvalidCaller
 	}
 
 	method := MustMethod(SPExitMethodName)
@@ -273,7 +292,11 @@ func (c *Contract) SPExit(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, r
 // CompleteSPExit defines a method for sp complete to exit.
 func (c *Contract) CompleteSPExit(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	if readonly {
-		return nil, errors.New("complete sp exit method readonly")
+		return nil, types.ErrReadOnly
+	}
+
+	if evm.Origin != contract.Caller() {
+		return nil, types.ErrInvalidCaller
 	}
 
 	method := MustMethod(CompleteSPExitMethodName)
@@ -315,7 +338,11 @@ func (c *Contract) CompleteSPExit(ctx sdk.Context, evm *vm.EVM, contract *vm.Con
 // Deposit defines a method to deposit more tokens for the objects stored on it.
 func (c *Contract) Deposit(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	if readonly {
-		return nil, errors.New("deposit method readonly")
+		return nil, types.ErrReadOnly
+	}
+
+	if evm.Origin != contract.Caller() {
+		return nil, types.ErrInvalidCaller
 	}
 
 	method := MustMethod(DepositMethodName)
@@ -360,7 +387,11 @@ func (c *Contract) Deposit(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, 
 // ReserveSwapIn defines a method to deposit more tokens for the objects stored on it.
 func (c *Contract) ReserveSwapIn(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	if readonly {
-		return nil, errors.New("reserve swapin method readonly")
+		return nil, types.ErrReadOnly
+	}
+
+	if evm.Origin != contract.Caller() {
+		return nil, types.ErrInvalidCaller
 	}
 
 	method := MustMethod(ReserveSwapInMethodName)
@@ -403,7 +434,11 @@ func (c *Contract) ReserveSwapIn(ctx sdk.Context, evm *vm.EVM, contract *vm.Cont
 // ReserveSwapIn defines a method to deposit more tokens for the objects stored on it.
 func (c *Contract) CompleteSwapIn(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	if readonly {
-		return nil, errors.New("complete swapin method readonly")
+		return nil, types.ErrReadOnly
+	}
+
+	if evm.Origin != contract.Caller() {
+		return nil, types.ErrInvalidCaller
 	}
 
 	method := MustMethod(CompleteSwapInMethodName)
@@ -445,7 +480,11 @@ func (c *Contract) CompleteSwapIn(ctx sdk.Context, evm *vm.EVM, contract *vm.Con
 // CancelSwapIn defines a method to deposit more tokens for the objects stored on it.
 func (c *Contract) CancelSwapIn(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	if readonly {
-		return nil, errors.New("cancel swapin method readonly")
+		return nil, types.ErrReadOnly
+	}
+
+	if evm.Origin != contract.Caller() {
+		return nil, types.ErrInvalidCaller
 	}
 
 	method := MustMethod(CancelSwapInMethodName)
