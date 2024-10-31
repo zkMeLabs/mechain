@@ -35,6 +35,13 @@ interface IVirtualGroup {
     ) external returns (bool success);
 
     /**
+     * @dev globalVirtualGroupFamily queries the global virtual group family by family id.
+     */
+    function globalVirtualGroupFamily(
+        uint32 familyId
+    ) external view returns (GlobalVirtualGroupFamily memory gvgfamily);
+
+    /**
      * @dev globalVirtualGroupFamilies queries all the global virtual group family.
      */
     function globalVirtualGroupFamilies(
