@@ -3,7 +3,6 @@ package storage
 import (
 	"bytes"
 	"encoding/hex"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	"github.com/ethereum/go-ethereum/common"
@@ -22,6 +21,7 @@ const (
 	HeadGroupMemberMethodName = "headGroupMember"
 	HeadObjectMethodName      = "headObject"
 	HeadObjectByIDMethodName  = "headObjectById"
+	ParamsMethodName          = "params"
 )
 
 func (c *Contract) registerQuery() {
@@ -33,6 +33,7 @@ func (c *Contract) registerQuery() {
 	c.registerMethod(HeadGroupMemberMethodName, 50_000, c.HeadGroupMember, "")
 	c.registerMethod(HeadObjectMethodName, 50_000, c.HeadObject, "")
 	c.registerMethod(HeadObjectByIDMethodName, 50_000, c.HeadObjectById, "")
+	c.registerMethod(ParamsMethodName, 50_000, c.Params, "")
 }
 
 // ListBuckets queries the total buckets.
@@ -274,6 +275,53 @@ func (c *Contract) HeadObjectById(ctx sdk.Context, _ *vm.EVM, contract *vm.Contr
 	objectInfo := outputObjectInfo(res.ObjectInfo)
 	gvg := outputsGlobalVirtualGroup(res.GlobalVirtualGroup)
 	return method.Outputs.Pack(objectInfo, gvg)
+}
+
+// Params queries the storage parameters
+func (c *Contract) Params(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract, _ bool) ([]byte, error) {
+	method := GetAbiMethod(ParamsMethodName)
+
+	msg := &storagetypes.QueryParamsRequest{}
+
+	res, err := c.storageKeeper.Params(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
+
+	params := Params{
+		VersionedParams: VersionedParams{
+			MaxSegmentSize:          res.Params.VersionedParams.MaxSegmentSize,
+			RedundantDataChunkNum:   res.Params.VersionedParams.RedundantDataChunkNum,
+			RedundantParityChunkNum: res.Params.VersionedParams.RedundantParityChunkNum,
+			MinChargeSize:           res.Params.VersionedParams.MinChargeSize,
+		},
+		MaxPayloadSize:                   res.Params.MaxPayloadSize,
+		BscMirrorBucketRelayerFee:        res.Params.BscMirrorBucketRelayerFee,
+		BscMirrorBucketAckRelayerFee:     res.Params.BscMirrorBucketAckRelayerFee,
+		BscMirrorObjectRelayerFee:        res.Params.BscMirrorObjectRelayerFee,
+		BscMirrorObjectAckRelayerFee:     res.Params.BscMirrorObjectAckRelayerFee,
+		BscMirrorGroupRelayerFee:         res.Params.BscMirrorGroupRelayerFee,
+		BscMirrorGroupAckRelayerFee:      res.Params.BscMirrorGroupAckRelayerFee,
+		MaxBucketsPerAccount:             res.Params.MaxBucketsPerAccount,
+		DiscontinueCountingWindow:        res.Params.DiscontinueCountingWindow,
+		DiscontinueObjectMax:             res.Params.DiscontinueObjectMax,
+		DiscontinueBucketMax:             res.Params.DiscontinueBucketMax,
+		DiscontinueConfirmPeriod:         res.Params.DiscontinueConfirmPeriod,
+		DiscontinueDeletionMax:           res.Params.DiscontinueDeletionMax,
+		StalePolicyCleanupMax:            res.Params.StalePolicyCleanupMax,
+		MinQuotaUpdateInterval:           res.Params.MinQuotaUpdateInterval,
+		MaxLocalVirtualGroupNumPerBucket: res.Params.MaxLocalVirtualGroupNumPerBucket,
+		OpMirrorBucketRelayerFee:         res.Params.OpMirrorBucketRelayerFee,
+		OpMirrorBucketAckRelayerFee:      res.Params.OpMirrorBucketAckRelayerFee,
+		OpMirrorObjectRelayerFee:         res.Params.OpMirrorObjectRelayerFee,
+		OpMirrorObjectAckRelayerFee:      res.Params.OpMirrorObjectAckRelayerFee,
+		OpMirrorGroupRelayerFee:          res.Params.OpMirrorGroupRelayerFee,
+		OpMirrorGroupAckRelayerFee:       res.Params.OpMirrorGroupAckRelayerFee,
+		PolygonMirrorBucketRelayerFee:    res.Params.PolygonMirrorBucketRelayerFee,
+		PolygonMirrorBucketAckRelayerFee: res.Params.PolygonMirrorBucketAckRelayerFee,
+	}
+
+	return method.Outputs.Pack(params)
 }
 
 func outputObjectInfo(o *storagetypes.ObjectInfo) *ObjectInfo {

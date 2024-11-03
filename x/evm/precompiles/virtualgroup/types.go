@@ -187,3 +187,12 @@ type CancelSwapInArgs struct {
 func (args *CancelSwapInArgs) Validate() error {
 	return nil
 }
+
+type GlobalVirtualGroupFamilyArgs struct {
+	FamilyId uint32 `abi:"FamilyId"`
+}
+
+// Validate GlobalVirtualGroupFamily the args
+func (args *GlobalVirtualGroupFamilyArgs) Validate() error {
+	return nil
+}
