@@ -108,3 +108,12 @@ func AccAddressMustToHexAddress(accStrAddress string) common.Address {
 	}
 	return hexAddress
 }
+
+func ValAddressMustToHexAddress(valStrAddress string) common.Address {
+	ValAddress, err := sdk.ValAddressFromBech32(valStrAddress)
+	var hexAddress common.Address
+	if err == nil {
+		hexAddress = common.BytesToAddress(ValAddress)
+	}
+	return hexAddress
+}
