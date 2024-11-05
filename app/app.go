@@ -1432,7 +1432,7 @@ func (app *Evmos) EvmPrecompiled() {
 
 	// bank precompile
 	precompiled[precompilesbank.GetAddress()] = func(ctx sdk.Context) vm.PrecompiledContract {
-		return precompilesbank.NewPrecompiledContract(ctx, app.BankKeeper)
+		return precompilesbank.NewPrecompiledContract(ctx, app.BankKeeper, app.PaymentKeeper)
 	}
 
 	// authz precompile

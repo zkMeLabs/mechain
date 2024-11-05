@@ -1,6 +1,8 @@
 package bank
 
 import (
+	"fmt"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	"github.com/ethereum/go-ethereum/accounts/abi"
@@ -9,17 +11,20 @@ import (
 	"github.com/ethereum/go-ethereum/core/vm"
 
 	"github.com/evmos/evmos/v12/x/evm/types"
+	paymentkeeper "github.com/evmos/evmos/v12/x/payment/keeper"
 )
 
 type Contract struct {
-	ctx        sdk.Context
-	bankKeeper bankkeeper.Keeper
+	ctx           sdk.Context
+	bankKeeper    bankkeeper.Keeper
+	paymentKeeper paymentkeeper.Keeper
 }
 
-func NewPrecompiledContract(ctx sdk.Context, bankKeeper bankkeeper.Keeper) *Contract {
+func NewPrecompiledContract(ctx sdk.Context, bankKeeper bankkeeper.Keeper, paymentKeeper paymentkeeper.Keeper) *Contract {
 	return &Contract{
-		ctx:        ctx,
-		bankKeeper: bankKeeper,
+		ctx:           ctx,
+		bankKeeper:    bankKeeper,
+		paymentKeeper: paymentKeeper,
 	}
 }
 
@@ -36,8 +41,26 @@ func (c *Contract) RequiredGas(input []byte) uint64 {
 	switch method.Name {
 	case SendMethodName:
 		return SendGas
+	case MultiSendMethodName:
+		return MultiSendGas
+	case BalanceMethodName:
+		return BalanceGas
+	case AllBalancesMethodName:
+		return AllBalancesGas
 	case TotalSupplyMethodName:
 		return TotalSupplyGas
+	case SpendableBalancesMethodName:
+		return SpendableBalancesGas
+	case SupplyOfMethodName:
+		return SupplyOfGas
+	case ParamsMethodName:
+		return ParamsGas
+	case DenomMetadataMethodName:
+		return DenomMetadataGas
+	case DenomsMetadataMethodName:
+		return DenomsMetadataGas
+	case DenomOwnersMethodName:
+		return DenomOwnersGas
 	default:
 		return 0
 	}
@@ -48,7 +71,7 @@ func (c *Contract) Run(evm *vm.EVM, contract *vm.Contract, readonly bool) (ret [
 		return types.PackRetError("invalid input")
 	}
 
-	cacheCtx, commit := c.ctx.CacheContext()
+	ctx, commit := c.ctx.CacheContext()
 	snapshot := evm.StateDB.Snapshot()
 
 	method, err := GetMethodByID(contract.Input)
@@ -56,9 +79,29 @@ func (c *Contract) Run(evm *vm.EVM, contract *vm.Contract, readonly bool) (ret [
 		// parse input
 		switch method.Name {
 		case SendMethodName:
-			ret, err = c.Send(cacheCtx, evm, contract, readonly)
+			ret, err = c.Send(ctx, evm, contract, readonly)
+		case MultiSendMethodName:
+			ret, err = c.MultiSend(ctx, evm, contract, readonly)
+		case BalanceMethodName:
+			ret, err = c.Balance(ctx, evm, contract, readonly)
+		case AllBalancesMethodName:
+			ret, err = c.AllBalances(ctx, evm, contract, readonly)
 		case TotalSupplyMethodName:
-			ret, err = c.TotalSupply(cacheCtx, evm, contract, readonly)
+			ret, err = c.TotalSupply(ctx, evm, contract, readonly)
+		case SpendableBalancesMethodName:
+			ret, err = c.SpendableBalances(ctx, evm, contract, readonly)
+		case SupplyOfMethodName:
+			ret, err = c.SupplyOf(ctx, evm, contract, readonly)
+		case ParamsMethodName:
+			ret, err = c.Params(ctx, evm, contract, readonly)
+		case DenomMetadataMethodName:
+			ret, err = c.DenomMetadata(ctx, evm, contract, readonly)
+		case DenomsMetadataMethodName:
+			ret, err = c.DenomsMetadata(ctx, evm, contract, readonly)
+		case DenomOwnersMethodName:
+			ret, err = c.DenomOwners(ctx, evm, contract, readonly)
+		default:
+			err = fmt.Errorf("method %s is not handle", method.Name)
 		}
 	}
 
