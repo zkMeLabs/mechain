@@ -7,9 +7,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/spf13/cobra"
-
+	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/evmos/evmos/v12/x/sp/types"
+	"github.com/spf13/cobra"
 )
 
 // GetQueryCmd returns the cli query commands for this module
@@ -47,7 +47,11 @@ func CmdStorageProviders() *cobra.Command {
 				return err
 			}
 
-			queryClient := types.NewQueryClient(clientCtx)
+			evmClient, err := ethclient.Dial(EvmUrl)
+			if err != nil {
+				return err
+			}
+			queryClient := NewQueryClientEVM(evmClient)
 
 			params := &types.QueryStorageProvidersRequest{}
 
