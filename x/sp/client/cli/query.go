@@ -86,7 +86,11 @@ func CmdStorageProvider() *cobra.Command {
 				return err
 			}
 
-			queryClient := types.NewQueryClient(clientCtx)
+			evmClient, err := ethclient.Dial(EvmUrl)
+			if err != nil {
+				return err
+			}
+			queryClient := NewQueryClientEVM(evmClient)
 			params := &types.QueryStorageProviderRequest{
 				Id: uint32(spID),
 			}

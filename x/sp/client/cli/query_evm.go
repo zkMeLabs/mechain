@@ -61,7 +61,18 @@ func (c *QueryClientEVM) QueryGlobalSpStorePriceByTime(ctx context.Context, in *
 }
 
 func (c *QueryClientEVM) StorageProvider(ctx context.Context, in *types.QueryStorageProviderRequest, opts ...grpc.CallOption) (*types.QueryStorageProviderResponse, error) {
-	return nil, nil
+	contract, err := spp.NewIStorageProvider(common.HexToAddress(mtypes.SpAddress), c.cc)
+	if err != nil {
+		return nil, err
+	}
+	r, err := contract.StorageProvider(&bind.CallOpts{}, in.Id)
+	if err != nil {
+		return nil, err
+	}
+	res := &types.QueryStorageProviderResponse{
+		StorageProvider: toPbSP(&r),
+	}
+	return res, nil
 }
 
 func (c *QueryClientEVM) StorageProviderByOperatorAddress(ctx context.Context, in *types.QueryStorageProviderByOperatorAddressRequest, opts ...grpc.CallOption) (*types.QueryStorageProviderByOperatorAddressResponse, error) {
