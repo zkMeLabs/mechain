@@ -144,7 +144,7 @@ func CmdCreateBucket() *cobra.Command {
 				return err
 			}
 			km, err := keys.NewPrivateKeyManager(argPrivateKey)
-			gnfdCli, err := sdkclient.NewMechainClient(clientCtx.NodeURI, ChainID, sdkclient.WithKeyManager(km))
+			gnfdCli, err := sdkclient.NewMechainClient(clientCtx.NodeURI, clientCtx.EvmNodeURI, ChainID, sdkclient.WithKeyManager(km))
 			if err != nil {
 				return err
 			}
@@ -241,7 +241,7 @@ func CmdDeleteBucket() *cobra.Command {
 			}
 
 			km, err := keys.NewPrivateKeyManager(argPrivateKey)
-			gnfdCli, err := sdkclient.NewMechainClient(clientCtx.NodeURI, ChainID, sdkclient.WithKeyManager(km))
+			gnfdCli, err := sdkclient.NewMechainClient(clientCtx.NodeURI, clientCtx.EvmNodeURI, ChainID, sdkclient.WithKeyManager(km))
 			if err != nil {
 				return err
 			}
@@ -317,7 +317,7 @@ func CmdUpdateBucketInfo() *cobra.Command {
 			}
 
 			km, err := keys.NewPrivateKeyManager(argPrivateKey)
-			gnfdCli, err := sdkclient.NewMechainClient(clientCtx.NodeURI, ChainID, sdkclient.WithKeyManager(km))
+			gnfdCli, err := sdkclient.NewMechainClient(clientCtx.NodeURI, clientCtx.EvmNodeURI, ChainID, sdkclient.WithKeyManager(km))
 			if err != nil {
 				return err
 			}
@@ -471,7 +471,7 @@ func CmdCreateObject() *cobra.Command {
 			}
 
 			km, err := keys.NewPrivateKeyManager(argPrivateKey)
-			gnfdCli, err := sdkclient.NewMechainClient(clientCtx.NodeURI, ChainID, sdkclient.WithKeyManager(km))
+			gnfdCli, err := sdkclient.NewMechainClient(clientCtx.NodeURI, clientCtx.EvmNodeURI, ChainID, sdkclient.WithKeyManager(km))
 			if err != nil {
 				return err
 			}
@@ -653,7 +653,7 @@ func CmdUpdateObjectInfo() *cobra.Command {
 			}
 
 			km, err := keys.NewPrivateKeyManager(argPrivateKey)
-			gnfdCli, err := sdkclient.NewMechainClient(clientCtx.NodeURI, ChainID, sdkclient.WithKeyManager(km))
+			gnfdCli, err := sdkclient.NewMechainClient(clientCtx.NodeURI, clientCtx.EvmNodeURI, ChainID, sdkclient.WithKeyManager(km))
 			if err != nil {
 				return err
 			}
@@ -774,7 +774,7 @@ func CmdCreateGroup() *cobra.Command {
 			tags := GetTags(tagsStr)
 
 			km, err := keys.NewPrivateKeyManager(argPrivateKey)
-			gnfdCli, err := sdkclient.NewMechainClient(clientCtx.NodeURI, ChainID, sdkclient.WithKeyManager(km))
+			gnfdCli, err := sdkclient.NewMechainClient(clientCtx.NodeURI, clientCtx.EvmNodeURI, ChainID, sdkclient.WithKeyManager(km))
 			if err != nil {
 				return err
 			}
@@ -852,7 +852,7 @@ func CmdDeleteGroup() *cobra.Command {
 			}
 
 			km, err := keys.NewPrivateKeyManager(argPrivateKey)
-			gnfdCli, err := sdkclient.NewMechainClient(clientCtx.NodeURI, ChainID, sdkclient.WithKeyManager(km))
+			gnfdCli, err := sdkclient.NewMechainClient(clientCtx.NodeURI, clientCtx.EvmNodeURI, ChainID, sdkclient.WithKeyManager(km))
 			if err != nil {
 				return err
 			}
