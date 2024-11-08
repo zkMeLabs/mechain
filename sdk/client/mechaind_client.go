@@ -230,7 +230,6 @@ func setClientsConn(c *MechainClient, conn grpc1.ClientConn, evmCli *ethclient.C
 	c.FeegrantQueryClient = feegranttypes.NewQueryClient(conn)
 	c.GashubQueryClient = gashubtypes.NewQueryClient(conn)
 	c.PaymentQueryClient = paymenttypes.NewQueryClient(conn)
-	// c.SpQueryClient = sptypes.NewQueryClient(conn)
 	c.SpQueryClient = spcli.NewQueryClientEVM(evmCli)
 	c.BridgeQueryClient = bridgetypes.NewQueryClient(conn)
 	c.StorageQueryClient = storagetypes.NewQueryClient(conn)

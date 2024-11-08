@@ -7,7 +7,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/evmos/evmos/v12/x/sp/types"
 	"github.com/spf13/cobra"
 )
@@ -47,7 +46,7 @@ func CmdStorageProviders() *cobra.Command {
 				return err
 			}
 
-			evmClient, err := ethclient.Dial(EvmUrl)
+			evmClient, err := clientCtx.GetEvmNode()
 			if err != nil {
 				return err
 			}
@@ -86,7 +85,7 @@ func CmdStorageProvider() *cobra.Command {
 				return err
 			}
 
-			evmClient, err := ethclient.Dial(EvmUrl)
+			evmClient, err := clientCtx.GetEvmNode()
 			if err != nil {
 				return err
 			}
@@ -127,7 +126,11 @@ func CmdStorageProviderByOperatorAddress() *cobra.Command {
 				return err
 			}
 
-			queryClient := types.NewQueryClient(clientCtx)
+			evmClient, err := clientCtx.GetEvmNode()
+			if err != nil {
+				return err
+			}
+			queryClient := NewQueryClientEVM(evmClient)
 
 			params := &types.QueryStorageProviderByOperatorAddressRequest{
 				OperatorAddress: operatorAddr.String(),

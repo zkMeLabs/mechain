@@ -76,7 +76,18 @@ func (c *QueryClientEVM) StorageProvider(ctx context.Context, in *types.QuerySto
 }
 
 func (c *QueryClientEVM) StorageProviderByOperatorAddress(ctx context.Context, in *types.QueryStorageProviderByOperatorAddressRequest, opts ...grpc.CallOption) (*types.QueryStorageProviderByOperatorAddressResponse, error) {
-	return nil, nil
+	contract, err := spp.NewIStorageProvider(common.HexToAddress(mtypes.SpAddress), c.cc)
+	if err != nil {
+		return nil, err
+	}
+	r, err := contract.StorageProviderByOperatorAddress(&bind.CallOpts{}, common.HexToAddress(in.OperatorAddress))
+	if err != nil {
+		return nil, err
+	}
+	res := &types.QueryStorageProviderByOperatorAddressResponse{
+		StorageProvider: toPbSP(&r),
+	}
+	return res, nil
 }
 
 func (c *QueryClientEVM) StorageProviderMaintenanceRecordsByOperatorAddress(ctx context.Context, in *types.QueryStorageProviderMaintenanceRecordsRequest, opts ...grpc.CallOption) (*types.QueryStorageProviderMaintenanceRecordsResponse, error) {

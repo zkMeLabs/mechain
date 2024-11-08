@@ -80,6 +80,13 @@ interface IStorageProvider {
     ) external view returns (StorageProvider[] calldata storageProviders, PageResponse calldata pageResponse);
 
     /**
+     * @dev storageProviderByOperatorAddress queries a StorageProvider by specify operator address.
+     */
+    function storageProviderByOperatorAddress(
+        address operatorAddress
+    ) external view returns (StorageProvider calldata storageProvider);
+
+    /**
      * @dev UpdateSPPrice defines an Event emitted when a sp update storage-provider price info.
      */
     event UpdateSPPrice(address indexed storageProvider);

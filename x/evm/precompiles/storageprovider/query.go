@@ -3,6 +3,7 @@ package storageprovider
 import (
 	"bytes"
 	"encoding/hex"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	"github.com/ethereum/go-ethereum/core/vm"
@@ -11,13 +12,15 @@ import (
 )
 
 const (
-	StorageProviderMethodName  = "storageProvider"
-	StorageProvidersMethodName = "storageProviders"
+	StorageProviderMethodName                  = "storageProvider"
+	StorageProvidersMethodName                 = "storageProviders"
+	StorageProviderByOperatorAddressMethodName = "storageProviderByOperatorAddress"
 )
 
 func (c *Contract) registerQuery() {
 	c.registerMethod(StorageProviderMethodName, 50_000, c.StorageProvider, "")
 	c.registerMethod(StorageProvidersMethodName, 80_000, c.StorageProviders, "")
+	c.registerMethod(StorageProviderByOperatorAddressMethodName, 80_000, c.StorageProviderByOperatorAddress, "")
 }
 
 // StorageProvider queries a storage provider with specify id.
@@ -72,6 +75,23 @@ func (c *Contract) StorageProviders(ctx sdk.Context, _ *vm.EVM, contract *vm.Con
 	pageResponse.Total = res.Pagination.Total
 
 	return method.Outputs.Pack(sps, pageResponse)
+}
+
+// StorageProviderByOperatorAddress queries a StorageProvider by specify operator address.
+func (c *Contract) StorageProviderByOperatorAddress(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract, _ bool) ([]byte, error) {
+	method := GetAbiMethod(StorageProviderByOperatorAddressMethodName)
+	var args StorageProviderByOperatorAddressArgs
+	if err := types.ParseMethodArgs(method, &args, contract.Input[4:]); err != nil {
+		return nil, err
+	}
+	msg := &sptypes.QueryStorageProviderByOperatorAddressRequest{
+		OperatorAddress: args.OperatorAddress.String(),
+	}
+	res, err := c.spKeeper.StorageProviderByOperatorAddress(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
+	return method.Outputs.Pack(outputStorageProviderInfo(res.StorageProvider))
 }
 
 func outputStorageProviderInfo(sp *sptypes.StorageProvider) *StorageProvider {
