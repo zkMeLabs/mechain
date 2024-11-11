@@ -7,9 +7,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/spf13/cobra"
-
 	"github.com/evmos/evmos/v12/x/sp/types"
+	"github.com/spf13/cobra"
 )
 
 // GetQueryCmd returns the cli query commands for this module
@@ -47,7 +46,11 @@ func CmdStorageProviders() *cobra.Command {
 				return err
 			}
 
-			queryClient := types.NewQueryClient(clientCtx)
+			evmClient, err := clientCtx.GetEvmNode()
+			if err != nil {
+				return err
+			}
+			queryClient := NewQueryClientEVM(evmClient)
 
 			params := &types.QueryStorageProvidersRequest{}
 
@@ -82,7 +85,11 @@ func CmdStorageProvider() *cobra.Command {
 				return err
 			}
 
-			queryClient := types.NewQueryClient(clientCtx)
+			evmClient, err := clientCtx.GetEvmNode()
+			if err != nil {
+				return err
+			}
+			queryClient := NewQueryClientEVM(evmClient)
 			params := &types.QueryStorageProviderRequest{
 				Id: uint32(spID),
 			}
@@ -119,7 +126,11 @@ func CmdStorageProviderByOperatorAddress() *cobra.Command {
 				return err
 			}
 
-			queryClient := types.NewQueryClient(clientCtx)
+			evmClient, err := clientCtx.GetEvmNode()
+			if err != nil {
+				return err
+			}
+			queryClient := NewQueryClientEVM(evmClient)
 
 			params := &types.QueryStorageProviderByOperatorAddressRequest{
 				OperatorAddress: operatorAddr.String(),
@@ -188,10 +199,15 @@ func CmdStorageProviderPrice() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			res, err := types.NewQueryClient(clientCtx).
-				QuerySpStoragePrice(cmd.Context(), &types.QuerySpStoragePriceRequest{
-					SpAddr: spAddr.String(),
-				})
+			evmClient, err := clientCtx.GetEvmNode()
+			if err != nil {
+				return err
+			}
+			queryClient := NewQueryClientEVM(evmClient)
+
+			res, err := queryClient.QuerySpStoragePrice(cmd.Context(), &types.QuerySpStoragePriceRequest{
+				SpAddr: spAddr.String(),
+			})
 			if err != nil {
 				return err
 			}

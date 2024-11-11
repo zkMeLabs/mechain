@@ -72,3 +72,19 @@ type StorageProvidersArgs struct {
 func (args *StorageProvidersArgs) Validate() error {
 	return nil
 }
+
+type StorageProviderByOperatorAddressArgs struct {
+	OperatorAddress common.Address `abi:"operatorAddress"`
+}
+
+func (args *StorageProviderByOperatorAddressArgs) Validate() error {
+	return nil
+}
+
+type StorageProviderPriceArgs struct {
+	OperatorAddress common.Address `abi:"operatorAddress"`
+}
+
+func (args *StorageProviderPriceArgs) Validate() error {
+	return nil
+}

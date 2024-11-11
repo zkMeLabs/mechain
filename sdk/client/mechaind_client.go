@@ -25,6 +25,7 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 	grpc1 "github.com/cosmos/gogoproto/grpc"
+	"github.com/ethereum/go-ethereum/ethclient"
 	"google.golang.org/grpc"
 
 	"github.com/evmos/evmos/v12/sdk/keys"
@@ -33,6 +34,7 @@ import (
 	bridgetypes "github.com/evmos/evmos/v12/x/bridge/types"
 	challengetypes "github.com/evmos/evmos/v12/x/challenge/types"
 	paymenttypes "github.com/evmos/evmos/v12/x/payment/types"
+	spcli "github.com/evmos/evmos/v12/x/sp/client/cli"
 	sptypes "github.com/evmos/evmos/v12/x/sp/types"
 	storagetypes "github.com/evmos/evmos/v12/x/storage/types"
 	virtualgroupmoduletypes "github.com/evmos/evmos/v12/x/virtualgroup/types"
@@ -155,26 +157,32 @@ type MechainClient struct {
 }
 
 // NewMechainClient is used to create a new MechainClient structure.
-func NewMechainClient(rpcAddr, chainID string, opts ...MechainClientOption) (*MechainClient, error) {
+func NewMechainClient(rpcAddr, evmRpcAddr, chainID string, opts ...MechainClientOption) (*MechainClient, error) {
 	rpcClient, err := sdkclient.NewClientFromNode(rpcAddr)
 	if err != nil {
 		return nil, err
 	}
-
-	return newMechainClient(rpcAddr, chainID, rpcClient, opts...)
+	evmClient, err := ethclient.Dial(evmRpcAddr)
+	if err != nil {
+		return nil, err
+	}
+	return newMechainClient(rpcAddr, chainID, rpcClient, evmClient, opts...)
 }
 
 // NewCustomMechainClient is used to create a new MechainClient structure, allows for setting a custom http client
-func NewCustomMechainClient(rpcAddr, chainID string, customDialer func(string) (*http.Client, error), opts ...MechainClientOption) (*MechainClient, error) {
+func NewCustomMechainClient(rpcAddr, evmRpcAddr, chainID string, customDialer func(string) (*http.Client, error), opts ...MechainClientOption) (*MechainClient, error) {
 	rpcClient, err := sdkclient.NewCustomClientFromNode(rpcAddr, customDialer)
 	if err != nil {
 		return nil, err
 	}
-
-	return newMechainClient(rpcAddr, chainID, rpcClient, opts...)
+	evmClient, err := ethclient.Dial(evmRpcAddr)
+	if err != nil {
+		return nil, err
+	}
+	return newMechainClient(rpcAddr, chainID, rpcClient, evmClient, opts...)
 }
 
-func newMechainClient(rpcAddr, chainID string, rpcClient *rpchttp.HTTP, opts ...MechainClientOption) (*MechainClient, error) {
+func newMechainClient(rpcAddr, chainID string, rpcClient *rpchttp.HTTP, evmRpcClient *ethclient.Client, opts ...MechainClientOption) (*MechainClient, error) {
 	cdc := types.Codec()
 	client := &MechainClient{
 		chainID: chainID,
@@ -185,7 +193,7 @@ func newMechainClient(rpcAddr, chainID string, rpcClient *rpchttp.HTTP, opts ...
 		opt.Apply(client)
 	}
 	if client.grpcConn != nil {
-		setClientsConn(client, client.grpcConn)
+		setClientsConn(client, client.grpcConn, evmRpcClient)
 		return client, nil
 	}
 	if client.useWebSocket {
@@ -207,11 +215,11 @@ func newMechainClient(rpcAddr, chainID string, rpcClient *rpchttp.HTTP, opts ...
 		WithTxConfig(txConfig).
 		WithClient(client.tendermintClient)
 
-	setClientsConn(client, clientCtx)
+	setClientsConn(client, clientCtx, evmRpcClient)
 	return client, nil
 }
 
-func setClientsConn(c *MechainClient, conn grpc1.ClientConn) {
+func setClientsConn(c *MechainClient, conn grpc1.ClientConn, evmCli *ethclient.Client) {
 	c.AuthQueryClient = authtypes.NewQueryClient(conn)
 	c.AuthQueryClient = authtypes.NewQueryClient(conn)
 	c.AuthzQueryClient = authztypes.NewQueryClient(conn)
@@ -222,7 +230,7 @@ func setClientsConn(c *MechainClient, conn grpc1.ClientConn) {
 	c.FeegrantQueryClient = feegranttypes.NewQueryClient(conn)
 	c.GashubQueryClient = gashubtypes.NewQueryClient(conn)
 	c.PaymentQueryClient = paymenttypes.NewQueryClient(conn)
-	c.SpQueryClient = sptypes.NewQueryClient(conn)
+	c.SpQueryClient = spcli.NewQueryClientEVM(evmCli)
 	c.BridgeQueryClient = bridgetypes.NewQueryClient(conn)
 	c.StorageQueryClient = storagetypes.NewQueryClient(conn)
 	c.GovQueryClientV1 = govv1.NewQueryClient(conn)
