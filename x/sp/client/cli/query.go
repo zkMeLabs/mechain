@@ -199,10 +199,15 @@ func CmdStorageProviderPrice() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			res, err := types.NewQueryClient(clientCtx).
-				QuerySpStoragePrice(cmd.Context(), &types.QuerySpStoragePriceRequest{
-					SpAddr: spAddr.String(),
-				})
+			evmClient, err := clientCtx.GetEvmNode()
+			if err != nil {
+				return err
+			}
+			queryClient := NewQueryClientEVM(evmClient)
+
+			res, err := queryClient.QuerySpStoragePrice(cmd.Context(), &types.QuerySpStoragePriceRequest{
+				SpAddr: spAddr.String(),
+			})
 			if err != nil {
 				return err
 			}

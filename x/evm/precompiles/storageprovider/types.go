@@ -80,3 +80,11 @@ type StorageProviderByOperatorAddressArgs struct {
 func (args *StorageProviderByOperatorAddressArgs) Validate() error {
 	return nil
 }
+
+type StorageProviderPriceArgs struct {
+	OperatorAddress common.Address `abi:"operatorAddress"`
+}
+
+func (args *StorageProviderPriceArgs) Validate() error {
+	return nil
+}

@@ -3,6 +3,7 @@ package storageprovider
 import (
 	"bytes"
 	"encoding/hex"
+	"math/big"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
@@ -15,12 +16,14 @@ const (
 	StorageProviderMethodName                  = "storageProvider"
 	StorageProvidersMethodName                 = "storageProviders"
 	StorageProviderByOperatorAddressMethodName = "storageProviderByOperatorAddress"
+	StorageProviderPriceMethodName             = "storageProviderPrice"
 )
 
 func (c *Contract) registerQuery() {
 	c.registerMethod(StorageProviderMethodName, 50_000, c.StorageProvider, "")
 	c.registerMethod(StorageProvidersMethodName, 80_000, c.StorageProviders, "")
 	c.registerMethod(StorageProviderByOperatorAddressMethodName, 80_000, c.StorageProviderByOperatorAddress, "")
+	c.registerMethod(StorageProviderPriceMethodName, 80_000, c.QuerySpStoragePrice, "")
 }
 
 // StorageProvider queries a storage provider with specify id.
@@ -94,6 +97,22 @@ func (c *Contract) StorageProviderByOperatorAddress(ctx sdk.Context, _ *vm.EVM, 
 	return method.Outputs.Pack(outputStorageProviderInfo(res.StorageProvider))
 }
 
+func (c *Contract) QuerySpStoragePrice(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract, _ bool) ([]byte, error) {
+	method := GetAbiMethod(StorageProviderPriceMethodName)
+	var args StorageProviderPriceArgs
+	if err := types.ParseMethodArgs(method, &args, contract.Input[4:]); err != nil {
+		return nil, err
+	}
+	msg := &sptypes.QuerySpStoragePriceRequest{
+		SpAddr: args.OperatorAddress.String(),
+	}
+	res, err := c.spKeeper.QuerySpStoragePrice(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
+	return method.Outputs.Pack(outputStoragePrice(&res.SpStoragePrice))
+}
+
 func outputStorageProviderInfo(sp *sptypes.StorageProvider) *StorageProvider {
 	n := &StorageProvider{
 		Id:                 sp.Id,
@@ -114,6 +133,18 @@ func outputStorageProviderInfo(sp *sptypes.StorageProvider) *StorageProvider {
 			Details:         sp.Description.Details,
 		},
 		BlsKey: hex.EncodeToString(sp.BlsKey),
+	}
+
+	return n
+}
+
+func outputStoragePrice(sp *sptypes.SpStoragePrice) *SpStoragePrice {
+	n := &SpStoragePrice{
+		SpId:          sp.SpId,
+		UpdateTimeSec: big.NewInt(sp.UpdateTimeSec),
+		ReadPrice:     sp.ReadPrice.BigInt(),
+		FreeReadQuota: sp.FreeReadQuota,
+		StorePrice:    sp.StorePrice.BigInt(),
 	}
 
 	return n

@@ -53,7 +53,18 @@ func (c *QueryClientEVM) StorageProviders(ctx context.Context, in *types.QuerySt
 }
 
 func (c *QueryClientEVM) QuerySpStoragePrice(ctx context.Context, in *types.QuerySpStoragePriceRequest, opts ...grpc.CallOption) (*types.QuerySpStoragePriceResponse, error) {
-	return nil, nil
+	contract, err := spp.NewIStorageProvider(common.HexToAddress(mtypes.SpAddress), c.cc)
+	if err != nil {
+		return nil, err
+	}
+	r, err := contract.StorageProviderPrice(&bind.CallOpts{}, common.HexToAddress(in.SpAddr))
+	if err != nil {
+		return nil, err
+	}
+	res := &types.QuerySpStoragePriceResponse{
+		SpStoragePrice: *toPbPrice(&r),
+	}
+	return res, nil
 }
 
 func (c *QueryClientEVM) QueryGlobalSpStorePriceByTime(ctx context.Context, in *types.QueryGlobalSpStorePriceByTimeRequest, opts ...grpc.CallOption) (*types.QueryGlobalSpStorePriceByTimeResponse, error) {
@@ -148,5 +159,18 @@ func toPbPageResp(p *spp.PageResponse) *query.PageResponse {
 	return &query.PageResponse{
 		NextKey: p.NextKey,
 		Total:   p.Total,
+	}
+}
+
+func toPbPrice(p *spp.SpStoragePrice) *types.SpStoragePrice {
+	if p == nil {
+		return nil
+	}
+	return &types.SpStoragePrice{
+		SpId:          p.SpId,
+		UpdateTimeSec: p.UpdateTimeSec.Int64(),
+		ReadPrice:     math.LegacyNewDecFromInt(math.NewIntFromBigInt(p.ReadPrice)),
+		FreeReadQuota: p.FreeReadQuota,
+		StorePrice:    math.LegacyNewDecFromInt(math.NewIntFromBigInt(p.StorePrice)),
 	}
 }

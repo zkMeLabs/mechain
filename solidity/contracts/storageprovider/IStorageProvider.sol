@@ -55,6 +55,19 @@ struct StorageProvider {
     string bls_key;
 }
 
+struct SpStoragePrice {
+    // Storage Provider ID
+    uint32 sp_id;
+    // Update time as Unix timestamp in seconds
+    uint256 update_time_sec;
+    // Read price in wei per byte
+    uint256 read_price;
+    // Free read quota in bytes
+    uint64 free_read_quota;
+    // Store price in wei per byte
+    uint256 store_price;
+}
+
 interface IStorageProvider {
     /**
      * @dev updateSPPrice defines a method for sp update storage-provider price info.
@@ -85,6 +98,13 @@ interface IStorageProvider {
     function storageProviderByOperatorAddress(
         address operatorAddress
     ) external view returns (StorageProvider calldata storageProvider);
+
+    /**
+     * @dev storageProviderPrice get the latest storage price of specific sp.
+     */
+    function storageProviderPrice(
+        address operatorAddress
+    ) external view returns (SpStoragePrice calldata spStoragePrice);
 
     /**
      * @dev UpdateSPPrice defines an Event emitted when a sp update storage-provider price info.
