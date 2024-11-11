@@ -1543,6 +1543,8 @@ github.com/zkMeLabs/mechain-cometbft v1.3.0-mechain.2 h1:CkgK9LBQ/NWdQgPteasjKbB
 github.com/zkMeLabs/mechain-cometbft v1.3.0-mechain.2/go.mod h1:3YdCLtX08jS0LaFrhl3bkjTqUd45dylQN84xKYjM32I=
 github.com/zkMeLabs/mechain-cometbft-db v0.8.1-alpha.1 h1:nq2MtEW59EqqqvV/Diarxxc5K9LJj3a21273xvpPJpw=
 github.com/zkMeLabs/mechain-cometbft-db v0.8.1-alpha.1/go.mod h1:ey1CiK4bYo1RBNJLRiVbYr5CMdSxci9S/AZRINLtppI=
+github.com/zkMeLabs/mechain-cosmos-sdk v0.2.0-alpha.4 h1:O/w7PYgwOv9MPYMKeDDdoEWOX2/pWE0SFdgYeR/hwcQ=
+github.com/zkMeLabs/mechain-cosmos-sdk v0.2.0-alpha.4/go.mod h1:DNXljP3TJBvpSczsSX/HvjgApayHWFtJUBp/GaMdwTU=
 github.com/zkMeLabs/mechain-cosmos-sdk/api v0.0.0-20241017101002-ab985b5a45ec h1:iVf+Cbr8Mzg8ZC+OHnycVjHRqR0yC/qlnysiQbgrHak=
 github.com/zkMeLabs/mechain-cosmos-sdk/api v0.0.0-20241017101002-ab985b5a45ec/go.mod h1:vhsZxXE9tYJeYB5JR4hPhd6Pc/uPf7j1T8IJ7p9FdeM=
 github.com/zkMeLabs/mechain-cosmos-sdk/math v0.0.0-20241017101002-ab985b5a45ec h1:ENHZAPH2oUziy6SlyOiPNKlTeIpiD6iuyR6V34KsANE=
