@@ -59,6 +59,7 @@ type BucketInfo struct {
 	SpAsDelegatedAgentDisabled bool
 }
 
+
 // GVGMapping is an auto generated low-level Go binding around an user-defined struct.
 type GVGMapping struct {
 	SrcGlobalVirtualGroupId uint32
