@@ -89,7 +89,20 @@ func toPbBucketExtraInfo(r *storage.BucketExtraInfo) *types.BucketExtraInfo {
 }
 
 func (c *QueryClientEVM) HeadBucketById(ctx context.Context, in *types.QueryHeadBucketByIdRequest, opts ...grpc.CallOption) (*types.QueryHeadBucketResponse, error) {
-	return nil, nil
+	contract, err := storage.NewIStorage(common.HexToAddress(mtypes.StorageAddress), c.cc)
+	if err != nil {
+		return nil, err
+	}
+
+	r, err := contract.HeadBucket(&bind.CallOpts{}, in.BucketId)
+	if err != nil {
+		return nil, err
+	}
+	res := &types.QueryHeadBucketResponse{
+		BucketInfo: toPbBucketInfo(&r.BucketInfo),
+		ExtraInfo:  toPbBucketExtraInfo(&r.BucketExtraInfo),
+	}
+	return res, nil
 }
 
 func (c *QueryClientEVM) HeadBucketNFT(ctx context.Context, in *types.QueryNFTRequest, opts ...grpc.CallOption) (*types.QueryBucketNFTResponse, error) {
@@ -133,7 +146,7 @@ func (c *QueryClientEVM) ListBuckets(ctx context.Context, in *types.QueryListBuc
 		res.BucketInfos = append(res.BucketInfos, toPbBucketInfo(&p))
 	}
 	res.Pagination = toPbPageResp(&r.PageResponse)
-	return nil, nil
+	return res, nil
 }
 
 func toStoragePageReq(in *query.PageRequest) *storage.PageRequest {

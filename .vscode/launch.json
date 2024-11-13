@@ -1,0 +1,148 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "bucket head",
+      "type": "go",
+      "request": "launch",
+      "mode": "auto",
+      "program": "${workspaceFolder}/cmd/mechaind",
+      "args": [
+        "--home",
+        "${workspaceFolder}/deployment/localup/.local/validator0",
+        "--node",
+        "http://localhost:26657",
+        "query",
+        "storage",
+        "head-buckets",
+        "mechain"
+      ],
+      "cwd": "${workspaceFolder}/build"
+    },
+    {
+      "name": "bucket ls",
+      "type": "go",
+      "request": "launch",
+      "mode": "auto",
+      "program": "${workspaceFolder}/cmd/mechaind",
+      "args": [
+        "--home",
+        "${workspaceFolder}/deployment/localup/.local/validator0",
+        "--node",
+        "http://localhost:26657",
+        "query",
+        "storage",
+        "list-buckets"
+      ],
+      "cwd": "${workspaceFolder}/build"
+    },
+    {
+      "name": "sp price",
+      "type": "go",
+      "request": "launch",
+      "mode": "auto",
+      "program": "${workspaceFolder}/cmd/mechaind",
+      "args": [
+        "--home",
+        "${workspaceFolder}/deployment/localup/.local/validator0",
+        "--node",
+        "http://localhost:26657",
+        "--evm-node",
+        "http://localhost:8545",
+        "query",
+        "sp",
+        "price",
+        "0xc1A979b06dF9221749571eFD6d9DC99cCFCa82A2"
+      ],
+      "cwd": "${workspaceFolder}/build"
+    },
+    {
+      "name": "sp by op address",
+      "type": "go",
+      "request": "launch",
+      "mode": "auto",
+      "program": "${workspaceFolder}/cmd/mechaind",
+      "args": [
+        "--home",
+        "${workspaceFolder}/deployment/localup/.local/validator0",
+        "--node",
+        "http://localhost:26657",
+        "--evm-node",
+        "http://localhost:8545",
+        "query",
+        "sp",
+        "storage-provider-by-operator-address",
+        "0x402bb025e2b0e99DB7A56Cf420DD902933fc569b"
+      ],
+      "cwd": "${workspaceFolder}/build"
+    },
+    {
+      "name": "sp ls",
+      "type": "go",
+      "request": "launch",
+      "mode": "auto",
+      "program": "${workspaceFolder}/cmd/mechaind",
+      "args": [
+        "--home",
+        "${workspaceFolder}/deployment/localup/.local/validator0",
+        "--node",
+        "http://localhost:26657",
+        "--evm-node",
+        "http://localhost:8545",
+        "query",
+        "sp",
+        "storage-providers"
+      ],
+      "cwd": "${workspaceFolder}/build"
+    },
+    {
+      "name": "Launch Test Function",
+      "type": "go",
+      "request": "launch",
+      "mode": "test",
+      "program": "${fileDirname}",
+      "args": ["-testify.m", "^(TestTransfer)$"]
+    },
+    {
+      "name": "Attach mechaind",
+      "type": "go",
+      "request": "attach",
+      "mode": "local",
+      "processId": 81011
+    },
+    {
+      "name": "Launch mechaind",
+      "type": "go",
+      "request": "launch",
+      "mode": "auto",
+      "program": "${workspaceFolder}/cmd/mechaind",
+      "args": [
+        "start",
+        "--home",
+        "${workspaceFolder}/deployment/localup/.local/validator0",
+        "--keyring-backend",
+        "test",
+        "--api.enabled-unsafe-cors",
+        "true",
+        "--address",
+        "0.0.0.0:28750",
+        "--grpc.address",
+        "0.0.0.0:9090",
+        "--p2p.laddr",
+        "tcp://0.0.0.0:27750",
+        "--p2p.external-address",
+        "127.0.0.1:27750",
+        "--rpc.laddr",
+        "tcp://0.0.0.0:26657",
+        "--rpc.unsafe",
+        "true",
+        "--log_format",
+        "json"
+      ],
+      "cwd": "${workspaceFolder}/build"
+    }
+  ]
+}
