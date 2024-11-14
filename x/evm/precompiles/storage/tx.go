@@ -48,6 +48,7 @@ func (c *Contract) registerTx() {
 	c.registerMethod(CompleteMigrateBucketMethodName, 60_000, c.CompleteMigrateBucket, "CompleteMigrateBucket")
 	c.registerMethod(RejectMigrateBucketMethodName, 60_000, c.RejectMigrateBucket, "RejectMigrateBucket")
 	c.registerMethod(CreateObjectMethodName, 60_000, c.CreateObject, "CreateObject")
+	c.registerMethod(DeleteObjectMethodName, 60_000, c.DeleteObject, "DeleteObject")
 	c.registerMethod(SealObjectMethodName, 100_000, c.SealObject, "SealObject")
 	c.registerMethod(SealObjectV2MethodName, 100_000, c.SealObjectV2, "SealObjectV2")
 	c.registerMethod(RejectSealObjectMethodName, 100_000, c.RejectSealObject, "RejectSealObject")

@@ -512,6 +512,14 @@ interface IStorage {
         );
 
     /**
+     * @dev deleteBucket defines a method for delete a object.
+     */
+    function deleteObject(
+        string memory bucketName,
+        string memory objectName
+    ) external returns (bool success);
+
+    /**
      * @dev params queries the storage params.
      */
     function params() external view returns (Params calldata params);
@@ -537,7 +545,12 @@ interface IStorage {
     );
 
     /**
-     * @dev DeleteBucket defines an Event emitted when a user delete a bucket
+     * @dev DeleteObject defines an Event emitted when a user delete a object.
+     */
+    event DeleteObject(address indexed creator);
+
+    /**
+     * @dev DeleteBucket defines an Event emitted when a user delete a bucket.
      */
     event DeleteBucket(address indexed creator);
 
