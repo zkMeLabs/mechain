@@ -368,3 +368,20 @@ func (args *HeadObjectByIDArgs) Validate() error {
 	}
 	return nil
 }
+
+type SetTagArgs struct {
+	Resource string `abi:"resource"`
+	Tags     []Tag  `abi:"tags"`
+}
+
+// Validate SetTagArgs args
+func (args *SetTagArgs) Validate() error {
+	if args.Resource == "" {
+		return errors.New("empty resource name")
+	}
+
+	if args.Tags == nil || len(args.Tags) == 0 {
+		return errors.New("empty tags")
+	}
+	return nil
+}

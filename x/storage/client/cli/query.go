@@ -56,7 +56,11 @@ func CmdHeadBucket() *cobra.Command {
 				return err
 			}
 
-			queryClient := types.NewQueryClient(clientCtx)
+			evmClient, err := clientCtx.GetEvmNode()
+			if err != nil {
+				return err
+			}
+			queryClient := NewQueryClientEVM(evmClient)
 
 			params := &types.QueryHeadBucketRequest{
 				BucketName: reqBucketName,
@@ -122,7 +126,11 @@ func CmdListBuckets() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			queryClient := types.NewQueryClient(clientCtx)
+			evmClient, err := clientCtx.GetEvmNode()
+			if err != nil {
+				return err
+			}
+			queryClient := NewQueryClientEVM(evmClient)
 
 			params := &types.QueryListBucketsRequest{
 				Pagination: pageReq,
