@@ -14,8 +14,6 @@ import (
 	"google.golang.org/grpc"
 )
 
-var EvmUrl = "http://localhost:8545"
-
 type QueryClientEVM struct {
 	cc *ethclient.Client
 }

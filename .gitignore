@@ -103,8 +103,7 @@ deployment/dockerup/validator.json
 deployment/dockerup/proposal.json
 deployment/dockerup/tx.json
 init_done
-# vscode
-.vscode/launch.json
+
 
 dist
 
