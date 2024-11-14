@@ -36,7 +36,6 @@ import (
 	paymenttypes "github.com/evmos/evmos/v12/x/payment/types"
 	spcli "github.com/evmos/evmos/v12/x/sp/client/cli"
 	sptypes "github.com/evmos/evmos/v12/x/sp/types"
-	storagecli "github.com/evmos/evmos/v12/x/storage/client/cli"
 	storagetypes "github.com/evmos/evmos/v12/x/storage/types"
 	virtualgroupmoduletypes "github.com/evmos/evmos/v12/x/virtualgroup/types"
 )
@@ -233,7 +232,7 @@ func setClientsConn(c *MechainClient, conn grpc1.ClientConn, evmCli *ethclient.C
 	c.PaymentQueryClient = paymenttypes.NewQueryClient(conn)
 	c.SpQueryClient = spcli.NewQueryClientEVM(evmCli)
 	c.BridgeQueryClient = bridgetypes.NewQueryClient(conn)
-	c.StorageQueryClient = storagecli.NewQueryClientEVM(evmCli)
+	c.StorageQueryClient = storagetypes.NewQueryClient(conn)
 	c.GovQueryClientV1 = govv1.NewQueryClient(conn)
 	c.OracleQueryClient = oracletypes.NewQueryClient(conn)
 	c.SlashingQueryClient = slashingtypes.NewQueryClient(conn)
