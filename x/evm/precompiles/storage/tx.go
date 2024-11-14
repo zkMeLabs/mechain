@@ -39,6 +39,7 @@ const (
 	RenewGroupMemberMethodName            = "renewGroupMember"
 	SetTagForGroupMethodName              = "setTagForGroup"
 	UpdateBucketInfoMethodName            = "updateBucketInfo"
+	SetTagMethodName                      = "setTag"
 )
 
 func (c *Contract) registerTx() {
@@ -61,6 +62,7 @@ func (c *Contract) registerTx() {
 	c.registerMethod(RenewGroupMemberMethodName, 60_000, c.RenewGroupMember, "RenewGroupMember")
 	c.registerMethod(SetTagForGroupMethodName, 60_000, c.SetTagForGroup, "SetTagForGroup")
 	c.registerMethod(UpdateBucketInfoMethodName, 60_000, c.UpdateBucketInfo, "UpdateBucketInfo")
+	c.registerMethod(SetTagMethodName, 60_000, c.SetTag, "SetTag")
 }
 
 func (c *Contract) CreateBucket(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
@@ -857,6 +859,21 @@ func (c *Contract) RenewGroupMember(ctx sdk.Context, evm *vm.EVM, contract *vm.C
 	return method.Outputs.Pack(true)
 }
 
+func toPbTag(t *Tag) *storagetypes.ResourceTags_Tag {
+	return &storagetypes.ResourceTags_Tag{
+		Key:   t.Key,
+		Value: t.Value,
+	}
+}
+
+func toPbTags(t []Tag) *storagetypes.ResourceTags {
+	var tags storagetypes.ResourceTags
+	for _, tag := range t {
+		tags.Tags = append(tags.Tags, *toPbTag(&tag))
+	}
+	return &tags
+}
+
 func (c *Contract) SetTagForGroup(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	if readonly {
 		return nil, errors.New("set tag for group method readonly")
@@ -871,19 +888,10 @@ func (c *Contract) SetTagForGroup(ctx sdk.Context, evm *vm.EVM, contract *vm.Con
 		return nil, err
 	}
 	grn := gtypes.NewGroupGRN(addr, args.GroupName)
-	var tags storagetypes.ResourceTags
-	if args.Tags != nil {
-		for _, tag := range args.Tags {
-			tags.Tags = append(tags.Tags, storagetypes.ResourceTags_Tag{
-				Key:   tag.Key,
-				Value: tag.Value,
-			})
-		}
-	}
 	msg := &storagetypes.MsgSetTag{
 		Operator: contract.Caller().String(),
 		Resource: grn.String(),
-		Tags:     &tags,
+		Tags:     toPbTags(args.Tags),
 	}
 	if err := msg.ValidateBasic(); err != nil {
 		return nil, err
@@ -895,6 +903,37 @@ func (c *Contract) SetTagForGroup(ctx sdk.Context, evm *vm.EVM, contract *vm.Con
 	if err := c.AddLog(
 		evm,
 		GetAbiEvent(c.events[SetTagForGroupMethodName]),
+		[]common.Hash{common.BytesToHash(contract.Caller().Bytes())},
+	); err != nil {
+		return nil, err
+	}
+	return method.Outputs.Pack(true)
+}
+
+func (c *Contract) SetTag(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
+	if readonly {
+		return nil, errors.New("set tag method readonly")
+	}
+	method := GetAbiMethod(SetTagMethodName)
+	var args SetTagArgs
+	if err := types.ParseMethodArgs(method, &args, contract.Input[4:]); err != nil {
+		return nil, err
+	}
+	msg := &storagetypes.MsgSetTag{
+		Operator: contract.CallerAddress.String(),
+		Resource: args.Resource,
+		Tags:     toPbTags(args.Tags),
+	}
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
+	server := storagekeeper.NewMsgServerImpl(c.storageKeeper)
+	if _, err := server.SetTag(ctx, msg); err != nil {
+		return nil, err
+	}
+	if err := c.AddLog(
+		evm,
+		GetAbiEvent(c.events[SetTagMethodName]),
 		[]common.Hash{common.BytesToHash(contract.Caller().Bytes())},
 	); err != nil {
 		return nil, err

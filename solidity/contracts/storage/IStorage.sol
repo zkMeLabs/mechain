@@ -520,6 +520,13 @@ interface IStorage {
     ) external returns (bool success);
 
     /**
+     * @dev setTag defines a method for set tags for the given resource.
+     */
+    function setTag(
+        string memory resource,
+        Tag[] memory tags
+    ) external returns (bool success);
+    /**
      * @dev params queries the storage params.
      */
     function params() external view returns (Params calldata params);
@@ -643,4 +650,9 @@ interface IStorage {
      * @dev SetTagForGroup defines an Event emitted when a user set tags for the given group
      */
     event SetTagForGroup(address indexed creator);
+
+    /**
+     * @dev SetTag defines an Event emitted when a user set tags for the given resource
+     */
+    event SetTag(address indexed creator);
 }
