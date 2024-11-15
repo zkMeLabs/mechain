@@ -90,9 +90,9 @@ struct BucketInfo {
 }
 
 struct BucketExtraInfo {
-    bool IsRateLimited;
-    uint256 FlowRateLimit;
-    uint256 CurrentFlowRate;
+    bool isRateLimited;
+    uint256 flowRateLimit;
+    uint256 currentFlowRate;
 }
 
 struct ObjectInfo {
@@ -235,6 +235,95 @@ struct VersionedParams {
     uint64 minChargeSize;
 }
 
+struct Principal {
+    int32 principalType;
+    // When the type is an account, its value is sdk.AccAddress().String();
+    // when the type is a group, its value is math.Uint().String()
+    string value;
+}
+
+struct Statement {
+    int32 effect;
+    int32[] actions;
+    string[] resources;
+    int64 expirationTime;
+    uint64 limitSize;
+}
+
+struct Policy {
+    uint256 id;
+    Principal principal;
+    int32 resourceType;
+    uint256 resourceId;
+    Statement[] statements;
+    int64 expirationTime;
+}
+
+struct Trait {
+    string traitType;
+    string value;
+}
+
+struct BucketMetaData {
+    string description;
+    string externalUrl;
+    string bucketName;
+    string image;
+    Trait[] attributes;
+}
+
+struct ObjectMetaData {
+    string description;
+    string externalUrl;
+    string objectName;
+    string image;
+    Trait[] attributes;
+}
+
+struct GroupMetaData {
+    string description;
+    string externalUrl;
+    string groupName;
+    string image;
+    Trait[] attributes;
+}
+
+struct ShadowObjectInfo {
+    string operator;
+    uint256 id;
+    string contentType;
+    uint64 payloadSize;
+    string[] checksums;
+    int64 updatedAt;
+    int64 version;
+}
+
+struct LocalVirtualGroup {
+    uint32 id;
+    uint32 globalVirtualGroupId;
+    uint64 storedSize;
+    uint64 totalChargeSize;
+}
+
+struct InternalBucketInfo {
+    int64 priceTime;
+    uint64 totalChargeSize;
+    LocalVirtualGroup[] localVirtualGroups;
+    uint32 nextLocalVirtualGroupId;
+}
+
+struct IsPriceChanged {
+    bool changed;
+    uint256 currentReadPrice;
+    uint256 currentPrimaryStorePrice;
+    uint256 currentSecondaryStorePrice;
+    uint256 currentValidatorTaxRate;
+    uint256 newReadPrice;
+    uint256 newPrimaryStorePrice;
+    uint256 newSecondaryStorePrice;
+    uint256 newValidatorTaxRate;
+}
+
 interface IStorage {
     /**
      * @dev createBucket defines a method for create a bucket.
@@ -274,6 +363,24 @@ interface IStorage {
     ) external returns (bool success);
 
     /**
+     * @dev mirrorBucket defines a method for mirror a bucket.
+     */
+    function mirrorBucket(
+        uint256 bucketId,
+        string memory bucketName,
+        uint32 destChainId
+    ) external returns (bool success);
+
+    /**
+     * @dev migrateBucket defines a method for migrate a bucket.
+     */
+    function migrateBucket(
+        string memory bucketName,
+        uint32 dstPrimarySpId,
+        Approval memory dstPrimarySpApproval
+    ) external returns (bool success);
+
+    /**
      * @dev completeMigrateBucket defines a method for complete migrate a bucket.
      */
     function completeMigrateBucket(
@@ -287,6 +394,23 @@ interface IStorage {
      */
     function rejectMigrateBucket(
         string memory bucketName
+    ) external returns (bool success);
+
+    /**
+     * @dev cancelMigrateBucket defines a method for cancel migrate a bucket.
+     */
+    function cancelMigrateBucket(
+        string memory bucketName
+    ) external returns (bool success);
+
+    /**
+     * @dev setBucketFlowRateLimit defines a method for set the bucket flow rate limit.
+     */
+    function setBucketFlowRateLimit(
+        string memory bucketName,
+        string memory bucketOwner,
+        string memory paymentAddress,
+        uint256 flowRateLimit
     ) external returns (bool success);
 
     /**
@@ -304,6 +428,43 @@ interface IStorage {
     ) external returns (bool success);
 
     /**
+     * @dev cancelCreateObject defines a method for cancel to create a object.
+     */
+    function cancelCreateObject(
+        string memory bucketName,
+        string memory objectName
+    ) external returns (bool success);
+
+    /**
+     * @dev copyObject defines a method for copy a object.
+     */
+    function copyObject(
+        string memory srcBucketName,
+        string memory dstBucketName,
+        string memory srcObjectName,
+        string memory dstObjectName,
+        Approval memory dstPrimarySpApproval
+    ) external returns (bool success);
+
+    /**
+     * @dev deleteObject defines a method for delete a object.
+     */
+    function deleteObject(
+        string memory bucketName,
+        string memory objectName
+    ) external returns (bool success);
+
+    /**
+     * @dev mirrorObject defines a method for mirror a object.
+     */
+    function mirrorObject(
+        uint256 objectId,
+        string memory bucketName,
+        string memory objectName,
+        uint32 destChainId
+    ) external returns (bool success);
+
+    /**
      * @dev listBuckets queries all the buckets.
      */
     function listBuckets(
@@ -313,6 +474,20 @@ interface IStorage {
         view
         returns (
             BucketInfo[] memory bucketInfos,
+            PageResponse calldata pageResponse
+        );
+
+    /**
+     * @dev listObjectsByBucketId queries a list of object items under the bucket.
+     */
+    function listObjectsByBucketId(
+        PageRequest calldata pagination,
+        string memory bucketId
+    )
+        external
+        view
+        returns (
+            ObjectInfo[] memory objectInfos,
             PageResponse calldata pageResponse
         );
 
@@ -411,6 +586,26 @@ interface IStorage {
     ) external returns (bool success);
 
     /**
+     * @dev updateObjectContent defines a method for update a object content.
+     */
+    function updateObjectContent(
+        string memory bucketName,
+        string memory objectName,
+        uint64 payloadSize,
+        string memory contentType,
+        string[] memory expectChecksums
+    ) external returns (bool success);
+
+    /**
+     * @dev discontinueObject defines a method for discontinue a object.
+     */
+    function discontinueObject(
+        string memory bucketName,
+        uint256[] memory objectIds,
+        string memory reason
+    ) external returns (bool success);
+
+    /**
      * @dev createGroup defines a method for create a group.
      */
     function createGroup(
@@ -427,9 +622,50 @@ interface IStorage {
         external
         view
         returns (
-            BucketInfo memory bucketInfo,
-            BucketExtraInfo memory bucketExtraInfo
+            BucketInfo calldata bucketInfo,
+            BucketExtraInfo calldata bucketExtraInfo
         );
+
+    /**
+     * @dev headBucketExtra queries a bucket extra info (with gvg bindings and price time) with specify name.
+     */
+    function headBucketExtra(
+        string memory bucketName
+    ) external view returns (InternalBucketInfo calldata extraInfo);
+
+    /**
+     * @dev headBucketById queries the bucket's info by id.
+     */
+    function headBucketById(
+        string memory bucketId
+    )
+        external
+        view
+        returns (
+            BucketInfo calldata bucketInfo,
+            BucketExtraInfo calldata bucketExtraInfo
+        );
+
+    /**
+     * @dev headBucketNFT queries a bucket with EIP712 standard metadata info.
+     */
+    function headBucketNFT(
+        string memory tokenId
+    ) external view returns (BucketMetaData calldata bucketMetaData);
+
+    /**
+     * @dev headObjectNFT queries a object with EIP712 standard metadata info.
+     */
+    function headObjectNFT(
+        string memory tokenId
+    ) external view returns (ObjectMetaData calldata objectMetaData);
+
+    /**
+     * @dev headGroupNFT queries a group with EIP712 standard metadata info.
+     */
+    function headGroupNFT(
+        string memory tokenId
+    ) external view returns (GroupMetaData calldata groupMetaData);
 
     /**
      * @dev headGroup queries the group's info.
@@ -437,7 +673,7 @@ interface IStorage {
     function headGroup(
         address groupOwner,
         string memory groupName
-    ) external view returns (GroupInfo memory groupInfo);
+    ) external view returns (GroupInfo calldata groupInfo);
 
     /**
      * @dev updateGroup defines a method for update a group's member.
@@ -451,19 +687,142 @@ interface IStorage {
     ) external returns (bool success);
 
     /**
+     * @dev updateGroupExtra defines a method for update a group's extra.
+     */
+    function updateGroupExtra(
+        address groupOwner,
+        string memory groupName,
+        string memory extra
+    ) external returns (bool success);
+
+    /**
      * @dev headGroupMember queries the group member's info.
      */
     function headGroupMember(
         address member,
         address groupOwner,
         string memory groupName
-    ) external view returns (GroupMember memory groupMember);
+    ) external view returns (GroupMember calldata groupMember);
+
+    /**
+     * @dev queryPolicyForGroup queries the group's policy.
+     */
+    function queryPolicyForGroup(
+        string memory resource,
+        uint256 groupId
+    ) external view returns (Policy calldata policy);
+
+    /**
+     * @dev queryPolicyForAccount queries the account's policy.
+     */
+    function queryPolicyForAccount(
+        string memory resource,
+        string memory principalAddr
+    ) external view returns (Policy calldata policy);
+
+    /**
+     * @dev queryPolicyById queries a policy by policy id.
+     */
+    function queryPolicyById(
+        string memory policyId
+    ) external view returns (Policy calldata policy);
+
+    /**
+     * @dev queryLockFee queries lock fee for storing an object.
+     */
+    function queryLockFee(
+        string memory primarySpAddress,
+        int64 createAt,
+        uint64 payloadSize
+    ) external view returns (uint256 amount);
+
+    /**
+     * @dev queryIsPriceChanged queries whether read and storage prices changed for the bucket.
+     */
+    function queryIsPriceChanged(
+        string memory bucketName
+    ) external view returns (IsPriceChanged calldata isPriceChanged);
+
+    /**
+     * @dev queryQuotaUpdateTime queries quota update time for the bucket.
+     */
+    function queryQuotaUpdateTime(
+        string memory bucketName
+    ) external view returns (int64 updateAt);
+
+    /**
+     * @dev queryGroupMembersExist queries whether some members are in the group.
+     */
+    function queryGroupMembersExist(
+        string memory groupId,
+        string[] memory members
+    )
+        external
+        view
+        returns (string[] memory checkMembers, bool[] memory exists);
+
+    /**
+     * @dev queryGroupsExist queries whether some groups are exist.
+     */
+    function queryGroupsExist(
+        string memory groupOwner,
+        string[] memory groupNames
+    )
+        external
+        view
+        returns (string[] memory checkGroupNames, bool[] memory exists);
+
+    /**
+     * @dev queryGroupsExistById queries whether some groups are exist by id.
+     */
+    function queryGroupsExistById(
+        string[] memory groupIds
+    )
+        external
+        view
+        returns (string[] memory checkGroupIds, bool[] memory exists);
+
+    /**
+     * @dev queryPaymentAccountBucketFlowRateLimit queries the flow rate limit of a bucket for a payment account.
+     */
+    function queryPaymentAccountBucketFlowRateLimit(
+        string memory paymentAccount,
+        string memory bucketOwner,
+        string memory bucketName
+    ) external view returns (bool isSet, uint256 flowRateLimit);
+
+    /**
+     * @dev verifyPermission queries a list of VerifyPermission items.
+     */
+    function verifyPermission(
+        string memory bucketName,
+        string memory objectName,
+        int32 actionType
+    ) external view returns (int32 effect);
 
     /**
      * @dev deleteGroup defines a method for delete a group.
      */
     function deleteGroup(
         string memory groupName
+    ) external returns (bool success);
+
+    /**
+     * @dev leaveGroup defines a method for leave a group.
+     */
+    function leaveGroup(
+        address member,
+        address groupOwner,
+        string memory groupName
+    ) external returns (bool success);
+
+    /**
+     * @dev mirrorGroup defines a method for mirror a group.
+     */
+    function mirrorGroup(
+        uint256 groupId,
+        string memory groupName,
+        uint32 destChainId
     ) external returns (bool success);
 
     /**
@@ -477,10 +836,10 @@ interface IStorage {
     ) external returns (bool success);
 
     /**
-     * @dev setTagForGroup defines a method for set tags for the given group.
+     * @dev setTag defines a method for set tags for the given group/bucket/object.
      */
-    function setTagForGroup(
-        string memory groupName,
+    function setTag(
+        string memory resource,
         Tag[] memory tags
     ) external returns (bool success);
 
@@ -494,8 +853,8 @@ interface IStorage {
         external
         view
         returns (
-            ObjectInfo memory objectInfo,
-            GlobalVirtualGroup memory globalVirtualGroup
+            ObjectInfo calldata objectInfo,
+            GlobalVirtualGroup calldata globalVirtualGroup
         );
 
     /**
@@ -507,29 +866,62 @@ interface IStorage {
         external
         view
         returns (
-            ObjectInfo memory objectInfo,
-            GlobalVirtualGroup memory globalVirtualGroup
+            ObjectInfo calldata objectInfo,
+            GlobalVirtualGroup calldata globalVirtualGroup
         );
 
     /**
-     * @dev deleteBucket defines a method for delete a object.
+     * @dev headShadowObject queries a shadow object with specify name.
      */
-    function deleteObject(
+    function headShadowObject(
         string memory bucketName,
         string memory objectName
-    ) external returns (bool success);
+    ) external view returns (ShadowObjectInfo calldata objectInfo);
 
     /**
-     * @dev setTag defines a method for set tags for the given resource.
+     * @dev queryParamsByTimestamp queries the parameters of the module by timestamp.
      */
-    function setTag(
-        string memory resource,
-        Tag[] memory tags
-    ) external returns (bool success);
+    function queryParamsByTimestamp(
+        int64 timestamp
+    ) external view returns (Params calldata params);
+
     /**
      * @dev params queries the storage params.
      */
     function params() external view returns (Params calldata params);
+
+    /**
+     * @dev putPolicy defines a method for put a policy to bucket/object/group which can grant permission to others.
+     */
+    function putPolicy(
+        Principal memory principal,
+        string memory resource,
+        Statement[] memory statements,
+        int64 expirationTime
+    ) external returns (bool success);
+
+    /**
+     * @dev deletePolicy defines a method for delete policy of principal.
+     */
+    function deletePolicy(
+        Principal memory principal,
+        string memory resource
+    ) external returns (bool success);
+
+    /**
+     * @dev toggleSPAsDelegatedAgent defines a method for toggle SP as delegated agent.
+     */
+    function toggleSPAsDelegatedAgent(
+        string memory bucketName
+    ) external returns (bool success);
+
+    /**
+     * @dev updateParams defines a method for update params of modular storage.
+     */
+    function updateParams(
+        string memory authority,
+        Params memory params
+    ) external returns (bool success);
 
     /**
      * @dev CreateBucket defines an Event emitted when a user create a bucket
@@ -552,24 +944,32 @@ interface IStorage {
     );
 
     /**
-     * @dev DeleteObject defines an Event emitted when a user delete a object.
-     */
-    event DeleteObject(address indexed creator);
-
-    /**
-     * @dev DeleteBucket defines an Event emitted when a user delete a bucket.
+     * @dev DeleteBucket defines an Event emitted when a user delete a bucket
      */
     event DeleteBucket(address indexed creator);
 
     /**
+     * @dev MirrorBucket defines an Event emitted when a user mirror a bucket
+     */
+    event MirrorBucket(address indexed creator);
+
+    /**
+     * @dev MigrateBucket defines an Event emitted when a user migrate a bucket
+     */
+    event MigrateBucket(address indexed creator, string indexed bucketName);
+
+    /**
      * @dev DiscontinueBucket defines an Event emitted when a user discontinue a bucket
      */
-    event DiscontinueBucket(address indexed creator);
+    event DiscontinueBucket(address indexed creator, string indexed bucketName);
 
     /**
      * @dev CompleteMigrateBucket defines an Event emitted when a user complete migrate a bucket
      */
-    event CompleteMigrateBucket(address indexed creator);
+    event CompleteMigrateBucket(
+        address indexed creator,
+        string indexed bucketName
+    );
 
     /**
      * @dev RejectMigrateBucket defines an Event emitted when a user reject migrate a bucket
@@ -577,9 +977,39 @@ interface IStorage {
     event RejectMigrateBucket(address indexed operator);
 
     /**
+     * @dev CancelMigrateBucket defines an Event emitted when a user cancel migrate a bucket
+     */
+    event CancelMigrateBucket(address indexed operator);
+
+    /**
+     * @dev SetBucketFlowRateLimit defines an Event emitted when a user set the bucket flow rate limit
+     */
+    event SetBucketFlowRateLimit(address indexed operator);
+
+    /**
      * @dev CreateObject defines an Event emitted when a user create a object
      */
     event CreateObject(address indexed creator, uint256 id);
+
+    /**
+     * @dev CancelCreateObject defines an Event emitted when a user cancel to create a object
+     */
+    event CancelCreateObject(address indexed creator);
+
+    /**
+     * @dev CopyObject defines an Event emitted when a user copy a object
+     */
+    event CopyObject(address indexed creator);
+
+    /**
+     * @dev DeleteObject defines an Event emitted when a user delete a object
+     */
+    event DeleteObject(address indexed creator);
+
+    /**
+     * @dev MirrorObject defines an Event emitted when a user mirror a object
+     */
+    event MirrorObject(address indexed creator);
 
     /**
      * @dev Transfer defines an Event emitted when a transfer a object nft
@@ -619,12 +1049,25 @@ interface IStorage {
     event UpdateObjectInfo(address indexed creator);
 
     /**
+     * @dev UpdateObjectContent defines an Event emitted when a user update a object content
+     */
+    event UpdateObjectContent(
+        address indexed operator,
+        string indexed objectName
+    );
+
+    /**
      * @dev DelegateUpdateObjectContent defines an Event emitted when a user delegate update a object content
      */
     event DelegateUpdateObjectContent(
         address indexed operator,
         string indexed objectName
     );
+
+    /**
+     * @dev DiscontinueObject defines an Event emitted when a user discontinue a object
+     */
+    event DiscontinueObject(address indexed creator, string indexed bucketName);
 
     /**
      * @dev CreateGroup defines an Event emitted when a user create a group
@@ -637,9 +1080,24 @@ interface IStorage {
     event UpdateGroup(address indexed creator);
 
     /**
+     * @dev UpdateGroupExtra defines an Event emitted when a user update a group's extra
+     */
+    event UpdateGroupExtra(address indexed creator);
+
+    /**
      * @dev DeleteGroup defines an Event emitted when a user delete a group
      */
     event DeleteGroup(address indexed creator);
+
+    /**
+     * @dev LeaveGroup defines an Event emitted when a user leave a group
+     */
+    event LeaveGroup(address indexed creator, string indexed groupName);
+
+    /**
+     * @dev MirrorGroup defines an Event emitted when a user mirror a group
+     */
+    event MirrorGroup(address indexed creator);
 
     /**
      * @dev RenewGroupMember defines an Event emitted when a user renew group member
@@ -647,12 +1105,27 @@ interface IStorage {
     event RenewGroupMember(address indexed creator);
 
     /**
-     * @dev SetTagForGroup defines an Event emitted when a user set tags for the given group
+     * @dev SetTags defines an Event emitted when a user set tags for the given group/bucket/object
      */
-    event SetTagForGroup(address indexed creator);
+    event SetTags(address indexed creator);
 
     /**
-     * @dev SetTag defines an Event emitted when a user set tags for the given resource
+     * @dev PutPolicy defines an Event emitted when a user put a policy to bucket/object/group which can grant permission to others
      */
-    event SetTag(address indexed creator);
+    event PutPolicy(address indexed creator);
+
+    /**
+     * @dev DeletePolicy defines an Event emitted when a user delete policy of principal
+     */
+    event DeletePolicy(address indexed creator);
+
+    /**
+     * @dev ToggleSPAsDelegatedAgent defines an Event emitted when a user toggle SP as delegated agent
+     */
+    event ToggleSPAsDelegatedAgent(address indexed creator);
+
+    /**
+     * @dev UpdateParams defines an Event emitted when a user update params of modular storage
+     */
+    event UpdateParams(address indexed creator);
 }
