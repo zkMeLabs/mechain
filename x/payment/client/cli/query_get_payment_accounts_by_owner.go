@@ -5,7 +5,12 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
+	"github.com/ethereum/go-ethereum/accounts/abi/bind"
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/spf13/cobra"
+
+	evmostypes "github.com/evmos/evmos/v12/types"
+	"github.com/evmos/evmos/v12/x/evm/precompiles/payment"
 
 	"github.com/evmos/evmos/v12/x/payment/types"
 )
@@ -24,16 +29,16 @@ func CmdGetPaymentAccountsByOwner() *cobra.Command {
 			if err != nil {
 				return err
 			}
-
-			queryClient := types.NewQueryClient(clientCtx)
-
-			params := &types.QueryPaymentAccountsByOwnerRequest{
-				Owner: reqOwner,
-			}
-
-			res, err := queryClient.PaymentAccountsByOwner(cmd.Context(), params)
+			contract, err := payment.NewIPayment(common.HexToAddress(evmostypes.PaymentAddress), clientCtx.EvmClient)
 			if err != nil {
 				return err
+			}
+			result, err := contract.PaymentAccountsByOwner(&bind.CallOpts{}, reqOwner)
+			if err != nil {
+				return err
+			}
+			res := &types.QueryPaymentAccountsByOwnerResponse{
+				PaymentAccounts: result,
 			}
 
 			return clientCtx.PrintProto(res)
