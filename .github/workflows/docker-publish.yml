@@ -27,7 +27,7 @@ jobs:
         id: meta
         run: |
           if ${{ inputs.publish_tag }}; then
-            echo "${{ inputs.tags }}, $(git describe --always --tags --match='v*')" >> "$GITHUB_OUTPUT"
+            echo "${{ inputs.tags }}, zkmelabs/mechain:$(git describe --always --tags --match='v*')" >> "$GITHUB_OUTPUT"
           else
             echo "tags=${{ inputs.tags }}" >> "$GITHUB_OUTPUT"
           fi
