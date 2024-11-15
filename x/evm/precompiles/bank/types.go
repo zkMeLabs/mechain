@@ -62,11 +62,11 @@ func MustEvent(name string) abi.Event {
 	return event
 }
 
-type CoinJSON = Coin
+type CoinJson = Coin
 
 type SendArgs struct {
 	ToAddress common.Address `abi:"toAddress"`
-	Amount    []CoinJSON     `abi:"amount"`
+	Amount    []CoinJson     `abi:"amount"`
 }
 
 // Validate Send args
@@ -75,6 +75,89 @@ func (args *SendArgs) Validate() error {
 		if deposit.Amount.Sign() <= 0 {
 			return fmt.Errorf("send %s amount is %s, need to greater than 0", deposit.Denom, deposit.Amount.String())
 		}
+	}
+	return nil
+}
+
+type MultiSendArgs struct {
+	Outputs []SendArgs `abi:"outputs"`
+}
+
+// Validate MultiSend args
+func (args *MultiSendArgs) Validate() error {
+	if len(args.Outputs) <= 1 {
+		return fmt.Errorf("the number of outputs is %v, need to greater than 1", len(args.Outputs))
+	}
+
+	for _, output := range args.Outputs {
+		for _, deposit := range output.Amount {
+			if deposit.Amount.Sign() <= 0 {
+				return fmt.Errorf("multiSend %s amount is %s, need to greater than 0", deposit.Denom, deposit.Amount.String())
+			}
+		}
+	}
+
+	return nil
+}
+
+type BalanceArgs struct {
+	AccountAddress common.Address `abi:"accountAddress"`
+	Denom          string         `abi:"denom"`
+}
+
+// Validate Balance args
+func (args *BalanceArgs) Validate() error {
+	if args.Denom == "" {
+		return fmt.Errorf("denom is empty")
+	}
+	return nil
+}
+
+type PageRequestJson = PageRequest
+
+type AllBalancesArgs struct {
+	AccountAddress common.Address  `abi:"accountAddress"`
+	PageRequest    PageRequestJson `abi:"pageRequest"`
+}
+
+// Validate AllBalances args
+func (args *AllBalancesArgs) Validate() error {
+	return nil
+}
+
+type SpendableBalancesArgs = AllBalancesArgs
+
+type SupplyOfArgs struct {
+	Denom string `abi:"denom"`
+}
+
+func (args *SupplyOfArgs) Validate() error {
+	if args.Denom == "" {
+		return fmt.Errorf("denom is empty")
+	}
+	return nil
+}
+
+type DenomMetadataArgs = SupplyOfArgs
+
+type DenomsMetadataArgs struct {
+	PageRequest PageRequestJson `abi:"pageRequest"`
+}
+
+// Validate DenomsMetadata args
+func (args *DenomsMetadataArgs) Validate() error {
+	return nil
+}
+
+type DenomOwnersArgs struct {
+	Denom       string          `abi:"denom"`
+	PageRequest PageRequestJson `abi:"pageRequest"`
+}
+
+// Validate DenomOwners args
+func (args *DenomOwnersArgs) Validate() error {
+	if args.Denom == "" {
+		return fmt.Errorf("denom is empty")
 	}
 	return nil
 }
