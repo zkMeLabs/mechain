@@ -4,7 +4,7 @@ local_env=${SCRIPT_DIR}/.local
 
 source ${SCRIPT_DIR}/.env
 source ${SCRIPT_DIR}/utils.sh
-devaccount_prikey=f78a036930ce63791ea6ea20072986d8c3f16a6811f6a2583b0787c45086f769
+devaccount_prikey=2228e392584d902843272c37fd62b8c73c10c81a5ecb901773c9ebe366e937bb
 validator0_prikey=e54bff83fc945cba77ca3e45d69adc5b57ad8db6073736c8422692abecfb5fe2
 relayer0_prikey=3c7ea76ddb53539174caae1dd960b308981933bd6e95196556ba29063200df9c
 sp0_prikey=ebbeb28b89bc7ec5da6441ed70452cc413f96ea33a7c790aba06810ae441b776
@@ -37,7 +37,7 @@ function init() {
 			${bin} keys add relayer${i} --keyring-backend test --home ${local_env}/relayer${i} >${local_env}/relayer${i}/relayer_info 2>&1
 		fi
 		${bin} keys add validator_bls${i} --keyring-backend test --home ${local_env}/validator${i} --algo eth_bls >${local_env}/validator${i}/bls_info 2>&1
-		${bin} keys add validator_delegator${i} --keyring-backend test --home ${local_env}/validator${i} >${local_env}/validator${i}/delegator_info 2>&1
+		#${bin} keys add validator_delegator${i} --keyring-backend test --home ${local_env}/validator${i} >${local_env}/validator${i}/delegator_info 2>&1
 		${bin} keys add challenger${i} --keyring-backend test --home ${local_env}/challenger${i} >${local_env}/challenger${i}/challenger_info 2>&1
 	done
 
@@ -94,7 +94,7 @@ function generate_genesis() {
 	declare -a deletgator_addrs=()
 	for ((i = 0; i < ${size}; i++)); do
 		# export delegator addresses
-		deletgator_addrs+=("$(${bin} keys show validator_delegator${i} -a --keyring-backend test --home ${local_env}/validator${i})")
+		deletgator_addrs+=("$(${bin} keys show validator${i} -a --keyring-backend test --home ${local_env}/validator${i})")
 	done
 
 	declare -a relayer_addrs=()
@@ -124,10 +124,10 @@ function generate_genesis() {
 			${bin} add-genesis-account "$validator_addr" "${GENESIS_ACCOUNT_BALANCE}""${STAKING_BOND_DENOM}" --home ${local_env}/validator${i}
 		done
 
-		for deletgator_addr in "${deletgator_addrs[@]}"; do
+		#for deletgator_addr in "${deletgator_addrs[@]}"; do
 			# init genesis account in genesis state
-			${bin} add-genesis-account "$deletgator_addr" "${GENESIS_ACCOUNT_BALANCE}""${STAKING_BOND_DENOM}" --home ${local_env}/validator${i}
-		done
+			#${bin} add-genesis-account "$deletgator_addr" "${GENESIS_ACCOUNT_BALANCE}""${STAKING_BOND_DENOM}" --home ${local_env}/validator${i}
+		#done
 
 		for relayer_addr in "${relayer_addrs[@]}"; do
 			# init genesis account in genesis state
