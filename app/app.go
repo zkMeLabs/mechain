@@ -191,6 +191,7 @@ import (
 	challengemodule "github.com/evmos/evmos/v12/x/challenge"
 	challengemodulekeeper "github.com/evmos/evmos/v12/x/challenge/keeper"
 	challengemoduletypes "github.com/evmos/evmos/v12/x/challenge/types"
+	precompilesdistribution "github.com/evmos/evmos/v12/x/evm/precompiles/distribution"
 	precompilesstaking "github.com/evmos/evmos/v12/x/evm/precompiles/staking"
 	"github.com/evmos/evmos/v12/x/gensp"
 	gensptypes "github.com/evmos/evmos/v12/x/gensp/types"
@@ -352,13 +353,13 @@ type Evmos struct {
 	TransferKeeper        transferkeeper.Keeper
 	ConsensusParamsKeeper consensusparamkeeper.Keeper
 
-	BridgeKeeper           bridgemodulekeeper.Keeper
-	SpKeeper               spmodulekeeper.Keeper
-	PaymentKeeper          paymentmodulekeeper.Keeper
-	ChallengeKeeper        challengemodulekeeper.Keeper
-	PermissionKeeper       permissionmodulekeeper.Keeper
-	VirtualgroupKeeper     virtualgroupmodulekeeper.Keeper
-	StorageKeeper          storagemodulekeeper.Keeper
+	BridgeKeeper       bridgemodulekeeper.Keeper
+	SpKeeper           spmodulekeeper.Keeper
+	PaymentKeeper      paymentmodulekeeper.Keeper
+	ChallengeKeeper    challengemodulekeeper.Keeper
+	PermissionKeeper   permissionmodulekeeper.Keeper
+	VirtualgroupKeeper virtualgroupmodulekeeper.Keeper
+	StorageKeeper      storagemodulekeeper.Keeper
 	// make scoped keepers public for test purposes
 	ScopedIBCKeeper      capabilitykeeper.ScopedKeeper
 	ScopedTransferKeeper capabilitykeeper.ScopedKeeper
@@ -1456,10 +1457,15 @@ func (app *Evmos) EvmPrecompiled() {
 	precompiled[precompilespermission.GetAddress()] = func(ctx sdk.Context) vm.PrecompiledContract {
 		return precompilespermission.NewPrecompiledContract(ctx, app.PermissionKeeper)
 	}
-	
+
 	// staking precompile
 	precompiled[precompilesstaking.GetAddress()] = func(ctx sdk.Context) vm.PrecompiledContract {
 		return precompilesstaking.NewPrecompiledContract(ctx, app.StakingKeeper)
+	}
+
+	// distribution precompile
+	precompiled[precompilesdistribution.GetAddress()] = func(ctx sdk.Context) vm.PrecompiledContract {
+		return precompilesdistribution.NewPrecompiledContract(ctx, app.DistrKeeper)
 	}
 
 	// storage precompile
