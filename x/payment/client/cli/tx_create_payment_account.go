@@ -61,7 +61,7 @@ func CmdCreatePaymentAccount() *cobra.Command {
 
 			_, err = sdkclient.WaitForEvmTx(context.Background(), clientCtx.EvmClient, gnfdCli, txRsp.Hash())
 			if err != nil {
-				return fmt.Errorf("failed to create payment account", err.Error())
+				return fmt.Errorf("failed to create payment account.%v", err.Error())
 			}
 			return clientCtx.PrintObjectLegacy(txRsp.Hash().String())
 		},
