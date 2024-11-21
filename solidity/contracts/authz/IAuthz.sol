@@ -49,9 +49,7 @@ interface IAuthz {
      * @dev exec revokes any authorization corresponding to the provided method name on the
      * granter's account that has been granted to the grantee.
      */
-    function exec(
-        string memory msgs
-    ) external returns (bool success);
+    function exec(string[] memory msgs) external returns (bool success);
 
     /**
      * @dev grants returns list of `Authorization`, granted to the grantee by the granter.
@@ -61,7 +59,13 @@ interface IAuthz {
         address grantee,
         string memory msgTypeUrl,
         PageRequest calldata pagination
-    ) external view returns (GrantData[] calldata grants, PageResponse calldata pageResponse);
+    )
+        external
+        view
+        returns (
+            GrantData[] calldata grants,
+            PageResponse calldata pageResponse
+        );
 
     /**
      * @dev granterGrants returns list of `GrantAuthorization`, granted by granter.
@@ -69,7 +73,13 @@ interface IAuthz {
     function granterGrants(
         address granter,
         PageRequest calldata pagination
-    ) external view returns (GrantAuthorization[] calldata grants, PageResponse calldata pageResponse);
+    )
+        external
+        view
+        returns (
+            GrantAuthorization[] calldata grants,
+            PageResponse calldata pageResponse
+        );
 
     /**
      * @dev granteeGrants returns a list of `GrantAuthorization` by grantee.
@@ -77,7 +87,13 @@ interface IAuthz {
     function granteeGrants(
         address grantee,
         PageRequest calldata pagination
-    ) external view returns (GrantAuthorization[] calldata grants, PageResponse calldata pageResponse);
+    )
+        external
+        view
+        returns (
+            GrantAuthorization[] calldata grants,
+            PageResponse calldata pageResponse
+        );
 
     /**
      * @dev Grant defines an Event emitted when create a new grant
@@ -101,7 +117,5 @@ interface IAuthz {
      * @dev Exec defines an Event emitted when execute the provided messages using
      * authorizations granted to the grantee
      */
-    event Exec(
-        address indexed grantee
-    );
+    event Exec(address indexed grantee);
 }

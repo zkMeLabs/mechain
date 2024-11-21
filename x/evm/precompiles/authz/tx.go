@@ -231,12 +231,6 @@ func (c *Contract) Exec(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, rea
 		return nil, err
 	}
 
-	var messages []json.RawMessage
-	err = json.Unmarshal([]byte(args.Msgs), &messages)
-	if err != nil {
-		return nil, err
-	}
-
 	interfaceRegistry := codectypes.NewInterfaceRegistry()
 
 	authtypes.RegisterInterfaces(interfaceRegistry)
@@ -266,10 +260,15 @@ func (c *Contract) Exec(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, rea
 
 	ethosCodec := codec.NewProtoCodec(interfaceRegistry)
 
-	msgs := make([]sdk.Msg, len(messages))
-	for i, message := range messages {
+	msgs := make([]sdk.Msg, len(args.Msgs))
+	for i, message := range args.Msgs {
 		var msg sdk.Msg
-		err := ethosCodec.UnmarshalInterfaceJSON(message, &msg)
+		var rawMessage json.RawMessage
+		err = json.Unmarshal([]byte(message), &rawMessage)
+		if err != nil {
+			return nil, err
+		}
+		err := ethosCodec.UnmarshalInterfaceJSON(rawMessage, &msg)
 		if err != nil {
 			return nil, err
 		}

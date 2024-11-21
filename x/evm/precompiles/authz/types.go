@@ -182,12 +182,12 @@ func (args *RevokeArgs) Validate() error {
 }
 
 type ExecArgs struct {
-	Msgs string `abi:"msgs"`
+	Msgs []string `abi:"msgs"`
 }
 
 // Validate exec args
 func (args *ExecArgs) Validate() error {
-	if args.Msgs == "" {
+	if len(args.Msgs) == 0 {
 		return errors.New("msgs is empty string")
 	}
 	return nil
