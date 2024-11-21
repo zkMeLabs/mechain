@@ -13,25 +13,29 @@ import (
 )
 
 const (
-	BalanceGas           = 30_000
-	AllBalancesGas       = 50_000
-	TotalSupplyGas       = 50_000
-	SpendableBalancesGas = 50_000
-	SupplyOfGas          = 30_000
-	ParamsGas            = 50_000
-	DenomMetadataGas     = 30_000
-	DenomsMetadataGas    = 50_000
-	DenomOwnersGas       = 50_000
+	BalanceGas                 = 30_000
+	AllBalancesGas             = 50_000
+	TotalSupplyGas             = 50_000
+	SpendableBalancesGas       = 50_000
+	SpendableBalanceByDenomGas = 50_000
+	SupplyOfGas                = 30_000
+	ParamsGas                  = 50_000
+	DenomMetadataGas           = 30_000
+	DenomsMetadataGas          = 50_000
+	DenomOwnersGas             = 50_000
+	SendEnabledGas             = 50_000
 
-	BalanceMethodName           = "balance"
-	AllBalancesMethodName       = "allBalances"
-	TotalSupplyMethodName       = "totalSupply"
-	SpendableBalancesMethodName = "spendableBalances"
-	SupplyOfMethodName          = "supplyOf"
-	ParamsMethodName            = "params"
-	DenomMetadataMethodName     = "denomMetadata"
-	DenomsMetadataMethodName    = "denomsMetadata"
-	DenomOwnersMethodName       = "denomOwners"
+	BalanceMethodName                 = "balance"
+	AllBalancesMethodName             = "allBalances"
+	TotalSupplyMethodName             = "totalSupply"
+	SpendableBalancesMethodName       = "spendableBalances"
+	SpendableBalanceByDenomMethodName = "spendableBalanceByDenom"
+	SupplyOfMethodName                = "supplyOf"
+	ParamsMethodName                  = "params"
+	DenomMetadataMethodName           = "denomMetadata"
+	DenomsMetadataMethodName          = "denomsMetadata"
+	DenomOwnersMethodName             = "denomOwners"
+	SendEnabledMethodName             = "sendEnabled"
 )
 
 func (c *Contract) Balance(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract, _ bool) ([]byte, error) {
@@ -42,7 +46,7 @@ func (c *Contract) Balance(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract, _ 
 		return nil, err
 	}
 	msg := &banktypes.QueryBalanceRequest{
-		Address: sdk.AccAddress(args.AccountAddress.Bytes()).String(),
+		Address: args.AccountAddress.String(),
 		Denom:   args.Denom,
 	}
 
@@ -69,7 +73,7 @@ func (c *Contract) AllBalances(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract
 	}
 
 	msg := &banktypes.QueryAllBalancesRequest{
-		Address: sdk.AccAddress(args.AccountAddress.Bytes()).String(),
+		Address: args.AccountAddress.String(),
 		Pagination: &query.PageRequest{
 			Key:        args.PageRequest.Key,
 			Offset:     args.PageRequest.Offset,
@@ -103,7 +107,24 @@ func (c *Contract) AllBalances(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract
 func (c *Contract) TotalSupply(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract, _ bool) ([]byte, error) {
 	method := MustMethod(TotalSupplyMethodName)
 
-	msg := &banktypes.QueryTotalSupplyRequest{}
+	var args TotalSupplyArgs
+	if err := types.ParseMethodArgs(method, &args, contract.Input[4:]); err != nil {
+		return nil, err
+	}
+
+	if bytes.Equal(args.PageRequest.Key, []byte{0}) {
+		args.PageRequest.Key = nil
+	}
+
+	msg := &banktypes.QueryTotalSupplyRequest{
+		Pagination: &query.PageRequest{
+			Key:        args.PageRequest.Key,
+			Offset:     args.PageRequest.Offset,
+			Limit:      args.PageRequest.Limit,
+			CountTotal: args.PageRequest.CountTotal,
+			Reverse:    args.PageRequest.Reverse,
+		},
+	}
 
 	res, err := c.bankKeeper.TotalSupply(ctx, msg)
 	if err != nil {
@@ -117,8 +138,38 @@ func (c *Contract) TotalSupply(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract
 			Amount: balance.Amount.BigInt(),
 		})
 	}
+	var pageResponse PageResponse
+	pageResponse.NextKey = res.Pagination.NextKey
+	pageResponse.Total = res.Pagination.Total
 
-	return method.Outputs.Pack(balances)
+	return method.Outputs.Pack(balances, pageResponse)
+}
+
+// SpendableBalanceByDenom queries an account's spendable balance for a specific denom.
+func (c *Contract) SpendableBalanceByDenom(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract, _ bool) ([]byte, error) {
+	method := MustMethod(SpendableBalanceByDenomMethodName)
+
+	var args SpendableBalanceByDenomArgs
+	if err := types.ParseMethodArgs(method, &args, contract.Input[4:]); err != nil {
+		return nil, err
+	}
+
+	msg := &banktypes.QuerySpendableBalanceByDenomRequest{
+		Address: args.AccountAddress.String(),
+		Denom:   args.Denom,
+	}
+
+	res, err := c.bankKeeper.SpendableBalanceByDenom(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
+
+	balance := Coin{
+		Denom:  res.Balance.Denom,
+		Amount: res.Balance.Amount.BigInt(),
+	}
+
+	return method.Outputs.Pack(balance)
 }
 
 // SpendableBalances queries the spenable balance of all coins for a single account.
@@ -134,7 +185,7 @@ func (c *Contract) SpendableBalances(ctx sdk.Context, _ *vm.EVM, contract *vm.Co
 	}
 
 	msg := &banktypes.QuerySpendableBalancesRequest{
-		Address: sdk.AccAddress(args.AccountAddress.Bytes()).String(),
+		Address: args.AccountAddress.String(),
 		Pagination: &query.PageRequest{
 			Key:        args.PageRequest.Key,
 			Offset:     args.PageRequest.Offset,
@@ -361,4 +412,48 @@ func (c *Contract) DenomOwners(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract
 	pageResponse.Total = res.Pagination.Total
 
 	return method.Outputs.Pack(denomOwners, pageResponse)
+}
+
+// SendEnabled queries for SendEnabled entries.
+func (c *Contract) SendEnabled(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract, _ bool) ([]byte, error) {
+	method := MustMethod(SendEnabledMethodName)
+
+	var args SendEnabledArgs
+	if err := types.ParseMethodArgs(method, &args, contract.Input[4:]); err != nil {
+		return nil, err
+	}
+
+	if bytes.Equal(args.PageRequest.Key, []byte{0}) {
+		args.PageRequest.Key = nil
+	}
+
+	msg := &banktypes.QuerySendEnabledRequest{
+		Denoms: args.Denoms,
+		Pagination: &query.PageRequest{
+			Key:        args.PageRequest.Key,
+			Offset:     args.PageRequest.Offset,
+			Limit:      args.PageRequest.Limit,
+			CountTotal: args.PageRequest.CountTotal,
+			Reverse:    args.PageRequest.Reverse,
+		},
+	}
+
+	res, err := c.bankKeeper.SendEnabled(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
+
+	var sendEnableds []SendEnabled
+	for _, sendEnabled := range res.SendEnabled {
+		sendEnableds = append(sendEnableds, SendEnabled{
+			Denom:   sendEnabled.Denom,
+			Enabled: sendEnabled.Enabled,
+		})
+	}
+
+	var pageResponse PageResponse
+	pageResponse.NextKey = res.Pagination.NextKey
+	pageResponse.Total = res.Pagination.Total
+
+	return method.Outputs.Pack(sendEnableds, pageResponse)
 }

@@ -47,8 +47,8 @@ func (c *Contract) Send(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, rea
 	}
 
 	msg := &banktypes.MsgSend{
-		FromAddress: sdk.AccAddress(contract.Caller().Bytes()).String(),
-		ToAddress:   sdk.AccAddress(args.ToAddress.Bytes()).String(),
+		FromAddress: contract.Caller().String(),
+		ToAddress:   args.ToAddress.String(),
 		Amount:      amount,
 	}
 
@@ -104,7 +104,7 @@ func (c *Contract) MultiSend(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract
 		}
 
 		outputs = append(outputs, banktypes.Output{
-			Address: sdk.AccAddress(output.ToAddress.Bytes()).String(),
+			Address: output.ToAddress.String(),
 			Coins:   coins,
 		})
 
@@ -113,7 +113,7 @@ func (c *Contract) MultiSend(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract
 
 	msg := &banktypes.MsgMultiSend{
 		Inputs: []banktypes.Input{{
-			Address: sdk.AccAddress(contract.Caller().Bytes()).String(),
+			Address: contract.Caller().String(),
 			Coins:   totalCoins,
 		}},
 		Outputs: outputs,
