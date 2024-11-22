@@ -155,6 +155,7 @@ import (
 	precompilesgov "github.com/evmos/evmos/v12/x/evm/precompiles/gov"
 	precompilespayment "github.com/evmos/evmos/v12/x/evm/precompiles/payment"
 	precompilespermission "github.com/evmos/evmos/v12/x/evm/precompiles/permission"
+	precompilesslashing "github.com/evmos/evmos/v12/x/evm/precompiles/slashing"
 	precompilesstorage "github.com/evmos/evmos/v12/x/evm/precompiles/storage"
 	precompilessp "github.com/evmos/evmos/v12/x/evm/precompiles/storageprovider"
 	precompilesvirtualgroup "github.com/evmos/evmos/v12/x/evm/precompiles/virtualgroup"
@@ -1446,6 +1447,11 @@ func (app *Evmos) EvmPrecompiled() {
 	// gov precompile
 	precompiled[precompilesgov.GetAddress()] = func(ctx sdk.Context) vm.PrecompiledContract {
 		return precompilesgov.NewPrecompiledContract(ctx, app.GovKeeper, app.AccountKeeper)
+	}
+
+	// slashing precompile
+	precompiled[precompilesslashing.GetAddress()] = func(ctx sdk.Context) vm.PrecompiledContract {
+		return precompilesslashing.NewPrecompiledContract(ctx, app.SlashingKeeper)
 	}
 
 	// payment precompile
