@@ -67,6 +67,8 @@ struct Proposal {
     string metadata;
     string title;
     string summary;
+    address proposer;
+    string failedReason;
 }
 
 /**
