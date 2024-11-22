@@ -40,9 +40,9 @@ func init() {
 	ObjectERC721TokenAddress = common.HexToAddress("0x0000000000000000000000000000000000003000")
 	BucketERC721TokenAddress = common.HexToAddress("0x0000000000000000000000000000000000003001")
 	GroupERC721TokenAddress = common.HexToAddress("0x0000000000000000000000000000000000003002")
-	ObjectControlHubAddress = common.HexToAddress("0x00000Be6819f41400225702D32d3dd23663Dd690")
-	GroupControlHubAddress = common.HexToAddress("0x00000Be6819f41400225702D32d3dd23663Dd690")
-	BucketControlHubAddress = common.HexToAddress("0x00000Be6819f41400225702D32d3dd23663Dd690")
+	ObjectControlHubAddress = common.HexToAddress("0x000000000000000000000000000000000000dead")
+	GroupControlHubAddress = common.HexToAddress("0x000000000000000000000000000000000000dead")
+	BucketControlHubAddress = common.HexToAddress("0x000000000000000000000000000000000000dead")
 
 	err := json.Unmarshal(ERC721NonTransferableJSON, &ERC721NonTransferableContract)
 	if err != nil {

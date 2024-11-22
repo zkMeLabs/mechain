@@ -14,9 +14,7 @@
       "max_bytes": "1048576"
     },
     "validator": {
-      "pub_key_types": [
-        "ed25519"
-      ]
+      "pub_key_types": ["ed25519"]
     },
     "version": {
       "app": "0"
@@ -197,7 +195,7 @@
         {
           "@type": "/ethermint.types.v1.EthAccount",
           "base_account": {
-            "address": "0x00000Be6819f41400225702D32d3dd23663Dd690",
+            "address": "0x000000000000000000000000000000000000dead",
             "pub_key": null,
             "account_number": "16",
             "sequence": "0"
@@ -396,7 +394,7 @@
       },
       "balances": [
         {
-          "address": "0x00000Be6819f41400225702D32d3dd23663Dd690",
+          "address": "0x000000000000000000000000000000000000dead",
           "coins": [
             {
               "denom": "azkme",
@@ -724,9 +722,7 @@
             {
               "denom": "azkme",
               "exponent": 0,
-              "aliases": [
-                "wei"
-              ]
+              "aliases": ["wei"]
             }
           ],
           "base": "azkme",
@@ -832,9 +828,7 @@
         "evm_denom": "azkme",
         "enable_create": true,
         "enable_call": true,
-        "extra_eips": [
-          "3855"
-        ],
+        "extra_eips": ["3855"],
         "chain_config": {
           "homestead_block": "0",
           "dao_fork_block": "0",
@@ -857,11 +851,7 @@
           "cancun_block": "0"
         },
         "allow_unprotected_txs": false,
-        "evm_channels": [
-          "channel-10",
-          "channel-31",
-          "channel-83"
-        ]
+        "evm_channels": ["channel-10", "channel-31", "channel-83"]
       }
     },
     "feegrant": {
@@ -1484,9 +1474,7 @@
             },
             "tip": null
           },
-          "signatures": [
-            "Z2VuZXNpcyBjcmVhdGUgc3AgW3NwMF0="
-          ]
+          "signatures": ["Z2VuZXNpcyBjcmVhdGUgc3AgW3NwMF0="]
         },
         {
           "body": {
@@ -1534,9 +1522,7 @@
             },
             "tip": null
           },
-          "signatures": [
-            "Z2VuZXNpcyBjcmVhdGUgc3AgW3NwMV0="
-          ]
+          "signatures": ["Z2VuZXNpcyBjcmVhdGUgc3AgW3NwMV0="]
         },
         {
           "body": {
@@ -1584,9 +1570,7 @@
             },
             "tip": null
           },
-          "signatures": [
-            "Z2VuZXNpcyBjcmVhdGUgc3AgW3NwMl0="
-          ]
+          "signatures": ["Z2VuZXNpcyBjcmVhdGUgc3AgW3NwMl0="]
         }
       ]
     },
@@ -1642,9 +1626,7 @@
             },
             "tip": null
           },
-          "signatures": [
-            "Z2VuZXNpcyBjcmVhdGUgdmFsaWRhdG9yIFt2YWxpZGF0b3IwXQ=="
-          ]
+          "signatures": ["Z2VuZXNpcyBjcmVhdGUgdmFsaWRhdG9yIFt2YWxpZGF0b3IwXQ=="]
         }
       ]
     },
@@ -1680,11 +1662,7 @@
         "clients_consensus": [],
         "clients_metadata": [],
         "params": {
-          "allowed_clients": [
-            "06-solomachine",
-            "07-tendermint",
-            "09-localhost"
-          ]
+          "allowed_clients": ["06-solomachine", "07-tendermint", "09-localhost"]
         },
         "create_localhost": false,
         "next_client_sequence": "0"
@@ -1723,9 +1701,7 @@
         "port": "icahost",
         "params": {
           "host_enabled": true,
-          "allow_messages": [
-            "*"
-          ]
+          "allow_messages": ["*"]
         }
       }
     },

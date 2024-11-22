@@ -3,9 +3,7 @@
     "prefix": "mc",
     "chain_name": "mechain",
     "chain_id": "mechain_5151-1",
-    "denoms": [
-      "azkme"
-    ],
+    "denoms": ["azkme"],
     "port": {
       "api.address": 1317,
       "rosetta.address": 8080,
@@ -45,7 +43,7 @@
     }
   },
   "preMineAccounts": [
-    "0x00000Be6819f41400225702D32d3dd23663Dd690",
+    "0x000000000000000000000000000000000000dead",
     "0x1111102Dd32160B064F2A512CDEf74bFdB6a9F96"
   ],
   "privateKeys": [
