@@ -64,7 +64,7 @@ func CmdDisableRefund() *cobra.Command {
 
 			_, err = sdkclient.WaitForEvmTx(context.Background(), clientCtx.EvmClient, gnfdCli, txRsp.Hash())
 			if err != nil {
-				return fmt.Errorf("failed to disable refund", err.Error())
+				return fmt.Errorf("failed to disable refund.%v", err.Error())
 			}
 			return clientCtx.PrintObjectLegacy(txRsp.Hash().String())
 		},

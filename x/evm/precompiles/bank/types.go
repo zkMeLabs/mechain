@@ -127,6 +127,25 @@ func (args *AllBalancesArgs) Validate() error {
 
 type SpendableBalancesArgs = AllBalancesArgs
 
+type SpendableBalanceByDenomArgs struct {
+	AccountAddress common.Address `abi:"accountAddress"`
+	Denom          string         `abi:"denom"`
+}
+
+// Validate SpendableBalanceByDenomArgs args
+func (args *SpendableBalanceByDenomArgs) Validate() error {
+	return nil
+}
+
+type TotalSupplyArgs struct {
+	PageRequest PageRequestJson `abi:"pageRequest"`
+}
+
+// Validate TotalSupplyArgs args
+func (args *TotalSupplyArgs) Validate() error {
+	return nil
+}
+
 type SupplyOfArgs struct {
 	Denom string `abi:"denom"`
 }
@@ -159,5 +178,15 @@ func (args *DenomOwnersArgs) Validate() error {
 	if args.Denom == "" {
 		return fmt.Errorf("denom is empty")
 	}
+	return nil
+}
+
+type SendEnabledArgs struct {
+	Denoms      []string        `abi:"denoms"`
+	PageRequest PageRequestJson `abi:"pageRequest"`
+}
+
+// Validate SendEnabledArgs args
+func (args *SendEnabledArgs) Validate() error {
 	return nil
 }

@@ -51,6 +51,8 @@ func (c *Contract) RequiredGas(input []byte) uint64 {
 		return TotalSupplyGas
 	case SpendableBalancesMethodName:
 		return SpendableBalancesGas
+	case SpendableBalanceByDenomMethodName:
+		return SpendableBalanceByDenomGas
 	case SupplyOfMethodName:
 		return SupplyOfGas
 	case ParamsMethodName:
@@ -61,6 +63,8 @@ func (c *Contract) RequiredGas(input []byte) uint64 {
 		return DenomsMetadataGas
 	case DenomOwnersMethodName:
 		return DenomOwnersGas
+	case SendEnabledMethodName:
+		return SendEnabledGas
 	default:
 		return 0
 	}
@@ -90,6 +94,8 @@ func (c *Contract) Run(evm *vm.EVM, contract *vm.Contract, readonly bool) (ret [
 			ret, err = c.TotalSupply(ctx, evm, contract, readonly)
 		case SpendableBalancesMethodName:
 			ret, err = c.SpendableBalances(ctx, evm, contract, readonly)
+		case SpendableBalanceByDenomMethodName:
+			ret, err = c.SpendableBalanceByDenom(ctx, evm, contract, readonly)
 		case SupplyOfMethodName:
 			ret, err = c.SupplyOf(ctx, evm, contract, readonly)
 		case ParamsMethodName:
@@ -100,6 +106,8 @@ func (c *Contract) Run(evm *vm.EVM, contract *vm.Contract, readonly bool) (ret [
 			ret, err = c.DenomsMetadata(ctx, evm, contract, readonly)
 		case DenomOwnersMethodName:
 			ret, err = c.DenomOwners(ctx, evm, contract, readonly)
+		case SendEnabledMethodName:
+			ret, err = c.SendEnabled(ctx, evm, contract, readonly)
 		default:
 			err = fmt.Errorf("method %s is not handle", method.Name)
 		}

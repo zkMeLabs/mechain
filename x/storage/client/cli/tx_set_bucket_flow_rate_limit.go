@@ -82,7 +82,7 @@ func CmdSetBucketFlowRateLimit() *cobra.Command {
 
 			_, err = sdkclient.WaitForEvmTx(context.Background(), clientCtx.EvmClient, gnfdCli, txRsp.Hash())
 			if err != nil {
-				return fmt.Errorf("failed to set bucket flow rate limit", err.Error())
+				return fmt.Errorf("failed to set bucket flow rate limit.%v", err.Error())
 			}
 			return clientCtx.PrintObjectLegacy(txRsp.Hash().String())
 		},

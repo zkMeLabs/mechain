@@ -196,7 +196,7 @@ func CmdCreateBucket() *cobra.Command {
 
 			_, err = sdkclient.WaitForEvmTx(context.Background(), clientCtx.EvmClient, gnfdCli, txRsp.Hash())
 			if err != nil {
-				return fmt.Errorf("failed to create bucket", err.Error())
+				return fmt.Errorf("failed to create bucket.%v", err.Error())
 			}
 			return clientCtx.PrintObjectLegacy(txRsp.Hash().String())
 		},
@@ -258,7 +258,7 @@ func CmdDeleteBucket() *cobra.Command {
 
 			_, err = sdkclient.WaitForEvmTx(context.Background(), clientCtx.EvmClient, gnfdCli, txRsp.Hash())
 			if err != nil {
-				return fmt.Errorf("failed to delete bucket", err.Error())
+				return fmt.Errorf("failed to delete bucket.%v", err.Error())
 			}
 			return clientCtx.PrintObjectLegacy(txRsp.Hash().String())
 		},
@@ -331,7 +331,7 @@ func CmdUpdateBucketInfo() *cobra.Command {
 
 			_, err = sdkclient.WaitForEvmTx(context.Background(), clientCtx.EvmClient, gnfdCli, txRsp.Hash())
 			if err != nil {
-				return fmt.Errorf("update bucket info", err.Error())
+				return fmt.Errorf("update bucket info.%v", err.Error())
 			}
 			return clientCtx.PrintObjectLegacy(txRsp.Hash().String())
 		},
@@ -391,7 +391,7 @@ func CmdCancelCreateObject() *cobra.Command {
 
 			_, err = sdkclient.WaitForEvmTx(context.Background(), clientCtx.EvmClient, gnfdCli, txRsp.Hash())
 			if err != nil {
-				return fmt.Errorf("failed to cancel create object", err.Error())
+				return fmt.Errorf("failed to cancel create object.%v", err.Error())
 			}
 			return clientCtx.PrintObjectLegacy(txRsp.Hash().String())
 		},
@@ -530,7 +530,7 @@ func CmdCreateObject() *cobra.Command {
 
 			_, err = sdkclient.WaitForEvmTx(context.Background(), clientCtx.EvmClient, gnfdCli, txRsp.Hash())
 			if err != nil {
-				return fmt.Errorf("failed to create object", err.Error())
+				return fmt.Errorf("failed to create object.%v", err.Error())
 			}
 			return clientCtx.PrintObjectLegacy(txRsp.Hash().String())
 		},
@@ -607,7 +607,7 @@ func CmdCopyObject() *cobra.Command {
 
 			_, err = sdkclient.WaitForEvmTx(context.Background(), clientCtx.EvmClient, gnfdCli, txRsp.Hash())
 			if err != nil {
-				return fmt.Errorf("failed to copy object", err.Error())
+				return fmt.Errorf("failed to copy object.%v", err.Error())
 			}
 			return clientCtx.PrintObjectLegacy(txRsp.Hash().String())
 		},
@@ -667,7 +667,7 @@ func CmdDeleteObject() *cobra.Command {
 
 			_, err = sdkclient.WaitForEvmTx(context.Background(), clientCtx.EvmClient, gnfdCli, txRsp.Hash())
 			if err != nil {
-				return fmt.Errorf("failed to delete object", err.Error())
+				return fmt.Errorf("failed to delete object.%v", err.Error())
 			}
 			return clientCtx.PrintObjectLegacy(txRsp.Hash().String())
 		},
@@ -736,7 +736,7 @@ func CmdUpdateObjectInfo() *cobra.Command {
 
 			_, err = sdkclient.WaitForEvmTx(context.Background(), clientCtx.EvmClient, gnfdCli, txRsp.Hash())
 			if err != nil {
-				return fmt.Errorf("failed to update object info", err.Error())
+				return fmt.Errorf("failed to update object info.%v", err.Error())
 			}
 			return clientCtx.PrintObjectLegacy(txRsp.Hash().String())
 		},
@@ -814,7 +814,7 @@ func CmdDiscontinueObject() *cobra.Command {
 
 			_, err = sdkclient.WaitForEvmTx(context.Background(), clientCtx.EvmClient, gnfdCli, txRsp.Hash())
 			if err != nil {
-				return fmt.Errorf("failed to discontinue object", err.Error())
+				return fmt.Errorf("failed to discontinue object.%v", err.Error())
 			}
 			return clientCtx.PrintObjectLegacy(txRsp.Hash().String())
 		},
@@ -893,7 +893,7 @@ func CmdCreateGroup() *cobra.Command {
 
 			_, err = sdkclient.WaitForEvmTx(context.Background(), clientCtx.EvmClient, gnfdCli, txRsp.Hash())
 			if err != nil {
-				return fmt.Errorf("failed to create group", err.Error())
+				return fmt.Errorf("failed to create group.%v", err.Error())
 			}
 			return clientCtx.PrintObjectLegacy(txRsp.Hash().String())
 		},
@@ -950,7 +950,7 @@ func CmdDeleteGroup() *cobra.Command {
 
 			_, err = sdkclient.WaitForEvmTx(context.Background(), clientCtx.EvmClient, gnfdCli, txRsp.Hash())
 			if err != nil {
-				return fmt.Errorf("failed to delete group", err.Error())
+				return fmt.Errorf("failed to delete group.%v", err.Error())
 			}
 			return clientCtx.PrintObjectLegacy(txRsp.Hash().String())
 		},
@@ -1015,7 +1015,7 @@ func CmdLeaveGroup() *cobra.Command {
 
 			_, err = sdkclient.WaitForEvmTx(context.Background(), clientCtx.EvmClient, gnfdCli, txRsp.Hash())
 			if err != nil {
-				return fmt.Errorf("failed to leave group", err.Error())
+				return fmt.Errorf("failed to leave group.%v", err.Error())
 			}
 			return clientCtx.PrintObjectLegacy(txRsp.Hash().String())
 		},
@@ -1127,7 +1127,7 @@ func CmdUpdateGroupMember() *cobra.Command {
 
 			_, err = sdkclient.WaitForEvmTx(context.Background(), clientCtx.EvmClient, gnfdCli, txRsp.Hash())
 			if err != nil {
-				return fmt.Errorf("failed to update group member", err.Error())
+				return fmt.Errorf("failed to update group member.%v", err.Error())
 			}
 			return clientCtx.PrintObjectLegacy(txRsp.Hash().String())
 		},
@@ -1223,7 +1223,7 @@ func CmdRenewGroupMember() *cobra.Command {
 
 			_, err = sdkclient.WaitForEvmTx(context.Background(), clientCtx.EvmClient, gnfdCli, txRsp.Hash())
 			if err != nil {
-				return fmt.Errorf("failed to renew group member", err.Error())
+				return fmt.Errorf("failed to renew group member.%v", err.Error())
 			}
 			return clientCtx.PrintObjectLegacy(txRsp.Hash().String())
 		},
@@ -1282,7 +1282,7 @@ func CmdUpdateGroupExtra() *cobra.Command {
 
 			_, err = sdkclient.WaitForEvmTx(context.Background(), clientCtx.EvmClient, gnfdCli, txRsp.Hash())
 			if err != nil {
-				return fmt.Errorf("failed to update group extra", err.Error())
+				return fmt.Errorf("failed to update group extra.%v", err.Error())
 			}
 			return clientCtx.PrintObjectLegacy(txRsp.Hash().String())
 		},
@@ -1349,7 +1349,7 @@ func CmdPutPolicy() *cobra.Command {
 
 			_, err = sdkclient.WaitForEvmTx(context.Background(), clientCtx.EvmClient, gnfdCli, txRsp.Hash())
 			if err != nil {
-				return fmt.Errorf("failed to put policy", err.Error())
+				return fmt.Errorf("failed to put policy.%v", err.Error())
 			}
 			return clientCtx.PrintObjectLegacy(txRsp.Hash().String())
 		},
@@ -1424,7 +1424,7 @@ $ %s tx delete-policy 3
 
 			_, err = sdkclient.WaitForEvmTx(context.Background(), clientCtx.EvmClient, gnfdCli, txRsp.Hash())
 			if err != nil {
-				return fmt.Errorf("failed to delete policy", err.Error())
+				return fmt.Errorf("failed to delete policy.%v", err.Error())
 			}
 			return clientCtx.PrintObjectLegacy(txRsp.Hash().String())
 		},
@@ -1511,7 +1511,7 @@ func CmdMirrorBucket() *cobra.Command {
 
 			_, err = sdkclient.WaitForEvmTx(context.Background(), clientCtx.EvmClient, gnfdCli, txRsp.Hash())
 			if err != nil {
-				return fmt.Errorf("failed to mirror bucket", err.Error())
+				return fmt.Errorf("failed to mirror bucket.%v", err.Error())
 			}
 			return clientCtx.PrintObjectLegacy(txRsp.Hash().String())
 		},
@@ -1573,7 +1573,7 @@ func CmdDiscontinueBucket() *cobra.Command {
 
 			_, err = sdkclient.WaitForEvmTx(context.Background(), clientCtx.EvmClient, gnfdCli, txRsp.Hash())
 			if err != nil {
-				return fmt.Errorf("failed to discontinue bucket", err.Error())
+				return fmt.Errorf("failed to discontinue bucket.%v", err.Error())
 			}
 			return clientCtx.PrintObjectLegacy(txRsp.Hash().String())
 		},
@@ -1642,7 +1642,7 @@ func CmdMigrateBucket() *cobra.Command {
 
 			_, err = sdkclient.WaitForEvmTx(context.Background(), clientCtx.EvmClient, gnfdCli, txRsp.Hash())
 			if err != nil {
-				return fmt.Errorf("failed to migrate bucket", err.Error())
+				return fmt.Errorf("failed to migrate bucket.%v", err.Error())
 			}
 			return clientCtx.PrintObjectLegacy(txRsp.Hash().String())
 		},
@@ -1733,7 +1733,7 @@ func CmdMirrorObject() *cobra.Command {
 
 			_, err = sdkclient.WaitForEvmTx(context.Background(), clientCtx.EvmClient, gnfdCli, txRsp.Hash())
 			if err != nil {
-				return fmt.Errorf("failed to mirror object", err.Error())
+				return fmt.Errorf("failed to mirror object.%v", err.Error())
 			}
 			return clientCtx.PrintObjectLegacy(txRsp.Hash().String())
 		},
@@ -1824,7 +1824,7 @@ func CmdMirrorGroup() *cobra.Command {
 
 			_, err = sdkclient.WaitForEvmTx(context.Background(), clientCtx.EvmClient, gnfdCli, txRsp.Hash())
 			if err != nil {
-				return fmt.Errorf("failed to mirror group", err.Error())
+				return fmt.Errorf("failed to mirror group.%v", err.Error())
 			}
 			return clientCtx.PrintObjectLegacy(txRsp.Hash().String())
 		},
@@ -1896,7 +1896,7 @@ func CmdSetTag() *cobra.Command {
 
 			_, err = sdkclient.WaitForEvmTx(context.Background(), clientCtx.EvmClient, gnfdCli, txRsp.Hash())
 			if err != nil {
-				return fmt.Errorf("failed to set tags", err.Error())
+				return fmt.Errorf("failed to set tags.%v", err.Error())
 			}
 			return clientCtx.PrintObjectLegacy(txRsp.Hash().String())
 		},

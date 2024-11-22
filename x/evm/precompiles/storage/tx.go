@@ -523,7 +523,7 @@ func (c *Contract) MirrorBucket(ctx sdk.Context, evm *vm.EVM, contract *vm.Contr
 
 	msg := &storagetypes.MsgMirrorBucket{
 		Operator:    contract.Caller().String(),
-		Id:          cmath.NewUintFromBigInt(args.Id),
+		Id:          cmath.NewUintFromBigInt(args.BucketId),
 		BucketName:  args.BucketName,
 		DestChainId: args.DestChainId,
 	}
@@ -1105,7 +1105,7 @@ func (c *Contract) MirrorObject(ctx sdk.Context, evm *vm.EVM, contract *vm.Contr
 
 	msg := &storagetypes.MsgMirrorObject{
 		Operator:    contract.Caller().String(),
-		Id:          cmath.NewUintFromBigInt(args.Id),
+		Id:          cmath.NewUintFromBigInt(args.ObjectId),
 		BucketName:  args.BucketName,
 		ObjectName:  args.ObjectName,
 		DestChainId: args.DestChainId,
@@ -1407,7 +1407,7 @@ func (c *Contract) MirrorGroup(ctx sdk.Context, evm *vm.EVM, contract *vm.Contra
 
 	msg := &storagetypes.MsgMirrorGroup{
 		Operator:    contract.Caller().String(),
-		Id:          cmath.NewUintFromBigInt(args.Id),
+		Id:          cmath.NewUintFromBigInt(args.GroupId),
 		GroupName:   args.GroupName,
 		DestChainId: args.DestChainId,
 	}

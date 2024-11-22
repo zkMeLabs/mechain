@@ -13,7 +13,12 @@ import (
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/ethclient"
 	gnfdSdkTypes "github.com/evmos/evmos/v12/sdk/types"
+	"github.com/evmos/evmos/v12/x/evm/precompiles/authz"
+	"github.com/evmos/evmos/v12/x/evm/precompiles/bank"
+	"github.com/evmos/evmos/v12/x/evm/precompiles/distribution"
+	"github.com/evmos/evmos/v12/x/evm/precompiles/gov"
 	"github.com/evmos/evmos/v12/x/evm/precompiles/payment"
+	"github.com/evmos/evmos/v12/x/evm/precompiles/staking"
 	"github.com/evmos/evmos/v12/x/evm/precompiles/storage"
 )
 
@@ -65,6 +70,81 @@ func CreatePaymentSession(client *ethclient.Client, txOpts bind.TransactOpts, co
 	}
 	session := &payment.IPaymentSession{
 		Contract: paymentContract,
+		CallOpts: bind.CallOpts{
+			Pending: false,
+		},
+		TransactOpts: txOpts,
+	}
+	return session, nil
+}
+
+func CreateDistributionSession(client *ethclient.Client, txOpts bind.TransactOpts, contractAddress string) (*distribution.IDistributionSession, error) {
+	distributionContract, err := distribution.NewIDistribution(common.HexToAddress(contractAddress), client)
+	if err != nil {
+		return nil, err
+	}
+	session := &distribution.IDistributionSession{
+		Contract: distributionContract,
+		CallOpts: bind.CallOpts{
+			Pending: false,
+		},
+		TransactOpts: txOpts,
+	}
+	return session, nil
+}
+
+func CreateAuthzSession(client *ethclient.Client, txOpts bind.TransactOpts, contractAddress string) (*authz.IAuthzSession, error) {
+	authzContract, err := authz.NewIAuthz(common.HexToAddress(contractAddress), client)
+	if err != nil {
+		return nil, err
+	}
+	session := &authz.IAuthzSession{
+		Contract: authzContract,
+		CallOpts: bind.CallOpts{
+			Pending: false,
+		},
+		TransactOpts: txOpts,
+	}
+	return session, nil
+}
+
+func CreateBankSession(client *ethclient.Client, txOpts bind.TransactOpts, contractAddress string) (*bank.IBankSession, error) {
+	bankContract, err := bank.NewIBank(common.HexToAddress(contractAddress), client)
+	if err != nil {
+		return nil, err
+	}
+	session := &bank.IBankSession{
+		Contract: bankContract,
+		CallOpts: bind.CallOpts{
+			Pending: false,
+		},
+		TransactOpts: txOpts,
+	}
+	return session, nil
+}
+
+func CreateGovSession(client *ethclient.Client, txOpts bind.TransactOpts, contractAddress string) (*gov.IGovSession, error) {
+	govContract, err := gov.NewIGov(common.HexToAddress(contractAddress), client)
+	if err != nil {
+		return nil, err
+	}
+	session := &gov.IGovSession{
+		Contract: govContract,
+		CallOpts: bind.CallOpts{
+			Pending: false,
+		},
+		TransactOpts: txOpts,
+	}
+	return session, nil
+}
+
+func CreateStakingSession(client *ethclient.Client, txOpts bind.TransactOpts, contractAddress string) (*staking.IStakingSession, error) {
+	stakingContract, err := staking.NewIStaking(common.HexToAddress(contractAddress), client)
+	if err != nil {
+		return nil, err
+	}
+	session := &staking.IStakingSession{
+		Contract: stakingContract,
 		CallOpts: bind.CallOpts{
 			Pending: false,
 		},

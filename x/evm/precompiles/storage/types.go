@@ -234,7 +234,7 @@ func (args *SetBucketFlowRateLimitArgs) Validate() error {
 }
 
 type MirrorBucketArgs struct {
-	Id          *big.Int `abi:"id"`
+	BucketId    *big.Int `abi:"bucketId"`
 	BucketName  string   `abi:"bucketName"`
 	DestChainId uint32   `abi:"destChainId"`
 }
@@ -421,7 +421,7 @@ func (args *DiscontinueObjectArgs) Validate() error {
 }
 
 type MirrorObjectArgs struct {
-	Id          *big.Int `abi:"id"`
+	ObjectId    *big.Int `abi:"objectId"`
 	BucketName  string   `abi:"bucketName"`
 	ObjectName  string   `abi:"objectName"`
 	DestChainId uint32   `abi:"destChainId"`
@@ -540,7 +540,7 @@ func (args *RenewGroupMemberArgs) Validate() error {
 }
 
 type MirrorGroupArgs struct {
-	Id          *big.Int `abi:"id"`
+	GroupId     *big.Int `abi:"groupId"`
 	GroupName   string   `abi:"groupName"`
 	DestChainId uint32   `abi:"destChainId"`
 }
