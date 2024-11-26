@@ -13,4 +13,4 @@ type (
 const RedundancyIndexPrimary = int32(-1)
 
 // BlsSignatureLength defines the length of bls signature
-const BlsSignatureLength = 96
+const BlsSignatureLength = 64

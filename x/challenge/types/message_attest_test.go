@@ -10,7 +10,7 @@ import (
 )
 
 func TestMsgAttest_ValidateBasic(t *testing.T) {
-	var sig [96]byte
+	var sig [BlsSignatureLength]byte
 	tests := []struct {
 		name string
 		msg  MsgAttest
