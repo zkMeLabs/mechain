@@ -347,6 +347,8 @@ func OutputsProposal(proposal govv1.Proposal) Proposal {
 		Metadata:         "",
 		Title:            "",
 		Summary:          "",
+		Proposer:         common.Address{},
+		FailedReason:     "",
 	}
 
 	if err != nil {
@@ -424,6 +426,8 @@ func OutputsProposal(proposal govv1.Proposal) Proposal {
 		VotingStartTime:  votingStartTime,
 		VotingEndTime:    votingEndTime,
 		Metadata:         proposal.Metadata,
+		Proposer:         common.HexToAddress(proposal.Proposer),
+		FailedReason:     proposal.FailedReason,
 	}
 }
 

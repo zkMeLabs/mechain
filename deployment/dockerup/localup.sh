@@ -68,6 +68,7 @@ function generate_genesis() {
 		"0x14dC79964da2C08b23698B3D3cc7Ca32193d9955"
 		"0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
 		"0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
+		"0x000000000000000000000000000000000000dead"
 	)
 
 	declare -a validator_addrs=()
@@ -110,8 +111,8 @@ function generate_genesis() {
 		done
 
 		#for deletgator_addr in "${deletgator_addrs[@]}"; do
-			# init genesis account in genesis state
-			#${bin} add-genesis-account "$deletgator_addr" "${GENESIS_ACCOUNT_BALANCE}""${STAKING_BOND_DENOM}" --home ${local_env}/validator${i}
+		# init genesis account in genesis state
+		#${bin} add-genesis-account "$deletgator_addr" "${GENESIS_ACCOUNT_BALANCE}""${STAKING_BOND_DENOM}" --home ${local_env}/validator${i}
 		#done
 
 		for relayer_addr in "${relayer_addrs[@]}"; do
