@@ -103,14 +103,8 @@ func (c *Contract) Params(ctx sdk.Context, _ *vm.EVM, contract *vm.Contract, _ b
 }
 
 func OutPutValidatorSigningInfo(validatorSigningInfo slashingtypes.ValidatorSigningInfo) ValidatorSigningInfo {
-	consAddress, err := sdk.ConsAddressFromBech32(validatorSigningInfo.Address)
-	var hexAddress common.Address
-	if err == nil {
-		hexAddress = common.BytesToAddress(consAddress)
-	}
-
 	return ValidatorSigningInfo{
-		ConsAddress:         hexAddress,
+		ConsAddress:         common.HexToAddress(validatorSigningInfo.Address),
 		StartHeight:         validatorSigningInfo.StartHeight,
 		IndexOffset:         validatorSigningInfo.IndexOffset,
 		JailedUntil:         validatorSigningInfo.JailedUntil.Unix(),
