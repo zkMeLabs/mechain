@@ -154,8 +154,8 @@ func (c *Contract) SwapOut(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, 
 
 	msg := &virtualgrouptypes.MsgSwapOut{
 		StorageProvider:            contract.Caller().String(),
-		GlobalVirtualGroupFamilyId: args.GlobalVirtualGroupFamilyId,
-		GlobalVirtualGroupIds:      args.GlobalVirtualGroupIds,
+		GlobalVirtualGroupFamilyId: args.GvgFamilyId,
+		GlobalVirtualGroupIds:      args.GvgIds,
 		SuccessorSpId:              args.SuccessorSpId,
 		SuccessorSpApproval: &mechaincommon.Approval{
 			ExpiredHeight:              args.SuccessorSpApproval.ExpiredHeight,
@@ -179,7 +179,7 @@ func (c *Contract) SwapOut(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, 
 		evm,
 		MustEvent(SwapOutEventName),
 		[]common.Hash{common.BytesToHash(contract.Caller().Bytes())},
-		big.NewInt(int64(args.GlobalVirtualGroupFamilyId)),
+		big.NewInt(int64(args.GvgFamilyId)),
 	); err != nil {
 		return nil, err
 	}
@@ -203,8 +203,8 @@ func (c *Contract) CompleteSwapOut(ctx sdk.Context, evm *vm.EVM, contract *vm.Co
 
 	msg := &virtualgrouptypes.MsgCompleteSwapOut{
 		StorageProvider:            contract.Caller().String(),
-		GlobalVirtualGroupFamilyId: args.GlobalVirtualGroupFamilyId,
-		GlobalVirtualGroupIds:      args.GlobalVirtualGroupIds,
+		GlobalVirtualGroupFamilyId: args.GvgFamilyId,
+		GlobalVirtualGroupIds:      args.GvgIds,
 	}
 
 	if err := msg.ValidateBasic(); err != nil {
@@ -222,7 +222,7 @@ func (c *Contract) CompleteSwapOut(ctx sdk.Context, evm *vm.EVM, contract *vm.Co
 		evm,
 		MustEvent(SwapOutEventName),
 		[]common.Hash{common.BytesToHash(contract.Caller().Bytes())},
-		big.NewInt(int64(args.GlobalVirtualGroupFamilyId)),
+		big.NewInt(int64(args.GvgFamilyId)),
 	); err != nil {
 		return nil, err
 	}
@@ -374,7 +374,7 @@ func (c *Contract) ReserveSwapIn(ctx sdk.Context, evm *vm.EVM, contract *vm.Cont
 	msg := &virtualgrouptypes.MsgReserveSwapIn{
 		StorageProvider:            contract.Caller().String(),
 		TargetSpId:                 args.TargetSpId,
-		GlobalVirtualGroupFamilyId: args.GlobalVirtualGroupFamilyId,
+		GlobalVirtualGroupFamilyId: args.GvgFamilyId,
 		GlobalVirtualGroupId:       args.GlobalVirtualGroupId,
 	}
 
@@ -416,7 +416,7 @@ func (c *Contract) CompleteSwapIn(ctx sdk.Context, evm *vm.EVM, contract *vm.Con
 
 	msg := &virtualgrouptypes.MsgCompleteSwapIn{
 		StorageProvider:            contract.Caller().String(),
-		GlobalVirtualGroupFamilyId: args.GlobalVirtualGroupFamilyId,
+		GlobalVirtualGroupFamilyId: args.GvgFamilyId,
 		GlobalVirtualGroupId:       args.GlobalVirtualGroupId,
 	}
 
@@ -458,7 +458,7 @@ func (c *Contract) CancelSwapIn(ctx sdk.Context, evm *vm.EVM, contract *vm.Contr
 
 	msg := &virtualgrouptypes.MsgCancelSwapIn{
 		StorageProvider:            contract.Caller().String(),
-		GlobalVirtualGroupFamilyId: args.GlobalVirtualGroupFamilyId,
+		GlobalVirtualGroupFamilyId: args.GvgFamilyId,
 		GlobalVirtualGroupId:       args.GlobalVirtualGroupId,
 	}
 

@@ -82,7 +82,7 @@ interface IStorageProvider {
      * @dev storageProvider queries a storage provider with specify id.
      */
     function storageProvider(
-        uint32 proposalId
+        uint32 id
     ) external view returns (StorageProvider calldata storageProvider);
 
     /**

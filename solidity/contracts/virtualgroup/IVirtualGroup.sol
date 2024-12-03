@@ -31,7 +31,7 @@ interface IVirtualGroup {
      * @dev deleteGlobalVirtualGroup defines a method for sp delete a global virtual group.
      */
     function deleteGlobalVirtualGroup(
-        uint32 gvgId
+        uint32 globalVirtualGroupId
     ) external returns (bool success);
 
     /**
@@ -89,7 +89,7 @@ interface IVirtualGroup {
      * @dev deposit defines a method to deposit more tokens for the objects stored on it.
      */
     function deposit(
-        uint32 gvgId,
+        uint32 globalVirtualGroupId,
         Coin memory deposit
     ) external returns (bool success);
 
@@ -99,7 +99,7 @@ interface IVirtualGroup {
     function reserveSwapIn(
         uint32 targetSpId,
         uint32 gvgFamilyId,
-        uint32 gvgId
+        uint32 globalVirtualGroupId
     ) external returns (bool success);
 
     /**
@@ -107,7 +107,7 @@ interface IVirtualGroup {
      */
     function completeSwapIn(
         uint32 gvgFamilyId,
-        uint32 gvgId
+        uint32 globalVirtualGroupId
     ) external returns (bool success);
 
     /**
@@ -115,7 +115,7 @@ interface IVirtualGroup {
      */
     function cancelSwapIn(
         uint32 gvgFamilyId,
-        uint32 gvgId
+        uint32 globalVirtualGroupId
     ) external returns (bool success);
 
     /**

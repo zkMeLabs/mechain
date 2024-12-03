@@ -102,10 +102,10 @@ func (args *GlobalVirtualGroupFamiliesArgs) Validate() error {
 }
 
 type SwapOutArgs struct {
-	GlobalVirtualGroupFamilyId uint32       `abi:"globalVirtualGroupFamilyId"`
-	GlobalVirtualGroupIds      []uint32     `abi:"globalVirtualGroupIds"`
-	SuccessorSpId              uint32       `abi:"successorSpId"`
-	SuccessorSpApproval        ApprovalJSON `abi:"successorSpApproval"`
+	GvgFamilyId         uint32       `abi:"gvgFamilyId"`
+	GvgIds              []uint32     `abi:"gvgIds"`
+	SuccessorSpId       uint32       `abi:"successorSpId"`
+	SuccessorSpApproval ApprovalJSON `abi:"successorSpApproval"`
 }
 
 // Validate SwapOutArgs the args
@@ -115,8 +115,8 @@ func (args *SwapOutArgs) Validate() error {
 
 type CompleteSwapOutArgs struct {
 	// StorageProvider            string   `abi:"storageProvider"`
-	GlobalVirtualGroupFamilyId uint32   `abi:"globalVirtualGroupFamilyId"`
-	GlobalVirtualGroupIds      []uint32 `abi:"globalVirtualGroupIds"`
+	GvgFamilyId uint32   `abi:"gvgFamilyId"`
+	GvgIds      []uint32 `abi:"gvgIds"`
 }
 
 // Validate CompleteSwapOutArgs the args
@@ -156,9 +156,9 @@ func (args *DepositArgs) Validate() error {
 
 type ReserveSwapInArgs struct {
 	// StorageProvider            string `abi:"storageProvider"`
-	TargetSpId                 uint32 `abi:"targetSpId"`
-	GlobalVirtualGroupFamilyId uint32 `abi:"globalVirtualGroupFamilyId"`
-	GlobalVirtualGroupId       uint32 `abi:"globalVirtualGroupId"`
+	TargetSpId           uint32 `abi:"targetSpId"`
+	GvgFamilyId          uint32 `abi:"gvgFamilyId"`
+	GlobalVirtualGroupId uint32 `abi:"globalVirtualGroupId"`
 }
 
 // Validate ReserveSwapInArgs the args
@@ -168,8 +168,8 @@ func (args *ReserveSwapInArgs) Validate() error {
 
 type CompleteSwapInArgs struct {
 	// StorageProvider            string `abi:"storageProvider"`
-	GlobalVirtualGroupFamilyId uint32 `abi:"globalVirtualGroupFamilyId"`
-	GlobalVirtualGroupId       uint32 `abi:"globalVirtualGroupId"`
+	GvgFamilyId          uint32 `abi:"gvgFamilyId"`
+	GlobalVirtualGroupId uint32 `abi:"globalVirtualGroupId"`
 }
 
 // Validate CompleteSwapInArgs the args
@@ -179,8 +179,8 @@ func (args *CompleteSwapInArgs) Validate() error {
 
 type CancelSwapInArgs struct {
 	// StorageProvider            string `abi:"storageProvider"`
-	GlobalVirtualGroupFamilyId uint32 `abi:"globalVirtualGroupFamilyId"`
-	GlobalVirtualGroupId       uint32 `abi:"globalVirtualGroupId"`
+	GvgFamilyId          uint32 `abi:"gvgFamilyId"`
+	GlobalVirtualGroupId uint32 `abi:"globalVirtualGroupId"`
 }
 
 // Validate CancelSwapInArgs the args
@@ -189,7 +189,7 @@ func (args *CancelSwapInArgs) Validate() error {
 }
 
 type GlobalVirtualGroupFamilyArgs struct {
-	FamilyId uint32 `abi:"FamilyId"`
+	FamilyId uint32 `abi:"familyId"`
 }
 
 // Validate GlobalVirtualGroupFamily the args

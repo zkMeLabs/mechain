@@ -56,8 +56,8 @@ func (args *DepositArgs) Validate() error {
 }
 
 type DisableRefundArgs struct {
-	Owner string `abi:"owner"`
-	Addr  string `abi:"addr"`
+	// Owner string `abi:"owner"`
+	Addr string `abi:"addr"`
 }
 
 // Validate DisableRefundArgs the args

@@ -193,9 +193,9 @@ func (args *MigrateBucketArgs) Validate() error {
 }
 
 type CompleteMigrateBucketArgs struct {
-	BucketName                 string       `abi:"bucketName"`
-	GlobalVirtualGroupFamilyId uint32       `abi:"globalVirtualGroupFamilyId"`
-	GvgMappings                []GVGMapping `abi:"gvgMappings"`
+	BucketName  string       `abi:"bucketName"`
+	GvgFamilyId uint32       `abi:"gvgFamilyId"`
+	GvgMappings []GVGMapping `abi:"gvgMappings"`
 }
 
 // Validate CompleteMigrateBucketArgs args
@@ -370,7 +370,7 @@ func (args *DelegateCreateObjectArgs) Validate() error {
 }
 
 type DelegateUpdateObjectContentArgs struct {
-	Operator        string   `abi:"operator"`
+	// Operator        string   `abi:"operator"`
 	Updater         string   `abi:"updater"`
 	BucketName      string   `abi:"bucketName"`
 	ObjectName      string   `abi:"objectName"`

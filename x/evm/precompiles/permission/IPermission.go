@@ -38,7 +38,7 @@ type Params struct {
 
 // IPermissionMetaData contains all meta data concerning the IPermission contract.
 var IPermissionMetaData = &bind.MetaData{
-	ABI: "[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"}],\"name\":\"UpdateParams\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"params\",\"outputs\":[{\"components\":[{\"internalType\":\"uint64\",\"name\":\"maximumStatementsNum\",\"type\":\"uint64\"},{\"internalType\":\"uint64\",\"name\":\"maximumGroupNum\",\"type\":\"uint64\"},{\"internalType\":\"uint64\",\"name\":\"maximumRemoveExpiredPoliciesIteration\",\"type\":\"uint64\"}],\"internalType\":\"structParams\",\"name\":\"params\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"updateParams\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
+	ABI: "[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"}],\"name\":\"UpdateParams\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"params\",\"outputs\":[{\"components\":[{\"internalType\":\"uint64\",\"name\":\"maximumStatementsNum\",\"type\":\"uint64\"},{\"internalType\":\"uint64\",\"name\":\"maximumGroupNum\",\"type\":\"uint64\"},{\"internalType\":\"uint64\",\"name\":\"maximumRemoveExpiredPoliciesIteration\",\"type\":\"uint64\"}],\"internalType\":\"structParams\",\"name\":\"params\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"authority\",\"type\":\"string\"},{\"components\":[{\"internalType\":\"uint64\",\"name\":\"maximumStatementsNum\",\"type\":\"uint64\"},{\"internalType\":\"uint64\",\"name\":\"maximumGroupNum\",\"type\":\"uint64\"},{\"internalType\":\"uint64\",\"name\":\"maximumRemoveExpiredPoliciesIteration\",\"type\":\"uint64\"}],\"internalType\":\"structParams\",\"name\":\"params\",\"type\":\"tuple\"}],\"name\":\"updateParams\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
 }
 
 // IPermissionABI is the input ABI used to generate the binding from.
@@ -218,25 +218,25 @@ func (_IPermission *IPermissionCallerSession) Params() (Params, error) {
 	return _IPermission.Contract.Params(&_IPermission.CallOpts)
 }
 
-// UpdateParams is a paid mutator transaction binding the contract method 0xcef32628.
+// UpdateParams is a paid mutator transaction binding the contract method 0xcc63f332.
 //
-// Solidity: function updateParams() returns(bool success)
-func (_IPermission *IPermissionTransactor) UpdateParams(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _IPermission.contract.Transact(opts, "updateParams")
+// Solidity: function updateParams(string authority, (uint64,uint64,uint64) params) returns(bool success)
+func (_IPermission *IPermissionTransactor) UpdateParams(opts *bind.TransactOpts, authority string, params Params) (*types.Transaction, error) {
+	return _IPermission.contract.Transact(opts, "updateParams", authority, params)
 }
 
-// UpdateParams is a paid mutator transaction binding the contract method 0xcef32628.
+// UpdateParams is a paid mutator transaction binding the contract method 0xcc63f332.
 //
-// Solidity: function updateParams() returns(bool success)
-func (_IPermission *IPermissionSession) UpdateParams() (*types.Transaction, error) {
-	return _IPermission.Contract.UpdateParams(&_IPermission.TransactOpts)
+// Solidity: function updateParams(string authority, (uint64,uint64,uint64) params) returns(bool success)
+func (_IPermission *IPermissionSession) UpdateParams(authority string, params Params) (*types.Transaction, error) {
+	return _IPermission.Contract.UpdateParams(&_IPermission.TransactOpts, authority, params)
 }
 
-// UpdateParams is a paid mutator transaction binding the contract method 0xcef32628.
+// UpdateParams is a paid mutator transaction binding the contract method 0xcc63f332.
 //
-// Solidity: function updateParams() returns(bool success)
-func (_IPermission *IPermissionTransactorSession) UpdateParams() (*types.Transaction, error) {
-	return _IPermission.Contract.UpdateParams(&_IPermission.TransactOpts)
+// Solidity: function updateParams(string authority, (uint64,uint64,uint64) params) returns(bool success)
+func (_IPermission *IPermissionTransactorSession) UpdateParams(authority string, params Params) (*types.Transaction, error) {
+	return _IPermission.Contract.UpdateParams(&_IPermission.TransactOpts, authority, params)
 }
 
 // IPermissionUpdateParamsIterator is returned from FilterUpdateParams and is used to iterate over the raw logs and unpacked data for UpdateParams events raised by the IPermission contract.

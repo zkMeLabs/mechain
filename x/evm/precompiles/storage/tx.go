@@ -360,7 +360,7 @@ func (c *Contract) CompleteMigrateBucket(ctx sdk.Context, evm *vm.EVM, contract 
 	msg := &storagetypes.MsgCompleteMigrateBucket{
 		Operator:                   contract.Caller().String(),
 		BucketName:                 args.BucketName,
-		GlobalVirtualGroupFamilyId: args.GlobalVirtualGroupFamilyId,
+		GlobalVirtualGroupFamilyId: args.GvgFamilyId,
 		GvgMappings:                gvgMappings,
 	}
 

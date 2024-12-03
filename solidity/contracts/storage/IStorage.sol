@@ -386,7 +386,7 @@ interface IStorage {
     function completeMigrateBucket(
         string memory bucketName,
         uint32 gvgFamilyId,
-        GVGMapping[] memory gvgMapping
+        GVGMapping[] memory gvgMappings
     ) external returns (bool success);
 
     /**

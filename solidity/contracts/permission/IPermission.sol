@@ -12,7 +12,10 @@ interface IPermission {
     /**
      * @dev updateParams defines a method for update params.
      */
-    function updateParams() external returns (bool success);
+    function updateParams(
+        string memory authority,
+        Params memory params
+    ) external returns (bool success);
 
     /**
      * @dev params defines a method for queries the parameters of the module.

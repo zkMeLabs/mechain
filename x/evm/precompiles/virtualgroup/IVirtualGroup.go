@@ -67,7 +67,7 @@ type PageResponse struct {
 
 // IVirtualGroupMetaData contains all meta data concerning the IVirtualGroup contract.
 var IVirtualGroupMetaData = &bind.MetaData{
-	ABI: "[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"storageProvider\",\"type\":\"address\"}],\"name\":\"CancelSwapIn\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"storageProvider\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"}],\"name\":\"CompleteSPExit\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"storageProvider\",\"type\":\"address\"}],\"name\":\"CompleteSwapIn\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"storageProvider\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"familyId\",\"type\":\"uint256\"}],\"name\":\"CreateGlobalVirtualGroup\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"storageProvider\",\"type\":\"address\"}],\"name\":\"DeleteGlobalVirtualGroup\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"storageProvider\",\"type\":\"address\"}],\"name\":\"Deposit\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"storageProvider\",\"type\":\"address\"}],\"name\":\"ReserveSwapIn\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"storageProvider\",\"type\":\"address\"}],\"name\":\"SPExit\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"storageProvider\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"familyId\",\"type\":\"uint256\"}],\"name\":\"SwapOut\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"uint32\",\"name\":\"gvgFamilyId\",\"type\":\"uint32\"},{\"internalType\":\"uint32\",\"name\":\"gvgId\",\"type\":\"uint32\"}],\"name\":\"cancelSwapIn\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"storageProvider\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"operator\",\"type\":\"string\"}],\"name\":\"completeSPExit\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint32\",\"name\":\"gvgFamilyId\",\"type\":\"uint32\"},{\"internalType\":\"uint32\",\"name\":\"gvgId\",\"type\":\"uint32\"}],\"name\":\"completeSwapIn\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint32\",\"name\":\"gvgFamilyId\",\"type\":\"uint32\"},{\"internalType\":\"uint32[]\",\"name\":\"gvgIds\",\"type\":\"uint32[]\"}],\"name\":\"completeSwapOut\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint32\",\"name\":\"familyId\",\"type\":\"uint32\"},{\"internalType\":\"uint32[]\",\"name\":\"secondarySpIds\",\"type\":\"uint32[]\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"internalType\":\"structCoin\",\"name\":\"deposit\",\"type\":\"tuple\"}],\"name\":\"createGlobalVirtualGroup\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint32\",\"name\":\"gvgId\",\"type\":\"uint32\"}],\"name\":\"deleteGlobalVirtualGroup\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint32\",\"name\":\"gvgId\",\"type\":\"uint32\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"internalType\":\"structCoin\",\"name\":\"deposit\",\"type\":\"tuple\"}],\"name\":\"deposit\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"bytes\",\"name\":\"key\",\"type\":\"bytes\"},{\"internalType\":\"uint64\",\"name\":\"offset\",\"type\":\"uint64\"},{\"internalType\":\"uint64\",\"name\":\"limit\",\"type\":\"uint64\"},{\"internalType\":\"bool\",\"name\":\"countTotal\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"reverse\",\"type\":\"bool\"}],\"internalType\":\"structPageRequest\",\"name\":\"pagination\",\"type\":\"tuple\"}],\"name\":\"globalVirtualGroupFamilies\",\"outputs\":[{\"components\":[{\"internalType\":\"uint32\",\"name\":\"id\",\"type\":\"uint32\"},{\"internalType\":\"uint32\",\"name\":\"primarySpId\",\"type\":\"uint32\"},{\"internalType\":\"uint32[]\",\"name\":\"globalVirtualGroupIds\",\"type\":\"uint32[]\"},{\"internalType\":\"address\",\"name\":\"virtualPaymentAddress\",\"type\":\"address\"}],\"internalType\":\"structGlobalVirtualGroupFamily[]\",\"name\":\"gvgFamilies\",\"type\":\"tuple[]\"},{\"components\":[{\"internalType\":\"bytes\",\"name\":\"nextKey\",\"type\":\"bytes\"},{\"internalType\":\"uint64\",\"name\":\"total\",\"type\":\"uint64\"}],\"internalType\":\"structPageResponse\",\"name\":\"pageResponse\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint32\",\"name\":\"familyId\",\"type\":\"uint32\"}],\"name\":\"globalVirtualGroupFamily\",\"outputs\":[{\"components\":[{\"internalType\":\"uint32\",\"name\":\"id\",\"type\":\"uint32\"},{\"internalType\":\"uint32\",\"name\":\"primarySpId\",\"type\":\"uint32\"},{\"internalType\":\"uint32[]\",\"name\":\"globalVirtualGroupIds\",\"type\":\"uint32[]\"},{\"internalType\":\"address\",\"name\":\"virtualPaymentAddress\",\"type\":\"address\"}],\"internalType\":\"structGlobalVirtualGroupFamily\",\"name\":\"gvgfamily\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint32\",\"name\":\"targetSpId\",\"type\":\"uint32\"},{\"internalType\":\"uint32\",\"name\":\"gvgFamilyId\",\"type\":\"uint32\"},{\"internalType\":\"uint32\",\"name\":\"gvgId\",\"type\":\"uint32\"}],\"name\":\"reserveSwapIn\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"spExit\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint32\",\"name\":\"gvgFamilyId\",\"type\":\"uint32\"},{\"internalType\":\"uint32[]\",\"name\":\"gvgIds\",\"type\":\"uint32[]\"},{\"internalType\":\"uint32\",\"name\":\"successorSpId\",\"type\":\"uint32\"},{\"components\":[{\"internalType\":\"uint64\",\"name\":\"expiredHeight\",\"type\":\"uint64\"},{\"internalType\":\"uint32\",\"name\":\"globalVirtualGroupFamilyId\",\"type\":\"uint32\"},{\"internalType\":\"bytes\",\"name\":\"sig\",\"type\":\"bytes\"}],\"internalType\":\"structApproval\",\"name\":\"successorSpApproval\",\"type\":\"tuple\"}],\"name\":\"swapOut\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
+	ABI: "[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"storageProvider\",\"type\":\"address\"}],\"name\":\"CancelSwapIn\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"storageProvider\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"}],\"name\":\"CompleteSPExit\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"storageProvider\",\"type\":\"address\"}],\"name\":\"CompleteSwapIn\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"storageProvider\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"familyId\",\"type\":\"uint256\"}],\"name\":\"CreateGlobalVirtualGroup\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"storageProvider\",\"type\":\"address\"}],\"name\":\"DeleteGlobalVirtualGroup\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"storageProvider\",\"type\":\"address\"}],\"name\":\"Deposit\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"storageProvider\",\"type\":\"address\"}],\"name\":\"ReserveSwapIn\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"storageProvider\",\"type\":\"address\"}],\"name\":\"SPExit\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"storageProvider\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"familyId\",\"type\":\"uint256\"}],\"name\":\"SwapOut\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"uint32\",\"name\":\"gvgFamilyId\",\"type\":\"uint32\"},{\"internalType\":\"uint32\",\"name\":\"globalVirtualGroupId\",\"type\":\"uint32\"}],\"name\":\"cancelSwapIn\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"storageProvider\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"operator\",\"type\":\"string\"}],\"name\":\"completeSPExit\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint32\",\"name\":\"gvgFamilyId\",\"type\":\"uint32\"},{\"internalType\":\"uint32\",\"name\":\"globalVirtualGroupId\",\"type\":\"uint32\"}],\"name\":\"completeSwapIn\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint32\",\"name\":\"gvgFamilyId\",\"type\":\"uint32\"},{\"internalType\":\"uint32[]\",\"name\":\"gvgIds\",\"type\":\"uint32[]\"}],\"name\":\"completeSwapOut\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint32\",\"name\":\"familyId\",\"type\":\"uint32\"},{\"internalType\":\"uint32[]\",\"name\":\"secondarySpIds\",\"type\":\"uint32[]\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"internalType\":\"structCoin\",\"name\":\"deposit\",\"type\":\"tuple\"}],\"name\":\"createGlobalVirtualGroup\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint32\",\"name\":\"globalVirtualGroupId\",\"type\":\"uint32\"}],\"name\":\"deleteGlobalVirtualGroup\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint32\",\"name\":\"globalVirtualGroupId\",\"type\":\"uint32\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"denom\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"internalType\":\"structCoin\",\"name\":\"deposit\",\"type\":\"tuple\"}],\"name\":\"deposit\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"bytes\",\"name\":\"key\",\"type\":\"bytes\"},{\"internalType\":\"uint64\",\"name\":\"offset\",\"type\":\"uint64\"},{\"internalType\":\"uint64\",\"name\":\"limit\",\"type\":\"uint64\"},{\"internalType\":\"bool\",\"name\":\"countTotal\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"reverse\",\"type\":\"bool\"}],\"internalType\":\"structPageRequest\",\"name\":\"pagination\",\"type\":\"tuple\"}],\"name\":\"globalVirtualGroupFamilies\",\"outputs\":[{\"components\":[{\"internalType\":\"uint32\",\"name\":\"id\",\"type\":\"uint32\"},{\"internalType\":\"uint32\",\"name\":\"primarySpId\",\"type\":\"uint32\"},{\"internalType\":\"uint32[]\",\"name\":\"globalVirtualGroupIds\",\"type\":\"uint32[]\"},{\"internalType\":\"address\",\"name\":\"virtualPaymentAddress\",\"type\":\"address\"}],\"internalType\":\"structGlobalVirtualGroupFamily[]\",\"name\":\"gvgFamilies\",\"type\":\"tuple[]\"},{\"components\":[{\"internalType\":\"bytes\",\"name\":\"nextKey\",\"type\":\"bytes\"},{\"internalType\":\"uint64\",\"name\":\"total\",\"type\":\"uint64\"}],\"internalType\":\"structPageResponse\",\"name\":\"pageResponse\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint32\",\"name\":\"familyId\",\"type\":\"uint32\"}],\"name\":\"globalVirtualGroupFamily\",\"outputs\":[{\"components\":[{\"internalType\":\"uint32\",\"name\":\"id\",\"type\":\"uint32\"},{\"internalType\":\"uint32\",\"name\":\"primarySpId\",\"type\":\"uint32\"},{\"internalType\":\"uint32[]\",\"name\":\"globalVirtualGroupIds\",\"type\":\"uint32[]\"},{\"internalType\":\"address\",\"name\":\"virtualPaymentAddress\",\"type\":\"address\"}],\"internalType\":\"structGlobalVirtualGroupFamily\",\"name\":\"gvgfamily\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint32\",\"name\":\"targetSpId\",\"type\":\"uint32\"},{\"internalType\":\"uint32\",\"name\":\"gvgFamilyId\",\"type\":\"uint32\"},{\"internalType\":\"uint32\",\"name\":\"globalVirtualGroupId\",\"type\":\"uint32\"}],\"name\":\"reserveSwapIn\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"spExit\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint32\",\"name\":\"gvgFamilyId\",\"type\":\"uint32\"},{\"internalType\":\"uint32[]\",\"name\":\"gvgIds\",\"type\":\"uint32[]\"},{\"internalType\":\"uint32\",\"name\":\"successorSpId\",\"type\":\"uint32\"},{\"components\":[{\"internalType\":\"uint64\",\"name\":\"expiredHeight\",\"type\":\"uint64\"},{\"internalType\":\"uint32\",\"name\":\"globalVirtualGroupFamilyId\",\"type\":\"uint32\"},{\"internalType\":\"bytes\",\"name\":\"sig\",\"type\":\"bytes\"}],\"internalType\":\"structApproval\",\"name\":\"successorSpApproval\",\"type\":\"tuple\"}],\"name\":\"swapOut\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
 }
 
 // IVirtualGroupABI is the input ABI used to generate the binding from.
@@ -294,23 +294,23 @@ func (_IVirtualGroup *IVirtualGroupCallerSession) GlobalVirtualGroupFamily(famil
 
 // CancelSwapIn is a paid mutator transaction binding the contract method 0x460b4ce3.
 //
-// Solidity: function cancelSwapIn(uint32 gvgFamilyId, uint32 gvgId) returns(bool success)
-func (_IVirtualGroup *IVirtualGroupTransactor) CancelSwapIn(opts *bind.TransactOpts, gvgFamilyId uint32, gvgId uint32) (*types.Transaction, error) {
-	return _IVirtualGroup.contract.Transact(opts, "cancelSwapIn", gvgFamilyId, gvgId)
+// Solidity: function cancelSwapIn(uint32 gvgFamilyId, uint32 globalVirtualGroupId) returns(bool success)
+func (_IVirtualGroup *IVirtualGroupTransactor) CancelSwapIn(opts *bind.TransactOpts, gvgFamilyId uint32, globalVirtualGroupId uint32) (*types.Transaction, error) {
+	return _IVirtualGroup.contract.Transact(opts, "cancelSwapIn", gvgFamilyId, globalVirtualGroupId)
 }
 
 // CancelSwapIn is a paid mutator transaction binding the contract method 0x460b4ce3.
 //
-// Solidity: function cancelSwapIn(uint32 gvgFamilyId, uint32 gvgId) returns(bool success)
-func (_IVirtualGroup *IVirtualGroupSession) CancelSwapIn(gvgFamilyId uint32, gvgId uint32) (*types.Transaction, error) {
-	return _IVirtualGroup.Contract.CancelSwapIn(&_IVirtualGroup.TransactOpts, gvgFamilyId, gvgId)
+// Solidity: function cancelSwapIn(uint32 gvgFamilyId, uint32 globalVirtualGroupId) returns(bool success)
+func (_IVirtualGroup *IVirtualGroupSession) CancelSwapIn(gvgFamilyId uint32, globalVirtualGroupId uint32) (*types.Transaction, error) {
+	return _IVirtualGroup.Contract.CancelSwapIn(&_IVirtualGroup.TransactOpts, gvgFamilyId, globalVirtualGroupId)
 }
 
 // CancelSwapIn is a paid mutator transaction binding the contract method 0x460b4ce3.
 //
-// Solidity: function cancelSwapIn(uint32 gvgFamilyId, uint32 gvgId) returns(bool success)
-func (_IVirtualGroup *IVirtualGroupTransactorSession) CancelSwapIn(gvgFamilyId uint32, gvgId uint32) (*types.Transaction, error) {
-	return _IVirtualGroup.Contract.CancelSwapIn(&_IVirtualGroup.TransactOpts, gvgFamilyId, gvgId)
+// Solidity: function cancelSwapIn(uint32 gvgFamilyId, uint32 globalVirtualGroupId) returns(bool success)
+func (_IVirtualGroup *IVirtualGroupTransactorSession) CancelSwapIn(gvgFamilyId uint32, globalVirtualGroupId uint32) (*types.Transaction, error) {
+	return _IVirtualGroup.Contract.CancelSwapIn(&_IVirtualGroup.TransactOpts, gvgFamilyId, globalVirtualGroupId)
 }
 
 // CompleteSPExit is a paid mutator transaction binding the contract method 0x44853205.
@@ -336,23 +336,23 @@ func (_IVirtualGroup *IVirtualGroupTransactorSession) CompleteSPExit(storageProv
 
 // CompleteSwapIn is a paid mutator transaction binding the contract method 0x82b669d0.
 //
-// Solidity: function completeSwapIn(uint32 gvgFamilyId, uint32 gvgId) returns(bool success)
-func (_IVirtualGroup *IVirtualGroupTransactor) CompleteSwapIn(opts *bind.TransactOpts, gvgFamilyId uint32, gvgId uint32) (*types.Transaction, error) {
-	return _IVirtualGroup.contract.Transact(opts, "completeSwapIn", gvgFamilyId, gvgId)
+// Solidity: function completeSwapIn(uint32 gvgFamilyId, uint32 globalVirtualGroupId) returns(bool success)
+func (_IVirtualGroup *IVirtualGroupTransactor) CompleteSwapIn(opts *bind.TransactOpts, gvgFamilyId uint32, globalVirtualGroupId uint32) (*types.Transaction, error) {
+	return _IVirtualGroup.contract.Transact(opts, "completeSwapIn", gvgFamilyId, globalVirtualGroupId)
 }
 
 // CompleteSwapIn is a paid mutator transaction binding the contract method 0x82b669d0.
 //
-// Solidity: function completeSwapIn(uint32 gvgFamilyId, uint32 gvgId) returns(bool success)
-func (_IVirtualGroup *IVirtualGroupSession) CompleteSwapIn(gvgFamilyId uint32, gvgId uint32) (*types.Transaction, error) {
-	return _IVirtualGroup.Contract.CompleteSwapIn(&_IVirtualGroup.TransactOpts, gvgFamilyId, gvgId)
+// Solidity: function completeSwapIn(uint32 gvgFamilyId, uint32 globalVirtualGroupId) returns(bool success)
+func (_IVirtualGroup *IVirtualGroupSession) CompleteSwapIn(gvgFamilyId uint32, globalVirtualGroupId uint32) (*types.Transaction, error) {
+	return _IVirtualGroup.Contract.CompleteSwapIn(&_IVirtualGroup.TransactOpts, gvgFamilyId, globalVirtualGroupId)
 }
 
 // CompleteSwapIn is a paid mutator transaction binding the contract method 0x82b669d0.
 //
-// Solidity: function completeSwapIn(uint32 gvgFamilyId, uint32 gvgId) returns(bool success)
-func (_IVirtualGroup *IVirtualGroupTransactorSession) CompleteSwapIn(gvgFamilyId uint32, gvgId uint32) (*types.Transaction, error) {
-	return _IVirtualGroup.Contract.CompleteSwapIn(&_IVirtualGroup.TransactOpts, gvgFamilyId, gvgId)
+// Solidity: function completeSwapIn(uint32 gvgFamilyId, uint32 globalVirtualGroupId) returns(bool success)
+func (_IVirtualGroup *IVirtualGroupTransactorSession) CompleteSwapIn(gvgFamilyId uint32, globalVirtualGroupId uint32) (*types.Transaction, error) {
+	return _IVirtualGroup.Contract.CompleteSwapIn(&_IVirtualGroup.TransactOpts, gvgFamilyId, globalVirtualGroupId)
 }
 
 // CompleteSwapOut is a paid mutator transaction binding the contract method 0xebd2beaa.
@@ -399,65 +399,65 @@ func (_IVirtualGroup *IVirtualGroupTransactorSession) CreateGlobalVirtualGroup(f
 
 // DeleteGlobalVirtualGroup is a paid mutator transaction binding the contract method 0x3712b375.
 //
-// Solidity: function deleteGlobalVirtualGroup(uint32 gvgId) returns(bool success)
-func (_IVirtualGroup *IVirtualGroupTransactor) DeleteGlobalVirtualGroup(opts *bind.TransactOpts, gvgId uint32) (*types.Transaction, error) {
-	return _IVirtualGroup.contract.Transact(opts, "deleteGlobalVirtualGroup", gvgId)
+// Solidity: function deleteGlobalVirtualGroup(uint32 globalVirtualGroupId) returns(bool success)
+func (_IVirtualGroup *IVirtualGroupTransactor) DeleteGlobalVirtualGroup(opts *bind.TransactOpts, globalVirtualGroupId uint32) (*types.Transaction, error) {
+	return _IVirtualGroup.contract.Transact(opts, "deleteGlobalVirtualGroup", globalVirtualGroupId)
 }
 
 // DeleteGlobalVirtualGroup is a paid mutator transaction binding the contract method 0x3712b375.
 //
-// Solidity: function deleteGlobalVirtualGroup(uint32 gvgId) returns(bool success)
-func (_IVirtualGroup *IVirtualGroupSession) DeleteGlobalVirtualGroup(gvgId uint32) (*types.Transaction, error) {
-	return _IVirtualGroup.Contract.DeleteGlobalVirtualGroup(&_IVirtualGroup.TransactOpts, gvgId)
+// Solidity: function deleteGlobalVirtualGroup(uint32 globalVirtualGroupId) returns(bool success)
+func (_IVirtualGroup *IVirtualGroupSession) DeleteGlobalVirtualGroup(globalVirtualGroupId uint32) (*types.Transaction, error) {
+	return _IVirtualGroup.Contract.DeleteGlobalVirtualGroup(&_IVirtualGroup.TransactOpts, globalVirtualGroupId)
 }
 
 // DeleteGlobalVirtualGroup is a paid mutator transaction binding the contract method 0x3712b375.
 //
-// Solidity: function deleteGlobalVirtualGroup(uint32 gvgId) returns(bool success)
-func (_IVirtualGroup *IVirtualGroupTransactorSession) DeleteGlobalVirtualGroup(gvgId uint32) (*types.Transaction, error) {
-	return _IVirtualGroup.Contract.DeleteGlobalVirtualGroup(&_IVirtualGroup.TransactOpts, gvgId)
+// Solidity: function deleteGlobalVirtualGroup(uint32 globalVirtualGroupId) returns(bool success)
+func (_IVirtualGroup *IVirtualGroupTransactorSession) DeleteGlobalVirtualGroup(globalVirtualGroupId uint32) (*types.Transaction, error) {
+	return _IVirtualGroup.Contract.DeleteGlobalVirtualGroup(&_IVirtualGroup.TransactOpts, globalVirtualGroupId)
 }
 
 // Deposit is a paid mutator transaction binding the contract method 0xd4755928.
 //
-// Solidity: function deposit(uint32 gvgId, (string,uint256) deposit) returns(bool success)
-func (_IVirtualGroup *IVirtualGroupTransactor) Deposit(opts *bind.TransactOpts, gvgId uint32, deposit Coin) (*types.Transaction, error) {
-	return _IVirtualGroup.contract.Transact(opts, "deposit", gvgId, deposit)
+// Solidity: function deposit(uint32 globalVirtualGroupId, (string,uint256) deposit) returns(bool success)
+func (_IVirtualGroup *IVirtualGroupTransactor) Deposit(opts *bind.TransactOpts, globalVirtualGroupId uint32, deposit Coin) (*types.Transaction, error) {
+	return _IVirtualGroup.contract.Transact(opts, "deposit", globalVirtualGroupId, deposit)
 }
 
 // Deposit is a paid mutator transaction binding the contract method 0xd4755928.
 //
-// Solidity: function deposit(uint32 gvgId, (string,uint256) deposit) returns(bool success)
-func (_IVirtualGroup *IVirtualGroupSession) Deposit(gvgId uint32, deposit Coin) (*types.Transaction, error) {
-	return _IVirtualGroup.Contract.Deposit(&_IVirtualGroup.TransactOpts, gvgId, deposit)
+// Solidity: function deposit(uint32 globalVirtualGroupId, (string,uint256) deposit) returns(bool success)
+func (_IVirtualGroup *IVirtualGroupSession) Deposit(globalVirtualGroupId uint32, deposit Coin) (*types.Transaction, error) {
+	return _IVirtualGroup.Contract.Deposit(&_IVirtualGroup.TransactOpts, globalVirtualGroupId, deposit)
 }
 
 // Deposit is a paid mutator transaction binding the contract method 0xd4755928.
 //
-// Solidity: function deposit(uint32 gvgId, (string,uint256) deposit) returns(bool success)
-func (_IVirtualGroup *IVirtualGroupTransactorSession) Deposit(gvgId uint32, deposit Coin) (*types.Transaction, error) {
-	return _IVirtualGroup.Contract.Deposit(&_IVirtualGroup.TransactOpts, gvgId, deposit)
+// Solidity: function deposit(uint32 globalVirtualGroupId, (string,uint256) deposit) returns(bool success)
+func (_IVirtualGroup *IVirtualGroupTransactorSession) Deposit(globalVirtualGroupId uint32, deposit Coin) (*types.Transaction, error) {
+	return _IVirtualGroup.Contract.Deposit(&_IVirtualGroup.TransactOpts, globalVirtualGroupId, deposit)
 }
 
 // ReserveSwapIn is a paid mutator transaction binding the contract method 0xdc2d3f12.
 //
-// Solidity: function reserveSwapIn(uint32 targetSpId, uint32 gvgFamilyId, uint32 gvgId) returns(bool success)
-func (_IVirtualGroup *IVirtualGroupTransactor) ReserveSwapIn(opts *bind.TransactOpts, targetSpId uint32, gvgFamilyId uint32, gvgId uint32) (*types.Transaction, error) {
-	return _IVirtualGroup.contract.Transact(opts, "reserveSwapIn", targetSpId, gvgFamilyId, gvgId)
+// Solidity: function reserveSwapIn(uint32 targetSpId, uint32 gvgFamilyId, uint32 globalVirtualGroupId) returns(bool success)
+func (_IVirtualGroup *IVirtualGroupTransactor) ReserveSwapIn(opts *bind.TransactOpts, targetSpId uint32, gvgFamilyId uint32, globalVirtualGroupId uint32) (*types.Transaction, error) {
+	return _IVirtualGroup.contract.Transact(opts, "reserveSwapIn", targetSpId, gvgFamilyId, globalVirtualGroupId)
 }
 
 // ReserveSwapIn is a paid mutator transaction binding the contract method 0xdc2d3f12.
 //
-// Solidity: function reserveSwapIn(uint32 targetSpId, uint32 gvgFamilyId, uint32 gvgId) returns(bool success)
-func (_IVirtualGroup *IVirtualGroupSession) ReserveSwapIn(targetSpId uint32, gvgFamilyId uint32, gvgId uint32) (*types.Transaction, error) {
-	return _IVirtualGroup.Contract.ReserveSwapIn(&_IVirtualGroup.TransactOpts, targetSpId, gvgFamilyId, gvgId)
+// Solidity: function reserveSwapIn(uint32 targetSpId, uint32 gvgFamilyId, uint32 globalVirtualGroupId) returns(bool success)
+func (_IVirtualGroup *IVirtualGroupSession) ReserveSwapIn(targetSpId uint32, gvgFamilyId uint32, globalVirtualGroupId uint32) (*types.Transaction, error) {
+	return _IVirtualGroup.Contract.ReserveSwapIn(&_IVirtualGroup.TransactOpts, targetSpId, gvgFamilyId, globalVirtualGroupId)
 }
 
 // ReserveSwapIn is a paid mutator transaction binding the contract method 0xdc2d3f12.
 //
-// Solidity: function reserveSwapIn(uint32 targetSpId, uint32 gvgFamilyId, uint32 gvgId) returns(bool success)
-func (_IVirtualGroup *IVirtualGroupTransactorSession) ReserveSwapIn(targetSpId uint32, gvgFamilyId uint32, gvgId uint32) (*types.Transaction, error) {
-	return _IVirtualGroup.Contract.ReserveSwapIn(&_IVirtualGroup.TransactOpts, targetSpId, gvgFamilyId, gvgId)
+// Solidity: function reserveSwapIn(uint32 targetSpId, uint32 gvgFamilyId, uint32 globalVirtualGroupId) returns(bool success)
+func (_IVirtualGroup *IVirtualGroupTransactorSession) ReserveSwapIn(targetSpId uint32, gvgFamilyId uint32, globalVirtualGroupId uint32) (*types.Transaction, error) {
+	return _IVirtualGroup.Contract.ReserveSwapIn(&_IVirtualGroup.TransactOpts, targetSpId, gvgFamilyId, globalVirtualGroupId)
 }
 
 // SpExit is a paid mutator transaction binding the contract method 0xecdec1ab.
