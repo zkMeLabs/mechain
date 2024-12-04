@@ -34,7 +34,6 @@ import (
 	bridgetypes "github.com/evmos/evmos/v12/x/bridge/types"
 	challengetypes "github.com/evmos/evmos/v12/x/challenge/types"
 	paymenttypes "github.com/evmos/evmos/v12/x/payment/types"
-	spcli "github.com/evmos/evmos/v12/x/sp/client/cli"
 	sptypes "github.com/evmos/evmos/v12/x/sp/types"
 	storagetypes "github.com/evmos/evmos/v12/x/storage/types"
 	virtualgroupmoduletypes "github.com/evmos/evmos/v12/x/virtualgroup/types"
@@ -230,7 +229,8 @@ func setClientsConn(c *MechainClient, conn grpc1.ClientConn, evmCli *ethclient.C
 	c.FeegrantQueryClient = feegranttypes.NewQueryClient(conn)
 	c.GashubQueryClient = gashubtypes.NewQueryClient(conn)
 	c.PaymentQueryClient = paymenttypes.NewQueryClient(conn)
-	c.SpQueryClient = spcli.NewQueryClientEVM(evmCli)
+	// c.SpQueryClient = spcli.NewQueryClientEVM(evmCli)
+	c.SpQueryClient = sptypes.NewQueryClient(conn)
 	c.BridgeQueryClient = bridgetypes.NewQueryClient(conn)
 	c.StorageQueryClient = storagetypes.NewQueryClient(conn)
 	c.GovQueryClientV1 = govv1.NewQueryClient(conn)
