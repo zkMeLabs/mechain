@@ -514,7 +514,7 @@ func NewEvmos(
 	app.AuthzKeeper = authzkeeper.NewKeeper(keys[authzkeeper.StoreKey], appCodec, app.MsgServiceRouter(), app.AccountKeeper)
 
 	app.BankKeeper = bankkeeper.NewBaseKeeper(
-		appCodec, keys[banktypes.StoreKey], app.AccountKeeper, app.BlockedAddrs(), authAddr,
+		appCodec, keys[banktypes.StoreKey], app.AccountKeeper, app.BlockedModuleAccountAddrs(), authAddr,
 	)
 	app.StakingKeeper = stakingkeeper.NewKeeper(
 		appCodec, keys[stakingtypes.StoreKey], app.AccountKeeper, app.AuthzKeeper, app.BankKeeper, authAddr,
@@ -1241,22 +1241,14 @@ func (app *Evmos) ModuleAccountAddrs() map[string]bool {
 	return modAccAddrs
 }
 
-// BlockedAddrs returns all the app's module account addresses that are not
+// BlockedModuleAccountAddrs returns all the app's module account addresses that are not
 // allowed to receive external tokens.
-func (app *Evmos) BlockedAddrs() map[string]bool {
-	blockedAddrs := make(map[string]bool)
+func (app *Evmos) BlockedModuleAccountAddrs() map[string]bool {
+	modAccAddrs := app.ModuleAccountAddrs()
+	delete(modAccAddrs, authtypes.NewModuleAddress(govtypes.ModuleName).String())
+	delete(modAccAddrs, authtypes.NewModuleAddress(distrtypes.ModuleName).String())
 
-	accs := make([]string, 0, len(maccPerms))
-	for k := range maccPerms {
-		accs = append(accs, k)
-	}
-	sort.Strings(accs)
-
-	for _, acc := range accs {
-		blockedAddrs[authtypes.NewModuleAddress(acc).String()] = true
-	}
-
-	return blockedAddrs
+	return modAccAddrs
 }
 
 // LegacyAmino returns Evmos's amino codec.
