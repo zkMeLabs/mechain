@@ -3,7 +3,6 @@
 pragma solidity ^0.8.0;
 
 import "../common/Types.sol";
-import "../virtualgroup/Types.sol";
 // VisibilityType is the resources public status.
 enum VisibilityType {
     UnSpecified,
