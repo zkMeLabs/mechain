@@ -1629,14 +1629,19 @@ func (c *Contract) PutPolicy(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract
 			for _, action := range statement.Actions {
 				actions = append(actions, permTypes.ActionType(action))
 			}
-			expirationTime := time.Unix(statement.ExpirationTime, 0)
-			statements = append(statements, &permTypes.Statement{
-				Effect:         permTypes.Effect(statement.Effect),
-				Actions:        actions,
-				Resources:      statement.Resources,
-				ExpirationTime: &expirationTime,
-				LimitSize:      &mechaincommon.UInt64Value{Value: statement.LimitSize},
-			})
+			s := &permTypes.Statement{
+				Effect:    permTypes.Effect(statement.Effect),
+				Actions:   actions,
+				Resources: statement.Resources,
+			}
+			if statement.ExpirationTime != 0 {
+				tm := time.Unix(statement.ExpirationTime, 0)
+				s.ExpirationTime = &tm
+			}
+			if statement.LimitSize != 0 {
+				s.LimitSize = &mechaincommon.UInt64Value{Value: statement.LimitSize}
+			}
+			statements = append(statements, s)
 		}
 	}
 
