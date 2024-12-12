@@ -605,3 +605,6 @@ stop-dc:
 
 precompile:
 	@cd x/evm/precompiles && sh compile.sh
+
+verify:
+	@cd solidity && node verify.js
