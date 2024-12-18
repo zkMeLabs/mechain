@@ -16,19 +16,18 @@ message EventCreateBucket {
   string owner = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   // bucket_name is a globally unique name of bucket
   string bucket_name = 2;
-  // visibility defines the highest permissions for bucket. When a bucket is public, everyone can get the object under it.
+  // visibility defines the highest permissions for bucket. When a bucket is public, everyone can get the object under
+  // it.
   VisibilityType visibility = 3;
   // create_at define the block timestamp when the bucket has been created
   int64 create_at = 4;
   // bucket_id is the unique u256 for bucket. Not global, only unique in buckets.
-  string bucket_id = 5 [
-    (cosmos_proto.scalar) = "cosmos.Uint",
-    (gogoproto.customtype) = "Uint",
-    (gogoproto.nullable) = false
-  ];
+  string bucket_id = 5
+      [(cosmos_proto.scalar) = "cosmos.Uint", (gogoproto.customtype) = "Uint", (gogoproto.nullable) = false];
   // source_type define the source of the bucket. CrossChain or Mechain origin
   SourceType source_type = 6;
-  // read_quota defines the charged traffic quota for read, not include free quota which provided by each storage provider
+  // read_quota defines the charged traffic quota for read, not include free quota which provided by each storage
+  // provider
   uint64 charged_read_quota = 7;
   // payment_address is the address of the payment account
   string payment_address = 8 [(cosmos_proto.scalar) = "cosmos.AddressString"];
@@ -49,11 +48,8 @@ message EventDeleteBucket {
   // bucket_name define the name of the deleted bucket
   string bucket_name = 3;
   // bucket_id define an u256 id for bucket
-  string bucket_id = 4 [
-    (cosmos_proto.scalar) = "cosmos.Uint",
-    (gogoproto.customtype) = "Uint",
-    (gogoproto.nullable) = false
-  ];
+  string bucket_id = 4
+      [(cosmos_proto.scalar) = "cosmos.Uint", (gogoproto.customtype) = "Uint", (gogoproto.nullable) = false];
   // global_virtual_group_family_id defines the unique id of gvg family
   uint32 global_virtual_group_family_id = 5;
 }
@@ -65,11 +61,8 @@ message EventUpdateBucketInfo {
   // bucket_name define the name of the bucket
   string bucket_name = 2;
   // bucket_id define an u256 id for bucket
-  string bucket_id = 3 [
-    (cosmos_proto.scalar) = "cosmos.Uint",
-    (gogoproto.customtype) = "Uint",
-    (gogoproto.nullable) = false
-  ];
+  string bucket_id = 3
+      [(cosmos_proto.scalar) = "cosmos.Uint", (gogoproto.customtype) = "Uint", (gogoproto.nullable) = false];
   // charged_read_quota_after define the read quota after updated
   uint64 charged_read_quota = 4;
   // payment_address define the payment address after updated
@@ -83,11 +76,8 @@ message EventUpdateBucketInfo {
 // EventDiscontinueBucket is emitted on MsgDiscontinueBucket
 message EventDiscontinueBucket {
   // bucket_id define id of the bucket
-  string bucket_id = 1 [
-    (cosmos_proto.scalar) = "cosmos.Uint",
-    (gogoproto.customtype) = "Uint",
-    (gogoproto.nullable) = false
-  ];
+  string bucket_id = 1
+      [(cosmos_proto.scalar) = "cosmos.Uint", (gogoproto.customtype) = "Uint", (gogoproto.nullable) = false];
   // bucket_name define the name of the bucket
   string bucket_name = 2;
   // the reason
@@ -107,17 +97,11 @@ message EventCreateObject {
   // object_name define the name of object
   string object_name = 4;
   // bucket_id define an u256 id for bucket
-  string bucket_id = 6 [
-    (cosmos_proto.scalar) = "cosmos.Uint",
-    (gogoproto.customtype) = "Uint",
-    (gogoproto.nullable) = false
-  ];
+  string bucket_id = 6
+      [(cosmos_proto.scalar) = "cosmos.Uint", (gogoproto.customtype) = "Uint", (gogoproto.nullable) = false];
   // object_id define an u256 id for object
-  string object_id = 7 [
-    (cosmos_proto.scalar) = "cosmos.Uint",
-    (gogoproto.customtype) = "Uint",
-    (gogoproto.nullable) = false
-  ];
+  string object_id = 7
+      [(cosmos_proto.scalar) = "cosmos.Uint", (gogoproto.customtype) = "Uint", (gogoproto.nullable) = false];
   // primary_sp_id define the unique id of primary sp
   uint32 primary_sp_id = 8;
   // payload_size define the size of payload data which you want upload
@@ -151,11 +135,8 @@ message EventCancelCreateObject {
   // primary_sp_id define the unique id of primary sp
   uint32 primary_sp_id = 4;
   // id define an u256 id for object
-  string object_id = 6 [
-    (cosmos_proto.scalar) = "cosmos.Uint",
-    (gogoproto.customtype) = "Uint",
-    (gogoproto.nullable) = false
-  ];
+  string object_id = 6
+      [(cosmos_proto.scalar) = "cosmos.Uint", (gogoproto.customtype) = "Uint", (gogoproto.nullable) = false];
 }
 
 // EventSealObject is emitted on MsgSealObject
@@ -167,11 +148,8 @@ message EventSealObject {
   // object_name define the name of the object
   string object_name = 3;
   // id define an u256 id for object
-  string object_id = 5 [
-    (cosmos_proto.scalar) = "cosmos.Uint",
-    (gogoproto.customtype) = "Uint",
-    (gogoproto.nullable) = false
-  ];
+  string object_id = 5
+      [(cosmos_proto.scalar) = "cosmos.Uint", (gogoproto.customtype) = "Uint", (gogoproto.nullable) = false];
   // status define the status of the object. INIT or IN_SERVICE or others
   ObjectStatus status = 6;
   // global_virtual_group_id defines the unique id of gvg which the object stored
@@ -197,17 +175,11 @@ message EventCopyObject {
   // dst_object_name define the name of the dst object
   string dst_object_name = 5;
   // src_object_id define the u256 id for src object
-  string src_object_id = 6 [
-    (cosmos_proto.scalar) = "cosmos.Uint",
-    (gogoproto.customtype) = "Uint",
-    (gogoproto.nullable) = false
-  ];
+  string src_object_id = 6
+      [(cosmos_proto.scalar) = "cosmos.Uint", (gogoproto.customtype) = "Uint", (gogoproto.nullable) = false];
   // dst_object_id define the u256 id for dst object
-  string dst_object_id = 7 [
-    (cosmos_proto.scalar) = "cosmos.Uint",
-    (gogoproto.customtype) = "Uint",
-    (gogoproto.nullable) = false
-  ];
+  string dst_object_id = 7
+      [(cosmos_proto.scalar) = "cosmos.Uint", (gogoproto.customtype) = "Uint", (gogoproto.nullable) = false];
   // local_virtual_group_id defines the unique id of lvg which the object stored
   uint32 local_virtual_group_id = 8;
 }
@@ -221,11 +193,8 @@ message EventDeleteObject {
   // object_name define the name of the object
   string object_name = 3;
   // id define an u256 id for object
-  string object_id = 4 [
-    (cosmos_proto.scalar) = "cosmos.Uint",
-    (gogoproto.customtype) = "Uint",
-    (gogoproto.nullable) = false
-  ];
+  string object_id = 4
+      [(cosmos_proto.scalar) = "cosmos.Uint", (gogoproto.customtype) = "Uint", (gogoproto.nullable) = false];
   // local_virtual_group_id defines the unique id of lvg which the object stored
   uint32 local_virtual_group_id = 5;
 }
@@ -239,11 +208,8 @@ message EventRejectSealObject {
   // object_name define the name of the object
   string object_name = 3;
   // id define an u256 id for object
-  string object_id = 4 [
-    (cosmos_proto.scalar) = "cosmos.Uint",
-    (gogoproto.customtype) = "Uint",
-    (gogoproto.nullable) = false
-  ];
+  string object_id = 4
+      [(cosmos_proto.scalar) = "cosmos.Uint", (gogoproto.customtype) = "Uint", (gogoproto.nullable) = false];
   // for_update indicates whether reject sealing on a updating object
   bool for_update = 5;
 }
@@ -253,11 +219,8 @@ message EventDiscontinueObject {
   // bucket_name define the name of the bucket
   string bucket_name = 1;
   // object_id defines id of the object
-  string object_id = 2 [
-    (cosmos_proto.scalar) = "cosmos.Uint",
-    (gogoproto.customtype) = "Uint",
-    (gogoproto.nullable) = false
-  ];
+  string object_id = 2
+      [(cosmos_proto.scalar) = "cosmos.Uint", (gogoproto.customtype) = "Uint", (gogoproto.nullable) = false];
   // the reason
   string reason = 3;
   // the timestamp after which the metadata will be deleted
@@ -273,11 +236,8 @@ message EventUpdateObjectInfo {
   // object_name define the name of the object
   string object_name = 3;
   // object_id define an u256 id for object
-  string object_id = 4 [
-    (cosmos_proto.scalar) = "cosmos.Uint",
-    (gogoproto.customtype) = "Uint",
-    (gogoproto.nullable) = false
-  ];
+  string object_id = 4
+      [(cosmos_proto.scalar) = "cosmos.Uint", (gogoproto.customtype) = "Uint", (gogoproto.nullable) = false];
   // visibility defines the highest permission of object.
   VisibilityType visibility = 5;
 }
@@ -289,11 +249,8 @@ message EventCreateGroup {
   // group_name define the name of the group
   string group_name = 2;
   // id define an u256 id for group
-  string group_id = 3 [
-    (cosmos_proto.scalar) = "cosmos.Uint",
-    (gogoproto.customtype) = "Uint",
-    (gogoproto.nullable) = false
-  ];
+  string group_id = 3
+      [(cosmos_proto.scalar) = "cosmos.Uint", (gogoproto.customtype) = "Uint", (gogoproto.nullable) = false];
   // source_type define the source of the group. CrossChain or Mechain origin
   SourceType source_type = 4;
   // extra defines extra info for the group
@@ -307,11 +264,8 @@ message EventDeleteGroup {
   // group_name define the name of the group
   string group_name = 3;
   // id define an u256 id for group
-  string group_id = 4 [
-    (cosmos_proto.scalar) = "cosmos.Uint",
-    (gogoproto.customtype) = "Uint",
-    (gogoproto.nullable) = false
-  ];
+  string group_id = 4
+      [(cosmos_proto.scalar) = "cosmos.Uint", (gogoproto.customtype) = "Uint", (gogoproto.nullable) = false];
 }
 
 // EventLeaveGroup is emitted on MsgLeaveGroup
@@ -323,11 +277,8 @@ message EventLeaveGroup {
   // group_name define the name of the group
   string group_name = 3;
   // id define an u256 id for group
-  string group_id = 4 [
-    (cosmos_proto.scalar) = "cosmos.Uint",
-    (gogoproto.customtype) = "Uint",
-    (gogoproto.nullable) = false
-  ];
+  string group_id = 4
+      [(cosmos_proto.scalar) = "cosmos.Uint", (gogoproto.customtype) = "Uint", (gogoproto.nullable) = false];
 }
 
 // EventUpdateGroupMember is emitted on MsgUpdateGroupMember
@@ -339,11 +290,8 @@ message EventUpdateGroupMember {
   // group_name define the name of the group
   string group_name = 3;
   // id define an u256 id for group
-  string group_id = 4 [
-    (cosmos_proto.scalar) = "cosmos.Uint",
-    (gogoproto.customtype) = "Uint",
-    (gogoproto.nullable) = false
-  ];
+  string group_id = 4
+      [(cosmos_proto.scalar) = "cosmos.Uint", (gogoproto.customtype) = "Uint", (gogoproto.nullable) = false];
   // members_to_add defines all the members to be added to the group
   repeated EventGroupMemberDetail members_to_add = 5;
   // members_to_add defines all the members to be deleted from the group
@@ -358,11 +306,8 @@ message EventRenewGroupMember {
   // group_name define the name of the group
   string group_name = 3;
   // id define an u256 id for group
-  string group_id = 4 [
-    (cosmos_proto.scalar) = "cosmos.Uint",
-    (gogoproto.customtype) = "Uint",
-    (gogoproto.nullable) = false
-  ];
+  string group_id = 4
+      [(cosmos_proto.scalar) = "cosmos.Uint", (gogoproto.customtype) = "Uint", (gogoproto.nullable) = false];
   // source_type define the source of the group. CrossChain or Mechain origin
   SourceType source_type = 5;
   // members define the all the address of the members.
@@ -385,11 +330,8 @@ message EventUpdateGroupExtra {
   // group_name define the name of the group
   string group_name = 3;
   // id define an u256 id for group
-  string group_id = 4 [
-    (cosmos_proto.scalar) = "cosmos.Uint",
-    (gogoproto.customtype) = "Uint",
-    (gogoproto.nullable) = false
-  ];
+  string group_id = 4
+      [(cosmos_proto.scalar) = "cosmos.Uint", (gogoproto.customtype) = "Uint", (gogoproto.nullable) = false];
   // extra defines extra info for the group to update
   string extra = 5;
 }
@@ -401,11 +343,8 @@ message EventMirrorBucket {
   // bucket_name defines the name of the bucket
   string bucket_name = 2;
   // bucket_id define an u256 id for bucket
-  string bucket_id = 4 [
-    (cosmos_proto.scalar) = "cosmos.Uint",
-    (gogoproto.customtype) = "Uint",
-    (gogoproto.nullable) = false
-  ];
+  string bucket_id = 4
+      [(cosmos_proto.scalar) = "cosmos.Uint", (gogoproto.customtype) = "Uint", (gogoproto.nullable) = false];
   // chain id of the destination chain
   uint32 dest_chain_id = 5;
 }
@@ -417,11 +356,8 @@ message EventMirrorBucketResult {
   // bucket_name defines the name of the bucket
   string bucket_name = 2;
   // bucket_id define an u256 id for bucket
-  string bucket_id = 4 [
-    (cosmos_proto.scalar) = "cosmos.Uint",
-    (gogoproto.customtype) = "Uint",
-    (gogoproto.nullable) = false
-  ];
+  string bucket_id = 4
+      [(cosmos_proto.scalar) = "cosmos.Uint", (gogoproto.customtype) = "Uint", (gogoproto.nullable) = false];
   // chain id of the destination chain
   uint32 dest_chain_id = 5;
 }
@@ -435,11 +371,8 @@ message EventMirrorObject {
   // object_name define the name of the object
   string object_name = 3;
   // object_id define an u256 id for object
-  string object_id = 4 [
-    (cosmos_proto.scalar) = "cosmos.Uint",
-    (gogoproto.customtype) = "Uint",
-    (gogoproto.nullable) = false
-  ];
+  string object_id = 4
+      [(cosmos_proto.scalar) = "cosmos.Uint", (gogoproto.customtype) = "Uint", (gogoproto.nullable) = false];
   // chain id of the destination chain
   uint32 dest_chain_id = 5;
 }
@@ -453,11 +386,8 @@ message EventMirrorObjectResult {
   // object_name define the name of the object
   string object_name = 3;
   // object_id define an u256 id for object
-  string object_id = 4 [
-    (cosmos_proto.scalar) = "cosmos.Uint",
-    (gogoproto.customtype) = "Uint",
-    (gogoproto.nullable) = false
-  ];
+  string object_id = 4
+      [(cosmos_proto.scalar) = "cosmos.Uint", (gogoproto.customtype) = "Uint", (gogoproto.nullable) = false];
   // chain id of the destination chain
   uint32 dest_chain_id = 5;
 }
@@ -469,11 +399,8 @@ message EventMirrorGroup {
   // group_name define the name of the group
   string group_name = 2;
   // group_id define an u256 id for group
-  string group_id = 3 [
-    (cosmos_proto.scalar) = "cosmos.Uint",
-    (gogoproto.customtype) = "Uint",
-    (gogoproto.nullable) = false
-  ];
+  string group_id = 3
+      [(cosmos_proto.scalar) = "cosmos.Uint", (gogoproto.customtype) = "Uint", (gogoproto.nullable) = false];
   // chain id of the destination chain
   uint32 dest_chain_id = 4;
 }
@@ -485,11 +412,8 @@ message EventMirrorGroupResult {
   // group_name define the name of the group
   string group_name = 2;
   // group_id define an u256 id for group
-  string group_id = 3 [
-    (cosmos_proto.scalar) = "cosmos.Uint",
-    (gogoproto.customtype) = "Uint",
-    (gogoproto.nullable) = false
-  ];
+  string group_id = 3
+      [(cosmos_proto.scalar) = "cosmos.Uint", (gogoproto.customtype) = "Uint", (gogoproto.nullable) = false];
   // chain id of the destination chain
   uint32 dest_chain_id = 4;
 }
@@ -507,11 +431,8 @@ message EventMigrationBucket {
   // The name of the bucket to be migrated
   string bucket_name = 2;
   // bucket_id define an u256 id for bucket
-  string bucket_id = 3 [
-    (cosmos_proto.scalar) = "cosmos.Uint",
-    (gogoproto.customtype) = "Uint",
-    (gogoproto.nullable) = false
-  ];
+  string bucket_id = 3
+      [(cosmos_proto.scalar) = "cosmos.Uint", (gogoproto.customtype) = "Uint", (gogoproto.nullable) = false];
   // The id of the destination primary sp
   uint32 dst_primary_sp_id = 4;
   // status define the status of the bucket.
@@ -525,11 +446,8 @@ message EventCancelMigrationBucket {
   // The name of the bucket to be migrated
   string bucket_name = 2;
   // bucket_id define an u256 id for bucket
-  string bucket_id = 3 [
-    (cosmos_proto.scalar) = "cosmos.Uint",
-    (gogoproto.customtype) = "Uint",
-    (gogoproto.nullable) = false
-  ];
+  string bucket_id = 3
+      [(cosmos_proto.scalar) = "cosmos.Uint", (gogoproto.customtype) = "Uint", (gogoproto.nullable) = false];
   // status define the status of the bucket.
   BucketStatus status = 4;
 }
@@ -540,11 +458,8 @@ message EventRejectMigrateBucket {
   // The name of the bucket to be migrated
   string bucket_name = 2;
   // bucket_id define an u256 id for bucket
-  string bucket_id = 3 [
-    (cosmos_proto.scalar) = "cosmos.Uint",
-    (gogoproto.customtype) = "Uint",
-    (gogoproto.nullable) = false
-  ];
+  string bucket_id = 3
+      [(cosmos_proto.scalar) = "cosmos.Uint", (gogoproto.customtype) = "Uint", (gogoproto.nullable) = false];
   // status define the status of the bucket.
   BucketStatus status = 4;
 }
@@ -556,11 +471,8 @@ message EventCompleteMigrationBucket {
   // The name of the bucket to be migrated
   string bucket_name = 2;
   // bucket_id define an u256 id for bucket
-  string bucket_id = 3 [
-    (cosmos_proto.scalar) = "cosmos.Uint",
-    (gogoproto.customtype) = "Uint",
-    (gogoproto.nullable) = false
-  ];
+  string bucket_id = 3
+      [(cosmos_proto.scalar) = "cosmos.Uint", (gogoproto.customtype) = "Uint", (gogoproto.nullable) = false];
   // The family id that the bucket to be migrated to
   uint32 global_virtual_group_family_id = 4;
   // The src_primary_sp_id defines the primary sp id of the bucket before migrate.
@@ -574,6 +486,8 @@ message EventSetTag {
   string resource = 1;
   // tags define the tag of the source
   ResourceTags tags = 2;
+  // id is the unique u256 for resource. Not global, only unique in buckets.
+  string id = 5 [(cosmos_proto.scalar) = "cosmos.Uint", (gogoproto.customtype) = "Uint", (gogoproto.nullable) = false];
 }
 
 // EventUpdateObjectContent is emitted on MsgUpdateObjectContent
@@ -581,11 +495,8 @@ message EventUpdateObjectContent {
   // operator define the account address of msg operator
   string operator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   // object_id is the unique identifier of object
-  string object_id = 2 [
-    (cosmos_proto.scalar) = "cosmos.Uint",
-    (gogoproto.customtype) = "Uint",
-    (gogoproto.nullable) = false
-  ];
+  string object_id = 2
+      [(cosmos_proto.scalar) = "cosmos.Uint", (gogoproto.customtype) = "Uint", (gogoproto.nullable) = false];
   string bucket_name = 3;
   string object_name = 4;
   // payload_size define the size of payload data which you want upload
@@ -601,11 +512,8 @@ message EventUpdateObjectContentSuccess {
   // operator define the account address of msg operator
   string operator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   // object_id is the unique identifier of object
-  string object_id = 2 [
-    (cosmos_proto.scalar) = "cosmos.Uint",
-    (gogoproto.customtype) = "Uint",
-    (gogoproto.nullable) = false
-  ];
+  string object_id = 2
+      [(cosmos_proto.scalar) = "cosmos.Uint", (gogoproto.customtype) = "Uint", (gogoproto.nullable) = false];
   string bucket_name = 3;
   string object_name = 4;
   // content_type define the content type of the payload data
@@ -633,11 +541,8 @@ message EventCancelUpdateObjectContent {
   // object_name define the name of the object
   string object_name = 3;
   // object_id define the id of the object
-  string object_id = 4 [
-    (cosmos_proto.scalar) = "cosmos.Uint",
-    (gogoproto.customtype) = "Uint",
-    (gogoproto.nullable) = false
-  ];
+  string object_id = 4
+      [(cosmos_proto.scalar) = "cosmos.Uint", (gogoproto.customtype) = "Uint", (gogoproto.nullable) = false];
 }
 
 message EventSetBucketFlowRateLimit {
@@ -663,22 +568,16 @@ message EventBucketFlowRateLimitStatus {
   // is_limited define the status of the bucket flow rate limit
   bool is_limited = 2;
   // bucket_id is the unique u256 for bucket. Not global, only unique in buckets.
-  string bucket_id = 3 [
-    (cosmos_proto.scalar) = "cosmos.Uint",
-    (gogoproto.customtype) = "Uint",
-    (gogoproto.nullable) = false
-  ];
+  string bucket_id = 3
+      [(cosmos_proto.scalar) = "cosmos.Uint", (gogoproto.customtype) = "Uint", (gogoproto.nullable) = false];
 }
 
 message EventToggleSPAsDelegatedAgent {
   // bucket_name define the name of the bucket
   string bucket_name = 1;
   // bucket_id is the unique u256 for bucket. Not global, only unique in buckets.
-  string bucket_id = 2 [
-    (cosmos_proto.scalar) = "cosmos.Uint",
-    (gogoproto.customtype) = "Uint",
-    (gogoproto.nullable) = false
-  ];
+  string bucket_id = 2
+      [(cosmos_proto.scalar) = "cosmos.Uint", (gogoproto.customtype) = "Uint", (gogoproto.nullable) = false];
   // sp_as_delegated_agent_disabled indicates that whether bucket owner disable SP as the upload agent.
   bool sp_as_delegated_agent_disabled = 3;
 }

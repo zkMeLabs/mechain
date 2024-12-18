@@ -2486,6 +2486,7 @@ func (k Keeper) GetSourceTypeByChainId(ctx sdk.Context, chainId sdk.ChainID) (st
 func (k Keeper) SetTag(ctx sdk.Context, operator sdk.AccAddress, grn types.GRN, tags *storagetypes.ResourceTags) error {
 	store := ctx.KVStore(k.storeKey)
 
+	var id sdkmath.Uint
 	switch grn.ResourceType() {
 	case resource.RESOURCE_TYPE_BUCKET:
 		bucketName, grnErr := grn.GetBucketName()
@@ -2506,6 +2507,7 @@ func (k Keeper) SetTag(ctx sdk.Context, operator sdk.AccAddress, grn types.GRN, 
 		bucketInfo.Tags = tags
 		bz := k.cdc.MustMarshal(bucketInfo)
 		store.Set(storagetypes.GetBucketByIDKey(bucketInfo.Id), bz)
+		id = bucketInfo.Id
 	case resource.RESOURCE_TYPE_OBJECT:
 		bucketName, objectName, grnErr := grn.GetBucketAndObjectName()
 		if grnErr != nil {
@@ -2529,6 +2531,7 @@ func (k Keeper) SetTag(ctx sdk.Context, operator sdk.AccAddress, grn types.GRN, 
 		objectInfo.Tags = tags
 		obz := k.cdc.MustMarshal(objectInfo)
 		store.Set(storagetypes.GetObjectByIDKey(objectInfo.Id), obz)
+		id = objectInfo.Id
 	case resource.RESOURCE_TYPE_GROUP:
 		groupOwner, groupName, grnErr := grn.GetGroupOwnerAndAccount()
 		if grnErr != nil {
@@ -2548,6 +2551,7 @@ func (k Keeper) SetTag(ctx sdk.Context, operator sdk.AccAddress, grn types.GRN, 
 		groupInfo.Tags = tags
 		gbz := k.cdc.MustMarshal(groupInfo)
 		store.Set(storagetypes.GetGroupByIDKey(groupInfo.Id), gbz)
+		id = groupInfo.Id
 	default:
 		return gnfderrors.ErrInvalidGRN.Wrap("Unknown resource type in mechain resource name")
 	}
@@ -2556,6 +2560,7 @@ func (k Keeper) SetTag(ctx sdk.Context, operator sdk.AccAddress, grn types.GRN, 
 	if err := ctx.EventManager().EmitTypedEvents(&storagetypes.EventSetTag{
 		Resource: grn.String(),
 		Tags:     tags,
+		Id:       id,
 	}); err != nil {
 		return err
 	}
